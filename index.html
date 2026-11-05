@@ -75,6 +75,12 @@ input[type="range"]{width:100%;accent-color:var(--accent)}
 .dogrow{display:grid;grid-template-columns:22px minmax(0,1fr) 90px;gap:8px;align-items:center}
 .dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--surface);box-shadow:0 0 0 1px var(--line)}
 .err{color:var(--alert);font-size:13px;min-height:1em}
+.balltypes{display:flex;flex-wrap:wrap;gap:5px}
+.btype{display:flex;align-items:center;gap:5px;font-size:12px;padding:3px 8px;border-radius:999px;border:1px solid var(--line);background:var(--surface-2);font-variant-numeric:tabular-nums}
+.btype i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.btype i.disc{border-radius:3px;height:6px;width:14px}
+.btype b{font-family:var(--f-mono);font-weight:500}
+.addrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
 .modes{display:grid;gap:8px}
 .modecard{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;padding:10px;border:1px solid var(--line);border-radius:9px;background:var(--surface-2);cursor:pointer}
 .modecard:has(input:checked){border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
@@ -322,6 +328,11 @@ input[type="range"]{width:100%;accent-color:var(--accent)}
       <!-- ball -->
       <section class="card panel">
         <div class="panel-head"><h2>공 던지기</h2><span class="balls" id="ballsBox"></span></div>
+        <div class="balltypes" id="ballTypes"></div>
+        <label class="f">다음에 던질 공
+          <select id="ballSel"><option value="mix">골고루 (랜덤)</option><option value="tennis">테니스공</option><option value="treat">간식 공</option><option value="frisbee">원반</option><option value="squeaky">삑삑이 공</option><option value="bouncy">탱탱볼</option></select>
+        </label>
+        <p class="small" id="ballDesc">발사기에 든 공 중에서 아무거나 던져요.</p>
         <div class="tabs" role="group" aria-label="발사 모드">
           <button data-bm="auto" aria-pressed="true">자동 (강아지가 오면)</button>
           <button data-bm="manual" aria-pressed="false">직접 던지기</button>
@@ -334,7 +345,12 @@ input[type="range"]{width:100%;accent-color:var(--accent)}
           <p class="small">방향 0°는 북쪽(위쪽) 벽, 90°는 동쪽 벽이에요. 3D 화면에 점선으로 궤적이 보여요.</p>
         </div>
         <p class="small" id="autoNote">강아지가 공을 물어 오거나 발사기 앞에서 기다리면 자동으로 던져 줘요.</p>
-        <div class="row2"><button class="btn" id="ballAdd">새 공 넣기 (최대 8개)</button><button class="btn" id="ballCollect">흩어진 공 회수</button></div>
+        <div class="addrow">
+          <select id="ballAddType" aria-label="넣을 공 종류"><option value="tennis">테니스공</option><option value="treat">간식 공</option><option value="frisbee">원반</option><option value="squeaky">삑삑이 공</option><option value="bouncy">탱탱볼</option></select>
+          <button class="btn" id="ballAdd">새 공 넣기</button>
+        </div>
+        <div class="row2"><button class="btn" id="ballCollect">흩어진 공 회수</button><button class="btn" id="treatFill">간식 공 채우기</button></div>
+        <p class="small" id="snackInfo">간식 30개 남음 · 공은 최대 8개</p>
       </section>
 
       <!-- tv -->
@@ -439,6 +455,14 @@ const REQUIRED=['water','food','launcher','homecam','door'];
 const DOG_COLORS=['#d9a35b','#f2ece0','#5a3d2b','#2b2b2e','#c46a3a','#9a9a9a','#e6cfa3','#7b5236'];
 const DOG_NAMES=['콩이','보리','초코','두부','망고','쿠키','해피','몽이'];
 const MAX_BALLS=8;
+// ball kinds: g=gravity scale, e=bounce, roll=ground friction keep-rate per s, joy=happiness on return
+const BALL_TYPES={
+  tennis:{n:'테니스공',c:'#d7e64a',r:0.075,g:1,e:0.55,roll:0.35,joy:6,sp:1,desc:'기본 공. 적당히 튀고 굴러가요.'},
+  treat:{n:'간식 공',c:'#e8743a',r:0.085,g:1,e:0.35,roll:0.25,joy:6,sp:0.9,desc:'안에 간식 3개. 물면 간식이 나와서 먹어요 (배고픔↓ 행복↑).'},
+  frisbee:{n:'원반',c:'#3a8ee8',r:0.05,g:0.32,e:0.15,roll:0.08,joy:10,sp:1.15,desc:'멀리 날아가요. 공중에서 잡으면 행복도 보너스!'},
+  squeaky:{n:'삑삑이 공',c:'#f07aa8',r:0.07,g:1,e:0.6,roll:0.35,joy:8,sp:1,desc:'튈 때마다 삑! 소리에 강아지들이 신나요.'},
+  bouncy:{n:'탱탱볼',c:'#8a5cf0',r:0.09,g:1,e:0.85,roll:0.6,joy:7,sp:0.95,desc:'아주 높이 튀고 오래 굴러가요. 체력을 많이 써요.'},
+};
 const SIZES={s:{n:'소형',k:0.75},m:{n:'중형',k:1},l:{n:'대형',k:1.3}};
 
 let uid=1;
@@ -783,7 +807,7 @@ function buildWorld(){
     if(it.type==='tv'||it.type==='shelf'){(dev.loot=dev.loot||[]).push({type:it.type,x:it.x,z:it.z,box:bx})}
   }
   // balls
-  for(let i=0;i<3;i++)makeBall();
+  ['tennis','treat','frisbee'].forEach(t=>makeBall(t));
   // trajectory line
   const tg=new THREE.BufferGeometry();tg.setAttribute('position',new THREE.BufferAttribute(new Float32Array(60*3),3));
   dev.traj=new THREE.Points(tg,new THREE.PointsMaterial({color:'#ffd84a',size:0.06}));dev.traj.visible=false;scene.add(dev.traj);
@@ -828,9 +852,21 @@ function buildYard(){
   yard.dIn={x:p.x+ax*0.55,z:p.z+az*0.55};yard.dOut={x:p.x-ax*0.75,z:p.z-az*0.75};
   function g0(m){scene.add(m)}
 }
-function makeBall(){
-  const m=sph(0.075,'#d7e64a',0,-5,0,{roughness:0.6});const stripe=new THREE.Mesh(new THREE.TorusGeometry(0.075,0.008,6,24),mat('#ffffff'));m.add(stripe);scene.add(m);
-  const b={id:balls.length,mesh:m,state:'in',pos:new THREE.Vector3(0,-5,0),vel:new THREE.Vector3(),chasedBy:null,restT:0};balls.push(b);return b;
+function makeBall(type='tennis'){
+  const T=BALL_TYPES[type],r=T.r;let m;
+  if(type==='frisbee'){
+    m=new THREE.Group();const disc=cyl(0.15,0.13,0.025,T.c,0,0,0,28,{roughness:0.4});m.add(disc);
+    const rim=new THREE.Mesh(new THREE.TorusGeometry(0.145,0.012,6,28),mat('#ffffff'));rim.rotation.x=Math.PI/2;m.add(rim);
+    const dot=cyl(0.05,0.05,0.027,'#ffd84a',0,0,0,16);m.add(dot);
+  }else{
+    m=sph(r,T.c,0,0,0,{roughness:type==='squeaky'?0.35:0.6});
+    if(type==='tennis'){const s=new THREE.Mesh(new THREE.TorusGeometry(r,0.008,6,24),mat('#ffffff'));m.add(s)}
+    if(type==='treat'){for(let i=0;i<7;i++){const a=i/7*Math.PI*2,y=Math.sin(i*2.3)*0.5;const h=sph(0.018,'#6a3a1a',Math.cos(a)*r*Math.cos(y),r*Math.sin(y),Math.sin(a)*r*Math.cos(y));m.add(h)}}
+    if(type==='squeaky'){for(let i=0;i<10;i++){const a=i/10*Math.PI*2,y=(i%3-1)*0.7;const s=sph(0.016,'#ffb3cf',Math.cos(a)*r*Math.cos(y),r*Math.sin(y),Math.sin(a)*r*Math.cos(y));m.add(s)}}
+    if(type==='bouncy'){for(const rot of[0,Math.PI/2]){const s=new THREE.Mesh(new THREE.TorusGeometry(r*1.005,0.012,6,24),mat(rot?'#ffd84a':'#45d4c8'));s.rotation.y=rot;m.add(s)}}
+  }
+  m.position.set(0,-5,0);m.castShadow=true;scene.add(m);
+  const b={id:balls.length,type,T,r,mesh:m,state:'in',pos:new THREE.Vector3(0,-5,0),vel:new THREE.Vector3(),chasedBy:null,restT:0,treats:type==='treat'?3:0,spin:0};balls.push(b);return b;
 }
 function buildFurniture(it){
   const f=FURN[it.type],g=new THREE.Group();const w=f.w,d=f.d,c=f.c;
@@ -973,7 +1009,7 @@ function newWorldState(startMin){
   return {t:startMin,day:1,tank:2000,tankCap:2000,bowl:0,bowlCap:300,food:0,foodCap:150,stock:3000,
     pump:{on:false,ml:0,dog:null},launcherBalls:3,launchQ:0,events:[],evId:1,lastAlertT:-99,
     voiceUntil:-1,voiceActive:false,stolen:0,alertShown:false,lowWaterWarned:false,emptyFoodWarned:false,
-    pad:{waste:[],cleaning:0,waitT:0,mode:$('#padMode')?$('#padMode').value:'3',noSheetWarned:false,dirtyWarned:false},floorMess:[],sheets:30,dirt:0,tv:{on:false,ch:'dog',offAt:-1}};
+    pad:{waste:[],cleaning:0,waitT:0,mode:$('#padMode')?$('#padMode').value:'3',noSheetWarned:false,dirtyWarned:false},floorMess:[],sheets:30,dirt:0,snacks:30,tv:{on:false,ch:'dog',offAt:-1}};
 }
 const clockMin=()=>world.t%1440;
 const hour=()=>clockMin()/60;
@@ -1052,7 +1088,7 @@ function face(a,tx,tz,dt){const want=Math.atan2(tz-a.pos.y,tx-a.pos.x);let dh=wa
 
 /* ======================= DOG AI ======================= */
 const STATE_KO={idle:'쉬는 중',wander:'돌아다님',toWater:'물 마시러',drink:'물 마시는 중',toFood:'밥 먹으러',eat:'밥 먹는 중',waitFood:'밥 기다림',
-  toBed:'잠자리로',sleep:'자는 중',chase:'공 쫓는 중',carry:'공 가져가는 중',toLauncher:'놀고 싶어함',waitThrow:'공 기다림',toVoice:'목소리 쪽으로',listen:'귀 기울이는 중',alert:'침입자 경계!',sit:'앉아 있음',toPotty:'화장실 가는 중',doPotty:'볼일 보는 중',toTV:'TV 보러 가는 중',watchTV:'TV 보는 중'};
+  toBed:'잠자리로',sleep:'자는 중',chase:'공 쫓는 중',carry:'공 가져가는 중',toLauncher:'놀고 싶어함',waitThrow:'공 기다림',toVoice:'목소리 쪽으로',listen:'귀 기울이는 중',alert:'침입자 경계!',sit:'앉아 있음',toPotty:'화장실 가는 중',doPotty:'볼일 보는 중',toTV:'TV 보러 가는 중',watchTV:'TV 보는 중',eatTreat:'간식 먹는 중'};
 function devPos(type){const b=dev[type]&&dev[type].box;return b?{x:(b.minx+b.maxx)/2,z:(b.minz+b.maxz)/2,b}:null}
 function frontOf(type,off=0.35){
   const dv=dev[type];if(!dv)return null;const it=dv.it,ft=foot(it);const r=it.rot||0;
@@ -1075,7 +1111,8 @@ function freeBall(d){
   for(const b of balls){if(b.state!=='free'&&b.state!=='fly')continue;if(b.chasedBy!==null&&b.chasedBy!==d.id)continue;const dd=Math.hypot(b.pos.x-d.pos.x,b.pos.z-d.pos.y);if(dd<bd){bd=dd;best=b}}
   return best;
 }
-function setState(d,s,think){if(d.state==='chase'&&d.ball&&s!=='chase'&&s!=='carry'){d.ball.chasedBy=null;d.ball=null}d.state=s;d.think=think??rand(3,6);d.stuck={t:0,d:1e9};d.detour=null;d.actT=0}
+function setState(d,s,think){
+  if(d.ball&&!['chase','carry','eatTreat'].includes(s)){const b=d.ball;b.chasedBy=null;if(b.state==='carried'){b.state='free';b.carrier=null;b.vel.set(0,0,0);b.pos.y=b.r}d.ball=null}d.state=s;d.think=think??rand(3,6);d.stuck={t:0,d:1e9};d.detour=null;d.actT=0}
 function decide(d){
   const night=isNight();
   if(d.state==='sleep'){
@@ -1156,14 +1193,27 @@ function updateDog(d,dt){
     case 'chase':{
       const b=d.ball;if(!b||(b.state!=='free'&&b.state!=='fly')||(b.chasedBy!==d.id)){if(b&&b.chasedBy===d.id)b.chasedBy=null;d.ball=null;setState(d,'idle',0.5);break}
       const dist=steer(d,b.pos.x,b.pos.z,run,dt);moving=true;tongue=true;emo='!';
-      if(dist<0.28*d.k+0.1&&b.pos.y<0.35){b.state='carried';b.carrier=d;d.state='carry';d.think=30;d.stuck={t:0,d:1e9};d.happy=clamp(d.happy+4)}
+      const air=b.type==='frisbee'&&b.state==='fly'&&b.pos.y>0.3&&b.pos.y<0.95*d.k&&dist<0.42*d.k+0.1;
+      if(air||(dist<0.28*d.k+0.1&&b.pos.y<0.35)){
+        b.state='carried';b.carrier=d;d.state='carry';d.think=30;d.stuck={t:0,d:1e9};d.happy=clamp(d.happy+4);
+        if(air){d.happy=clamp(d.happy+8);d.root.userData.barkPulse=1;log(`${d.name}이(가) 원반을 공중에서 잡았어요!`,'good');toast(`🥏 ${d.name} 공중 캐치!`)}
+        if(b.type==='squeaky'){squeak();dogs.forEach(o=>{if(o!==d&&['idle','sit','wander'].includes(o.state)&&Math.hypot(o.pos.x-d.pos.x,o.pos.y-d.pos.y)<4)o.happy=clamp(o.happy+2)})}
+        if(b.type==='treat'&&b.treats>0){d.state='eatTreat';d.think=3;d.actT=0}
+      }
       else if(d.think<=0){b.chasedBy=null;d.ball=null;setState(d,'idle',1)}break}
     case 'carry':{
       const t=frontOf('launcher',0.2);const dist=steer(d,t.x,t.z,walk*1.6,dt);moving=true;tongue=true;
       if(distToBox(d.pos.x,d.pos.y,dev.launcher.box)<0.42+d.r||dist<0.15){
-        const b=d.ball;b.state='in';b.chasedBy=null;b.carrier=null;b.mesh.position.y=-5;d.ball=null;world.launcherBalls++;d.happy=clamp(d.happy+6);d.stamina=clamp(d.stamina-2);
+        const b=d.ball;b.state='in';b.chasedBy=null;b.carrier=null;b.mesh.position.y=-5;d.ball=null;world.launcherBalls++;d.happy=clamp(d.happy+b.T.joy);d.stamina=clamp(d.stamina-(b.type==='bouncy'?5:b.type==='frisbee'?4:2));
+        if(b.type==='treat'&&b.treats<3&&careMode==='auto'&&world.snacks>0){const n=Math.min(3-b.treats,world.snacks);b.treats+=n;world.snacks-=n;log(`간식 공에 간식 ${n}개를 자동으로 채웠어요`)}
         setState(d,'waitThrow',8);if(ballMode==='auto')world.launchQ=Math.max(world.launchQ,1.2);
       }else if(d.think<=0){const b=d.ball;b.state='free';b.chasedBy=null;b.carrier=null;b.vel.set(0,0,0);d.ball=null;setState(d,'idle',1)}break}
+    case 'eatTreat':{
+      const b=d.ball;tongue=true;emo='🦴';sit=true;
+      if(!b){setState(d,'idle',1);break}
+      if(d.think<=0){b.treats=Math.max(0,b.treats-1);d.hunger=clamp(d.hunger-12);d.happy=clamp(d.happy+9);d.poo=clamp(d.poo+4);
+        log(`${d.name}이(가) 간식 공에서 간식을 꺼내 먹었어요 (남은 간식 ${b.treats}개)`,'good');d.state='carry';d.think=30;d.stuck={t:0,d:1e9}}
+      break}
     case 'toLauncher':{const t=frontOf('launcher',0.45);const dist=steer(d,t.x,t.z,walk*1.4,dt);moving=true;
       if(dist<0.2||distToBox(d.pos.x,d.pos.y,dev.launcher.box)<0.55+d.r){setState(d,'waitThrow',10);if(ballMode==='auto'&&world.launcherBalls>0)world.launchQ=Math.max(world.launchQ,1.5)}else if(d.think<=0)setState(d,'idle',1);break}
     case 'waitThrow':{sit=true;emo='♪';const c=dev.launcher.it;face(d,c.x,c.z,dt);if(d.think<=0)setState(d,'idle',1);break}
@@ -1353,19 +1403,30 @@ function cleanFloor(){
 
 /* ---------- ball physics ---------- */
 const G=-9.8;
+function selType(){return $('#ballSel')?$('#ballSel').value:'mix'}
+function nextBall(strict){
+  const inL=balls.filter(x=>x.state==='in');if(!inL.length)return null;const s=selType();
+  if(s==='mix')return pick(inL);
+  return inL.find(x=>x.type===s)||(strict?null:pick(inL));
+}
 function launchDir(){
   const dirDeg=parseFloat($('#aimDir').value),el=parseFloat($('#aimEl').value)*Math.PI/180,pow=parseFloat($('#aimPow').value);
-  const th=dirDeg*Math.PI/180;const sp=2.2+pow*0.95;
+  const th=dirDeg*Math.PI/180;const s=selType();const k=s!=='mix'&&BALL_TYPES[s]?BALL_TYPES[s].sp:1;const sp=(2.2+pow*0.95)*k;
   return new THREE.Vector3(Math.sin(th)*Math.cos(el),Math.sin(el),-Math.cos(th)*Math.cos(el)).multiplyScalar(sp);
 }
 function muzzle(){const it=dev.launcher.it;return new THREE.Vector3(it.x,0.5,it.z)}
+function squeak(){if(!soundOn)return;const a=ac();if(!a)return;const n=a.currentTime;const o=a.createOscillator(),g=a.createGain();o.type='square';o.frequency.setValueAtTime(1400,n);o.frequency.exponentialRampToValueAtTime(2300,n+0.06);o.frequency.exponentialRampToValueAtTime(1500,n+0.14);
+  g.gain.setValueAtTime(0.0001,n);g.gain.exponentialRampToValueAtTime(0.06,n+0.02);g.gain.exponentialRampToValueAtTime(0.0001,n+0.16);o.connect(g);g.connect(a.destination);o.start(n);o.stop(n+0.18)}
 function throwBall(vel,auto){
-  if(world.launcherBalls<=0){if(!auto)toast('발사기에 공이 없어요. 강아지가 물어 올 때까지 기다려 주세요',true);return false}
-  const b=balls.find(x=>x.state==='in');if(!b)return false;
+  if(world.launcherBalls<=0){if(!auto)toast('발사기에 공이 없어요. 공을 넣거나 강아지가 물어 올 때까지 기다려 주세요',true);return false}
+  const s=selType();let b=nextBall(!auto);
+  if(!b){toast(`발사기에 ${BALL_TYPES[s].n}이 없어요. 다른 종류를 고르거나 새로 넣어 주세요`,true);return false}
   world.launcherBalls--;b.state='fly';b.chasedBy=null;const m=muzzle();const dir=vel.clone().normalize();
-  b.pos.copy(m).addScaledVector(dir,0.32);b.vel.copy(vel);b.restT=0;
-  aimPivot(vel);blip(220,0.12,0.12);
-  log(auto?'공 발사기가 자동으로 공을 던졌어요':'공을 직접 던졌어요');
+  if(s!=='mix'&&b.type!==s)vel=vel.clone();
+  if(auto)vel=vel.clone().multiplyScalar(b.type==='frisbee'?0.75:1);
+  b.pos.copy(m).addScaledVector(dir,0.32);b.vel.copy(vel);b.restT=0;b.spin=b.type==='frisbee'?18:0;
+  aimPivot(vel);blip(220,0.12,0.12);if(b.type==='squeaky')squeak();
+  log(`${auto?'공 발사기가 자동으로':'직접'} ${b.T.n}${b.type==='treat'?` (간식 ${b.treats}개)`:''}을(를) 던졌어요`);
   // waiting dogs chase
   dogs.forEach(d=>{if(['waitThrow','idle','sit','wander','toLauncher'].includes(d.state)&&d.stamina>25)d.think=0.05+Math.random()*0.3});
   dogs.filter(d=>['waitThrow','idle','sit','wander','toLauncher'].includes(d.state)).forEach(d=>{if(d.state!=='sleep')setState(d,'idle',0.05+Math.random()*0.4)});
@@ -1380,13 +1441,19 @@ function autoThrowVel(){
   return new THREE.Vector3(dx/dist*Math.cos(el)*sp,Math.sin(el)*sp,dz/dist*Math.cos(el)*sp);
 }
 function updateBalls(dt){
-  const r=0.075;
   for(const b of balls){
+    const r=b.r,T=b.T;
     if(b.state==='in'){b.mesh.position.set(0,-5,0);continue}
-    if(b.state==='carried'){const d=b.carrier;if(!d){b.state='free';continue}const hx=Math.cos(d.heading),hz=Math.sin(d.heading);b.pos.set(d.pos.x+hx*0.45*d.k,0.42*d.k,d.pos.y+hz*0.45*d.k);b.mesh.position.copy(b.pos);continue}
-    b.vel.y+=G*dt;b.pos.addScaledVector(b.vel,dt);
-    if(b.pos.y<r){b.pos.y=r;if(b.vel.y<-0.6){b.vel.y*=-0.55;if(b.vel.y>1.5)blip(140,0.04,0.05)}else b.vel.y=0;b.vel.x*=0.985;b.vel.z*=0.985;
-      if(b.vel.y===0){b.vel.x*=Math.pow(0.35,dt);b.vel.z*=Math.pow(0.35,dt)}}
+    if(b.state==='carried'){const d=b.carrier;if(!d){b.state='free';continue}const hx=Math.cos(d.heading),hz=Math.sin(d.heading);b.pos.set(d.pos.x+hx*0.45*d.k,0.42*d.k,d.pos.y+hz*0.45*d.k);b.mesh.position.copy(b.pos);
+      if(b.type==='frisbee'){b.mesh.rotation.set(Math.PI/2,0,-d.heading)}
+      if(b.type==='squeaky'&&Math.random()<dt*0.5)squeak();continue}
+    // frisbee lift: glides while moving fast in the air
+    const hs=Math.hypot(b.vel.x,b.vel.z);let gk=T.g;
+    if(b.type==='frisbee'&&b.pos.y>r+0.05){gk=hs>2?T.g:0.8;b.vel.x*=Math.pow(0.82,dt);b.vel.z*=Math.pow(0.82,dt)}
+    b.vel.y+=G*gk*dt;b.pos.addScaledVector(b.vel,dt);
+    if(b.pos.y<r){b.pos.y=r;if(b.vel.y<-0.6){b.vel.y*=-T.e;if(b.vel.y>1.2){if(b.type==='squeaky')squeak();else blip(b.type==='bouncy'?260:140,0.04,0.05)}}else b.vel.y=0;
+      const fr=b.type==='frisbee'?0.8:b.type==='bouncy'?0.995:0.985;b.vel.x*=fr;b.vel.z*=fr;
+      if(b.vel.y===0){b.vel.x*=Math.pow(T.roll,dt);b.vel.z*=Math.pow(T.roll,dt)}}
     // walls
     if(b.pos.x<B.minx+r){b.pos.x=B.minx+r;b.vel.x=Math.abs(b.vel.x)*0.6}if(b.pos.x>B.maxx-r){b.pos.x=B.maxx-r;b.vel.x=-Math.abs(b.vel.x)*0.6}
     if(b.pos.z<B.minz+r){b.pos.z=B.minz+r;b.vel.z=Math.abs(b.vel.z)*0.6}if(b.pos.z>B.maxz-r){b.pos.z=B.maxz-r;b.vel.z=-Math.abs(b.vel.z)*0.6}
@@ -1403,14 +1470,20 @@ function updateBalls(dt){
     if(b.state==='free'&&sp<0.05){b.vel.set(0,0,0)}
     // tiny nudge off high furniture so dogs can reach: if resting above 0.5m, roll off
     if(b.state==='free'&&sp<0.05&&b.pos.y>0.4){b.restT+=dt;if(b.restT>2){b.vel.set(rand(-1,1),0.5,rand(-1,1));b.restT=0}}
-    b.mesh.position.copy(b.pos);b.mesh.rotation.x+=b.vel.z*dt/r;b.mesh.rotation.z-=b.vel.x*dt/r;
+    b.mesh.position.copy(b.pos);
+    if(b.type==='frisbee'){b.spin*=Math.pow(0.6,dt);b.mesh.rotation.y+=b.spin*dt;const tilt=b.pos.y>r+0.05?0.12:0;b.mesh.rotation.x+=(tilt-b.mesh.rotation.x)*0.2;b.mesh.rotation.z*=0.8}
+    else{b.mesh.rotation.x+=b.vel.z*dt/r;b.mesh.rotation.z-=b.vel.x*dt/r}
   }
 }
 function updateTrajectory(){
   if(!dev.traj)return;const show=ballMode==='manual';dev.traj.visible=show;if(!show)return;
   const v=launchDir();const p=muzzle().addScaledVector(v.clone().normalize(),0.32);const arr=dev.traj.geometry.attributes.position.array;
-  let vy=v.y;let x=p.x,y=p.y,z=p.z;
-  for(let i=0;i<60;i++){arr[i*3]=x;arr[i*3+1]=Math.max(0.02,y);arr[i*3+2]=z;const st=0.035;x+=v.x*st;z+=v.z*st;vy+=G*st;y+=vy*st;if(y<0.02){vy=0;y=0.02}}
+  const nb=nextBall(true);const fr=nb&&nb.type==='frisbee';
+  let vy=v.y,vx=v.x,vz=v.z;let x=p.x,y=p.y,z=p.z;const st=fr?0.05:0.035;
+  for(let i=0;i<60;i++){arr[i*3]=x;arr[i*3+1]=Math.max(0.02,y);arr[i*3+2]=z;
+    let gk=1;if(fr&&y>0.1){gk=Math.hypot(vx,vz)>2?0.32:0.8;vx*=Math.pow(0.82,st);vz*=Math.pow(0.82,st)}
+    x+=vx*st;z+=vz*st;vy+=G*gk*st;y+=vy*st;if(y<0.02){vy=0;y=0.02;if(fr){vx*=0.8;vz*=0.8}}}
+  dev.traj.material.color.set(nb?nb.T.c:'#ffd84a');
   dev.traj.geometry.attributes.position.needsUpdate=true;aimPivot(v);
 }
 
@@ -1538,7 +1611,11 @@ function syncUI(){
   const pct=world.tank/world.tankCap;$('#tankFill').style.height=(pct*100)+'%';$('#tankPct').textContent=Math.round(pct*100)+'%';$('#tankMl').textContent=Math.round(world.tank)+'ml';
   $('#gauge').classList.toggle('low',pct<0.2);$('#bowlFill').style.width=(world.bowl/world.bowlCap*100)+'%';
   $('#foodBowl').textContent=Math.round(world.food)+' g';$('#foodStock').textContent=Math.round(world.stock)+' g';$('#waterTank2').textContent=Math.round(world.tank)+' ml';
-  $('#ballsBox').innerHTML=`발사기 ${world.launcherBalls}/${balls.length} ${balls.map((b,i)=>`<i class="${i<world.launcherBalls?'':'off'}"></i>`).join('')}`;
+  $('#ballsBox').textContent=`발사기 안 ${balls.filter(b=>b.state==='in').length} / 전체 ${balls.length}`;
+  const bt=Object.keys(BALL_TYPES).map(k=>{const all=balls.filter(b=>b.type===k);if(!all.length)return '';const inn=all.filter(b=>b.state==='in').length;const T=BALL_TYPES[k];
+    const extra=k==='treat'?` · 간식 ${all.reduce((s,b)=>s+b.treats,0)}`:'';return `<span class="btype"><i class="${k==='frisbee'?'disc':''}" style="background:${T.c}"></i>${T.n} <b>${inn}/${all.length}</b>${extra}</span>`}).join('');
+  if($('#ballTypes').innerHTML!==bt)$('#ballTypes').innerHTML=bt;
+  $('#snackInfo').textContent=`간식 ${world.snacks}개 남음 · 공 ${balls.length}/${MAX_BALLS}개`;
   const P=world.pad,poo=P.waste.filter(w=>w.kind==='poo').length,pee=P.waste.length-poo;
   $('#padState').textContent=!dev.potty?'배변판 없음':P.cleaning>0?'청소 중…':P.waste.length?`똥 ${poo} · 오줌 ${pee}`:'깨끗함';
   $('#padState').style.color=P.waste.length>=6?'var(--alert)':P.waste.length?'var(--warn)':'var(--good)';
@@ -1570,6 +1647,7 @@ function frame(now){
       for(const ev of world.events){if(!ev.done&&world.t>=ev.at){ev.done=true;spawnIntruder(ev.entry,ev.courage,ev.goal)}}
       if(world.events.some(e=>e.done)){world.events=world.events.filter(e=>!e.done);renderEvents()}
       if(Math.floor(before/1440)!==Math.floor(world.t/1440))log(`${Math.floor(world.t/1440)+1}일차 아침이 밝았어요`);
+      world.launcherBalls=balls.filter(b=>b.state==='in').length;
       updatePotty(h);autoManager(h);
       if(world.tv.on&&world.tv.offAt>0&&world.t>=world.tv.offAt){setTV(false);log('꺼짐 예약 시간이 되어 TV가 꺼졌어요')}
       for(const d of dogs)updateDog(d,h);
@@ -1644,6 +1722,7 @@ function autoManager(dt){
     dogs.forEach(d=>{if(d.hunger>40&&['idle','sit','wander','waitFood'].includes(d.state))setState(d,'toFood',30)})}
   if(world.tank<world.tankCap*0.25){world.tank=world.tankCap;world.lowWaterWarned=false;world.flagNoWater=false;log('물통이 자동으로 다시 채워졌어요','good')}
   if(world.stock<400){world.stock=3000;log('사료 통이 자동 주문으로 채워졌어요','good')}
+  if(world.snacks<5){world.snacks=30;log('간식이 자동 주문으로 채워졌어요','good')}
   if(world.sheets<4){world.sheets=30;world.pad.noSheetWarned=false;log('배변 시트가 자동으로 보충됐어요','good')}
   if(world.floorMess.length){world.floorAutoT=(world.floorAutoT||0)+5;if(world.floorAutoT>=10){world.floorAutoT=0;const n=world.floorMess.length;world.floorMess.forEach(w=>scene.remove(w.mesh));world.floorMess=[];log(`로봇청소기가 바닥 실수 ${n}곳을 치웠어요`,'good')}}
   if(world.launcherBalls===0&&!balls.some(b=>b.state==='carried'||b.state==='fly'||b.chasedBy!==null)){
@@ -1657,7 +1736,15 @@ $('#tvTimer').onchange=e=>{const m=parseInt(e.target.value,10);if(world.tv.on)wo
 $('#padClean').onclick=()=>startClean(false);
 $('#floorClean').onclick=cleanFloor;
 $('#sheetBtn').onclick=()=>{world.sheets=30;world.pad.noSheetWarned=false;log('배변 시트를 30장 채웠어요','good')};
-$('#ballAdd').onclick=()=>{if(balls.length>=MAX_BALLS){toast('공은 8개까지 넣을 수 있어요');return}makeBall();world.launcherBalls++;log(`발사기에 새 공을 넣었어요 (${balls.length}개)`,'good');blip(700,0.06,0.06);syncUI()};
+$('#ballAdd').onclick=()=>{if(balls.length>=MAX_BALLS){toast('공은 8개까지 넣을 수 있어요');return}const t=$('#ballAddType').value;makeBall(t);world.launcherBalls++;log(`발사기에 ${BALL_TYPES[t].n}을(를) 넣었어요 (전체 ${balls.length}개)`,'good');blip(700,0.06,0.06);syncUI()};
+$('#ballSel').onchange=e=>{const v=e.target.value;$('#ballDesc').textContent=v==='mix'?'발사기에 든 공 중에서 아무거나 던져요.':BALL_TYPES[v].desc};
+$('#treatFill').onclick=()=>{
+  const tb=balls.filter(b=>b.type==='treat');if(!tb.length){toast('간식 공이 없어요. 새 공 넣기에서 간식 공을 넣어 주세요',true);return}
+  const inL=tb.filter(b=>b.state==='in');if(!inL.length){toast('간식 공이 발사기 안에 있을 때 채울 수 있어요',true);return}
+  let n=0;for(const b of inL){const k=Math.min(3-b.treats,world.snacks);b.treats+=k;world.snacks-=k;n+=k}
+  if(!n){toast(world.snacks<=0?'간식이 다 떨어졌어요':'간식 공이 이미 가득 찼어요',world.snacks<=0);return}
+  log(`간식 공에 간식 ${n}개를 넣었어요`,'good');syncUI();
+};
 $('#ballCollect').onclick=()=>{
   let n=0;for(const b of balls){if(b.state==='free'||b.state==='fly'){if(b.chasedBy!==null){const d=dogs[b.chasedBy];if(d&&d.state==='chase'){d.ball=null;setState(d,'idle',1)}}b.state='in';b.chasedBy=null;b.vel.set(0,0,0);world.launcherBalls++;n++}}
   if(n){log(`바닥에 있던 공 ${n}개를 발사기에 다시 채웠어요`,'good');syncUI()}else toast('바닥에 흩어진 공이 없어요');

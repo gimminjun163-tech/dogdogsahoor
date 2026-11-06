@@ -2232,7 +2232,9 @@ function breedTick(){
     if(f.sex!=='f'||f.pregnant||!canBreed(f)||f.age>=10||world.t-f.lastBirth<120*1440||Math.random()>0.05)continue;
     const ms=dogs.filter(m=>m.sex==='m'&&m.species===f.species&&canBreed(m)&&m.age<12&&m.id!==f.mom&&m.id!==f.dad&&m.mom!==f.id&&!(m.mom!=null&&m.mom===f.mom));
     if(!ms.length)continue;const m=pick(ms);const days=f.species==='cat'?65:63;
+    const wed=f.mate!==m.id||m.mate!==f.id;
     f.pregnant={due:world.t+days*1440,dad:m.id,dadBreed:m.breed,dadColor:m.color,dadSkills:m.skills,start:world.t};f.mate=m.id;m.mate=f.id;
+    if(wed){const msg=`💍 ${f.name}${josa(f.name,'과','와')} ${m.name}${josa(m.name,'이','가')} 결혼했어요`;toast(msg,false,true);log(msg,'good',true);blip(880,0.12,0.07);setTimeout(()=>blip(1175,0.18,0.07),140)}
     log(`💕 ${f.name}${josa(f.name,'과','와')} ${m.name} 사이에 아기가 생겼어요 (${days}일 뒤 출산 예정)`,'good',true);
   }
 }

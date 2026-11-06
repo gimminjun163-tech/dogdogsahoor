@@ -242,6 +242,25 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
   .gauge{width:54px}
   .ov-tr{top:auto;bottom:10px;right:70px}
 }
+/* arena (fight-only) mode */
+.modetabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.modetabs button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 16px;font-weight:700}
+.modetabs button[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.arena-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 320px;gap:14px;align-items:start}
+.team{padding:14px;display:grid;gap:10px;border-top:4px solid var(--teamc)}
+.team.a{--teamc:var(--alert)}.team.b{--teamc:var(--water)}
+.team h2 span{color:var(--teamc)}
+.trow{display:grid;grid-template-columns:minmax(0,1fr) 60px 60px 32px;gap:6px;align-items:center}
+.trow.head{font-size:11px;color:var(--muted);font-weight:700}
+.trow .x{border:1px solid var(--line);background:var(--surface-2);border-radius:7px;height:32px}
+.presets{display:flex;flex-wrap:wrap;gap:6px}
+#sim.arena .home-only{display:none!important}
+#sim:not(.arena) .arena-only{display:none!important}
+.arenares{inset:0;z-index:7;display:grid;place-items:center;background:rgba(6,12,14,.5);padding:16px}
+.ar-card{background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:18px;width:min(420px,100%);display:grid;gap:10px;text-align:center}
+.ar-card b{font-family:var(--f-display);font-weight:400;font-size:30px;line-height:1.1}
+.ar-card p{margin:0;font-size:13px;color:var(--muted);line-height:1.6}
+@media (max-width:960px){.arena-grid{grid-template-columns:minmax(0,1fr)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -262,7 +281,11 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
 <main>
 <!-- ================= SETUP ================= -->
 <section id="setup">
-  <div class="setup-grid">
+  <div class="modetabs" role="group" aria-label="모드 고르기">
+    <button id="tabHome" aria-pressed="true">🏠 집 시뮬레이션</button>
+    <button id="tabArena" aria-pressed="false">⚔ 싸움만 하기</button>
+  </div>
+  <div class="setup-grid" id="homeSetup">
     <div class="card editor-wrap">
       <div class="panel-head"><h2>방 배치도</h2><span class="tag" id="roomTag">9.0 × 7.0 m</span></div>
       <div class="tools" id="tools"></div>
@@ -319,6 +342,49 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
       </div>
     </aside>
   </div>
+
+  <div class="arena-grid" id="arenaSetup" hidden>
+    <div class="card team a">
+      <div class="panel-head"><h2><span>●</span> A편</h2><span class="tag" id="teamACount"></span></div>
+      <div class="trow head"><span>품종</span><span>마리</span><span>나이</span><span></span></div>
+      <div class="stack" id="teamARows"></div>
+      <button class="btn" data-add="A">+ 동물 추가</button>
+      <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="teamAOwner" data-owner="A"> 주인도 A편으로 참가</label>
+    </div>
+    <div class="card team b">
+      <div class="panel-head"><h2><span>●</span> B편</h2><span class="tag" id="teamBCount"></span></div>
+      <div class="trow head"><span>품종</span><span>마리</span><span>나이</span><span></span></div>
+      <div class="stack" id="teamBRows"></div>
+      <button class="btn" data-add="B">+ 동물 추가</button>
+      <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="teamBOwner" data-owner="B"> 주인도 B편으로 참가</label>
+    </div>
+    <aside class="card setup-side">
+      <div class="stack">
+        <h3>빠른 구성</h3>
+        <div class="presets">
+          <button class="btn" data-preset="dogcat">강아지 vs 고양이</button>
+          <button class="btn" data-preset="small">소형견 군단 vs 그레이트 데인</button>
+          <button class="btn" data-preset="owner">강아지들 vs 주인</button>
+          <button class="btn" data-preset="royal">대형견 3:3</button>
+        </div>
+      </div>
+      <div class="stack">
+        <h3>싸움장</h3>
+        <div class="row2">
+          <label class="f">크기<select id="arenaSize"><option value="s">작게 (8×6m)</option><option value="m" selected>보통 (12×9m)</option><option value="l">크게 (16×12m)</option></select></label>
+          <label class="f">장애물<select id="arenaObs"><option value="none">없음</option><option value="some" selected>조금</option><option value="many">많이</option></select></label>
+        </div>
+        <label class="f">끝나는 방식<select id="arenaEnd"><option value="death" selected>한 편이 모두 쓰러지거나 도망칠 때까지</option><option value="random">랜덤 시간 (20~90분)</option></select></label>
+        <label class="f">나는<select id="arenaMe"><option value="watch">관전 (카메라가 싸움을 따라감)</option><option value="A">A편 동물 조종</option><option value="B">B편 동물 조종</option><option value="free">자유 카메라로 보기</option></select></label>
+        <button class="btn" id="arenaAI">⚙ AI 행동 경향 · 커맨드 보기</button>
+      </div>
+      <div class="stack">
+        <p class="err" id="arenaErr"></p>
+        <button class="btn primary" id="arenaStart">싸움 시작</button>
+        <p class="small">밥·물·배변 걱정 없이 싸움만 해요. 동물은 두 편 합쳐 40마리까지예요. 시작한 뒤에도 Esc로 AI 경향과 규칙을 바꿀 수 있어요.</p>
+      </div>
+    </aside>
+  </div>
 </section>
 
 <!-- ================= SIM ================= -->
@@ -331,7 +397,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
           <button class="chip" data-mode="free" aria-pressed="true">자유 시점</button>
           <button class="chip" data-mode="top" aria-pressed="false">위에서</button>
           <button class="chip" data-mode="follow" aria-pressed="false">동물 따라가기</button>
-          <button class="chip" data-mode="cam" aria-pressed="false">홈캠 시점</button>
+          <button class="chip home-only" data-mode="cam" aria-pressed="false">홈캠 시점</button>
           <span class="chip fastchip" id="fastChip" hidden>⏩ 빠른 계산 중 · 싸움·침입·방문 때 자동으로 x1</span>
         </div>
         <div class="ov fbanner" id="fightBanner" hidden role="status">
@@ -365,11 +431,12 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
           <button data-k="left" aria-label="왼쪽">◀</button><button data-k="down" aria-label="뒤로">▼</button><button data-k="right" aria-label="오른쪽">▶</button><button id="tpDash">대시</button>
           <button id="tpTab" class="wide2">다음 아군</button><button id="tpEsc" class="wide2 escb">ESCAPE</button>
         </div>
+        <div class="ov arenares" id="arenaRes" hidden><div class="ar-card"><b id="arTitle">A편 승리!</b><p id="arText"></p><div class="row2"><button class="btn primary" id="arAgain">다시 하기</button><button class="btn" id="arSetup">팀 바꾸기</button></div><button class="btn" id="arClose">닫고 계속 보기</button></div></div>
         <div class="ov pe" id="peOverlay" hidden aria-live="assertive"><img id="peImg" alt="주인 사진"><p id="peText"></p></div>
         <div class="ov ov-tr">
           <button class="chip recbtn" id="recBtn"><span class="rd"></span><span id="recTxt">녹화</span></button>
         </div>
-        <div class="ov gauge" id="gauge" aria-label="급수대 물 잔량">
+        <div class="ov gauge home-only" id="gauge" aria-label="급수대 물 잔량">
           <div class="lbl">급수대<br>물통</div>
           <div class="tank"><div class="fill" id="tankFill"></div><div class="tick" style="bottom:25%"></div><div class="tick" style="bottom:50%"></div><div class="tick" style="bottom:75%"></div></div>
           <div class="pct" id="tankPct">100%</div>
@@ -384,8 +451,20 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
     </div>
 
     <aside class="side-col">
+      <!-- arena -->
+      <section class="card panel arena-only">
+        <div class="panel-head"><h2>싸움장</h2><span class="tag" id="arenaTag"></span></div>
+        <div class="kv">
+          <span>A편 승리</span><b id="arWinA">0</b>
+          <span>B편 승리</span><b id="arWinB">0</b>
+          <span>무승부</span><b id="arDraw">0</b>
+        </div>
+        <div class="row2"><button class="btn primary" id="arAgain2">다시 하기</button><button class="btn" id="arSetup2">팀 바꾸기</button></div>
+        <div class="row2"><button class="btn" id="arWatch">관전 · 플레이 화면</button><button class="btn" id="arMenu">⚙ AI · 규칙 (Esc)</button></div>
+        <p class="small">관전 화면에서 A편·B편 동물을 골라 직접 조종할 수 있어요. E 또는 ESCAPE 버튼으로 10초 버티면 빠져나와요.</p>
+      </section>
       <!-- homecam -->
-      <section class="card panel">
+      <section class="card panel home-only">
         <div class="panel-head"><h2>홈캠</h2><span class="tag" id="camTag">CAM-01 · 1080p</span></div>
         <div class="camscreen" id="camScreen">
           <canvas id="camCanvas"></canvas>
@@ -417,11 +496,11 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
       </section>
 
       <!-- owner -->
-      <section class="card panel">
+      <section class="card panel home-only">
         <div class="panel-head"><h2>주인 방문</h2><span class="tag" id="ownerTag">집 밖</span></div>
         <div class="row2">
           <label class="f">주인 이름<input type="text" id="ownerName" value="김민수" maxlength="10"></label>
-          <label class="f">주인 사진 (gms.png)<input type="file" id="ownerImg" accept="image/*"></label>
+          <label class="f">다른 사진 쓰기 (기본: gms.png)<input type="file" id="ownerImg" accept="image/*"></label>
         </div>
         <img id="ownerThumb" class="ownerthumb" alt="고른 주인 사진" hidden>
         <div class="kv">
@@ -434,7 +513,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
       </section>
 
       <!-- life -->
-      <section class="card panel">
+      <section class="card panel home-only">
         <div class="panel-head"><h2>생명 · 가족</h2><span class="tag" id="popTag"></span></div>
         <div class="kv">
           <span>강아지</span><b id="lifeDogs">0마리</b>
@@ -450,7 +529,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
       </section>
 
       <!-- ball -->
-      <section class="card panel">
+      <section class="card panel home-only">
         <div class="panel-head"><h2>공 던지기</h2><span class="balls" id="ballsBox"></span></div>
         <div class="balltypes" id="ballTypes"></div>
         <label class="f">다음에 던질 공
@@ -478,7 +557,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
       </section>
 
       <!-- tv -->
-      <section class="card panel">
+      <section class="card panel home-only">
         <div class="panel-head"><h2>TV</h2><span class="tag" id="tvTag">꺼짐</span></div>
         <div class="row2">
           <label class="f">채널<select id="tvCh"><option value="dog">강아지 채널</option><option value="nature">자연 다큐</option><option value="cartoon">만화</option></select></label>
@@ -489,7 +568,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
       </section>
 
       <!-- potty -->
-      <section class="card panel">
+      <section class="card panel home-only">
         <div class="panel-head"><h2>자동 배변판</h2><span class="tag" id="padState">깨끗함</span></div>
         <div class="bowlbar" style="width:100%;height:8px;background:var(--surface-2);border:1px solid var(--line)"><span id="padFill" style="width:0%"></span></div>
         <div class="kv">
@@ -506,7 +585,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
       </section>
 
       <!-- feed & water -->
-      <section class="card panel">
+      <section class="card panel home-only">
         <div class="panel-head"><h2>밥 · 물</h2></div>
         <div class="kv">
           <span>밥그릇</span><b id="foodBowl">0 g</b>
@@ -519,7 +598,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
       </section>
 
       <!-- farm -->
-      <section class="card panel" id="farmPanel" hidden>
+      <section class="card panel home-only" id="farmPanel" hidden>
         <div class="panel-head"><h2>자동화 농장</h2><span class="tag" id="farmTag"></span></div>
         <div class="bowlbar wide"><span id="farmFill" style="width:0%"></span></div>
         <label class="f">심을 작물
@@ -535,7 +614,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
       </section>
 
       <!-- intruder -->
-      <section class="card panel">
+      <section class="card panel home-only">
         <div class="panel-head"><h2>침입자 상황 만들기</h2></div>
         <div class="row2">
           <label class="f">침입자<select id="intKind"><option value="human">도둑 (사람)</option><option value="cats">길고양이</option></select></label>
@@ -935,6 +1014,49 @@ function buildDogList(){
 }
 $('#dogCount').onchange=buildDogList;$('#catCount').onchange=buildDogList;
 
+/* ======================= ARENA SETUP (fight only) ======================= */
+const ARENA_PRESETS={
+  dogcat:{A:[{breed:'shiba',n:3,age:3}],B:[{breed:'korshort',n:3,age:3}],ownerA:false,ownerB:false},
+  small:{A:[{breed:'maltese',n:6,age:3},{breed:'pomeranian',n:4,age:2},{breed:'chihuahua',n:3,age:4}],B:[{breed:'greatdane',n:1,age:4}],ownerA:false,ownerB:false},
+  owner:{A:[{breed:'golden',n:2,age:4},{breed:'jindo',n:2,age:3}],B:[],ownerA:false,ownerB:true},
+  royal:{A:[{breed:'golden',n:3,age:4}],B:[{breed:'greatdane',n:1,age:4},{breed:'jindo',n:2,age:3}],ownerA:false,ownerB:false},
+};
+let arenaTeams=JSON.parse(JSON.stringify(ARENA_PRESETS.dogcat)),arenaStats={A:0,B:0,draw:0},appMode='home';
+function teamTotal(t){return arenaTeams[t].reduce((s,r)=>s+r.n,0)+(arenaTeams['owner'+t]?1:0)}
+function renderArenaTeams(){
+  for(const t of['A','B']){
+    const box=$('#team'+t+'Rows');box.innerHTML='';
+    arenaTeams[t].forEach((r,i)=>{
+      const row=document.createElement('div');row.className='trow';
+      row.innerHTML=`<select aria-label="${t}편 ${i+1}번 품종"><optgroup label="강아지">${breedOptions('dog',r.breed)}</optgroup><optgroup label="고양이">${breedOptions('cat',r.breed)}</optgroup></select>
+        <input type="number" min="1" max="15" value="${r.n}" aria-label="마리 수"><input type="number" min="0" max="14" step="0.5" value="${r.age}" aria-label="나이"><button class="x" aria-label="이 줄 지우기">✕</button>`;
+      const [sel,nIn,aIn]=row.querySelectorAll('select,input');
+      sel.onchange=e=>{r.breed=e.target.value};nIn.onchange=e=>{r.n=clamp(parseInt(e.target.value,10)||1,1,15);e.target.value=r.n;renderArenaCounts()};
+      aIn.onchange=e=>{r.age=clamp(parseFloat(e.target.value)||0,0,14);e.target.value=r.age};
+      row.querySelector('.x').onclick=()=>{arenaTeams[t].splice(i,1);renderArenaTeams()};
+      box.appendChild(row);
+    });
+    if(!arenaTeams[t].length)box.innerHTML='<p class="small">동물이 없어요. 아래에서 추가하세요.</p>';
+    $('#team'+t+'Owner').checked=!!arenaTeams['owner'+t];
+  }
+  renderArenaCounts();
+}
+function renderArenaCounts(){for(const t of['A','B'])$('#team'+t+'Count').textContent=`${teamTotal(t)}마리${arenaTeams['owner'+t]?' (주인 포함)':''}`}
+$$('[data-add]').forEach(b=>b.onclick=()=>{const t=b.dataset.add;arenaTeams[t].push({breed:t==='A'?'shiba':'korshort',n:1,age:3});renderArenaTeams()});
+$$('[data-owner]').forEach(c=>c.onchange=e=>{const t=c.dataset.owner,o=t==='A'?'B':'A';arenaTeams['owner'+t]=e.target.checked;if(e.target.checked)arenaTeams['owner'+o]=false;renderArenaTeams()});
+$$('[data-preset]').forEach(b=>b.onclick=()=>{arenaTeams=JSON.parse(JSON.stringify(ARENA_PRESETS[b.dataset.preset]));renderArenaTeams()});
+function setAppMode(m){appMode=m;$('#tabHome').setAttribute('aria-pressed',String(m==='home'));$('#tabArena').setAttribute('aria-pressed',String(m==='arena'));
+  $('#homeSetup').hidden=m!=='home';$('#arenaSetup').hidden=m!=='arena';$('#phaseLbl').textContent=m==='home'?'1단계 · 방 꾸미기':'싸움장 · 팀 구성';if(m==='home')edResize()}
+$('#tabHome').onclick=()=>setAppMode('home');$('#tabArena').onclick=()=>setAppMode('arena');
+$('#arenaAI').onclick=()=>toggleMenu(true);
+function arenaLayout(){
+  const sz={s:[8,6],m:[12,9],l:[16,12]}[$('#arenaSize').value];const [W0,D0]=sz;const items=[];const ob=$('#arenaObs').value;
+  if(ob!=='none'){items.push({type:'plant',x:0,z:-D0/4,rot:0},{type:'plant',x:0,z:D0/4,rot:0},{type:'table',x:0,z:0,rot:1})}
+  if(ob==='many'){items.push({type:'shelf',x:-W0/5,z:0,rot:1},{type:'shelf',x:W0/5,z:0,rot:1},{type:'sofa',x:-W0/6,z:D0/2-0.6,rot:2},{type:'sofa',x:W0/6,z:-D0/2+0.6,rot:0},{type:'plant',x:-W0/3,z:-D0/3,rot:0},{type:'plant',x:W0/3,z:D0/3,rot:0})}
+  items.push({type:'rug',x:0,z:0,rot:0});
+  return {W:W0,D:D0,yard:{on:false,depth:4},items};
+}
+
 /* ======================= 3D WORLD ======================= */
 let renderer,camRenderer,scene,mainCam,homeCam,controls;
 let W=9,D=7,solids=[],walls={},dogs=[],balls=[],intruder=null;
@@ -1054,8 +1176,9 @@ function buildWorld(){
   dev.traj=new THREE.Points(tg,new THREE.PointsMaterial({color:'#ffd84a',size:0.06}));dev.traj.visible=false;scene.add(dev.traj);
   // pets
   corpses=[];fights=[];hitPool.length=0;animalUid=1;
-  [...dogConf,...catConf].forEach(c=>{const d=makeAnimal(c);dogs.push(d)});
+  (arenaConf||[...dogConf,...catConf]).forEach(c=>{const d=makeAnimal(c,c.at);if(c.team)d.team0=c.team;resolve(d.pos,d.r);dogs.push(d)});
 }
+let arenaConf=null;
 
 function grassTexture(){
   const c=document.createElement('canvas');c.width=256;c.height=256;const g=c.getContext('2d');g.fillStyle='#6fa64e';g.fillRect(0,0,256,256);
@@ -1472,6 +1595,12 @@ function decide(d){
 }
 function updateDog(d,dt){
   if(d.dead)return;
+  if(world.arena&&!d.fight){ // fight-only mode: no daily life, just rest where they are
+    d.think-=dt;
+    if(d.state==='scared'&&d.think>0){const f=d.scaredFrom||{x:0,z:0},ax=d.pos.x-f.x,az=d.pos.y-f.z,l=Math.hypot(ax,az)||1;
+      steer(d,clamp(d.pos.x+ax/l*2,B.minx+0.4,B.maxx-0.4),clamp(d.pos.y+az/l*2,B.minz+0.4,B.maxz-0.4),2.2*Math.sqrt(d.k),dt);d.anim={emo:'😨'};return}
+    d.state='sit';d.speed=0;d.stamina=clamp(d.stamina+dt*0.05);d.anim={sit:true,emo:''};return;
+  }
   const sl=d.state==='sleep';const running=d.speed>1.4||!!d.fight;
   // stats per clock minute (dt is clock minutes)
   d.hunger=clamp(d.hunger+dt*0.1*(sl?0.5:1)*(running?1.4:1)*(d.pregnant?1.3:1));
@@ -2105,7 +2234,7 @@ function updateFight(f,dt){
   if(!f.A.length||!f.B.length){endFight(f);return}
   fightCenter(f);
   if(!f.death&&world.t>=f.until){endFight(f);return}
-  f.joinT-=dt;if(f.joinT<=0){f.joinT=3;recruit(f,3,0.35)}
+  if(!world.arena){f.joinT-=dt;if(f.joinT<=0){f.joinT=3;recruit(f,3,0.35)}}
 }
 function endFight(f){
   if(f.ended)return;f.ended=true;fights=fights.filter(x=>x!==f);
@@ -2119,6 +2248,7 @@ function endFight(f){
   f.result=`${res}${f.deaths.length?' · 사망: '+f.deaths.join(', '):''}${f.fled.length?' · 도망: '+f.fled.join(', '):''}`;
   log(`⚔ 싸움 끝 (${Math.max(1,Math.round(world.t-f.t0))}분) · ${f.result}`,f.deaths.length?'bad':'',true);
   if(player.bannerFight===f)hideBanner();
+  if(world.arena){f.win=win;setTimeout(()=>showArenaResult(f),1200)}
   if(player.spect===f){$('#fhTitle').textContent='⚔ 싸움 끝';$('#fhResult').textContent=f.result;$('#fhResult').hidden=false;setTimeout(()=>{if(player.spect===f)stopSpectate()},2600)}
   else if(!fights.length&&!player.spect)restoreSpeed();
 }
@@ -2224,6 +2354,7 @@ function endVisit(){owner.visiting=false;owner.state='out';if(owner.g)scene.remo
 function updateOwner(dt){
   if(!owner.visiting||owner.dead)return;
   if(owner.fight){fightAI(owner,dt);return}
+  if(world.arena){owner.speed=0;return}
   owner.left-=dt;owner.stamina=Math.min(100,owner.stamina+dt*0.5);
   owner.hostileT-=dt;
   if(owner.hostileT<=0){owner.hostileT=1;
@@ -2265,7 +2396,9 @@ function placeholderPortrait(name){
 }
 function publicEnemy(){
   const nm=owner.name||'주인',txt=`${nm}${josa(nm,'은','는')} 공공의적이다!`;
-  $('#peText').textContent=`‘${txt}’`;$('#peImg').src=ownerImgURL||placeholderPortrait(nm);
+  $('#peText').textContent=`‘${txt}’`;
+  const im=$('#peImg');im.dataset.fb='';im.onerror=()=>{if(!im.dataset.fb){im.dataset.fb='1';im.src=placeholderPortrait(nm)}};
+  im.src=ownerImgURL||'gms.png';
   const el=$('#peOverlay');el.hidden=false;el.classList.remove('show');void el.offsetWidth;el.classList.add('show');
   clearTimeout(peTimer);peTimer=setTimeout(()=>{el.hidden=true;el.classList.remove('show')},3400);
   const f=owner.fight;if(f)(owner.team==='A'?f.B:f.A).forEach(d=>d.shoutT=6);
@@ -2503,7 +2636,7 @@ let lastT=performance.now(),uiT=0;
 function frame(now){
   requestAnimationFrame(frame);if(!running)return;
   const realDt=Math.min(0.1,(now-lastT)/1000);lastT=now;
-  const fast=speed>=FAST_SPEED&&!fights.length&&!intruder&&!owner.visiting&&!dogs.some(d=>d.stray)&&!player.spect;
+  const fast=!world.arena&&speed>=FAST_SPEED&&!fights.length&&!intruder&&!owner.visiting&&!dogs.some(d=>d.stray)&&!player.spect;
   world.fastNow=fast;
   if(!paused&&!menuOpen){
     quiet=fast;
@@ -2598,7 +2731,7 @@ function applyMode(m,announce){
 $('#modeChip').onclick=()=>{applyMode(careMode==='auto'?'manual':'auto',true);toast(careMode==='auto'?'이제 집이 알아서 관리해요':'이제 직접 돌봐 주세요')};
 function autoManager(dt){
   world.foodCap=Math.max(150,dogs.length*45);
-  if(careMode!=='auto')return;autoT-=dt;if(autoT>0)return;autoT=5;
+  if(careMode!=='auto'||world.arena)return;autoT-=dt;if(autoT>0)return;autoT=5;
   const hungry=dogs.some(d=>d.hunger>45);
   if(world.food<8*Math.max(1,dogs.length/4)&&hungry&&world.stock>0){const g=Math.min(Math.max(60,dogs.length*25),world.foodCap-world.food,world.stock);world.food+=g;world.stock-=g;log(`자동 급식기가 사료 ${Math.round(g)}g을 줬어요`,'good');
     dogs.forEach(d=>{if(d.hunger>40&&['idle','sit','wander','waitFood'].includes(d.state))setState(d,'toFood',30)})}
@@ -2731,7 +2864,7 @@ function startSim(){
   if(layout.yard&&layout.yard.on&&!layout.items.some(i=>i.type==='petdoor')){$('#setupErr').textContent='마당을 쓰려면 벽에 마당 문을 놓아 주세요';return}
   if(layout.items.some(i=>i.type==='farm')&&!farmInYard()){$('#setupErr').textContent='자동화 농장은 마당 안에 있어야 해요. 마당을 켜거나 농장을 지워 주세요';return}
   if(!dogConf.length&&!catConf.length){$('#setupErr').textContent='강아지나 고양이를 한 마리 이상 골라 주세요';return}
-  $('#setupErr').textContent='';
+  $('#setupErr').textContent='';arenaConf=null;$('#sim').classList.remove('arena');$('#arenaRes').hidden=true;
   dogConf.forEach((d,i)=>{d.name=($('#dogName'+i).value||'').trim()||d.name;d.age=clamp(parseFloat($('#dogAge'+i).value)||0,0,14)});
   catConf.forEach((d,i)=>{d.name=($('#catName'+i).value||'').trim()||d.name;d.age=clamp(parseFloat($('#catAge'+i).value)||0,0,14)});
   $('#setup').hidden=true;$('#sim').hidden=false;
@@ -2761,8 +2894,74 @@ $('#startBtn').onclick=startSim;
 $('#backSetup').onclick=()=>{
   running=false;if(viewRec)viewRec.stop();if(intruder)intruder=null;if(menuOpen)toggleMenu(false);
   $('#sim').hidden=true;$('#setup').hidden=false;['#clockBox','#speedSeg','#pauseBtn','#soundBtn','#backSetup','#modeChip','#escBtn'].forEach(s=>$(s).hidden=true);
-  $('#phaseLbl').textContent='1단계 · 방 꾸미기';edResize();
+  setAppMode(world&&world.arena?'arena':'home');
 };
+
+/* ======================= ARENA RUN ======================= */
+function startArena(){
+  const nA=teamTotal('A'),nB=teamTotal('B');
+  if(!nA||!nB){$('#arenaErr').textContent='A편과 B편에 각각 한 마리 이상 있어야 해요';return}
+  if(nA+nB>MAX_PETS+1){$('#arenaErr').textContent=`두 편 합쳐 ${MAX_PETS}마리까지 넣을 수 있어요 (지금 ${nA+nB}마리)`;return}
+  $('#arenaErr').textContent='';
+  const L=arenaLayout(),W0=L.W,D0=L.D,used=new Set();
+  const nameFor=sp=>{const pool=sp==='cat'?CAT_NAMES:[...DOG_NAMES,...PUP_NAMES];const f=pool.filter(n=>!used.has(n));let n=f.length?pick(f):pick(pool)+(used.size+1);used.add(n);return n};
+  arenaConf=[];
+  for(const t of['A','B']){
+    const list=[];arenaTeams[t].forEach(r=>{for(let i=0;i<r.n;i++)list.push(r)});
+    const cols=Math.max(1,Math.ceil(Math.sqrt(list.length/1.6)));
+    list.forEach((r,i)=>{const sp=BREEDS[r.breed].sp,col=Math.floor(i/Math.ceil(list.length/cols)),row=i%Math.ceil(list.length/cols),rows=Math.ceil(list.length/cols);
+      const x=(t==='A'?-1:1)*(W0/2-0.8-col*0.8),z=(rows>1?-D0*0.35+row*(D0*0.7/(rows-1)):0);
+      arenaConf.push({species:sp,breed:r.breed,color:sp==='cat'?pick(CAT_COLORS):BREEDS[r.breed].c,sex:Math.random()<0.5?'f':'m',age:r.age,name:nameFor(sp),team:t,at:{x,z}})});
+  }
+  $('#setup').hidden=true;$('#sim').hidden=false;$('#sim').classList.add('arena');$('#arenaRes').hidden=true;
+  ['#clockBox','#speedSeg','#pauseBtn','#soundBtn','#backSetup','#escBtn'].forEach(s=>$(s).hidden=false);$('#modeChip').hidden=true;
+  $('#phaseLbl').textContent='싸움장';
+  player.spect=null;player.ctrl=null;player.side=null;player.escape=null;player.bannerFight=null;
+  $('#fightHud').hidden=true;$('#touchPad').hidden=true;$('#fightBanner').hidden=true;
+  if(owner.g&&scene)scene.remove(owner.g);
+  Object.assign(owner,{visiting:false,dead:false,state:'out',fight:null,g:null,stamina:100,health:100});
+  initRenderers();
+  const saved=layout;layout=L;buildWorld();layout=saved;resizeAll();
+  world=newWorldState(12*60);world.arena=true;world.breedOn=false;$('#log').innerHTML='';speed=1;
+  // owner joins as a fighter
+  const ot=arenaTeams.ownerA?'A':arenaTeams.ownerB?'B':null;
+  if(ot){owner.name=ownerName();const m=makeHuman(owner.name);Object.assign(owner,{g:m.g,root:m.g,legs:m.legs,arms:m.arms,lbl:m.lbl,visiting:true,state:'visit',left:Infinity,stamina:100,health:100,happy:60,
+    fleeing:false,fleeT:0,atkCD:0,stuck:{t:0,d:1e9},detour:null,thruDoor:false,speed:0});owner.pos.set((ot==='A'?-1:1)*(W-1.4)/2*0.9,0);owner.heading=ot==='A'?0:Math.PI}
+  dogs.forEach(d=>{d.heading=d.team0==='A'?0:Math.PI});
+  followId=dogs[0]?dogs[0].id:1;
+  buildDogCards();renderEvents();setCamMode('free');buildSpeedSeg();setBallMode('auto');
+  $('#arenaTag').textContent=`${W}×${D}m`;
+  running=true;lastT=performance.now();
+  const tok=world;setTimeout(()=>{if(world===tok)startArenaFight()},700);
+}
+function startArenaFight(){
+  if(!world||!world.arena)return;
+  const death=$('#arenaEnd').value==='death';
+  const f={id:fightUid++,A:[],B:[],t0:world.t,until:death?Infinity:world.t+rand(20,90),death,cause:'arena',deaths:[],fled:[],cx:0,cz:0,joinT:3,ended:false};
+  f.w0=world;fights.push(f);
+  dogs.forEach(d=>joinFight(f,d,d.team0||'A'));
+  if(owner.visiting&&!owner.dead)joinFight(f,owner,arenaTeams.ownerA?'A':'B');
+  fightCenter(f);
+  log(`⚔ 싸움장 시작: ${teamNames(f.A)} vs ${teamNames(f.B)}${death?' (끝까지)':''}`,'bad',true);
+  if(f.A.concat(f.B).includes(owner)&&f[owner.team==='A'?'B':'A'].some(x=>x.species==='dog'))publicEnemy();
+  const me=$('#arenaMe').value;
+  if(me==='watch')startSpectate(f);else if(me==='A'||me==='B'){startSpectate(f);playSide(me)}
+}
+function showArenaResult(f){
+  if(!world||!world.arena||f.w0!==world)return;
+  const w=f.win;if(w==='A')arenaStats.A++;else if(w==='B')arenaStats.B++;else arenaStats.draw++;
+  $('#arWinA').textContent=arenaStats.A;$('#arWinB').textContent=arenaStats.B;$('#arDraw').textContent=arenaStats.draw;
+  $('#arTitle').textContent=w?`${w}편 승리!`:'무승부';
+  const surv=w?(w==='A'?f.A:f.B):[...f.A,...f.B];
+  $('#arText').textContent=`${Math.max(1,Math.round(world.t-f.t0))}분 동안 싸웠어요. 살아남은 동물: ${surv.length?teamNames(surv):'없음'}.${f.deaths.length?` 쓰러짐: ${f.deaths.join(', ')}.`:''}${f.fled.length?` 도망: ${f.fled.join(', ')}.`:''}`;
+  $('#arenaRes').hidden=false;
+}
+$('#arenaStart').onclick=()=>{ac();startArena()};
+$('#arAgain').onclick=$('#arAgain2').onclick=()=>{ac();startArena()};
+$('#arSetup').onclick=$('#arSetup2').onclick=()=>$('#backSetup').click();
+$('#arClose').onclick=()=>{$('#arenaRes').hidden=true};
+$('#arWatch').onclick=()=>{if(fights.length)startSpectate(fights[0]);else toast('지금 진행 중인 싸움이 없어요. 다시 하기를 눌러 주세요')};
+$('#arMenu').onclick=()=>toggleMenu(true);
 
 /* ---------- life / owner / farm / fight panels ---------- */
 $('#breedOn').onchange=e=>{if(world){world.breedOn=e.target.checked;log(e.target.checked?'번식을 허용했어요':'번식을 막았어요 (중성화)')}};
@@ -2834,7 +3033,7 @@ window.addEventListener('keyup',e=>{
   const map={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down'};if(map[e.key])camKeys[map[e.key]]=false});
 
 /* init */
-buildTools();buildDogList();
+buildTools();buildDogList();renderArenaTeams();
 new ResizeObserver(()=>{if(!$('#setup').hidden)edResize()}).observe(ed);
 edResize();
 requestAnimationFrame(frame);

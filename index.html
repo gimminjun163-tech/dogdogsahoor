@@ -280,6 +280,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
 .sb-team{display:flex;align-items:center;gap:6px}
 .sb-team b{font-weight:400;font-size:28px;font-variant-numeric:tabular-nums}
 .sb-dot{width:14px;height:14px;border-radius:3px;display:inline-block}
+.sb-ages{text-align:center;font-size:11px;color:#c9d6d8;font-variant-numeric:tabular-nums;white-space:pre-wrap}
 .sb-time{font-family:var(--f-mono);font-size:12px;color:#c9d6d8;margin-left:6px}
 .sbhud select{background:rgba(255,255,255,.1);color:#e8f0f0;border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:4px 8px;font-size:12px;width:auto;max-width:100%}
 .sbhud select option{color:#111;background:#fff}
@@ -563,6 +564,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         <div class="ov arenares" id="arenaRes" hidden><div class="ar-card"><b id="arTitle">A편 승리!</b><p id="arText"></p><div class="row2"><button class="btn primary" id="arAgain">다시 하기</button><button class="btn" id="arSetup">팀 바꾸기</button></div><button class="btn" id="arClose">닫고 계속 보기</button></div></div>
         <div class="ov fighthud sbhud" id="soccerHud" hidden>
           <div class="scoreboard"><span class="sb-team"><i class="sb-dot" style="background:#d4473a"></i>A <b id="sbA">0</b></span><span>:</span><span class="sb-team"><b id="sbB">0</b> B<i class="sb-dot" style="background:#2f7fd0"></i></span><span class="sb-time" id="sbTime"></span><button class="chip fold" data-fold="soccerHud" aria-expanded="true">▲ 접기</button></div>
+          <div class="sb-ages" id="sbAges"></div>
           <div class="fh-actions">
             <select id="sbView" aria-label="보기와 조종"><option value="watch">관전 (공을 따라가는 카메라)</option><option value="teamA">A팀(빨강) 전체 조종 · 공 근처 선수로 자동 전환</option><option value="oneA">A팀(빨강) 한 선수만 조종</option><option value="teamB">B팀(파랑) 전체 조종</option><option value="oneB">B팀(파랑) 한 선수만 조종</option></select>
             <select id="sbPick" aria-label="조종할 선수" hidden></select>
@@ -2800,11 +2802,12 @@ let match=null,soccerStats={A:0,B:0,draw:0};
 function genSkills(breed){const b=BREED_SKILL[breed]||BREED_SKILL.golden,o={};SKILL_KEYS.forEach((k,i)=>o[k]=Math.round(clamp(b[i]+rand(-12,12),20,99)));return o}
 function mixSkills(a,b){const o={};SKILL_KEYS.forEach(k=>o[k]=Math.round(clamp(((a?a[k]:60)+(b?b[k]:(a?a[k]:60)))/2+rand(-8,8),20,99)));return o}
 const STAR_V=new Set(['하루','현태','호건']),WEAK_V=new Set(['린태','아윤','원주']),SHORT_V=new Set(['현태','호건']);
-const DECENT_M=new Set(['오지','감자용','준하','성망','생츈','호지','호준','황트','아준']),MID_F=new Set(['아선','희소','희태','현서','우서','윤채','리설','라아']);
+const DECENT_M=new Set(['오지','감자용','성망','생츈','호지','호준','황트','아준']),MID_F=new Set(['아선','희소','희태','현서','우서','윤채','리설','라아']);
 function villagerSkills(elder,g,name,sex){const o={};
   const base=elder?{spd:32,sta:38,dri:50,sho:45,pas:66,tac:45,gk:52,rea:44}:{spd:38+g*6,sta:40+g*5,dri:36+g*6,sho:32+g*6,pas:34+g*6,tac:32+g*5,gk:34+g*5,rea:40+g*5};
   SKILL_KEYS.forEach(k=>{let v=base[k]+rand(-10,10);
     if(STAR_V.has(name))v=rand(82,93);
+    else if(name==='준하')v=rand(81,90);
     else if(name==='윤서')v=rand(77,86);
     else if(WEAK_V.has(name))v=Math.min(v-20,rand(14,26));
     else if(DECENT_M.has(name))v=rand(64,80);
@@ -2823,7 +2826,7 @@ function villagerData(used){
   const from=pick(VILLAGE_FROM),elder=from==='양로원',g=elder?0:parseInt(from,10);const k=(elder?0.95:0.58+0.06*g)*(SHORT_V.has(name)?0.88:1);
   const v={species:'human',villager:true,name:nm,sex,from,k,baseK:k,r:0.2*k+0.06,pos:new THREE.Vector2(),heading:0,speed:0,stamina:100,health:100,happy:70,
     stuck:{t:0,d:1e9},detour:null,thruDoor:false,g:null,root:null,legs:[],arms:[],lbl:null,walkPh:0,
-    skills:name==='준민'?Object.fromEntries(SKILL_KEYS.map(k=>[k,99])):villagerSkills(elder,g,name,sex),elder,num,hair:elder?'#d9d9d9':(sex==='여'?'#4a2a1a':'#1e1510'),skin:pick(['#e8b894','#d9a57c','#f0c8a0'])};
+    skills:name==='준민'?Object.fromEntries(SKILL_KEYS.map(k=>[k,99])):villagerSkills(elder,g,name,sex),elder,num,hair:elder?'#d9d9d9':(sex==='여'?'#4a2a1a':'#1e1510'),skin:pick(['#e8b894','#d9a57c','#f0c8a0']),yrs:elder?Math.floor(rand(68,89)):g+6};
   log(`${elder?'🏡':'🏫'} ${from}에서 ${nm}(${sex})${josa(nm,'을','를')} 보내줬어요`,'good',true);
   return v;
 }
@@ -2886,14 +2889,38 @@ function moveTo(p,x,z,sp,dt){const d=steer(p,x,z,sp,dt);if(d<0.15){p.speed=0;con
 function kickBall(p,tx,tz,power,loft,err){
   const M=match,b=M.ball;let dx=tx-b.pos.x,dz=tz-b.pos.z;const l=Math.hypot(dx,dz)||1;dx/=l;dz/=l;
   const e=rand(-err,err),c=Math.cos(e),s=Math.sin(e);const rx=dx*c-dz*s,rz=dx*s+dz*c;
-  b.vel.set(rx*power,loft,rz*power);b.pos.y=Math.max(b.pos.y,b.r+0.02);
+  b.sure=false;b.save=false;b.vel.set(rx*power,loft,rz*power);b.pos.y=Math.max(b.pos.y,b.r+0.02);
   M.carrier=null;M.lastTouch=p;p.sc.cd=0.45;if(p.root)p.root.userData.barkPulse=1;p.heading=Math.atan2(rz,rx);
   blip(240+power*12,0.05,0.07);
 }
 function goalTarget(t){const P=match.P;return toW(P,dirOf(t)*(P.len/2+0.4),rand(-P.goalW*0.4,P.goalW*0.4))}
-function shoot(p,dirOverride){
-  const sho=effSkill(p,'sho'),T=dirOverride||goalTarget(p.sc.team);
-  kickBall(p,T.x,T.z,7+6*sho/100+p.k*1.2,rand(0.4,2.4)*sho/100,(1-sho/100)*0.32);p.sc.shots=(p.sc.shots||0)+1;
+function ageOf(p){return p.villager?p.yrs:p.age}
+function avgAge(t){const M=match;if(!M)return '';const l=[...M[t],...M.bench[t],...M.out[t]].filter(p=>!p.dead);if(!l.length)return '-';return (l.reduce((a,p)=>a+(ageOf(p)||0),0)/l.length).toFixed(1)+'살'}
+function keeperCatch(scorer){
+  const M=match,P=M.P,def=scorer==='A'?'B':'A',gk=M[def].find(q=>q.sc.slot&&q.sc.slot.role==='GK');if(!gk)return false;
+  const b=M.ball,ga=dirOf(def)*-1*(P.len/2-0.6),w=toW(P,ga,clamp(fromW(P,b.pos.x,b.pos.z).c,-P.goalW/2,P.goalW/2));
+  gk.pos.set(w.x,w.z);b.vel.set(0,0,0);b.pos.set(w.x,b.r,w.z);M.carrier=gk;M.lastTouch=gk;gk.sc.saves=(gk.sc.saves||0)+1;gk.sc.hold=0;
+  if(gk.root)gk.root.userData.barkPulse=1;log(`🧤 ${gk.name} 골문 앞 선방!`,'good',true);return true;
+}
+// realistic scoring: about 2-3 goals a match whatever the length; skill still decides who scores
+const GOALS_PER_MATCH=2.6;
+function expectedGoals(){const M=match;return GOALS_PER_MATCH*Math.min(1,M.t/(2*M.halfLen))}
+function oppKeeper(p){const M=match;return M[p.sc.team==='A'?'B':'A'].find(q=>q.sc.slot&&q.sc.slot.role==='GK')}
+function convChance(p){
+  const M=match,P=M.P,g=toW(P,dirOf(p.sc.team)*P.len/2,0),dG=Math.hypot(g.x-p.pos.x,g.z-p.pos.y),gk=oppKeeper(p);
+  const qual=(0.45+effSkill(p,'sho')/100)*clamp(1.5-dG/(P.len*0.42),0.25,1.5)*(1.25-(gk?effSkill(gk,'gk'):40)/100*0.6);
+  const pace=clamp((expectedGoals()+0.6)/(M.score.A+M.score.B+0.6),0.15,2.5);
+  return clamp(0.13*qual*pace,0.01,0.5);
+}
+function shoot(p){
+  const M=match,P=M.P,dir=dirOf(p.sc.team),gw=P.goalW,sho=effSkill(p,'sho'),side=pick([-1,1]),pow=8+6*sho/100+p.k*1.2;
+  const r=Math.random(),conv=convChance(p);p.sc.shots=(p.sc.shots||0)+1;
+  if(r<conv){const t=toW(P,dir*(P.len/2+0.4),side*rand(gw*0.26,gw*0.42));kickBall(p,t.x,t.z,pow+1.5,rand(0.2,1.1),0.02);M.ball.sure=true}
+  else if(r<conv+(1-conv)*0.55){ // off target: wide or over the bar
+    if(Math.random()<0.5){const t=toW(P,dir*(P.len/2+0.4),side*(gw/2+rand(0.3,1.3)));kickBall(p,t.x,t.z,pow,rand(0.3,1.5),0.02)}
+    else{const t=toW(P,dir*(P.len/2+0.4),rand(-gw*0.3,gw*0.3));kickBall(p,t.x,t.z,pow,rand(4.2,5.5),0.02)}}
+  else{ // on target, straight at the keeper
+    const gk=oppKeeper(p),gc=gk?fromW(P,gk.pos.x,gk.pos.y).c:0;const t=toW(P,dir*(P.len/2+0.4),clamp(gc+rand(-0.35,0.35),-gw*0.45,gw*0.45));kickBall(p,t.x,t.z,pow-1,rand(0.2,0.9),0.02);M.ball.save=true}
 }
 function openness(q){const foes=match[q.sc.team==='A'?'B':'A'];let m=9;for(const f of foes){const d=dist(f,q);if(d<m)m=d}return m}
 function bestPassTarget(p,style,cone){
@@ -2932,10 +2959,12 @@ function carrierAI(p,dt,sp){
     if(Math.random()<pp){const q=bestPassTarget(p,T.pass==='dribble'?'short':T.pass);if(q){passTo(p,q,T.pass);return}}
   }
   // dribble toward goal, stepping around the nearest defender
-  const me=pAC(p);let tc=0;
+  const me=pAC(p),ps=persOf(p);let tc=me.c*0.4;
   if(nf&&nd<2.2){const fa=pAC(nf);if(dir*(fa.a-me.a)>0)tc=me.c+(me.c>=fa.c?1.6:-1.6)}
+  tc+=Math.sin(M.t*2.6+ps.ph)*0.9*(0.3+ps.dribbler); // weave while dribbling
+  const ahead=nf&&nd<3&&dir*(pAC(nf).a-me.a)>0;
   const tgt=toW(P,dir*P.len/2,clamp(tc*0.7,-P.wid/2+0.6,P.wid/2-0.6));
-  steer(p,tgt.x,tgt.z,sp*(0.78+0.16*effSkill(p,'dri')/100),dt);
+  steer(p,tgt.x,tgt.z,sp*(0.78+0.16*effSkill(p,'dri')/100)*(ahead?0.9:1.08),dt);
 }
 function gkAI(p,dt,sp){
   const M=match,P=M.P,t=p.sc.team,dir=dirOf(t),b=M.ball,bw=fromW(P,b.pos.x,b.pos.z);
@@ -2947,18 +2976,40 @@ function gkAI(p,dt,sp){
   if(!M.carrier&&va*dir<-3){const tt=(ownA-bw.a)/va;if(tt>0&&tt<1.5)c=clamp(bw.c+vc*tt,-P.goalW/2,P.goalW/2)}
   const w=toW(P,ownA+dir*0.5,c);moveTo(p,w.x,w.z,sp*(0.8+0.4*effSkill(p,'rea')/100),dt);
 }
+function persOf(p){return p.sc.pers||(p.sc.pers={du:rand(-0.06,0.06),dv:rand(-0.14,0.14),runner:Math.random(),dribbler:Math.random(),ph:rand(0,6.28),jx:0,jz:0,jt:0})}
 function soccerAI(p,dt){
-  const M=match,t=p.sc.team,T=M.tac[t],sp=soccerSpeed(p);
+  const M=match,P=M.P,t=p.sc.team,T=M.tac[t],sp=soccerSpeed(p),ps=persOf(p),dir=dirOf(t);
   if(M.carrier===p){carrierAI(p,dt,sp);return}
   if(p.sc.slot&&p.sc.slot.role==='GK'){gkAI(p,dt,sp);return}
-  const myPoss=M.carrier&&M.carrier.sc.team===t;
-  if(myPoss){const h=homePos(p);moveTo(p,h.x,h.z,sp*0.8,dt);return}
+  const myPoss=!!(M.carrier&&M.carrier.sc.team===t),role=p.sc.slot.role;
+  // a running move already in progress (run in behind, offer for a pass, overlap)
+  if(p.sc.move){const m=p.sc.move;m.t-=dt;if(m.poss!==myPoss)p.sc.move=null;else{const d=moveTo(p,m.x,m.z,sp*m.k,dt);if(m.t<=0||d<0.3)p.sc.move=null;return}}
+  // each player keeps their own spot in the shape, with a little drift so nobody moves in lockstep
+  ps.jt-=dt;if(ps.jt<=0){ps.jt=rand(0.8,2.2);ps.jx=rand(-0.7,0.7);ps.jz=rand(-0.7,0.7)}
+  const h=homePos(p),hc=fromW(P,h.x,h.z),H0=toW(P,clamp(hc.a+dir*ps.du*P.len,-P.len/2+0.6,P.len/2-0.6),clamp(hc.c+ps.dv*P.wid/2,-P.wid/2+0.4,P.wid/2-0.4)),H={x:H0.x+ps.jx,z:H0.z+ps.jz};
+  if(myPoss){
+    const c=M.carrier,dC=dist(p,c);p.sc.dec=(p.sc.dec||0)-dt;
+    if(p.sc.dec<=0){p.sc.dec=rand(0.6,1.5);const r=Math.random();
+      if((role==='FWD'||(role==='MID'&&ps.runner>0.55))&&r<0.35){const w=toW(P,dir*rand(P.len*0.26,P.len*0.44),rand(-P.wid*0.38,P.wid*0.38));p.sc.move={x:w.x,z:w.z,t:rand(1.4,2.8),k:1.12,poss:true};return}
+      if(dC<7&&r<0.55){const ang=rand(0,6.28),dd=rand(2.4,4);p.sc.move={x:c.pos.x+Math.cos(ang)*dd,z:c.pos.y+Math.sin(ang)*dd,t:rand(0.8,1.6),k:0.9,poss:true};return}
+      if(role==='DEF'&&ps.runner>0.65&&r<0.2){const side=Math.sign(fromW(P,p.pos.x,p.pos.y).c)||pick([-1,1]),w=toW(P,dir*P.len*0.22,side*P.wid*0.42);p.sc.move={x:w.x,z:w.z,t:2.4,k:1.05,poss:true};return}
+    }
+    moveTo(p,H.x,H.z,sp*(0.6+0.25*ps.runner),dt);return;
+  }
   const pressN={low:1,mid:2,high:3}[T.press];
   const ranked=M[t].filter(q=>!q.dead&&!(q.sc.slot&&q.sc.slot.role==='GK')&&q!==M.ctrl).sort((x,y)=>ballDist(x)-ballDist(y));
   if(ranked.indexOf(p)>-1&&ranked.indexOf(p)<pressN){
+    const c=M.carrier;
+    if(c&&dist(p,c)<2.2){moveTo(p,c.pos.x,c.pos.y,sp*0.72,dt);tryTackle(p,dt,false);return} // jockey, then go in
     const b=M.ball,lead=Math.min(0.8,ballDist(p)/Math.max(1,sp));
-    moveTo(p,b.pos.x+b.vel.x*lead*0.5,b.pos.z+b.vel.z*lead*0.5,sp,dt);tryTackle(p,dt,false);
-  }else{const h=homePos(p);moveTo(p,h.x,h.z,sp*0.85,dt)}
+    moveTo(p,b.pos.x+b.vel.x*lead*0.5,b.pos.z+b.vel.z*lead*0.5,sp,dt);tryTackle(p,dt,false);return;
+  }
+  if(role==='DEF'||(role==='MID'&&T.press!=='low')){ // pick up the nearest attacker in my zone, staying goal-side
+    const foes=M[t==='A'?'B':'A'].filter(f=>!f.dead&&!(f.sc.slot&&f.sc.slot.role==='GK'));let best=null,bd=role==='DEF'?6:4;
+    for(const f of foes){const d=Math.hypot(f.pos.x-H.x,f.pos.y-H.z);if(d<bd){bd=d;best=f}}
+    if(best){const og=toW(P,-dir*P.len/2,0);moveTo(p,best.pos.x+(og.x-best.pos.x)*0.15,best.pos.y+(og.z-best.pos.y)*0.15,sp*0.85,dt);return}
+  }
+  moveTo(p,H.x,H.z,sp*(0.7+0.2*ps.runner),dt);
 }
 function soccerCtrl(p,dt){
   const M=match,k=player.keys,sp=soccerSpeed(p)*(k.sprint?1.25:0.95);
@@ -2995,7 +3046,7 @@ function soccerTick(p,dt){
   }
   if(p.species!=='human'){p.happy=clamp(p.happy+dt*0.06);
     const celebrate=M.phase==='goal'&&p.sc.team===M.lastGoal;
-    p.anim={sit:M.phase==='half',lie:false,tongue:p.speed>1.5||M.phase==='half',emo:M.phase==='half'?'💧':celebrate?'⚽!':M.ctrl===p?'🎮':M.carrier===p?'⚽':(M.phase==='rollcall'&&M.rc&&M.rc.list[M.rc.i]===p?'🙋':'')}}
+    p.anim={sit:M.phase==='half',lie:false,tongue:p.speed>1.5||M.phase==='half',emo:M.phase==='half'?'💧':celebrate?(p.sc.celeb||'⚽!'):M.ctrl===p?'🎮':M.carrier===p?'⚽':(M.phase==='rollcall'&&M.rc&&M.rc.list[M.rc.i]===p?'🙋':'')}}
 }
 function benchSpot(t,i){const P=match.P;return toW(P,dirOf(t)*(-1.5-i*0.9),-(P.wid/2+0.9))}
 function benchPool(t){const M=match;return [...M.bench[t],...M.out[t]].filter(p=>!p.dead)}
@@ -3032,7 +3083,7 @@ function ballStep(dt){
   }
   const g=ballBounds();
   b.mesh.position.copy(b.pos);b.mesh.rotation.x+=b.vel.z*dt/b.r;b.mesh.rotation.z-=b.vel.x*dt/b.r;
-  if(g)onGoal(g);
+  if(g){if(!b.sure&&Math.random()>0.07*clamp((expectedGoals()+0.6)/(M.score.A+M.score.B+0.6),0.15,2.5)&&keeperCatch(g))return;onGoal(g)}
 }
 function possessionStep(dt){
   const M=match,b=M.ball;if(M.carrier||b.pos.y>0.5)return;
@@ -3040,7 +3091,8 @@ function possessionStep(dt){
   const cands=allPlayers().filter(p=>!p.dead&&p.sc.cd<=0).map(p=>({p,d:ballDist(p)})).sort((x,y)=>x.d-y.d);
   for(const {p,d} of cands){
     const gk=p.sc.slot&&p.sc.slot.role==='GK',reach=p.r+b.r+0.12+(gk?0.3:0);if(d>reach)break;
-    if(spd>5){const ch=gk?0.3+0.62*effSkill(p,'gk')/100:0.15+0.35*effSkill(p,'rea')/100;
+    if(spd>5){if(b.sure&&M.lastTouch&&M.lastTouch.sc.team!==p.sc.team)return;
+      const ch=b.save?(gk?1:0.1):gk?0.3+0.62*effSkill(p,'gk')/100:0.15+0.35*effSkill(p,'rea')/100;
       if(Math.random()<ch){if(gk){M.carrier=p;M.lastTouch=p;b.vel.set(0,0,0);p.sc.saves=(p.sc.saves||0)+1;log(`🧤 ${p.name} 선방!`,'good',true)}
         else{b.vel.x*=-0.35;b.vel.z*=-0.35;b.vel.x+=rand(-1.5,1.5);b.vel.z+=rand(-1.5,1.5);p.sc.cd=0.3;M.lastTouch=p}}
       else p.sc.cd=0.35;
@@ -3068,7 +3120,8 @@ function onGoal(t){
   const sc=M.lastTouch&&M.lastTouch.sc.team===t?M.lastTouch:null;if(sc)sc.sc.goals=(sc.sc.goals||0)+1;
   M.goals.push({t,who:sc?sc.name:'자책골',min:M.t});
   const msg=`⚽ 골! ${TEAM_KO[t]} ${sc?sc.name:'(자책골)'} · ${M.score.A} : ${M.score.B}`;log(msg,'good',true);toast(msg,false,true);
-  for(const p of M[t])if(p.species!=='human')p.happy=clamp(p.happy+5);
+  for(const p of M[t]){p.sc.celeb=pick(['⚽!','🎉','🙌','💃','🥳']);if(p.species!=='human')p.happy=clamp(p.happy+5)}
+  for(const p of [...M.A,...M.B])p.sc.move=null;
   for(let i=0;i<3;i++)setTimeout(()=>blip(660+i*220,0.12,0.09),i*120);
   if(soundOn&&'speechSynthesis' in window){try{const u=new SpeechSynthesisUtterance(`골! ${sc?sc.name:''}`);u.lang='ko-KR';u.rate=1.2;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
   M.carrier=null;M.phase='goal';M.phaseT=3;M.nextKick=t==='A'?'B':'A';
@@ -3216,7 +3269,7 @@ function finishMatch(){
   const all=[...M.A,...M.B,...M.out.A,...M.out.B];
   const mvp=all.length?all.reduce((a,b)=>((b.sc.goals||0)*3+(b.sc.saves||0)*2+(b.sc.tackles||0)+(b.sc.passes||0)*0.3)>((a.sc.goals||0)*3+(a.sc.saves||0)*2+(a.sc.tackles||0)+(a.sc.passes||0)*0.3)?b:a):null;
   $('#mrTitle').textContent=w?`${TEAM_KO[w]} 승리!`:'무승부';
-  $('#mrText').textContent=`최종 스코어 ${M.score.A} : ${M.score.B}${pkTxt}. ${top.length?'득점: '+top.map(([n,c])=>`${n} ${c}골`).join(', ')+'. ':'골이 없었어요. '}${mvp?`MVP: ${mvp.name}.`:''}`;
+  $('#mrText').textContent=`최종 스코어 ${M.score.A} : ${M.score.B}${pkTxt}. 평균 나이 A ${avgAge('A')} · B ${avgAge('B')}. ${top.length?'득점: '+top.map(([n,c])=>`${n} ${c}골`).join(', ')+'. ':'골이 없었어요. '}${mvp?`MVP: ${mvp.name}.`:''}`;
   $('#matchRes').hidden=false;
   log(`🏁 경기 끝 · ${M.score.A} : ${M.score.B}${pkTxt}${w?` · ${TEAM_KO[w]} 승리`:' · 무승부'}`,'good',true);
   for(let i=0;i<3;i++)setTimeout(()=>blip(880,0.25,0.08),i*350);
@@ -3255,7 +3308,7 @@ function startMatch(cfg){
   assignRoles('A');assignRoles('B');
   const avg=t=>Math.round([...M[t],...M.bench[t]].reduce((a,p)=>a+ovr(p),0)/Math.max(1,M[t].length+M.bench[t].length));
   M.avg={A:avg('A'),B:avg('B')};
-  log(`⚖ 경기 밸런스: ${balanceText(BALANCE)} · 평균 종합 A ${M.avg.A} / B ${M.avg.B}`,'',true);
+  log(`⚖ 경기 밸런스: ${balanceText(BALANCE)} · 평균 종합 A ${M.avg.A} / B ${M.avg.B} · 평균 나이 A ${avgAge('A')} / B ${avgAge('B')}`,'',true);
   // line up for the roll call along the halfway line, facing the camera side
   const lineupRC=(t,list,a)=>list.forEach((p,i)=>{const n=list.length,w=toW(P,a,n>1?-P.wid*0.42+P.wid*0.84*i/(n-1):0);p.pos.set(w.x,w.z);const cam=toW(P,0,-P.wid);p.heading=Math.atan2(cam.z-w.z,cam.x-w.x)});
   lineupRC('A',[...M.A,...M.bench.A],-Math.min(2,P.len*0.12));lineupRC('B',[...M.B,...M.bench.B],Math.min(2,P.len*0.12));
@@ -3310,6 +3363,7 @@ function syncSoccer(){
   $('#soccerTag').textContent=match&&!match.only?`${match.score.A} : ${match.score.B}`:'';
   const M=match;if(!M)return;
   $('#sbA').textContent=M.score.A;$('#sbB').textContent=M.score.B;
+  $('#sbAges').textContent=`평균 나이  A ${avgAge('A')}  ·  B ${avgAge('B')}   |   평균 종합  A ${M.avg?M.avg.A:'-'}  ·  B ${M.avg?M.avg.B:'-'}`;
   const fm=s=>`${String(Math.floor(s/60)).padStart(2,'0')}:${String(Math.floor(s%60)).padStart(2,'0')}`;
   $('#sbTime').textContent=M.phase==='rollcall'?'선수 호명 중':M.phase==='lineup'?'라인업 발표':M.phase==='end'?'경기 끝':M.phase==='half'?`하프타임 · 휴식 ${Math.max(0,Math.ceil(M.phaseT))}초`:M.phase==='pk'?'승부차기':`${M.half===1?'전반':'후반'} ${fm(Math.min(M.halfLen,M.t-(M.half-1)*M.halfLen))} / ${fm(M.halfLen)}${M.phase==='goal'?' · 골!':M.phase==='kickoff'?' · 킥오프':''}`;
   $('#sbSubA').textContent=`A 교체 (${M.subCount.A}회)`;$('#sbSubB').textContent=`B 교체 (${M.subCount.B}회)`;
@@ -3320,7 +3374,7 @@ function syncSoccer(){
 function buildRoster(){
   const M=match;const html=!M?'':['A','B'].map(t=>{
     const rows=[...M[t].map(p=>[p,false]),...M.bench[t].map(p=>[p,true]),...M.out[t].map(p=>[p,'out'])];
-    return `<table class="roster"><caption style="color:${TEAM_COL[t]}">${TEAM_KO[t]} · 평균 종합 ${M.avg?M.avg[t]:''}</caption><thead><tr><th>번호</th><th>선수</th><th>역할</th>${SKILL_KEYS.map(k=>`<th title="${SKILL_KO[k]}">${SKILL_KO[k].slice(0,2)}</th>`).join('')}<th>종합</th><th>체력</th></tr></thead><tbody>${
+    return `<table class="roster"><caption style="color:${TEAM_COL[t]}">${TEAM_KO[t]} · 평균 종합 ${M.avg?M.avg[t]:''} · 평균 나이 ${avgAge(t)}</caption><thead><tr><th>번호</th><th>선수</th><th>역할</th>${SKILL_KEYS.map(k=>`<th title="${SKILL_KO[k]}">${SKILL_KO[k].slice(0,2)}</th>`).join('')}<th>종합</th><th>체력</th></tr></thead><tbody>${
       rows.map(([p,b])=>`<tr class="${b?'bench':''}"><td>${kitNo(p)}</td><td>${p.species==='human'?'🧍':p.species==='cat'?'🐈':'🐕'} ${esc(p.name)}${p.villager?` <span class="from-badge">${p.from}</span>`:''}</td><td>${b==='out'?'교체됨':b?'교체 명단':ROLE_KO[p.sc.slot.role]}</td>${SKILL_KEYS.map(k=>`<td>${effSkill(p,k)}</td>`).join('')}<td><b>${ovr(p)}</b></td><td>${Math.round(p.stamina)}</td></tr>`).join('')}</tbody></table>`}).join('');
   $('#scRoster').innerHTML=html;$('#soRoster').innerHTML=html;
 }
@@ -3826,7 +3880,7 @@ function startLineup(){const M=match;M.phase='lineup';M.lu={team:'A',step:-1,t:0
 function buildLineup(t){
   const M=match;$('#lineup').style.setProperty('--lc',TEAM_COL[t]);
   $('#luTeam').textContent=TEAM_KO[t];$('#luTitle').textContent='선발 라인업';
-  $('#luForm').textContent=`포메이션 ${formationText(t)} · ${TAC_OPTS.form[1].find(o=>o[0]===M.tac[t].form)[1]}`;
+  $('#luForm').textContent=`포메이션 ${formationText(t)} · ${TAC_OPTS.form[1].find(o=>o[0]===M.tac[t].form)[1]} · 평균 나이 ${avgAge(t)} · 평균 종합 ${M.avg?M.avg[t]:''}`;
   const mk=p=>{const sl=p.sc.slot,top=92-sl.u*84,left=50+sl.v*40;
     return `<div class="lu-mark" data-role="${sl.role}" style="top:${top}%;left:${left}%"><img src="${avatarURL(p)}" alt=""><span class="no">${kitNo(p)}</span><span class="nm">${esc(p.name)}</span>${p.villager?`<span class="fr">${esc(p.from)}</span>`:''}</div>`};
   $('#luPitch').innerHTML='<i class="lu-half"></i><i class="lu-circle"></i><i class="lu-box top"></i><i class="lu-box bot"></i>'+M[t].map(mk).join('');

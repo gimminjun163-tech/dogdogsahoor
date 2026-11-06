@@ -260,7 +260,66 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
 .ar-card{background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:18px;width:min(420px,100%);display:grid;gap:10px;text-align:center}
 .ar-card b{font-family:var(--f-display);font-weight:400;font-size:30px;line-height:1.1}
 .ar-card p{margin:0;font-size:13px;color:var(--muted);line-height:1.6}
-@media (max-width:960px){.arena-grid{grid-template-columns:minmax(0,1fr)}}
+.soccer-grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:14px;align-items:start}
+#sim.soccer .arena-only{display:none!important}
+#sim:not(.soccer) .soccer-only{display:none!important}
+.sbhud{top:52px}
+.scoreboard{display:flex;align-items:center;justify-content:center;gap:10px;font-family:var(--f-display);font-size:24px;line-height:1}
+.sb-team{display:flex;align-items:center;gap:6px}
+.sb-team b{font-weight:400;font-size:28px;font-variant-numeric:tabular-nums}
+.sb-dot{width:14px;height:14px;border-radius:3px;display:inline-block}
+.sb-time{font-family:var(--f-mono);font-size:12px;color:#c9d6d8;margin-left:6px}
+.sbhud select{background:rgba(255,255,255,.1);color:#e8f0f0;border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:4px 8px;font-size:12px;width:auto;max-width:100%}
+.sbhud select option{color:#111;background:#fff}
+.rollcall{left:50%;bottom:14px;transform:translateX(-50%);width:min(560px,calc(100% - 100px));background:rgba(12,20,22,.92);color:#fff;border-radius:12px;padding:12px 14px;display:grid;gap:8px;border-top:5px solid var(--rc,#ffd84a)}
+.rc-head{display:flex;gap:10px;align-items:center;font-size:12px;letter-spacing:.04em;color:#c9d6d8}
+.rc-head .chip{margin-left:auto}
+.rc-name{font-family:var(--f-display);font-size:clamp(26px,4vw,38px);line-height:1}
+.rc-sub{font-size:13px;color:#c9d6d8}
+.rc-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px 10px;font-size:11px}
+.rc-stat{display:grid;grid-template-columns:38px minmax(0,1fr) 20px;gap:4px;align-items:center;font-variant-numeric:tabular-nums}
+.rc-stat i{display:block;height:5px;background:rgba(255,255,255,.18);border-radius:3px;overflow:hidden}
+.rc-stat i b{display:block;height:100%;background:#ffd84a}
+.rc-done{display:flex;flex-wrap:wrap;gap:4px;max-height:60px;overflow:auto}
+.rc-done span{font-size:11px;padding:1px 7px;border-radius:999px;background:rgba(255,255,255,.12)}
+.roster-wrap{overflow-x:auto;display:grid;gap:8px}
+.roster{border-collapse:collapse;font-size:11px;width:100%;font-variant-numeric:tabular-nums}
+.roster caption{text-align:left;font-weight:700;font-size:12px;padding:2px 0}
+.roster th,.roster td{padding:3px 4px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+.roster th:first-child,.roster td:first-child,.roster td:nth-child(2),.roster th:nth-child(2){text-align:left}
+.roster tr.bench td{color:var(--muted)}
+.roster small{color:var(--muted)}
+.lineup{inset:0;z-index:8;display:grid;place-items:center;background:rgba(6,12,14,.6);padding:10px}
+.lu-card{width:min(880px,100%);max-height:100%;overflow:auto;background:rgba(12,20,22,.95);color:#fff;border-radius:14px;border-top:6px solid var(--lc,#d4473a);padding:14px;display:grid;gap:10px}
+.lu-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.lu-head b{font-family:var(--f-display);font-weight:400;font-size:26px;line-height:1}
+.lu-chip{background:var(--lc);color:#fff;font-weight:700;font-size:12px;padding:3px 10px;border-radius:999px}
+.lu-form{font-family:var(--f-mono);font-size:12px;color:#c9d6d8}
+.lu-head .chip{margin-left:auto}
+.lu-body{display:grid;grid-template-columns:minmax(0,290px) minmax(0,1fr);gap:16px;align-items:start}
+.lu-pitch{position:relative;aspect-ratio:2/3;width:100%;border:2px solid rgba(255,255,255,.85);border-radius:6px;overflow:hidden;background:repeating-linear-gradient(180deg,#3f8a38 0 8.33%,#4a9741 8.33% 16.66%)}
+.lu-pitch i{position:absolute;border:2px solid rgba(255,255,255,.75);pointer-events:none}
+.lu-pitch .lu-half{left:0;right:0;top:50%;height:0;border-width:2px 0 0}
+.lu-circle{left:50%;top:50%;width:26%;aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%)}
+.lu-box{left:25%;right:25%;height:14%}.lu-box.top{top:-2px}.lu-box.bot{bottom:-2px}
+.lu-mark{position:absolute;width:70px;display:grid;justify-items:center;gap:1px;transform:translate(-50%,-50%) scale(.5);opacity:0;transition:opacity .35s,transform .35s cubic-bezier(.2,1.4,.4,1)}
+.lu-mark.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.lu-mark img{width:40px;height:40px;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.45)}
+.lu-mark .no{font-family:var(--f-mono);font-size:11px;background:var(--lc);padding:0 6px;border-radius:999px;margin-top:-6px;border:1px solid #fff}
+.lu-mark .nm{font-size:11px;white-space:nowrap;text-shadow:0 1px 2px #000,0 0 4px #000}
+.lu-list{display:grid;gap:10px;min-width:0;max-height:430px;overflow:auto}
+.lu-grp{opacity:.22;transition:opacity .3s}
+.lu-grp.on{opacity:1}.lu-grp.now h4{color:#ffd84a}
+.lu-grp h4{margin:0 0 4px;font-size:11px;letter-spacing:.06em;color:#9fb3b5}
+.lu-row{display:grid;grid-template-columns:32px 34px minmax(0,1fr) auto;gap:8px;align-items:center;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.lu-row img{width:32px;height:32px;border-radius:50%}
+.lu-no{font-family:var(--f-mono);font-size:18px;color:#ffd84a;text-align:right;font-variant-numeric:tabular-nums}
+.lu-nm{display:grid;font-size:14px;min-width:0}.lu-nm small{font-size:11px;color:#9fb3b5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lu-ovr{font-family:var(--f-mono);font-size:11px;color:#c9d6d8}
+.lu-cap{font-family:var(--f-display);font-size:clamp(16px,2.4vw,22px);min-height:1.4em;border-top:1px solid rgba(255,255,255,.12);padding-top:8px}
+@media (max-width:700px){.lu-body{grid-template-columns:minmax(0,1fr)}.lu-pitch{max-width:220px;justify-self:center}.lu-mark{width:56px}.lu-mark img{width:30px;height:30px}.lu-list{max-height:none}}
+@media (max-width:960px){.arena-grid,.soccer-grid{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:600px){.rollcall{width:calc(100% - 20px);left:10px;transform:none}.rc-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.sbhud{top:auto;bottom:10px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -284,6 +343,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
   <div class="modetabs" role="group" aria-label="모드 고르기">
     <button id="tabHome" aria-pressed="true">🏠 집 시뮬레이션</button>
     <button id="tabArena" aria-pressed="false">⚔ 싸움만 하기</button>
+    <button id="tabSoccer" aria-pressed="false">⚽ 축구만 하기</button>
   </div>
   <div class="setup-grid" id="homeSetup">
     <div class="card editor-wrap">
@@ -308,8 +368,13 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
       <div class="stack">
         <h3>마당</h3>
         <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="yardOn" checked> 마당 추가하기</label>
-        <label class="f">마당 깊이 (m)<input type="number" id="yardDepth" min="2" max="10" step="0.5" value="5"></label>
-        <p class="small">'마당 문' 도구로 벽에 문을 놓으면 그 벽 바깥에 마당이 생겨요. 강아지들은 낮에 마당 문으로 드나들어요.</p>
+        <div class="row2">
+          <label class="f">마당 깊이 (m)<input type="number" id="yardDepth" min="2" max="24" step="0.5" value="14"></label>
+          <label class="f">마당 너비 (m)<input type="number" id="yardWide" min="0" max="32" step="1" value="16"></label>
+        </div>
+        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="yardPitch" checked> 마당에 축구장 만들기</label>
+        <p class="small" id="pitchInfo"></p>
+        <p class="small">'마당 문' 도구로 벽에 문을 놓으면 그 벽 바깥에 마당이 생겨요. 너비를 벽보다 크게 하면 마당이 옆으로 넓어져요. 0이면 벽 길이만큼이에요.</p>
       </div>
       <div class="stack">
         <h3>반려동물</h3>
@@ -385,6 +450,33 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
       </div>
     </aside>
   </div>
+
+  <div class="soccer-grid" id="soccerSetup" hidden>
+    <div class="card team" style="--teamc:var(--good)">
+      <div class="panel-head"><h2>⚽ 참가 동물</h2><span class="tag" id="soCount"></span></div>
+      <div class="trow head"><span>품종</span><span>마리</span><span>나이</span><span></span></div>
+      <div class="stack" id="soRows"></div>
+      <button class="btn" id="soAdd">+ 동물 추가</button>
+      <p class="small">팀은 랜덤으로 나눠요. A팀은 빨강, B팀은 파랑 유니폼이에요. 팀마다 선발 명단과 교체 명단 2명을 소집하고, 모자란 자리는 동네(1~6학년 교실, 양로원)에서 보내 줘요. 동물마다 속도·지구력·드리블·슈팅·패스·태클·골키핑·반응 능력치가 따로 있어요.</p>
+    </div>
+    <aside class="card setup-side">
+      <div class="stack">
+        <h3>경기</h3>
+        <div class="row2">
+          <label class="f">선발 인원 (팀당)<select id="soSize"><option value="3">3:3</option><option value="5">5:5</option><option value="7">7:7</option><option value="9">9:9</option><option value="11" selected>11:11</option></select></label>
+          <label class="f">경기 시간 (x1 기준)<select id="soLen"><option value="120">2분</option><option value="180" selected>3분</option><option value="300">5분</option><option value="600">10분</option></select></label>
+        </div>
+        <label class="f">경기장 크기<select id="soPitch"><option value="0.8">작게</option><option value="1" selected>보통</option><option value="1.2">크게</option></select></label>
+        <label class="f">나는<select id="soMe"><option value="watch">관전 (공을 따라가는 카메라)</option><option value="teamA">A팀(빨강) 전체 조종 · 공 근처 선수로 자동 전환</option><option value="oneA">A팀(빨강) 한 선수만 조종</option><option value="teamB">B팀(파랑) 전체 조종</option><option value="oneB">B팀(파랑) 한 선수만 조종</option></select></label>
+        <button class="btn" id="soTac">전술 설정 (A팀 빨강 · B팀 파랑)</button>
+      </div>
+      <div class="stack">
+        <p class="err" id="soErr"></p>
+        <button class="btn primary" id="soStart">선수 호명하고 경기 시작</button>
+        <p class="small">축구만 할 때는 경기 전에 선발·교체 선수를 한 명씩 모두 호명해요. 호명은 건너뛸 수 없어요.</p>
+      </div>
+    </aside>
+  </div>
 </section>
 
 <!-- ================= SIM ================= -->
@@ -432,6 +524,30 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
           <button id="tpTab" class="wide2">다음 아군</button><button id="tpEsc" class="wide2 escb">ESCAPE</button>
         </div>
         <div class="ov arenares" id="arenaRes" hidden><div class="ar-card"><b id="arTitle">A편 승리!</b><p id="arText"></p><div class="row2"><button class="btn primary" id="arAgain">다시 하기</button><button class="btn" id="arSetup">팀 바꾸기</button></div><button class="btn" id="arClose">닫고 계속 보기</button></div></div>
+        <div class="ov fighthud sbhud" id="soccerHud" hidden>
+          <div class="scoreboard"><span class="sb-team"><i class="sb-dot" style="background:#d4473a"></i>A <b id="sbA">0</b></span><span>:</span><span class="sb-team"><b id="sbB">0</b> B<i class="sb-dot" style="background:#2f7fd0"></i></span><span class="sb-time" id="sbTime"></span></div>
+          <div class="fh-actions">
+            <select id="sbView" aria-label="보기와 조종"><option value="watch">관전 (공을 따라가는 카메라)</option><option value="teamA">A팀(빨강) 전체 조종 · 공 근처 선수로 자동 전환</option><option value="oneA">A팀(빨강) 한 선수만 조종</option><option value="teamB">B팀(파랑) 전체 조종</option><option value="oneB">B팀(파랑) 한 선수만 조종</option></select>
+            <select id="sbPick" aria-label="조종할 선수" hidden></select>
+            <button class="chip" id="sbSubA">A 교체</button><button class="chip" id="sbSubB">B 교체</button>
+            <button class="chip" id="sbTac">전술</button><button class="chip" id="sbStop">경기 그만하기</button>
+          </div>
+          <div class="fh-ctrl" id="sbCtrl" hidden><div>🎮 <b id="sbMe"></b></div><div>WASD 이동 · Space 슛/태클 · J 패스 · Shift 질주 · Tab 선수 바꾸기</div></div>
+        </div>
+        <div class="ov rollcall" id="rollcall" hidden aria-live="polite">
+          <div class="rc-head"><span id="rcTeam"></span><span id="rcCount"></span><button class="chip" id="rcSkip">호명 건너뛰기</button></div>
+          <div class="rc-name" id="rcName">선수 호명</div><div class="rc-sub" id="rcSub"></div>
+          <div class="rc-stats" id="rcStats"></div>
+          <div class="rc-done" id="rcDone"></div>
+        </div>
+        <div class="ov lineup" id="lineup" hidden aria-live="polite">
+          <div class="lu-card">
+            <div class="lu-head"><span class="lu-chip" id="luTeam"></span><b id="luTitle">선발 라인업</b><span class="lu-form" id="luForm"></span><button class="chip" id="luSkip">건너뛰기</button></div>
+            <div class="lu-body"><div class="lu-pitch" id="luPitch"></div><div class="lu-list" id="luList"></div></div>
+            <div class="lu-cap" id="luCap"></div>
+          </div>
+        </div>
+        <div class="ov arenares" id="matchRes" hidden><div class="ar-card"><b id="mrTitle"></b><p id="mrText"></p><div class="row2"><button class="btn primary" id="mrAgain">다시 경기하기</button><button class="btn" id="mrExit">나가기</button></div></div></div>
         <div class="ov pe" id="peOverlay" hidden aria-live="assertive"><img id="peImg" alt="주인 사진"><p id="peText"></p></div>
         <div class="ov ov-tr">
           <button class="chip recbtn" id="recBtn"><span class="rd"></span><span id="recTxt">녹화</span></button>
@@ -451,6 +567,18 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
     </div>
 
     <aside class="side-col">
+      <!-- soccer only -->
+      <section class="card panel soccer-only">
+        <div class="panel-head"><h2>축구장</h2><span class="tag" id="soTag"></span></div>
+        <div class="kv">
+          <span>A팀 (빨강) 승리</span><b id="soWinA">0</b>
+          <span>B팀 (파랑) 승리</span><b id="soWinB">0</b>
+          <span>무승부</span><b id="soDraw">0</b>
+        </div>
+        <div class="row2"><button class="btn primary" id="soAgain2">다시 경기 (호명부터)</button><button class="btn" id="soSetup2">팀 다시 짜기</button></div>
+        <button class="btn" id="soTac2">전술 설정</button>
+        <div class="roster-wrap" id="soRoster"></div>
+      </section>
       <!-- arena -->
       <section class="card panel arena-only">
         <div class="panel-head"><h2>싸움장</h2><span class="tag" id="arenaTag"></span></div>
@@ -493,6 +621,19 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
           <div class="r"><input type="text" id="ttsText" placeholder="예: 콩아, 이리 와!" value="얘들아, 이리 와!"><button class="btn" id="ttsBtn">말하기</button></div>
           <label class="small">음성 파일 보내기 <input type="file" id="audioFile" accept="audio/*"></label>
         </div>
+      </section>
+
+      <!-- soccer (home) -->
+      <section class="card panel home-only">
+        <div class="panel-head"><h2>마당 축구</h2><span class="tag" id="soccerTag"></span></div>
+        <div class="row2">
+          <label class="f">선발 인원 (팀당)<select id="scSize"><option value="3">3:3</option><option value="5">5:5</option><option value="7">7:7</option><option value="9">9:9</option><option value="11" selected>11:11</option></select></label>
+          <label class="f">경기 시간<select id="scLen"><option value="120">2분</option><option value="180" selected>3분</option><option value="300">5분</option><option value="600">10분</option></select></label>
+        </div>
+        <label class="f">나는<select id="scMe"><option value="watch">관전 (공을 따라가는 카메라)</option><option value="teamA">A팀(빨강) 전체 조종 · 공 근처 선수로 자동 전환</option><option value="oneA">A팀(빨강) 한 선수만 조종</option><option value="teamB">B팀(파랑) 전체 조종</option><option value="oneB">B팀(파랑) 한 선수만 조종</option></select></label>
+        <div class="row2"><button class="btn primary" id="scStart">경기 시작</button><button class="btn" id="scTac">전술 설정</button></div>
+        <p class="small" id="scNote"></p>
+        <div class="roster-wrap" id="scRoster"></div>
       </section>
 
       <!-- owner -->
@@ -589,12 +730,14 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         <div class="panel-head"><h2>밥 · 물</h2></div>
         <div class="kv">
           <span>밥그릇</span><b id="foodBowl">0 g</b>
-          <span>사료 통</span><b id="foodStock">3000 g</b>
+          <span>쓸 수 있는 사료</span><b id="foodStock">3000 g</b>
+          <span>　· 기본 사료</span><b id="foodBase">3000 g</b>
+          <span>　· 농장 사료 (먼저 씀)</span><b id="foodFarm">0 g</b>
           <span>급수대 물통</span><b id="waterTank2">2000 ml</b>
         </div>
         <div class="sl">한 번에<input type="range" id="portion" min="20" max="150" step="10" value="60"><b id="portionV">60g</b></div>
         <div class="row2"><button class="btn primary" id="feedBtn">밥 주기</button><button class="btn" id="refillBtn">물통 채우기</button></div>
-        <button class="btn" id="stockBtn">사료 통 채우기</button>
+        <button class="btn" id="stockBtn">기본 사료 채우기 (3000g)</button>
       </section>
 
       <!-- farm -->
@@ -602,7 +745,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         <div class="panel-head"><h2>자동화 농장</h2><span class="tag" id="farmTag"></span></div>
         <div class="bowlbar wide"><span id="farmFill" style="width:0%"></span></div>
         <label class="f">심을 작물
-          <select id="farmCrop"><option value="corn">옥수수 → 사료 600g (16시간)</option><option value="potato">고구마 → 간식 12개 (12시간)</option><option value="carrot">당근 → 사료 300g + 간식 6개 (10시간)</option></select>
+          <select id="farmCrop"><option value="corn">옥수수 → 사료 600g (16시간)</option><option value="potato">고구마 → 사료 450g + 간식 6개 (12시간)</option><option value="carrot">당근 → 사료 350g + 간식 4개 (10시간)</option></select>
         </label>
         <div class="kv">
           <span>다음 수확</span><b id="farmNext">—</b>
@@ -610,7 +753,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
           <span>만든 사료</span><b id="farmFood">0 g</b>
           <span>만든 간식</span><b id="farmSnack">0개</b>
         </div>
-        <p class="small">스프링클러가 물을 주고 로봇이 수확해서 사료 통과 간식 통에 넣어요. 작물을 바꾸면 처음부터 다시 심어요.</p>
+        <p class="small">스프링클러가 물을 주고 로봇이 수확해요. 수확물은 농장 사료로 쌓여서 밥 줄 때 기본 사료보다 먼저 쓰여요. 작물을 바꾸면 처음부터 다시 심어요.</p>
       </section>
 
       <!-- intruder -->
@@ -658,6 +801,8 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         <span><kbd>E</kbd> · ESCAPE 버튼</span><span>10초 동안 버티면 내 동물이 전투에서 빠져나와요</span>
         <span>마우스 드래그</span><span>관전 카메라 돌리기 · 휠로 확대</span>
         <span>화살표 (싸움 밖)</span><span>홈캠 방향 조종 · <kbd>Space</kbd> 일시정지</span>
+        <span>⚽ <kbd>WASD</kbd> <kbd>Space</kbd></span><span>축구: 이동 · 슛 (공이 없으면 태클)</span>
+        <span>⚽ <kbd>J</kbd> <kbd>Shift</kbd> <kbd>Tab</kbd></span><span>축구: 패스 · 질주 · 공 가까운 선수로 바꾸기 (팀 조종)</span>
       </div>
     </section>
     <section class="stack">
@@ -688,6 +833,15 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
       </div>
     </section>
     <div class="row2"><button class="btn danger" id="escEscape">ESCAPE (10초 버티면 탈출)</button><button class="btn primary" id="escClose">계속하기</button></div>
+  </div>
+</div>
+
+<div class="modal" id="tacModal" hidden role="dialog" aria-modal="true" aria-labelledby="tacTitle">
+  <div class="modal-card">
+    <div class="panel-head"><h2 id="tacTitle">축구 전술</h2><span class="tag">경기 중에도 바꿀 수 있어요</span></div>
+    <div class="ai-grid" id="tacGrid"></div>
+    <p class="small">포메이션은 수비·미드필더·공격수 비율을 정해요. 압박은 공을 쫓아가는 선수 수, 수비 라인은 팀 전체가 얼마나 올라가 서는지예요.</p>
+    <button class="btn primary" id="tacClose">닫기</button>
   </div>
 </div>
 
@@ -757,13 +911,13 @@ const DOG_BREED_ORDER=['golden','maltese','shiba','pomeranian','jindo','border',
 const MAX_PETS=40, FAST_SPEED=1000, YEAR_MIN=525600, STOCK_MAX=5000, SNACK_MAX=60;
 const CROPS={
   corn:{n:'옥수수',grow:16*60,food:600,snack:0,c:'#f2c94c',leaf:'#4f9a3c'},
-  potato:{n:'고구마',grow:12*60,food:0,snack:12,c:'#b0566a',leaf:'#3f8a46'},
-  carrot:{n:'당근',grow:10*60,food:300,snack:6,c:'#ef8a2a',leaf:'#5fae4a'},
+  potato:{n:'고구마',grow:12*60,food:450,snack:6,c:'#b0566a',leaf:'#3f8a46'},
+  carrot:{n:'당근',grow:10*60,food:350,snack:4,c:'#ef8a2a',leaf:'#5fae4a'},
 };
 
 let uid=1;
 function presetLiving(){
-  return {W:9,D:7,yard:{on:true,depth:5},items:[
+  return {W:9,D:7,yard:{on:true,depth:14,wide:16,pitch:true},items:[
     {id:uid++,type:'petdoor',wall:'e',t:0.9},
     {id:uid++,type:'rug',x:-1,z:0.2,rot:0},
     {id:uid++,type:'sofa',x:-1,z:2.85,rot:2},
@@ -780,11 +934,11 @@ function presetLiving(){
     {id:uid++,type:'homecam',wall:'n',t:2.2},
     {id:uid++,type:'door',wall:'s',t:2.0},
     {id:uid++,type:'window',wall:'w',t:-0.6},
-    {id:uid++,type:'farm',x:6.9,z:-2.3,rot:0},
+    {id:uid++,type:'farm',x:6.6,z:-5.6,rot:0},
   ]};
 }
 function presetStudio(){
-  return {W:6,D:5,yard:{on:false,depth:4},items:[
+  return {W:6,D:5,yard:{on:false,depth:6,wide:0,pitch:false},items:[
     {id:uid++,type:'bed',x:-2.15,z:-1.4,rot:0},
     {id:uid++,type:'shelf',x:1.2,z:-2.25,rot:0},
     {id:uid++,type:'dogbed',x:2.4,z:1.9,rot:0},
@@ -823,7 +977,7 @@ function snapWall(it,x,z){
 function clampItem(it){
   if(FURN[it.type].wall){const p=wallPos(it);snapWall(it,p.x,p.z);return}
   const f=foot(it);
-  if(FURN[it.type].yard){const y=yardRect();if(!y)return;
+  if(FURN[it.type].yard){const y=nearStrip();if(!y)return;
     it.x=clamp(it.x,y.minx+f.w/2+0.1,y.maxx-f.w/2-0.1);it.z=clamp(it.z,y.minz+f.d/2+0.1,y.maxz-f.d/2-0.1);return}
   it.x=clamp(it.x,-layout.W/2+f.w/2,layout.W/2-f.w/2);
   it.z=clamp(it.z,-layout.D/2+f.d/2,layout.D/2-f.d/2);
@@ -833,10 +987,24 @@ function farmInYard(L=layout){const it=L.items.find(i=>i.type==='farm');if(!it)r
 
 function yardRect(L=layout){
   if(!L.yard||!L.yard.on)return null;const pd=L.items.find(i=>i.type==='petdoor');if(!pd)return null;
-  const Y=L.yard.depth,w=L.W/2,d=L.D/2;
-  const r={n:{minx:-w,maxx:w,minz:-d-Y,maxz:-d},s:{minx:-w,maxx:w,minz:d,maxz:d+Y},w:{minx:-w-Y,maxx:-w,minz:-d,maxz:d},e:{minx:w,maxx:w+Y,minz:-d,maxz:d}}[pd.wall];
+  const Y=L.yard.depth,w=L.W/2,d=L.D/2,hx=Math.max(w,(L.yard.wide||0)/2),hz=Math.max(d,(L.yard.wide||0)/2);
+  const r={n:{minx:-hx,maxx:hx,minz:-d-Y,maxz:-d},s:{minx:-hx,maxx:hx,minz:d,maxz:d+Y},w:{minx:-w-Y,maxx:-w,minz:-hz,maxz:hz},e:{minx:w,maxx:w+Y,minz:-hz,maxz:hz}}[pd.wall];
   return Object.assign({side:pd.wall,pd},r);
 }
+function pitchRect(L=layout){
+  const y=yardRect(L);if(!y||!L.yard.pitch)return null;const near=Math.max(3,L.yard.depth*0.3),m=0.9;let r;
+  if(y.side==='e')r={minx:y.minx+near,maxx:y.maxx-m,minz:y.minz+m,maxz:y.maxz-m};
+  else if(y.side==='w')r={minx:y.minx+m,maxx:y.maxx-near,minz:y.minz+m,maxz:y.maxz-m};
+  else if(y.side==='s')r={minx:y.minx+m,maxx:y.maxx-m,minz:y.minz+near,maxz:y.maxz-m};
+  else r={minx:y.minx+m,maxx:y.maxx-m,minz:y.minz+m,maxz:y.maxz-near};
+  const a=r.maxx-r.minx,b=r.maxz-r.minz;if(Math.min(a,b)<5||Math.max(a,b)<8)return null;return r;
+}
+function nearStrip(L=layout){const y=yardRect(L),p=pitchRect(L);if(!y||!p)return y;
+  if(y.side==='e')return {...y,maxx:p.minx-0.3};if(y.side==='w')return {...y,minx:p.maxx+0.3};if(y.side==='s')return {...y,maxz:p.minz-0.3};return {...y,minz:p.maxz+0.3}}
+function makePitch(r){const lx=(r.maxx-r.minx)>=(r.maxz-r.minz);const P={...r,lx,len:lx?r.maxx-r.minx:r.maxz-r.minz,wid:lx?r.maxz-r.minz:r.maxx-r.minx,cx:(r.minx+r.maxx)/2,cz:(r.minz+r.maxz)/2};
+  P.goalW=Math.min(3.6,Math.max(1.8,P.wid*0.28));P.goalH=Math.min(1.2,0.7+P.wid*0.025);return P}
+const toW=(P,a,c)=>P.lx?{x:P.cx+a,z:P.cz+c}:{x:P.cx+c,z:P.cz+a};
+const fromW=(P,x,z)=>P.lx?{a:x-P.cx,c:z-P.cz}:{a:z-P.cz,c:x-P.cx};
 function extents(L=layout){const y=yardRect(L);const e={minx:-L.W/2,maxx:L.W/2,minz:-L.D/2,maxz:L.D/2};if(y){e.minx=Math.min(e.minx,y.minx);e.maxx=Math.max(e.maxx,y.maxx);e.minz=Math.min(e.minz,y.minz);e.maxz=Math.max(e.maxz,y.maxz)}return e}
 
 /* ======================= SETUP EDITOR ======================= */
@@ -883,7 +1051,17 @@ function drawEditor(){
   const yr=yardRect();
   if(yr){const [yx,yz]=m2p(yr.minx,yr.minz);const yw=(yr.maxx-yr.minx)*edScale,yd=(yr.maxz-yr.minz)*edScale;
     ex.fillStyle='#8fbf6a';ex.fillRect(yx,yz,yw,yd);ex.setLineDash([6,4]);ex.strokeStyle='#6b4f2f';ex.lineWidth=2;ex.strokeRect(yx,yz,yw,yd);ex.setLineDash([]);
-    ex.fillStyle='#24421f';ex.font='bold 13px "IBM Plex Sans KR",sans-serif';ex.textAlign='center';ex.fillText('마당',yx+yw/2,yz+yd/2+5);}
+    ex.fillStyle='#24421f';ex.font='bold 13px "IBM Plex Sans KR",sans-serif';ex.textAlign='center';
+    const pr=pitchRect();
+    if(pr){const P=makePitch(pr);ex.strokeStyle='#ffffff';ex.lineWidth=2;const q=(a,c)=>{const w=toW(P,a,c);return m2p(w.x,w.z)};
+      const rect=(a0,c0,a1,c1)=>{ex.beginPath();const p0=q(a0,c0),p1=q(a1,c0),p2=q(a1,c1),p3=q(a0,c1);ex.moveTo(...p0);ex.lineTo(...p1);ex.lineTo(...p2);ex.lineTo(...p3);ex.closePath();ex.stroke()};
+      rect(-P.len/2,-P.wid/2,P.len/2,P.wid/2);ex.beginPath();ex.moveTo(...q(0,-P.wid/2));ex.lineTo(...q(0,P.wid/2));ex.stroke();
+      const [ccx,ccz]=q(0,0);ex.beginPath();ex.arc(ccx,ccz,Math.min(1.8,P.wid*0.17)*edScale,0,7);ex.stroke();
+      ex.lineWidth=5;for(const sg of[-1,1]){ex.strokeStyle=sg<0?'#d4473a':'#2f7fd0';ex.beginPath();ex.moveTo(...q(sg*P.len/2,-P.goalW/2));ex.lineTo(...q(sg*P.len/2,P.goalW/2));ex.stroke()}
+      ex.fillStyle='#ffffff';ex.fillText(`⚽ 축구장 ${P.len.toFixed(0)}×${P.wid.toFixed(0)}m`,ccx,ccz-8);
+      const y=yardRect();const ns=nearStrip();if(ns){const [nx,nz]=m2p((ns.minx+ns.maxx)/2,(ns.minz+ns.maxz)/2);ex.fillStyle='#24421f';ex.fillText('마당',nx,nz)}}
+    else ex.fillText('마당',yx+yw/2,yz+yd/2+5);
+    const pi=document.getElementById('pitchInfo');if(pi)pi.textContent=layout.yard.pitch?(pr?`축구장 크기: ${makePitch(pr).len.toFixed(0)}×${makePitch(pr).wid.toFixed(0)}m. 집 쪽 띠에는 농장·나무·개집이 들어가요.`:'마당이 작아서 축구장을 만들 수 없어요. 깊이 10m, 너비 12m 이상을 추천해요.'):'';}
   // floor
   ex.fillStyle='#d8c3a0';ex.fillRect(x0,z0,W*edScale,D*edScale);
   ex.strokeStyle='rgba(0,0,0,.08)';ex.lineWidth=1;
@@ -974,10 +1152,12 @@ ed.addEventListener('pointerup',()=>{
   drag=null;
 });
 function setRoom(W,D){layout.W=clamp(W,4,14);layout.D=clamp(D,4,12);$('#roomW').value=layout.W;$('#roomD').value=layout.D;layout.items.forEach(clampItem);
-  if(!layout.yard)layout.yard={on:false,depth:4};$('#yardOn').checked=layout.yard.on;$('#yardDepth').value=layout.yard.depth;edResize()}
+  if(!layout.yard)layout.yard={on:false,depth:6,wide:0,pitch:false};$('#yardOn').checked=layout.yard.on;$('#yardDepth').value=layout.yard.depth;$('#yardWide').value=layout.yard.wide||0;$('#yardPitch').checked=!!layout.yard.pitch;edResize()}
 $('#yardOn').addEventListener('change',e=>{layout.yard.on=e.target.checked;
   if(layout.yard.on&&!layout.items.some(i=>i.type==='petdoor')){const it={id:uid++,type:'petdoor'};snapWall(it,layout.W/2,0);layout.items.push(it)}edResize()});
-$('#yardDepth').addEventListener('change',e=>{layout.yard.depth=clamp(parseFloat(e.target.value)||4,2,10);e.target.value=layout.yard.depth;edResize()});
+$('#yardDepth').addEventListener('change',e=>{layout.yard.depth=clamp(parseFloat(e.target.value)||4,2,24);e.target.value=layout.yard.depth;edResize()});
+$('#yardWide').addEventListener('change',e=>{layout.yard.wide=clamp(parseFloat(e.target.value)||0,0,32);e.target.value=layout.yard.wide;edResize()});
+$('#yardPitch').addEventListener('change',e=>{layout.yard.pitch=e.target.checked;edResize()});
 $('#roomW').addEventListener('change',e=>setRoom(parseFloat(e.target.value)||9,layout.D));
 $('#roomD').addEventListener('change',e=>setRoom(layout.W,parseFloat(e.target.value)||7));
 $('#presetLiving').onclick=()=>{layout=presetLiving();setRoom(layout.W,layout.D)};
@@ -1045,9 +1225,9 @@ function renderArenaCounts(){for(const t of['A','B'])$('#team'+t+'Count').textCo
 $$('[data-add]').forEach(b=>b.onclick=()=>{const t=b.dataset.add;arenaTeams[t].push({breed:t==='A'?'shiba':'korshort',n:1,age:3});renderArenaTeams()});
 $$('[data-owner]').forEach(c=>c.onchange=e=>{const t=c.dataset.owner,o=t==='A'?'B':'A';arenaTeams['owner'+t]=e.target.checked;if(e.target.checked)arenaTeams['owner'+o]=false;renderArenaTeams()});
 $$('[data-preset]').forEach(b=>b.onclick=()=>{arenaTeams=JSON.parse(JSON.stringify(ARENA_PRESETS[b.dataset.preset]));renderArenaTeams()});
-function setAppMode(m){appMode=m;$('#tabHome').setAttribute('aria-pressed',String(m==='home'));$('#tabArena').setAttribute('aria-pressed',String(m==='arena'));
-  $('#homeSetup').hidden=m!=='home';$('#arenaSetup').hidden=m!=='arena';$('#phaseLbl').textContent=m==='home'?'1단계 · 방 꾸미기':'싸움장 · 팀 구성';if(m==='home')edResize()}
-$('#tabHome').onclick=()=>setAppMode('home');$('#tabArena').onclick=()=>setAppMode('arena');
+function setAppMode(m){appMode=m;for(const [id,k] of [['#tabHome','home'],['#tabArena','arena'],['#tabSoccer','soccer']])$(id).setAttribute('aria-pressed',String(m===k));
+  $('#homeSetup').hidden=m!=='home';$('#arenaSetup').hidden=m!=='arena';$('#soccerSetup').hidden=m!=='soccer';$('#phaseLbl').textContent=m==='home'?'1단계 · 방 꾸미기':m==='arena'?'싸움장 · 팀 구성':'축구장 · 선수 구성';if(m==='home')edResize();if(m==='soccer')renderSoccerRows()}
+$('#tabHome').onclick=()=>setAppMode('home');$('#tabArena').onclick=()=>setAppMode('arena');$('#tabSoccer').onclick=()=>setAppMode('soccer');
 $('#arenaAI').onclick=()=>toggleMenu(true);
 function arenaLayout(){
   const sz={s:[8,6],m:[12,9],l:[16,12]}[$('#arenaSize').value];const [W0,D0]=sz;const items=[];const ob=$('#arenaObs').value;
@@ -1132,13 +1312,14 @@ function buildWorld(){
   scene.add(sunLight);
   tvLight=new THREE.PointLight('#8fb8ff',0,5,2);scene.add(tvLight);
   lamp=new THREE.PointLight('#ffd9a0',0,14,1.6);lamp.position.set(0,2.4,0);scene.add(lamp);
-  const lampMesh=cyl(0.25,0.32,0.08,'#f5efe2',0,2.56,0);lampMesh.castShadow=false;scene.add(lampMesh);
+  const out=!!layout.outdoor;if(out)scene.background=new THREE.Color('#8fbfdf');
+  if(!out){const lampMesh=cyl(0.25,0.32,0.08,'#f5efe2',0,2.56,0);lampMesh.castShadow=false;scene.add(lampMesh)}
   // floor
-  const ft=floorTexture();ft.repeat.set(W/2.5,D/2.5);
+  const ft=out?grassTexture():floorTexture();ft.repeat.set(out?W/2:W/2.5,out?D/2:D/2.5);
   const floor=new THREE.Mesh(new THREE.PlaneGeometry(W,D),new THREE.MeshStandardMaterial({map:ft,roughness:0.75}));
   floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;scene.add(floor);
   // walls
-  const H=2.6,T=0.12,wc='#e6ebec';
+  const H=out?0.45:2.6,T=0.12,wc=out?'#f4f2ea':'#e6ebec';
   const mk=(k,w,d,x,z)=>{
     const g=new THREE.Group();g.position.set(x,0,z);scene.add(g);walls[k]=g;
     const along=(k==='n'||k==='s');const len=along?w:d;
@@ -1189,37 +1370,60 @@ function buildYard(){
   const y=yard,yw=y.maxx-y.minx,yd=y.maxz-y.minz,cx=(y.minx+y.maxx)/2,cz=(y.minz+y.maxz)/2;
   const gt=grassTexture();gt.repeat.set(yw/2,yd/2);
   const gr=new THREE.Mesh(new THREE.PlaneGeometry(yw,yd),new THREE.MeshStandardMaterial({map:gt,roughness:1}));gr.rotation.x=-Math.PI/2;gr.position.set(cx,0.001,cz);gr.receiveShadow=true;scene.add(gr);
-  // fence on the three outer sides
   const fc='#efe6d4',edges=[];const s=y.side;
   if(s!=='s')edges.push([[y.minx,y.minz],[y.maxx,y.minz]]);if(s!=='n')edges.push([[y.minx,y.maxz],[y.maxx,y.maxz]]);
   if(s!=='e')edges.push([[y.minx,y.minz],[y.minx,y.maxz]]);if(s!=='w')edges.push([[y.maxx,y.minz],[y.maxx,y.maxz]]);
-  // remove the edge lying on the room wall
+  // house side: fence the parts that stick out past the room wall
+  const inner=[];
+  if(s==='e'||s==='w'){const x=s==='e'?y.minx:y.maxx;if(y.minz<-D/2-0.01)inner.push([[x,y.minz],[x,-D/2]]);if(y.maxz>D/2+0.01)inner.push([[x,D/2],[x,y.maxz]])}
+  else{const z=s==='s'?y.minz:y.maxz;if(y.minx<-W/2-0.01)inner.push([[y.minx,z],[-W/2,z]]);if(y.maxx>W/2+0.01)inner.push([[W/2,z],[y.maxx,z]])}
   const onWall=e=>{const [[x1,z1],[x2,z2]]=e;return (x1===x2&&Math.abs(x1)===W/2&&Math.abs(z1)<=D/2+1e-6&&Math.abs(z2)<=D/2+1e-6)||(z1===z2&&Math.abs(z1)===D/2&&Math.abs(x1)<=W/2+1e-6&&Math.abs(x2)<=W/2+1e-6)};
-  for(const e of edges){if(onWall(e))continue;const [[x1,z1],[x2,z2]]=e;const L=Math.hypot(x2-x1,z2-z1),n=Math.max(2,Math.round(L/0.9));
+  const fence=(e,solid)=>{const [[x1,z1],[x2,z2]]=e;const L=Math.hypot(x2-x1,z2-z1),n=Math.max(2,Math.round(L/0.9));
     for(let i=0;i<=n;i++){const t=i/n;g0(box(0.08,0.8,0.08,fc,x1+(x2-x1)*t,0.4,z1+(z2-z1)*t))}
-    const horiz=z1===z2;for(const hy of[0.3,0.62]){g0(horiz?box(L,0.06,0.03,fc,(x1+x2)/2,hy,z1):box(0.03,0.06,L,fc,x1,hy,(z1+z2)/2))}}
-  // far corners relative to the wall
-  const far={n:[[y.minx+1,y.minz+1],[y.maxx-1.2,y.minz+1.1]],s:[[y.minx+1,y.maxz-1],[y.maxx-1.2,y.maxz-1.1]],w:[[y.minx+1,y.minz+1],[y.minx+1.1,y.maxz-1.2]],e:[[y.maxx-1,y.minz+1],[y.maxx-1.1,y.maxz-1.2]]}[s];
-  // tree
-  const [tx,tz]=far[0];
-  if(!solids.some(b=>inBox(tx,tz,b,0.3))){
+    const horiz=z1===z2;for(const hy of[0.3,0.62]){g0(horiz?box(L,0.06,0.03,fc,(x1+x2)/2,hy,z1):box(0.03,0.06,L,fc,x1,hy,(z1+z2)/2))}
+    if(solid)solids.push({minx:Math.min(x1,x2)-0.06,maxx:Math.max(x1,x2)+0.06,minz:Math.min(z1,z2)-0.06,maxz:Math.max(z1,z2)+0.06,h:0.8,type:'wall'})};
+  for(const e of edges)if(!onWall(e))fence(e,false);
+  for(const e of inner)fence(e,true);
+  const pr=pitchRect();if(pr){yard.P=buildPitch(pr)}
+  // tree + dog house: in the strip next to the house when there is a pitch, otherwise in the far corners
+  const spots=pr?{n:[[y.minx+1,y.maxz-1],[y.maxx-1.2,y.maxz-1.1]],s:[[y.minx+1,y.minz+1],[y.maxx-1.2,y.minz+1.1]],w:[[y.maxx-1,y.minz+1],[y.maxx-1.1,y.maxz-1.2]],e:[[y.minx+1,y.minz+1],[y.minx+1.1,y.maxz-1.2]]}[s]
+    :{n:[[y.minx+1,y.minz+1],[y.maxx-1.2,y.minz+1.1]],s:[[y.minx+1,y.maxz-1],[y.maxx-1.2,y.maxz-1.1]],w:[[y.minx+1,y.minz+1],[y.minx+1.1,y.maxz-1.2]],e:[[y.maxx-1,y.minz+1],[y.maxx-1.1,y.maxz-1.2]]}[s];
+  const inPitch=(x,z,m)=>pr&&x>pr.minx-m&&x<pr.maxx+m&&z>pr.minz-m&&z<pr.maxz+m;
+  const [tx,tz]=spots[0];
+  if(!solids.some(b=>inBox(tx,tz,b,0.3))&&!inPitch(tx,tz,0.5)){
   g0(cyl(0.12,0.16,1.6,'#7a5232',tx,0.8,tz));g0(sph(0.75,'#3f8a46',tx,2.0,tz));g0(sph(0.55,'#4c9b52',tx+0.35,2.35,tz+0.2));g0(sph(0.5,'#367a3d',tx-0.3,2.3,tz-0.25));
   solids.push({minx:tx-0.2,maxx:tx+0.2,minz:tz-0.2,maxz:tz+0.2,h:1.6,type:'tree'});}
-  // dog house facing the yard centre
-  const [hx,hz]=far[1];
-  if(!solids.some(b=>inBox(hx,hz,b,0.6))){
+  const [hx,hz]=spots[1];
+  if(!solids.some(b=>inBox(hx,hz,b,0.6))&&!inPitch(hx,hz,0.7)){
   const hg=new THREE.Group();hg.position.set(hx,0,hz);hg.rotation.y=Math.atan2(cx-hx,cz-hz);
   hg.add(box(0.9,0.6,0.8,'#c46a3a',0,0.3,0));const roof1=box(0.6,0.05,0.92,'#7a3f2a',-0.2,0.72,0);roof1.rotation.z=0.6;const roof2=box(0.6,0.05,0.92,'#7a3f2a',0.2,0.72,0);roof2.rotation.z=-0.6;
   roof1.geometry=new THREE.BoxGeometry(0.62,0.05,0.92);roof2.geometry=new THREE.BoxGeometry(0.62,0.05,0.92);hg.add(roof1,roof2);
   hg.add(box(0.36,0.4,0.02,'#2a1a12',0,0.22,0.405));scene.add(hg);
   solids.push({minx:hx-0.5,maxx:hx+0.5,minz:hz-0.5,maxz:hz+0.5,h:0.9,type:'doghouse'});}
-  // flowers
-  for(let i=0;i<14;i++){const fx=rand(y.minx+0.3,y.maxx-0.3),fz=rand(y.minz+0.3,y.maxz-0.3);if(solids.some(b=>inBox(fx,fz,b,0.3)))continue;
+  for(let i=0;i<18;i++){const fx=rand(y.minx+0.3,y.maxx-0.3),fz=rand(y.minz+0.3,y.maxz-0.3);if(solids.some(b=>inBox(fx,fz,b,0.3))||inPitch(fx,fz,0.4))continue;
     g0(cyl(0.008,0.008,0.18,'#3d7a35',fx,0.09,fz,5));const f=sph(0.035,pick(['#f2d64a','#ef7a8a','#ffffff','#b48ef0']),fx,0.19,fz);f.castShadow=false;g0(f)}
-  // door waypoints
   const p=wallPos(y.pd);const ax=Math.cos(p.a),az=Math.sin(p.a);
   yard.dIn={x:p.x+ax*0.55,z:p.z+az*0.55};yard.dOut={x:p.x-ax*0.75,z:p.z-az*0.75};
   function g0(m){scene.add(m)}
+}
+function buildPitch(r){
+  const P=makePitch(r),g=new THREE.Group(),wc='#f4f6f2',hl=P.len/2,hw=P.wid/2;
+  const line=(a0,c0,a1,c1,w=0.07)=>{const p0=toW(P,a0,c0),p1=toW(P,a1,c1),dx=p1.x-p0.x,dz=p1.z-p0.z,L=Math.hypot(dx,dz);
+    const m=new THREE.Mesh(new THREE.BoxGeometry(L+w,0.012,w),mat(wc));m.position.set((p0.x+p1.x)/2,0.012,(p0.z+p1.z)/2);m.rotation.y=-Math.atan2(dz,dx);m.receiveShadow=true;g.add(m)};
+  const n=Math.max(4,Math.round(P.len/2.4));
+  for(let i=0;i<n;i++)if(i%2){const a0=-hl+i*P.len/n,a1=a0+P.len/n,c=toW(P,(a0+a1)/2,0);const sw=new THREE.Mesh(new THREE.PlaneGeometry(P.lx?P.len/n:P.wid,P.lx?P.wid:P.len/n),new THREE.MeshStandardMaterial({color:'#2f6a26',transparent:true,opacity:0.18}));sw.rotation.x=-Math.PI/2;sw.position.set(c.x,0.004,c.z);sw.receiveShadow=true;g.add(sw)}
+  line(-hl,-hw,hl,-hw);line(-hl,hw,hl,hw);line(-hl,-hw,-hl,hw);line(hl,-hw,hl,hw);line(0,-hw,0,hw);
+  const R=Math.min(1.8,P.wid*0.17);const ring=new THREE.Mesh(new THREE.RingGeometry(R-0.04,R+0.03,48),mat(wc));ring.rotation.x=-Math.PI/2;const c0=toW(P,0,0);ring.position.set(c0.x,0.013,c0.z);g.add(ring);
+  const bd=Math.min(3,P.len*0.15),bw=Math.min(P.wid*0.62,P.goalW+3);
+  for(const sg of[-1,1]){const a=sg*hl,ai=sg*(hl-bd);line(a,-bw/2,ai,-bw/2);line(a,bw/2,ai,bw/2);line(ai,-bw/2,ai,bw/2);
+    const gw=P.goalW,gh=P.goalH,dep=0.6;
+    for(const sc of[-1,1]){const pp=toW(P,a,sc*gw/2);g.add(cyl(0.05,0.05,gh,'#ffffff',pp.x,gh/2,pp.z,10));const bp=toW(P,a+sg*dep,sc*gw/2);g.add(cyl(0.03,0.03,gh,'#dfe3e6',bp.x,gh/2,bp.z,8))}
+    const cb=toW(P,a,0);g.add(P.lx?box(0.08,0.08,gw+0.1,'#ffffff',cb.x,gh,cb.z):box(gw+0.1,0.08,0.08,'#ffffff',cb.x,gh,cb.z));
+    const nb=toW(P,a+sg*dep/2,0),netM={transparent:true,opacity:0.22,roughness:1};
+    const net=P.lx?box(dep,gh,gw,'#ffffff',nb.x,gh/2,nb.z,netM):box(gw,gh,dep,'#ffffff',nb.x,gh/2,nb.z,netM);net.castShadow=false;g.add(net);
+    for(const sc of[-1,1]){const f=toW(P,a,sc*hw);g.add(cyl(0.015,0.015,0.6,'#ffffff',f.x,0.3,f.z,6));const fl=box(0.18,0.12,0.01,sg>0?'#2f7fd0':'#d4473a',f.x+0.09,0.54,f.z);fl.castShadow=false;g.add(fl)}
+  }
+  scene.add(g);P.group=g;return P;
 }
 function makeBall(type='tennis'){
   const T=BALL_TYPES[type],r=T.r;let m;
@@ -1359,7 +1563,7 @@ function makeAnimal(c,at){
   const d=Object.assign({id:animalUid++,species:c.species,breed:c.breed,sex:c.sex||'f',name:c.name,color:c.color,baseK:Bd.k,k:Bd.k,r:0.24*Bd.k,root,pose,emo,label,
     pos:new THREE.Vector2(spawn.x,spawn.z),heading:rand(0,6.28),speed:0,state:'idle',think:rand(0.5,2),target:null,
     hunger:rand(25,40),thirst:rand(25,40),pee:rand(10,45),poo:rand(5,40),happy:rand(72,86),health:rand(90,98),stamina:rand(70,90),
-    age:c.age||0,lifespan:rand(15,20),temper:rand(-8,8),pregnant:null,lastBirth:-1e9,mom:null,dad:null,stray:!!c.stray,
+    skills:c.skills||genSkills(c.breed),age:c.age||0,lifespan:rand(15,20),temper:rand(-8,8),pregnant:null,lastBirth:-1e9,mom:null,dad:null,stray:!!c.stray,
     fight:null,team:null,fightCD:0,scanT:rand(0,1),atkCD:0,fleeing:false,fleeT:0,shoutT:0,fastT:0,
     walkPh:rand(0,6),wake:0,stuck:{t:0,d:1e9},detour:null,ball:null,flags:{},barkT:0,actT:0},parts);
   applyGrowth(d);return d;
@@ -1415,14 +1619,18 @@ function makeIntruder(){
   const lbl=textSprite('침입자',{bg:'#d4473a',size:0.28});lbl.position.set(0,2.1,0);g.add(lbl);
   scene.add(g);return {g,legs,arms,bag};
 }
-function makeHuman(name){
+function makeHuman(name,o={}){
+  const shirt=o.shirt||'#3a7bd5',pants=o.pants||'#2b3445',skin=o.skin||'#e0b090',hair=o.hair||'#2a1d14';
   const g=new THREE.Group();
-  const legs=[];for(const lz of[0.09,-0.09]){const p=new THREE.Group();p.position.set(0,0.85,lz);p.add(box(0.13,0.85,0.13,'#2b3445',0,-0.42,0));g.add(p);legs.push(p)}
-  g.add(box(0.26,0.6,0.42,'#3a7bd5',0,1.15,0));
-  const arms=[];for(const lz of[0.26,-0.26]){const p=new THREE.Group();p.position.set(0,1.42,lz);p.add(box(0.1,0.56,0.1,'#3a7bd5',0,-0.28,0));p.add(box(0.1,0.1,0.1,'#e0b090',0,-0.6,0));g.add(p);arms.push(p)}
-  g.add(sph(0.15,'#e0b090',0.02,1.62,0));g.add(box(0.27,0.1,0.31,'#2a1d14',-0.02,1.76,0));
+  const legs=[];for(const lz of[0.09,-0.09]){const p=new THREE.Group();p.position.set(0,0.85,lz);p.add(box(0.13,0.85,0.13,pants,0,-0.42,0));p.add(box(0.16,0.08,0.15,'#f2f2f2',0.02,-0.82,0));g.add(p);legs.push(p)}
+  g.add(box(0.26,0.6,0.42,shirt,0,1.15,0));
+  if(o.number!=null){const n=textSprite(String(o.number),{bg:'rgba(0,0,0,0)',size:0.3});n.position.set(-0.16,1.2,0);g.add(n)}
+  const arms=[];for(const lz of[0.26,-0.26]){const p=new THREE.Group();p.position.set(0,1.42,lz);p.add(box(0.1,0.56,0.1,shirt,0,-0.28,0));p.add(box(0.1,0.1,0.1,skin,0,-0.6,0));g.add(p);arms.push(p)}
+  g.add(sph(0.15,skin,0.02,1.62,0));g.add(box(0.27,0.1,0.31,hair,-0.02,1.76,0));
+  if(o.long)g.add(box(0.1,0.32,0.3,hair,-0.13,1.55,0));
   g.add(box(0.02,0.03,0.03,'#111',0.15,1.65,0.06));g.add(box(0.02,0.03,0.03,'#111',0.15,1.65,-0.06));
-  const lbl=textSprite(name,{bg:'#1d8784',size:0.28});lbl.position.set(0,2.1,0);g.add(lbl);
+  const lbl=textSprite(name,{bg:o.labelBg||'#1d8784',size:0.28/(o.scale||1)*0.85+0.04});lbl.position.set(0,2.1,0);g.add(lbl);
+  if(o.scale)g.scale.setScalar(o.scale);
   scene.add(g);return {g,legs,arms,lbl};
 }
 
@@ -1440,13 +1648,15 @@ function newWorldState(startMin){
   return {t:startMin,day:1,tank:2000,tankCap:2000,bowl:0,bowlCap:300,food:0,foodCap:150,stock:3000,
     pump:{on:false,ml:0,dog:null},launcherBalls:3,launchQ:0,events:[],evId:1,lastAlertT:-99,
     voiceUntil:-1,voiceActive:false,stolen:0,alertShown:false,lowWaterWarned:false,emptyFoodWarned:false,
-    pad:{waste:[],cleaning:0,waitT:0,mode:$('#padMode')?$('#padMode').value:'3',noSheetWarned:false,dirtyWarned:false},floorMess:[],sheets:30,dirt:0,snacks:30,tv:{on:false,ch:'dog',offAt:-1},
+    pad:{waste:[],cleaning:0,waitT:0,mode:$('#padMode')?$('#padMode').value:'3',noSheetWarned:false,dirtyWarned:false},floorMess:[],sheets:30,dirt:0,snacks:30,tv:{on:false,ch:'dog',offAt:-1},farmFood:0,
     nextHourT:Math.ceil(startMin/60)*60+0.001,born:0,deaths:0,strayN:0,lastVisitDay:-1,ownerDead:false,autoDrop:null,breakLoop:false,fastNow:false,
     farm:{crop:'corn',growth:0.35,anim:0,harvests:0,foodMade:0,snackMade:0},breedOn:true,cardsDirty:true};
 }
 const dayIdx=()=>Math.floor(world.t/1440);
 function fmtDate(t){const day=Math.floor(t/1440),y=Math.floor(day/365);return (y?`${y+1}년차 ${day%365+1}일 `:`${day+1}일차 `)+fmtClock(t,true)}
 function fmtAge(a){if(a<1/12)return `${Math.max(0,Math.floor(a*365))}일`;if(a<1)return `${Math.floor(a*12)}개월`;const m=Math.floor((a%1)*12);return `${Math.floor(a)}살${m?' '+m+'개월':''}`}
+function feedLeft(){return world.stock+world.farmFood}
+function takeFeed(g){g=Math.max(0,Math.min(g,feedLeft()));const f=Math.min(world.farmFood,g);world.farmFood-=f;world.stock-=g-f;return g}
 function josa(w,a,b){const c=w.charCodeAt(w.length-1);if(c>=0xAC00&&c<=0xD7A3)return (c-0xAC00)%28?a:b;return b}
 const dist=(a,b)=>Math.hypot(a.pos.x-b.pos.x,a.pos.y-b.pos.y);
 const clockMin=()=>world.t%1440;
@@ -1531,7 +1741,7 @@ function face(a,tx,tz,dt){const want=Math.atan2(tz-a.pos.y,tx-a.pos.x);let dh=wa
 
 /* ======================= DOG AI ======================= */
 const STATE_KO={idle:'쉬는 중',wander:'돌아다님',toWater:'물 마시러',drink:'물 마시는 중',toFood:'밥 먹으러',eat:'밥 먹는 중',waitFood:'밥 기다림',
-  toBed:'잠자리로',sleep:'자는 중',chase:'공 쫓는 중',carry:'공 가져가는 중',toLauncher:'놀고 싶어함',waitThrow:'공 기다림',toVoice:'목소리 쪽으로',listen:'귀 기울이는 중',alert:'침입자 경계!',sit:'앉아 있음',toPotty:'화장실 가는 중',doPotty:'볼일 보는 중',toTV:'TV 보러 가는 중',watchTV:'TV 보는 중',eatTreat:'간식 먹는 중',fight:'싸우는 중!',scared:'겁먹고 피함',leave:'나가는 중'};
+  toBed:'잠자리로',sleep:'자는 중',chase:'공 쫓는 중',carry:'공 가져가는 중',toLauncher:'놀고 싶어함',waitThrow:'공 기다림',toVoice:'목소리 쪽으로',listen:'귀 기울이는 중',alert:'침입자 경계!',sit:'앉아 있음',toPotty:'화장실 가는 중',doPotty:'볼일 보는 중',toTV:'TV 보러 가는 중',watchTV:'TV 보는 중',eatTreat:'간식 먹는 중',fight:'싸우는 중!',scared:'겁먹고 피함',leave:'나가는 중',soccer:'⚽ 축구 중'};
 function devPos(type){const b=dev[type]&&dev[type].box;return b?{x:(b.minx+b.maxx)/2,z:(b.minz+b.maxz)/2,b}:null}
 function frontOf(type,off=0.35){
   const dv=dev[type];if(!dv)return null;const it=dv.it,ft=foot(it);const r=it.rot||0;
@@ -1595,6 +1805,7 @@ function decide(d){
 }
 function updateDog(d,dt){
   if(d.dead)return;
+  if(match&&d.sc){if(match.A.includes(d)||match.B.includes(d))soccerTick(d,dt);else{d.speed=0;d.anim={sit:true,emo:''}}return}
   if(world.arena&&!d.fight){ // fight-only mode: no daily life, just rest where they are
     d.think-=dt;
     if(d.state==='scared'&&d.think>0){const f=d.scaredFrom||{x:0,z:0},ax=d.pos.x-f.x,az=d.pos.y-f.z,l=Math.hypot(ax,az)||1;
@@ -2021,7 +2232,7 @@ function breedTick(){
     if(f.sex!=='f'||f.pregnant||!canBreed(f)||f.age>=10||world.t-f.lastBirth<120*1440||Math.random()>0.05)continue;
     const ms=dogs.filter(m=>m.sex==='m'&&m.species===f.species&&canBreed(m)&&m.age<12&&m.id!==f.mom&&m.id!==f.dad&&m.mom!==f.id&&!(m.mom!=null&&m.mom===f.mom));
     if(!ms.length)continue;const m=pick(ms);const days=f.species==='cat'?65:63;
-    f.pregnant={due:world.t+days*1440,dad:m.id,dadBreed:m.breed,dadColor:m.color,start:world.t};f.mate=m.id;m.mate=f.id;
+    f.pregnant={due:world.t+days*1440,dad:m.id,dadBreed:m.breed,dadColor:m.color,dadSkills:m.skills,start:world.t};f.mate=m.id;m.mate=f.id;
     log(`💕 ${f.name}${josa(f.name,'과','와')} ${m.name} 사이에 아기가 생겼어요 (${days}일 뒤 출산 예정)`,'good',true);
   }
 }
@@ -2029,8 +2240,8 @@ function giveBirth(m){
   const P=m.pregnant;m.pregnant=null;m.lastBirth=world.t;
   const n=Math.max(1,litterSize(BREEDS[m.breed]));const born=Math.min(n,Math.max(0,MAX_PETS-dogs.length));const kids=[];
   for(let i=0;i<born;i++){
-    const br=Math.random()<0.5?m.breed:(P.dadBreed||m.breed),col=Math.random()<0.5?m.color:(P.dadColor||m.color);
-    const p=makeAnimal({species:m.species,breed:br,color:col,sex:Math.random()<0.5?'f':'m',age:0,name:newName(m.species)},
+    const br=Math.random()<0.5?m.breed:(P.dadBreed||m.breed),col=Math.random()<0.5?m.color:(P.dadColor||m.color);const dadA=dogs.find(x=>x.id===P.dad);
+    const p=makeAnimal({species:m.species,breed:br,color:col,sex:Math.random()<0.5?'f':'m',age:0,name:newName(m.species),skills:mixSkills(m.skills,dadA?dadA.skills:P.dadSkills)},
       {x:clamp(m.pos.x+rand(-0.5,0.5),B.minx+0.3,B.maxx-0.3),z:clamp(m.pos.y+rand(-0.5,0.5),B.minz+0.3,B.maxz-0.3)});
     Object.assign(p,{mom:m.id,dad:P.dad,hunger:15,thirst:15,happy:92,health:100,stamina:80,pee:5,poo:5});
     dogs.push(p);kids.push(p.name);
@@ -2107,7 +2318,7 @@ function joinFight(f,d,team){
   d.fight=f;d.team=team;(team==='A'?f.A:f.B).push(d);Object.assign(d,{fleeing:false,fleeT:0,atkCD:rand(0,0.6),state:'fight',think:999,target:null,detour:null});
 }
 function startFight(a,b,cause){
-  if(!a||!b||a.dead||b.dead||a===b)return null;
+  if(!a||!b||a.dead||b.dead||a===b||a.sc||b.sc)return null;
   if(a.fight&&b.fight)return a.fight;
   if(b.fight){joinFight(b.fight,a,b.team==='A'?'B':'A');return b.fight}
   if(a.fight){joinFight(a.fight,b,a.team==='A'?'B':'A');return a.fight}
@@ -2130,16 +2341,16 @@ function recruitTeam(f,o){
 function recruit(f,R,k){
   if(!f.A.length||!f.B.length)return;const c=fightCenter(f);
   for(const o of dogs){
-    if(o.fight||o.dead||o.fightCD>world.t||Math.hypot(o.pos.x-c.x,o.pos.y-c.z)>R)continue;
+    if(o.fight||o.dead||o.sc||o.fightCD>world.t||Math.hypot(o.pos.x-c.x,o.pos.y-c.z)>R)continue;
     if(o.state==='sleep'&&Math.random()<0.6)continue;
     const [team,p]=recruitTeam(f,o);
     if(team&&Math.random()<p*k)joinFight(f,o,team);else if(Math.random()<0.3*k)scare(o,c.x,c.z);
   }
 }
 function speciesScan(d){
-  if(d.state==='sleep'||d.fightCD>world.t)return;
+  if(d.state==='sleep'||d.fightCD>world.t||d.sc)return;
   for(const o of dogs){
-    if(o===d||o.dead||o.species===d.species||(o.fightCD>world.t&&!o.fight)||dist(d,o)>2.0)continue;
+    if(o===d||o.dead||o.sc||o.species===d.species||(o.fightCD>world.t&&!o.fight)||dist(d,o)>2.0)continue;
     if(o.fight)joinFight(o.fight,d,o.team==='A'?'B':'A');else startFight(d,o,'species');
     return;
   }
@@ -2358,12 +2569,12 @@ function updateOwner(dt){
   owner.left-=dt;owner.stamina=Math.min(100,owner.stamina+dt*0.5);
   owner.hostileT-=dt;
   if(owner.hostileT<=0){owner.hostileT=1;
-    const hostile=dogs.filter(d=>!d.dead&&!d.fight&&d.happy<30&&d.state!=='sleep'&&d.age>=0.4&&dist(d,owner)<7);
+    const hostile=dogs.filter(d=>!d.dead&&!d.fight&&!d.sc&&d.happy<30&&d.state!=='sleep'&&d.age>=0.4&&dist(d,owner)<7);
     if(hostile.length){startFight(hostile[0],owner,'owner');return}}
   if(owner.state==='leaving'||owner.left<=0){owner.state='leaving';const p=doorIn();if(steer(owner,p.x,p.z,1.5,dt)<0.3)endVisit();return}
   if(!owner.chores&&world.t-owner.arriveT>1){owner.chores=true;const did=[];
     if(world.tank<world.tankCap*0.9){world.tank=world.tankCap;world.lowWaterWarned=false;world.flagNoWater=false;did.push('물통 채우기')}
-    if(world.food<60&&world.stock>0){const g=Math.min(world.foodCap-world.food,world.stock,120);world.food+=g;world.stock-=g;did.push(`밥 ${Math.round(g)}g 주기`)}
+    if(world.food<60&&feedLeft()>0){const g=takeFeed(Math.min(world.foodCap-world.food,120));world.food+=g;did.push(`밥 ${Math.round(g)}g 주기`)}
     if(world.pad.waste.length){world.pad.waste.forEach(w=>scene.remove(w.mesh));world.pad.waste=[];did.push('배변판 청소')}
     if(world.floorMess.length){world.floorMess.forEach(w=>scene.remove(w.mesh));world.floorMess=[];did.push('바닥 청소')}
     if(corpses.some(c=>!c.human)){cleanCorpses(owner.name+josa(owner.name,'이','가'));did.push('시체 정리')}
@@ -2416,8 +2627,8 @@ function updateFarm(h){
 }
 function harvest(){
   const F=world.farm,C=CROPS[F.crop];
-  const food=Math.max(0,Math.min(C.food,STOCK_MAX-world.stock)),snack=Math.max(0,Math.min(C.snack,SNACK_MAX-world.snacks));
-  world.stock+=food;world.snacks+=snack;F.foodMade+=food;F.snackMade+=snack;F.harvests++;F.growth=0;
+  const food=Math.max(0,Math.min(C.food,STOCK_MAX-world.farmFood)),snack=Math.max(0,Math.min(C.snack,SNACK_MAX-world.snacks));
+  world.farmFood+=food;world.snacks+=snack;F.foodMade+=food;F.snackMade+=snack;F.harvests++;F.growth=0;
   log(`🌱 자동화 농장이 ${C.n}${josa(C.n,'을','를')} 수확했어요 → ${[C.food?`사료 +${food}g`:'',C.snack?`간식 +${snack}개`:''].filter(Boolean).join(', ')}`,'good');
 }
 function farmVisual(realDt){
@@ -2467,6 +2678,404 @@ function fastVisual(realDt){
   }
 }
 
+/* ======================= SOCCER ======================= */
+const SKILL_KEYS=['spd','sta','dri','sho','pas','tac','gk','rea'];
+const SKILL_KO={spd:'속도',sta:'지구력',dri:'드리블',sho:'슈팅',pas:'패스',tac:'태클',gk:'골키핑',rea:'반응'};
+const BREED_SKILL={
+  maltese:[58,50,74,42,55,36,48,66],pomeranian:[62,48,72,45,50,38,46,70],chihuahua:[60,44,70,40,46,34,52,78],
+  shiba:[74,66,70,58,56,58,50,72],jindo:[72,78,60,62,58,74,58,70],border:[80,82,72,64,80,66,60,84],
+  golden:[70,72,62,66,78,62,64,68],greatdane:[78,60,48,80,58,80,70,58],
+  korshort:[76,48,80,54,44,50,74,82],russianblue:[74,46,78,52,46,48,76,84],persian:[56,40,66,46,48,40,70,70]};
+const TEAM_COL={A:'#d4473a',B:'#2f7fd0'},TEAM_KO={A:'A팀 (빨강)',B:'B팀 (파랑)'};
+const ROLE_KO={GK:'골키퍼',DEF:'수비수',MID:'미드필더',FWD:'공격수',SUB:'교체 선수'};
+const VILLAGERS=[['준민','남'],['윤서','남'],['아선','여'],['희소','여'],['아윤','여'],['리율','여'],['오지','남'],['감자용','남'],['준태','남'],['현태','남'],['희태','여'],['린태','여'],['현서','여'],['우서','여'],['준하','남'],['윤채','여'],['리설','여'],['성망','남'],['원주','여'],['하루','남'],['생츈','남'],['라아','여'],['호지','남'],['호건','남'],['호준','남'],['황트','남']];
+const VILLAGE_FROM=['1학년','2학년','3학년','4학년','5학년','6학년','양로원'];
+const TACTICS={A:{form:'bal',press:'mid',pass:'short',shoot:'mid',line:'mid'},B:{form:'bal',press:'mid',pass:'short',shoot:'mid',line:'mid'}};
+const TAC_OPTS={form:['포메이션',[['atk','공격형'],['bal','균형'],['def','수비형']]],press:['압박',[['low','낮게 (1명)'],['mid','보통 (2명)'],['high','강하게 (3명)']]],
+  pass:['공격 방식',[['short','짧은 패스'],['long','롱볼'],['dribble','드리블 위주']]],shoot:['슈팅 거리',[['near','가까이서만'],['mid','보통'],['far','멀리서도']]],line:['수비 라인',[['low','낮게'],['mid','보통'],['high','높게']]]};
+const BENCH=2;
+let match=null,soccerStats={A:0,B:0,draw:0};
+
+function genSkills(breed){const b=BREED_SKILL[breed]||BREED_SKILL.golden,o={};SKILL_KEYS.forEach((k,i)=>o[k]=Math.round(clamp(b[i]+rand(-12,12),20,99)));return o}
+function mixSkills(a,b){const o={};SKILL_KEYS.forEach(k=>o[k]=Math.round(clamp(((a?a[k]:60)+(b?b[k]:(a?a[k]:60)))/2+rand(-8,8),20,99)));return o}
+function villagerSkills(elder,g){const o={};
+  const base=elder?{spd:32,sta:38,dri:50,sho:45,pas:66,tac:45,gk:52,rea:44}:{spd:38+g*6,sta:40+g*5,dri:36+g*6,sho:32+g*6,pas:34+g*6,tac:32+g*5,gk:34+g*5,rea:40+g*5};
+  SKILL_KEYS.forEach(k=>o[k]=Math.round(clamp(base[k]+rand(-10,10),15,95)));return o}
+function effSkill(d,k){let v=(d.skills||{})[k]||50;const a=d.age;if(a!=null){if(a<1)v*=0.55+0.45*a;else if(a>9)v*=Math.max(0.6,1-(a-9)*0.05)}return Math.round(clamp(v,5,99))}
+function ovr(d){const w={spd:.18,sta:.12,dri:.16,sho:.16,pas:.14,tac:.14,rea:.10};let s=0;for(const k in w)s+=effSkill(d,k)*w[k];return Math.round(s)}
+function skillLine(d){return SKILL_KEYS.map(k=>`${SKILL_KO[k]} ${effSkill(d,k)}`).join(' · ')}
+function actorDesc(p){return p.villager?`${p.from} · ${p.sex}`:`${BREEDS[p.breed]?BREEDS[p.breed].n:''} · ${fmtAge(p.age)}`}
+
+function makeVillager(team,used){
+  const pool=VILLAGERS.filter(v=>!used.has(v[0]));let [name,sex]=pool.length?pick(pool):pick(VILLAGERS);
+  let nm=name,i=2;while(used.has(nm))nm=name+(i++);used.add(nm);
+  let num=VILLAGERS.findIndex(v=>v[0]===name)+1;if(nm!==name)num=60+used.size;
+  const from=pick(VILLAGE_FROM),elder=from==='양로원',g=elder?0:parseInt(from,10);const k=elder?0.95:0.58+0.06*g;
+  const m=makeHuman(`${num} ${nm}`,{number:num,shirt:TEAM_COL[team],pants:'#f2f2f2',hair:elder?'#d9d9d9':(sex==='여'?'#4a2a1a':'#1e1510'),skin:pick(['#e8b894','#d9a57c','#f0c8a0']),scale:k,labelBg:TEAM_COL[team],long:sex==='여'});
+  const v={species:'human',villager:true,name:nm,sex,from,k,baseK:k,r:0.2*k+0.06,pos:new THREE.Vector2(),heading:0,speed:0,stamina:100,health:100,happy:70,
+    stuck:{t:0,d:1e9},detour:null,thruDoor:false,g:m.g,root:m.g,legs:m.legs,arms:m.arms,lbl:m.lbl,walkPh:0,skills:name==='준민'?Object.fromEntries(SKILL_KEYS.map(k=>[k,99])):villagerSkills(elder,g),elder,num,hair:elder?'#d9d9d9':(sex==='여'?'#4a2a1a':'#1e1510')};
+  log(`${elder?'🏡':'🏫'} ${from}에서 ${nm}(${sex})${josa(nm,'을','를')} 보내줬어요`,'good',true);
+  return v;
+}
+function addVest(d,team){
+  removeVest(d);const c=TEAM_COL[team];
+  const v=d.species==='cat'?box(0.27,0.2,0.2,c,0.03,0.27,0):box(0.34,0.27,0.28,c,0.04,0.33,0);
+  const st=d.species==='cat'?box(0.04,0.205,0.205,'#ffffff',0.03,0.27,0):box(0.05,0.275,0.285,'#ffffff',0.04,0.33,0);
+  d.pose.add(v,st);d.vest=[v,st];setSprite(d.label,d.name,c);
+}
+function removeVest(d){if(d.vest){d.vest.forEach(m=>d.pose.remove(m));d.vest=null}setSprite(d.label,d.name,d.stray?'rgba(140,60,40,.85)':'rgba(12,20,22,.78)')}
+function formationSlots(n,form){
+  const out=[{role:'GK',u:0.03,v:0}];const f=n-1;if(f<=0)return out;
+  const r={atk:[0.3,0.3,0.4],bal:[0.4,0.35,0.25],def:[0.5,0.35,0.15]}[form]||[0.4,0.35,0.25];
+  let d=Math.max(1,Math.round(f*r[0])),fw=Math.max(f>=3?1:0,Math.round(f*r[2]));let m=f-d-fw;if(m<0){fw=Math.max(0,fw+m);m=f-d-fw}
+  for(const [role,k,u] of [['DEF',d,0.2],['MID',m,0.44],['FWD',fw,0.68]])for(let i=0;i<k;i++)out.push({role,u,v:k===1?0:-0.78+1.56*i/(k-1)});
+  return out;
+}
+function assignRoles(t){
+  const M=match,team=M[t].filter(p=>!p.dead);if(!team.length)return;
+  const sl=formationSlots(team.length,M.tac[t].form);
+  const gk=team.reduce((a,b)=>effSkill(b,'gk')>effSkill(a,'gk')?b:a);
+  const field=team.filter(p=>p!==gk).sort((a,b)=>(effSkill(b,'sho')+effSkill(b,'spd')-effSkill(b,'tac'))-(effSkill(a,'sho')+effSkill(a,'spd')-effSkill(a,'tac')));
+  const fs=sl.filter(s=>s.role!=='GK').sort((a,b)=>b.u-a.u||a.v-b.v);
+  gk.sc.slot=sl[0];field.forEach((p,i)=>p.sc.slot=fs[i]||{role:'MID',u:0.44,v:rand(-0.6,0.6)});
+}
+const allPlayers=()=>match?[...match.A,...match.B]:[];
+const allActors=()=>match?[...match.A,...match.B,...match.bench.A,...match.bench.B]:[];
+function dirOf(t){return t==='A'?1:-1}
+function pAC(p){return fromW(match.P,p.pos.x,p.pos.y)}
+function ballDist(p){return Math.hypot(p.pos.x-match.ball.pos.x,p.pos.y-match.ball.pos.z)}
+function homePos(p){
+  const M=match,P=M.P,t=p.sc.team,dir=dirOf(t),T=M.tac[t],sl=p.sc.slot||{u:0.4,v:0};
+  const bw=fromW(P,M.ball.pos.x,M.ball.pos.z),uBall=dir*bw.a/P.len+0.5;
+  const poss=M.carrier?(M.carrier.sc.team===t?1:-1):0,lineOff={low:-0.07,mid:0,high:0.08}[T.line];
+  let u=clamp(sl.u+lineOff+(uBall-0.5)*0.4+poss*0.07,0.06,0.94),v=clamp(sl.v*0.85+(bw.c/(P.wid/2))*0.2,-0.95,0.95);
+  return toW(P,dir*(u-0.5)*P.len,v*P.wid/2);
+}
+function soccerSpeed(p){
+  const base=p.species==='cat'?3.0*Math.sqrt(p.k):p.species==='human'?(p.elder?1.5:1.4+1.4*p.k):2.6*Math.sqrt(p.k);
+  return base*(0.7+0.6*effSkill(p,'spd')/100)*(0.55+0.45*clamp(p.stamina)/100);
+}
+function moveTo(p,x,z,sp,dt){const d=steer(p,x,z,sp,dt);if(d<0.15){p.speed=0;const b=match.ball.pos;face(p,b.x,b.z,dt)}return d}
+function kickBall(p,tx,tz,power,loft,err){
+  const M=match,b=M.ball;let dx=tx-b.pos.x,dz=tz-b.pos.z;const l=Math.hypot(dx,dz)||1;dx/=l;dz/=l;
+  const e=rand(-err,err),c=Math.cos(e),s=Math.sin(e);const rx=dx*c-dz*s,rz=dx*s+dz*c;
+  b.vel.set(rx*power,loft,rz*power);b.pos.y=Math.max(b.pos.y,b.r+0.02);
+  M.carrier=null;M.lastTouch=p;p.sc.cd=0.45;if(p.root)p.root.userData.barkPulse=1;p.heading=Math.atan2(rz,rx);
+  blip(240+power*12,0.05,0.07);
+}
+function goalTarget(t){const P=match.P;return toW(P,dirOf(t)*(P.len/2+0.4),rand(-P.goalW*0.4,P.goalW*0.4))}
+function shoot(p,dirOverride){
+  const sho=effSkill(p,'sho'),T=dirOverride||goalTarget(p.sc.team);
+  kickBall(p,T.x,T.z,7+6*sho/100+p.k*1.2,rand(0.4,2.4)*sho/100,(1-sho/100)*0.32);p.sc.shots=(p.sc.shots||0)+1;
+}
+function openness(q){const foes=match[q.sc.team==='A'?'B':'A'];let m=9;for(const f of foes){const d=dist(f,q);if(d<m)m=d}return m}
+function bestPassTarget(p,style,cone){
+  const M=match,t=p.sc.team,dir=dirOf(t),me=pAC(p);let best=null,bs=-3;
+  for(const q of M[t]){if(q===p||q.dead)continue;const d=dist(p,q);if(d<1.5||d>(style==='long'?18:9))continue;
+    if(cone){const ang=Math.atan2(q.pos.y-p.pos.y,q.pos.x-p.pos.x);let da=Math.abs(ang-p.heading);if(da>Math.PI)da=2*Math.PI-da;if(da>cone)continue}
+    const qa=pAC(q),op=openness(q);if(op<0.7)continue;
+    const sc=dir*(qa.a-me.a)*(style==='long'?1.2:0.8)+Math.min(op,3)*1.2-(q.sc.slot&&q.sc.slot.role==='GK'?4:0)+rand(0,1);
+    if(sc>bs){bs=sc;best=q}}
+  return best;
+}
+function passTo(p,q,style){
+  const d=dist(p,q),pas=effSkill(p,'pas');const lob=style==='long'&&d>8;
+  const lead=0.6;const tx=q.pos.x+Math.cos(q.heading)*q.speed*lead*0.3,tz=q.pos.y+Math.sin(q.heading)*q.speed*lead*0.3;
+  kickBall(p,tx,tz,lob?d*0.62+2.2:d*1.05+1.8,lob?Math.min(6,d*0.32):0.3,(1-pas/100)*0.22);p.sc.passes=(p.sc.passes||0)+1;
+}
+function tryTackle(p,dt,boost){
+  const M=match,c=M.carrier;if(!c||c.sc.team===p.sc.team||p.sc.cd>0)return false;
+  if(dist(p,c)>p.r+c.r+0.35)return false;
+  const ch=boost?0.3+0.45*effSkill(p,'tac')/100:dt*1.4*(effSkill(p,'tac')+20)/(effSkill(c,'dri')+40)*Math.sqrt(p.k/c.k);
+  if(Math.random()<ch){const b=M.ball;M.carrier=null;c.sc.cd=0.8;p.sc.cd=0.15;
+    const a=Math.atan2(c.pos.y-p.pos.y,c.pos.x-p.pos.x)+rand(-1,1);b.vel.set(Math.cos(a)*3,0.3,Math.sin(a)*3);M.lastTouch=p;p.sc.tackles=(p.sc.tackles||0)+1;
+    if(p.root)p.root.userData.barkPulse=1;blip(160,0.06,0.08);return true}
+  if(boost)p.sc.cd=0.4;return false;
+}
+function carrierAI(p,dt,sp){
+  const M=match,P=M.P,t=p.sc.team,dir=dirOf(t),T=M.tac[t];
+  const g=toW(P,dir*P.len/2,0),dG=Math.hypot(g.x-p.pos.x,g.z-p.pos.y);
+  const foes=M[t==='A'?'B':'A'];let nf=null,nd=9;for(const f of foes){const d=dist(f,p);if(d<nd){nd=d;nf=f}}
+  p.sc.think-=dt;
+  if(p.sc.think<=0){p.sc.think=0.22+(1-effSkill(p,'rea')/100)*0.5;
+    if(p.sc.slot&&p.sc.slot.role==='GK'){const q=bestPassTarget(p,'long');if(q)passTo(p,q,'long');else{const tg=toW(P,dir*P.len*0.15,rand(-P.wid/3,P.wid/3));kickBall(p,tg.x,tg.z,11,3,0.2)}return}
+    const sr=P.len*{near:0.2,mid:0.3,far:0.42}[T.shoot];
+    if(dG<sr&&(Math.random()<0.55||dG<P.len*0.14)){shoot(p);return}
+    const pressured=nd<1.4,pp={short:pressured?0.65:0.22,long:pressured?0.5:0.18,dribble:pressured?0.28:0.04}[T.pass];
+    if(Math.random()<pp){const q=bestPassTarget(p,T.pass==='dribble'?'short':T.pass);if(q){passTo(p,q,T.pass);return}}
+  }
+  // dribble toward goal, stepping around the nearest defender
+  const me=pAC(p);let tc=0;
+  if(nf&&nd<2.2){const fa=pAC(nf);if(dir*(fa.a-me.a)>0)tc=me.c+(me.c>=fa.c?1.6:-1.6)}
+  const tgt=toW(P,dir*P.len/2,clamp(tc*0.7,-P.wid/2+0.6,P.wid/2-0.6));
+  steer(p,tgt.x,tgt.z,sp*(0.78+0.16*effSkill(p,'dri')/100),dt);
+}
+function gkAI(p,dt,sp){
+  const M=match,P=M.P,t=p.sc.team,dir=dirOf(t),b=M.ball,bw=fromW(P,b.pos.x,b.pos.z);
+  const ownA=-dir*P.len/2,dBall=Math.hypot(bw.a-ownA,bw.c);
+  if(!M.carrier&&dBall<3.2&&b.vel.length()<6){moveTo(p,b.pos.x,b.pos.z,sp,dt);return}
+  let c=clamp(bw.c*0.55,-P.goalW/2+0.2,P.goalW/2-0.2);
+  // read a shot coming in: slide to where it will cross the line
+  const va=P.lx?b.vel.x:b.vel.z,vc=P.lx?b.vel.z:b.vel.x;
+  if(!M.carrier&&va*dir<-3){const tt=(ownA-bw.a)/va;if(tt>0&&tt<1.5)c=clamp(bw.c+vc*tt,-P.goalW/2,P.goalW/2)}
+  const w=toW(P,ownA+dir*0.5,c);moveTo(p,w.x,w.z,sp*(0.8+0.4*effSkill(p,'rea')/100),dt);
+}
+function soccerAI(p,dt){
+  const M=match,t=p.sc.team,T=M.tac[t],sp=soccerSpeed(p);
+  if(M.carrier===p){carrierAI(p,dt,sp);return}
+  if(p.sc.slot&&p.sc.slot.role==='GK'){gkAI(p,dt,sp);return}
+  const myPoss=M.carrier&&M.carrier.sc.team===t;
+  if(myPoss){const h=homePos(p);moveTo(p,h.x,h.z,sp*0.8,dt);return}
+  const pressN={low:1,mid:2,high:3}[T.press];
+  const ranked=M[t].filter(q=>!q.dead&&!(q.sc.slot&&q.sc.slot.role==='GK')&&q!==M.ctrl).sort((x,y)=>ballDist(x)-ballDist(y));
+  if(ranked.indexOf(p)>-1&&ranked.indexOf(p)<pressN){
+    const b=M.ball,lead=Math.min(0.8,ballDist(p)/Math.max(1,sp));
+    moveTo(p,b.pos.x+b.vel.x*lead*0.5,b.pos.z+b.vel.z*lead*0.5,sp,dt);tryTackle(p,dt,false);
+  }else{const h=homePos(p);moveTo(p,h.x,h.z,sp*0.85,dt)}
+}
+function soccerCtrl(p,dt){
+  const M=match,k=player.keys,sp=soccerSpeed(p)*(k.sprint?1.25:0.95);
+  if(k.sprint&&p.speed>0.3)p.stamina=Math.max(0,p.stamina-dt*0.25);
+  playerMove(p,dt,sp);
+  const act=M.act;M.act=null;if(!act)return;
+  const near=M.carrier===p||(!M.carrier&&ballDist(p)<p.r+M.ball.r+0.45&&M.ball.pos.y<0.6);
+  if(act==='shoot'){
+    if(near){const P=M.P,hx=Math.cos(p.heading),hz=Math.sin(p.heading),g=toW(P,dirOf(p.sc.team)*P.len/2,0);
+      const toGoal=Math.atan2(g.z-p.pos.y,g.x-p.pos.x);let da=Math.abs(toGoal-p.heading);if(da>Math.PI)da=2*Math.PI-da;
+      if(da<0.7){shoot(p)}else kickBall(p,p.pos.x+hx*10,p.pos.y+hz*10,7+6*effSkill(p,'sho')/100,1.2,(1-effSkill(p,'sho')/100)*0.25)}
+    else tryTackle(p,dt,true);
+  }else if(act==='pass'&&near){const q=bestPassTarget(p,'short',0.9)||bestPassTarget(p,'long',1.2)||bestPassTarget(p,'long');if(q)passTo(p,q,dist(p,q)>8?'long':'short')}
+}
+function switchCtrl(force){
+  const M=match;if(!M||!M.ctrlTeam||M.ctrlMode!=='team')return;
+  const cand=M[M.ctrlTeam].filter(q=>!q.dead&&!(q.sc.slot&&q.sc.slot.role==='GK'));if(!cand.length)return;
+  const mine=M.carrier&&M.carrier.sc.team===M.ctrlTeam;
+  const best=mine?M.carrier:cand.reduce((a,b)=>ballDist(b)<ballDist(a)?b:a);
+  if(force||!M.ctrl||(best!==M.ctrl&&(mine||ballDist(M.ctrl)-ballDist(best)>1.5)))M.ctrl=best;
+}
+function soccerTick(p,dt){
+  const M=match;p.sc.cd=Math.max(0,p.sc.cd-dt);
+  if(M.phase!=='play'){p.speed=0;
+    if(M.phase==='goal'&&p.sc.team===M.lastGoal){p.sc.jump=(p.sc.jump||0)+dt}
+    if(M.phase!=='rollcall'){const b=M.ball.pos;face(p,b.x,b.z,dt)}
+  }else if(M.ctrl===p)soccerCtrl(p,dt);else soccerAI(p,dt);
+  if(p.speed>0.5)p.stamina=Math.max(0,p.stamina-dt*0.06*(1.6-effSkill(p,'sta')/100));else p.stamina=Math.min(100,p.stamina+dt*0.03);
+  if(p.species!=='human'){p.happy=clamp(p.happy+dt*0.06);
+    const celebrate=M.phase==='goal'&&p.sc.team===M.lastGoal;
+    p.anim={sit:false,lie:false,tongue:p.speed>1.5,emo:celebrate?'⚽!':M.ctrl===p?'🎮':M.carrier===p?'⚽':(M.phase==='rollcall'&&M.rc&&M.rc.list[M.rc.i]===p?'🙋':'')}}
+}
+function benchSpot(t,i){const P=match.P;return toW(P,dirOf(t)*(-1.5-i*0.9),-(P.wid/2+0.9))}
+function substitute(t,manual){
+  const M=match;if(!M||!M.bench[t].length||M.subsLeft[t]<=0)return false;
+  const tired=M[t].filter(p=>!p.dead&&p!==M.ctrl&&!(p.sc.slot&&p.sc.slot.role==='GK')).sort((a,b)=>a.stamina-b.stamina)[0];if(!tired)return false;
+  if(!manual&&tired.stamina>25)return false;
+  const sub=M.bench[t].shift();M.subsLeft[t]--;
+  const i=M[t].indexOf(tired);M[t][i]=sub;sub.sc.slot=tired.sc.slot;tired.sc.slot={role:'SUB',u:0,v:0};
+  const spot=toW(M.P,0,-(M.P.wid/2-0.4));sub.pos.set(spot.x,spot.z);
+  M.out[t].push(tired);const bs=benchSpot(t,M.out[t].length+1);tired.pos.set(bs.x,bs.z);tired.speed=0;if(M.carrier===tired)M.carrier=null;
+  log(`🔁 ${TEAM_KO[t]} 교체: ${tired.name} ↔ ${sub.name}`,'',true);toast(`🔁 ${t}팀 교체: ${tired.name} 나가고 ${sub.name} 들어가요`,false,true);
+  return true;
+}
+function ballBounds(){
+  const M=match,P=M.P,b=M.ball,br=b.r;let {a,c}=fromW(P,b.pos.x,b.pos.z);
+  let va=P.lx?b.vel.x:b.vel.z,vc=P.lx?b.vel.z:b.vel.x;const hl=P.len/2,hw=P.wid/2;let goal=null;
+  if(c>hw-br){c=hw-br;vc=-Math.abs(vc)*0.6}else if(c<-hw+br){c=-hw+br;vc=Math.abs(vc)*0.6}
+  if(Math.abs(a)>hl-br){const mouth=Math.abs(c)<P.goalW/2-br&&b.pos.y<P.goalH;
+    if(mouth){if(Math.abs(a)>hl+br)goal=a>0?'A':'B';if(Math.abs(a)>hl+0.5){a=Math.sign(a)*(hl+0.5);va=0}}
+    else if(Math.abs(a)<hl+0.05||Math.abs(c)>P.goalW/2){a=Math.sign(a)*(hl-br);va=-va*0.55}}
+  const w=toW(P,a,c);b.pos.x=w.x;b.pos.z=w.z;if(P.lx){b.vel.x=va;b.vel.z=vc}else{b.vel.z=va;b.vel.x=vc}
+  return goal;
+}
+function ballStep(dt){
+  const M=match,b=M.ball;
+  if(M.carrier){const c=M.carrier,hx=Math.cos(c.heading),hz=Math.sin(c.heading),off=c.r+b.r+0.04;
+    b.pos.set(c.pos.x+hx*off,b.r,c.pos.y+hz*off);b.vel.set(hx*c.speed,0,hz*c.speed);}
+  else{
+    b.vel.y+=G*dt;b.pos.addScaledVector(b.vel,dt);
+    if(b.pos.y<b.r){b.pos.y=b.r;if(b.vel.y<-1.2)b.vel.y*=-0.45;else b.vel.y=0}
+    const f=Math.exp((b.pos.y<=b.r+0.01?-1.1:-0.15)*dt);b.vel.x*=f;b.vel.z*=f;
+  }
+  const g=ballBounds();
+  b.mesh.position.copy(b.pos);b.mesh.rotation.x+=b.vel.z*dt/b.r;b.mesh.rotation.z-=b.vel.x*dt/b.r;
+  if(g)onGoal(g);
+}
+function possessionStep(dt){
+  const M=match,b=M.ball;if(M.carrier||b.pos.y>0.5)return;
+  const spd=Math.hypot(b.vel.x,b.vel.z);
+  const cands=allPlayers().filter(p=>!p.dead&&p.sc.cd<=0).map(p=>({p,d:ballDist(p)})).sort((x,y)=>x.d-y.d);
+  for(const {p,d} of cands){
+    const gk=p.sc.slot&&p.sc.slot.role==='GK',reach=p.r+b.r+0.12+(gk?0.3:0);if(d>reach)break;
+    if(spd>5){const ch=gk?0.3+0.62*effSkill(p,'gk')/100:0.15+0.35*effSkill(p,'rea')/100;
+      if(Math.random()<ch){if(gk){M.carrier=p;M.lastTouch=p;b.vel.set(0,0,0);p.sc.saves=(p.sc.saves||0)+1;log(`🧤 ${p.name} 선방!`,'good',true)}
+        else{b.vel.x*=-0.35;b.vel.z*=-0.35;b.vel.x+=rand(-1.5,1.5);b.vel.z+=rand(-1.5,1.5);p.sc.cd=0.3;M.lastTouch=p}}
+      else p.sc.cd=0.35;
+      return;
+    }
+    M.carrier=p;M.lastTouch=p;return;
+  }
+}
+function lineup(){ // everyone in their own half, ready for kickoff
+  const M=match,P=M.P;
+  for(const t of['A','B'])for(const p of M[t]){const h=homePos(p),hc=fromW(P,h.x,h.z);const dir=dirOf(t);let a=hc.a;if(dir*a>-0.6)a=-dir*0.6-dir*rand(0,1.2);
+    if(p.sc.slot&&p.sc.slot.role==='GK')a=-dir*(P.len/2-0.5);const w=toW(P,a,hc.c);p.pos.set(w.x,w.z);const f0=toW(P,0,0),f1=toW(P,dir,0);p.heading=Math.atan2(f1.z-f0.z,f1.x-f0.x);p.speed=0}
+  for(const t of['A','B'])M.bench[t].forEach((p,i)=>{const s=benchSpot(t,i);p.pos.set(s.x,s.z)});
+  for(const t of['A','B'])M.out[t].forEach((p,i)=>{const s=benchSpot(t,i+M.bench[t].length+1);p.pos.set(s.x,s.z)});
+}
+function kickoff(t){
+  const M=match,P=M.P,b=M.ball;M.carrier=null;b.vel.set(0,0,0);const c=toW(P,0,0);b.pos.set(c.x,b.r,c.z);
+  lineup();
+  const k=M[t].filter(p=>!p.dead&&!(p.sc.slot&&p.sc.slot.role==='GK')).sort((a,b2)=>(b2.sc.slot.u||0)-(a.sc.slot.u||0))[0];
+  if(k){const w=toW(P,-dirOf(t)*0.35,0);k.pos.set(w.x,w.z);k.heading=Math.atan2(c.z-w.z,c.x-w.x);M.carrier=k}
+  M.phase='kickoff';M.phaseT=1.2;switchCtrl(true);
+}
+function onGoal(t){
+  const M=match;if(M.phase!=='play')return;M.score[t]++;M.lastGoal=t;
+  const sc=M.lastTouch&&M.lastTouch.sc.team===t?M.lastTouch:null;if(sc)sc.sc.goals=(sc.sc.goals||0)+1;
+  M.goals.push({t,who:sc?sc.name:'자책골',min:M.t});
+  const msg=`⚽ 골! ${TEAM_KO[t]} ${sc?sc.name:'(자책골)'} · ${M.score.A} : ${M.score.B}`;log(msg,'good',true);toast(msg,false,true);
+  for(const p of M[t])if(p.species!=='human')p.happy=clamp(p.happy+5);
+  for(let i=0;i<3;i++)setTimeout(()=>blip(660+i*220,0.12,0.09),i*120);
+  if(soundOn&&'speechSynthesis' in window){try{const u=new SpeechSynthesisUtterance(`골! ${sc?sc.name:''}`);u.lang='ko-KR';u.rate=1.2;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
+  M.carrier=null;M.phase='goal';M.phaseT=3;M.nextKick=t==='A'?'B':'A';
+}
+function updateMatch(dt){
+  const M=match;if(!M)return;
+  for(const t of['A','B']){M[t]=M[t].filter(p=>!p.dead);M.bench[t]=M.bench[t].filter(p=>!p.dead)}
+  if(M.ctrl&&M.ctrl.dead)M.ctrl=null;
+  if(M.phase==='rollcall'||M.phase==='lineup'||M.phase==='end')return;
+  for(const p of [...M.villagers,...M.bench.A,...M.bench.B,...M.out.A,...M.out.B])if(!M.A.includes(p)&&!M.B.includes(p)){p.speed=0;if(p.species!=='human')p.anim={sit:true,emo:''}}
+  for(const v of M.villagers)if(M.A.includes(v)||M.B.includes(v))soccerTick(v,dt);
+  if(M.phase==='kickoff'){M.phaseT-=dt;if(M.phaseT<=0)M.phase='play'}
+  else if(M.phase==='goal'){M.phaseT-=dt;if(M.phaseT<=0)kickoff(M.nextKick)}
+  else if(M.phase==='play'){
+    M.t+=dt;
+    M.swT=(M.swT||0)-dt;if(M.swT<=0){M.swT=0.5;switchCtrl(false);for(const t of['A','B'])substitute(t,false)}
+    possessionStep(dt);
+    if(M.t>=M.len){finishMatch();return}
+  }
+  ballStep(dt);
+}
+function finishMatch(){
+  const M=match;M.phase='end';M.carrier=null;
+  const w=M.score.A>M.score.B?'A':M.score.B>M.score.A?'B':null;
+  if(M.only){if(w)soccerStats[w]++;else soccerStats.draw++}
+  const scorers={};M.goals.forEach(g=>{if(g.who!=='자책골')scorers[g.who]=(scorers[g.who]||0)+1});
+  const top=Object.entries(scorers).sort((a,b)=>b[1]-a[1]);
+  const all=[...M.A,...M.B,...M.out.A,...M.out.B];
+  const mvp=all.length?all.reduce((a,b)=>((b.sc.goals||0)*3+(b.sc.saves||0)*2+(b.sc.tackles||0)+(b.sc.passes||0)*0.3)>((a.sc.goals||0)*3+(a.sc.saves||0)*2+(a.sc.tackles||0)+(a.sc.passes||0)*0.3)?b:a):null;
+  $('#mrTitle').textContent=w?`${TEAM_KO[w]} 승리!`:'무승부';
+  $('#mrText').textContent=`최종 스코어 ${M.score.A} : ${M.score.B}. ${top.length?'득점: '+top.map(([n,c])=>`${n} ${c}골`).join(', ')+'. ':'골이 없었어요. '}${mvp?`MVP: ${mvp.name}.`:''}`;
+  $('#matchRes').hidden=false;
+  log(`🏁 경기 끝 · ${M.score.A} : ${M.score.B}${w?` · ${TEAM_KO[w]} 승리`:' · 무승부'}`,'good',true);
+  for(let i=0;i<3;i++)setTimeout(()=>blip(880,0.25,0.08),i*350);
+}
+function cleanupMatch(silent){
+  const M=match;if(!M)return;
+  scene.remove(M.ball.mesh);
+  for(const v of M.villagers)scene.remove(v.g);
+  for(const p of allActors().concat(M.out.A,M.out.B))if(p.species!=='human'&&!p.dead){removeVest(p);p.sc=null;p.state='idle';p.think=1}
+  if(!silent&&M.villagers.length)log(`👋 동네에서 온 ${M.villagers.length}명이 집으로 돌아갔어요`,'',true);
+  match=null;$('#soccerHud').hidden=true;$('#rollcall').hidden=true;$('#matchRes').hidden=true;$('#touchPad').hidden=true;
+  if(camMode==='soccer')setCamMode('free');
+}
+function makeSoccerBall(){
+  const m=sph(0.12,'#f7f7f7',0,0,0,{roughness:0.5});
+  for(let i=0;i<12;i++){const ph=Math.acos(1-2*(i+0.5)/12),th=Math.PI*(1+Math.sqrt(5))*i;const d=sph(0.035,'#1b1b1b',0.112*Math.sin(ph)*Math.cos(th),0.112*Math.cos(ph),0.112*Math.sin(ph)*Math.sin(th));d.scale.set(1,1,0.5);d.lookAt(0,0,0);m.add(d)}
+  scene.add(m);return m;
+}
+// cfg: {P, pets, size, len, me, only}
+function startMatch(cfg){
+  if(match)cleanupMatch(true);
+  const P=cfg.P,size=cfg.size;
+  const pets=cfg.pets.slice().sort(()=>Math.random()-0.5).slice(0,(size+BENCH)*2);
+  const M={P,size,len:cfg.len,only:!!cfg.only,A:[],B:[],bench:{A:[],B:[]},out:{A:[],B:[]},subsLeft:{A:BENCH,B:BENCH},villagers:[],score:{A:0,B:0},goals:[],t:0,phase:'prep',carrier:null,lastTouch:null,
+    tac:TACTICS,ctrl:null,ctrlMode:null,ctrlTeam:null,act:null,ball:{r:0.12,pos:new THREE.Vector3(),vel:new THREE.Vector3(),mesh:null}};
+  match=M;M.ball.mesh=makeSoccerBall();const c0=toW(P,0,0);M.ball.pos.set(c0.x,0.12,c0.z);M.ball.mesh.position.copy(M.ball.pos);
+  // random teams: starters first, then the bench
+  const sq={A:[],B:[]};pets.forEach((d,i)=>sq[i%2?'B':'A'].push(d));
+  const used=new Set(dogs.map(d=>d.name));
+  for(const t of['A','B']){
+    while(sq[t].length<size+BENCH){const v=makeVillager(t,used);M.villagers.push(v);sq[t].push(v)}
+    sq[t].forEach((p,i)=>{p.sc={team:t,cd:0,think:0,slot:null,goals:0};if(p.species!=='human'){addVest(p,t);setSprite(p.label,`${kitNo(p)} ${p.name}`,TEAM_COL[t]);if(p.ball){p.ball.chasedBy=null;p.ball=null}p.state='soccer';p.target=null;p.detour=null}});
+    M[t]=sq[t].slice(0,size);M.bench[t]=sq[t].slice(size);M.bench[t].forEach(p=>p.sc.slot={role:'SUB',u:0,v:0});
+  }
+  assignRoles('A');assignRoles('B');
+  // line up for the roll call along the halfway line, facing the camera side
+  const lineupRC=(t,list,a)=>list.forEach((p,i)=>{const n=list.length,w=toW(P,a,n>1?-P.wid*0.42+P.wid*0.84*i/(n-1):0);p.pos.set(w.x,w.z);const cam=toW(P,0,-P.wid);p.heading=Math.atan2(cam.z-w.z,cam.x-w.x)});
+  lineupRC('A',[...M.A,...M.bench.A],-Math.min(2,P.len*0.12));lineupRC('B',[...M.B,...M.bench.B],Math.min(2,P.len*0.12));
+  M.rc={list:[...M.A,...M.bench.A,...M.B,...M.bench.B],i:-1,t:0.5,done:false};M.phase='rollcall';
+  // camera on the sideline
+  camMode='soccer';$$('#camModes .chip').forEach(b=>b.setAttribute('aria-pressed','false'));controls.enabled=true;controls.maxPolarAngle=Math.PI*0.47;
+  const cam=toW(P,0,-P.wid*0.95);mainCam.position.set(cam.x,Math.max(4,P.len*0.42),cam.z);controls.target.set(c0.x,0,c0.z);mainCam.fov=50;mainCam.updateProjectionMatrix();controls.update();
+  setSpeed(1);if(world)world.autoDrop=null;
+  $('#rollcall').hidden=false;$('#rcDone').innerHTML='';$('#rcSkip').hidden=M.only;$('#matchRes').hidden=true;
+  $('#soccerHud').hidden=false;$('#sbView').value=cfg.me||'watch';
+  M.pendingView=cfg.me||'watch';
+  log(`⚽ 축구 경기 준비: ${size}:${size} · 교체 명단 ${BENCH}명씩 · ${Math.round(cfg.len/60)}분`,'good',true);
+  buildRoster();
+}
+function rcCard(p,label){
+  const t=p.sc.team;$('#rollcall').style.setProperty('--rc',TEAM_COL[t]);
+  $('#rcTeam').textContent=TEAM_KO[t];$('#rcCount').textContent=label;
+  $('#rcName').textContent=p.name;
+  $('#rcSub').textContent=`${ROLE_KO[p.sc.slot.role]||''} · ${actorDesc(p)} · 종합 ${ovr(p)}`;
+  $('#rcStats').innerHTML=SKILL_KEYS.map(k=>{const v=effSkill(p,k);return `<span class="rc-stat"><span>${SKILL_KO[k]}</span><i><b style="width:${v}%"></b></i><span>${v}</span></span>`}).join('');
+}
+function matchReal(realDt){
+  const M=match;if(!M)return;if(M.phase==='lineup'){lineupStep(realDt);return}if(M.phase!=='rollcall')return;
+  const rc=M.rc;rc.t-=realDt;if(rc.t>0)return;
+  rc.i++;
+  if(rc.i>=rc.list.length){
+    if(!rc.done){rc.done=true;$('#rcName').textContent='킥오프!';$('#rcSub').textContent=`${TEAM_KO.A} vs ${TEAM_KO.B} · 호명이 끝났어요`;$('#rcStats').innerHTML='';rc.t=1.3;return}
+    $('#rollcall').hidden=true;startLineup();return;
+  }
+  const p=rc.list[rc.i],t=p.sc.team,starters=M[t],isSub=!starters.includes(p);
+  const num=isSub?M.bench[t].indexOf(p)+1:starters.indexOf(p)+1;
+  rcCard(p,isSub?`교체 명단 ${num}번째 · 등번호 ${kitNo(p)}`:`선발 ${num}번째 / ${starters.length}명 · 등번호 ${kitNo(p)}`);
+  const chip=document.createElement('span');chip.textContent=`${t} #${kitNo(p)} ${p.name}`;chip.style.borderLeft=`3px solid ${TEAM_COL[t]}`;$('#rcDone').appendChild(chip);
+  if(soundOn&&'speechSynthesis' in window){try{const u=new SpeechSynthesisUtterance(`${t}팀 ${isSub?'교체 ':''}${kitNo(p)}번, ${p.name}`);u.lang='ko-KR';u.rate=1.3;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
+  if(p.root)p.root.userData.barkPulse=1;
+  rc.t=0.95;
+}
+function skipRollcall(){const M=match;if(!M||M.only)return;if(M.phase==='rollcall'){M.rc.i=M.rc.list.length;M.rc.done=true;M.rc.t=0}else if(M.phase==='lineup')endLineup()}
+function setSoccerView(v){
+  const M=match;if(!M)return;M.view=v;
+  M.ctrlMode=v.startsWith('team')?'team':v.startsWith('one')?'one':null;M.ctrlTeam=M.ctrlMode?v.slice(-1):null;M.ctrl=null;player.keys={};
+  if(M.ctrlMode==='team')switchCtrl(true);
+  if(M.ctrlMode==='one'){const list=M[M.ctrlTeam].filter(p=>!p.dead);const sel=$('#sbPick');sel.innerHTML=list.map((p,i)=>`<option value="${i}">${esc(p.name)} · ${ROLE_KO[p.sc.slot.role]} · 종합 ${ovr(p)}</option>`).join('');
+    const pre=list.filter(p=>!(p.sc.slot.role==='GK')).sort((a,b)=>ovr(b)-ovr(a))[0]||list[0];M.ctrl=pre;sel.value=String(list.indexOf(pre))}
+  $('#sbPick').hidden=M.ctrlMode!=='one';$('#sbCtrl').hidden=!M.ctrlMode;$('#touchPad').hidden=!M.ctrlMode;
+  $('#tpAtk').textContent=M.ctrlMode?'슛':'공격';$('#tpEsc').textContent=M.ctrlMode?'패스':'ESCAPE';$('#tpDash').textContent=M.ctrlMode?'질주':'대시';$('#tpTab').textContent=M.ctrlMode?'선수 바꾸기':'다음 아군';
+  camMode='soccer';controls.enabled=true;$$('#camModes .chip').forEach(b=>b.setAttribute('aria-pressed','false'));
+  if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();
+}
+function syncSoccer(){
+  $('#soWinA').textContent=soccerStats.A;$('#soWinB').textContent=soccerStats.B;$('#soDraw').textContent=soccerStats.draw;
+  $('#soccerTag').textContent=match&&!match.only?`${match.score.A} : ${match.score.B}`:'';
+  const M=match;if(!M)return;
+  $('#sbA').textContent=M.score.A;$('#sbB').textContent=M.score.B;
+  const fm=s=>`${String(Math.floor(s/60)).padStart(2,'0')}:${String(Math.floor(s%60)).padStart(2,'0')}`;
+  $('#sbTime').textContent=M.phase==='rollcall'?'선수 호명 중':M.phase==='lineup'?'라인업 발표':M.phase==='end'?'경기 끝':`${fm(M.t)} / ${fm(M.len)}${M.phase==='goal'?' · 골!':M.phase==='kickoff'?' · 킥오프':''}`;
+  $('#sbSubA').textContent=`A 교체 (${M.subsLeft.A})`;$('#sbSubB').textContent=`B 교체 (${M.subsLeft.B})`;
+  $('#sbSubA').disabled=!M.subsLeft.A||!M.bench.A.length||M.phase==='rollcall';$('#sbSubB').disabled=!M.subsLeft.B||!M.bench.B.length||M.phase==='rollcall';
+  if(M.ctrl)$('#sbMe').textContent=`${M.ctrl.name} · ${ROLE_KO[M.ctrl.sc.slot.role]} · 체력 ${Math.round(M.ctrl.stamina)}${M.ctrlMode==='team'?' (팀 조종: 공과 가까운 선수로 자동 전환)':''}`;
+  if((M.rosterT=(M.rosterT||0)+1)%5===0)buildRoster();
+}
+function buildRoster(){
+  const M=match;const html=!M?'':['A','B'].map(t=>{
+    const rows=[...M[t].map(p=>[p,false]),...M.bench[t].map(p=>[p,true]),...M.out[t].map(p=>[p,'out'])];
+    return `<table class="roster"><caption style="color:${TEAM_COL[t]}">${TEAM_KO[t]}</caption><thead><tr><th>번호</th><th>선수</th><th>역할</th>${SKILL_KEYS.map(k=>`<th title="${SKILL_KO[k]}">${SKILL_KO[k].slice(0,2)}</th>`).join('')}<th>종합</th><th>체력</th></tr></thead><tbody>${
+      rows.map(([p,b])=>`<tr class="${b?'bench':''}"><td>${kitNo(p)}</td><td>${p.species==='human'?'🧍':p.species==='cat'?'🐈':'🐕'} ${esc(p.name)}${p.villager?` <small>${p.from}</small>`:''}</td><td>${b==='out'?'교체됨':b?'교체 명단':ROLE_KO[p.sc.slot.role]}</td>${SKILL_KEYS.map(k=>`<td>${effSkill(p,k)}</td>`).join('')}<td><b>${ovr(p)}</b></td><td>${Math.round(p.stamina)}</td></tr>`).join('')}</tbody></table>`}).join('');
+  $('#scRoster').innerHTML=html;$('#soRoster').innerHTML=html;
+}
+function animHuman(a,realDt){
+  if(!a.g)return;a.g.position.set(a.pos.x,0,a.pos.y);a.g.rotation.y=-a.heading;
+  a.walkPh+=a.speed*realDt*speedVisual()*5;const s=a.speed>0.05?Math.sin(a.walkPh)*0.6:0;
+  a.legs[0].rotation.z=s;a.legs[1].rotation.z=-s;a.arms[0].rotation.z=-s*0.8;a.arms[1].rotation.z=s*0.8;
+  const bp=a.g.userData.barkPulse||0;if(bp>0){a.legs[0].rotation.z=1.2*bp;a.g.userData.barkPulse=Math.max(0,bp-realDt*4)}
+  const j=match&&match.phase==='goal'&&a.sc&&a.sc.team===match.lastGoal;a.g.position.y=j?Math.abs(Math.sin(performance.now()/150))*0.3:0;
+}
+
 /* ---------- homecam ---------- */
 const camKeys={};
 function updateHomecamControl(realDt){
@@ -2474,6 +3083,7 @@ function updateHomecamControl(realDt){
   if(camKeys.left)hc.yaw+=sp;if(camKeys.right)hc.yaw-=sp;if(camKeys.up)hc.pitch+=sp*0.8;if(camKeys.down)hc.pitch-=sp*0.8;
   if($('#camTrack').checked){
     let tgt=intruder?intruder.pos:null;
+    if(!tgt&&match)tgt={x:match.ball.pos.x,y:match.ball.pos.z};
     if(!tgt&&fights.length){const c=fightCenter(fights[0]);tgt={x:c.x,y:c.z}}
     if(!tgt&&owner.visiting&&owner.g)tgt=owner.pos;
     if(!tgt){const mv=dogs.filter(d=>d.speed>0.1);const d=(mv.length?mv:dogs)[0];if(d)tgt=d.pos}
@@ -2523,6 +3133,10 @@ function setCamMode(m){
   mainCam.fov=50;mainCam.updateProjectionMatrix();controls.update();
 }
 function updateMainCam(realDt){
+  if(camMode==='soccer'&&match){
+    const M=match,rcP=M.phase==='rollcall'&&M.rc&&M.rc.list[M.rc.i];const t=rcP?{x:rcP.pos.x,z:rcP.pos.y}:M.ctrl?{x:M.ctrl.pos.x,z:M.ctrl.pos.y}:{x:M.ball.pos.x,z:M.ball.pos.z};
+    const k=Math.min(1,realDt*3);const dx=(t.x-controls.target.x)*k,dz=(t.z-controls.target.z)*k;controls.target.x+=dx;controls.target.z+=dz;controls.target.y=0.3;mainCam.position.x+=dx;mainCam.position.z+=dz;controls.update();return;
+  }
   if(camMode==='fight'){
     const f=player.spect;const c=player.ctrl&&!player.ctrl.dead?{x:player.ctrl.pos.x,z:player.ctrl.pos.y}:f?fightCenter(f):{x:controls.target.x,z:controls.target.z};
     const k=Math.min(1,realDt*(player.ctrl?6:3));const dx=(c.x-controls.target.x)*k,dz=(c.z-controls.target.z)*k;
@@ -2583,7 +3197,7 @@ function syncUI(){
   $('#camClock').textContent=`${Math.floor(world.t/1440)+1}일 ${fmtClock(world.t,true)}`;
   const pct=world.tank/world.tankCap;$('#tankFill').style.height=(pct*100)+'%';$('#tankPct').textContent=Math.round(pct*100)+'%';$('#tankMl').textContent=Math.round(world.tank)+'ml';
   $('#gauge').classList.toggle('low',pct<0.2);$('#bowlFill').style.width=(world.bowl/world.bowlCap*100)+'%';
-  $('#foodBowl').textContent=Math.round(world.food)+' g';$('#foodStock').textContent=Math.round(world.stock)+' g';$('#waterTank2').textContent=Math.round(world.tank)+' ml';
+  $('#foodBowl').textContent=Math.round(world.food)+' g';$('#foodStock').textContent=Math.round(feedLeft())+' g';$('#foodBase').textContent=Math.round(world.stock)+' g';$('#foodFarm').textContent=Math.round(world.farmFood)+' g';$('#waterTank2').textContent=Math.round(world.tank)+' ml';
   $('#ballsBox').textContent=`발사기 안 ${balls.filter(b=>b.state==='in').length} / 전체 ${balls.length}`;
   const bt=Object.keys(BALL_TYPES).map(k=>{const all=balls.filter(b=>b.type===k);if(!all.length)return '';const inn=all.filter(b=>b.state==='in').length;const T=BALL_TYPES[k];
     const extra=k==='treat'?` · 간식 ${all.reduce((s,b)=>s+b.treats,0)}`:'';return `<span class="btype"><i class="${k==='frisbee'?'disc':''}" style="background:${T.c}"></i>${T.n} <b>${inn}/${all.length}</b>${extra}</span>`}).join('');
@@ -2602,7 +3216,8 @@ function syncUI(){
   for(const d of dogs){if(!d.card)continue;
     const st=d.card.querySelector('.st');st.textContent=world.fastNow?(d.state==='sleep'?'자는 중':'생활 중'):(STATE_KO[d.state]||d.state);st.classList.toggle('hot',!!d.fight);
     const Bd=BREEDS[d.breed];
-    d.card.querySelector('.meta2').textContent=`${d.sex==='f'?'♀':'♂'} ${Bd?Bd.n:''} · ${fmtAge(d.age)}${d.stray?' · 침입 길고양이':''}${d.pregnant?` · 🤰 임신 ${Math.floor((world.t-d.pregnant.start)/1440)}일째`:''}`;
+    d.card.title=`능력치 · ${skillLine(d)}`;
+    d.card.querySelector('.meta2').textContent=`${d.sex==='f'?'♀':'♂'} ${Bd?Bd.n:''} · ${fmtAge(d.age)} · ⚽${ovr(d)}${d.stray?' · 침입 길고양이':''}${d.pregnant?` · 🤰 임신 ${Math.floor((world.t-d.pregnant.start)/1440)}일째`:''}`;
     const vals=[[d.hunger,true],[d.thirst,true],[Math.max(d.pee,d.poo),true],[d.happy,false],[d.health,false],[d.stamina,false]];
     d.card.querySelectorAll('.bar').forEach((el,i)=>{const [v,bad]=vals[i];const s=el.querySelector('.t span');s.style.width=v+'%';s.style.background=barColor(v,bad);el.querySelector('b').textContent=Math.round(v)});
   }
@@ -2628,7 +3243,8 @@ function syncUI(){
     $('#farmHarv').textContent=F.harvests+'회';$('#farmFood').textContent=Math.round(F.foodMade)+' g';$('#farmSnack').textContent=F.snackMade+'개';
     $('#farmNext').textContent=F.anim>0?'지금':`${Math.ceil((1-F.growth)*C.grow/60)}시간 뒤`}
   $('#fastChip').hidden=!world.fastNow;
-  syncFightHud();
+  syncFightHud();syncSoccer();
+  const sp=$('#scStart');if(sp){const ok=!!(yard&&yard.P);sp.disabled=!ok||!!match;$('#scNote').textContent=match?'경기 중이에요.':ok?`축구장 ${yard.P.len.toFixed(0)}×${yard.P.wid.toFixed(0)}m · 동물이 모자라면 동네에서 보내 줘요.`:'방 꾸미기에서 마당과 "마당에 축구장 만들기"를 켜야 경기할 수 있어요.'}
 }
 
 /* ======================= MAIN LOOP ======================= */
@@ -2636,7 +3252,7 @@ let lastT=performance.now(),uiT=0;
 function frame(now){
   requestAnimationFrame(frame);if(!running)return;
   const realDt=Math.min(0.1,(now-lastT)/1000);lastT=now;
-  const fast=!world.arena&&speed>=FAST_SPEED&&!fights.length&&!intruder&&!owner.visiting&&!dogs.some(d=>d.stray)&&!player.spect;
+  const fast=!world.arena&&speed>=FAST_SPEED&&!fights.length&&!intruder&&!owner.visiting&&!dogs.some(d=>d.stray)&&!player.spect&&!match;
   world.fastNow=fast;
   if(!paused&&!menuOpen){
     quiet=fast;
@@ -2656,7 +3272,7 @@ function frame(now){
       if(world.fastNow){for(const d of dogs.slice())fastAnimal(d,h)}
       else{
         for(const d of dogs.slice())updateDog(d,h);
-        updateOwner(h);for(const f of fights.slice())updateFight(f,h);
+        updateOwner(h);for(const f of fights.slice())updateFight(f,h);if(match)updateMatch(h);
         dogSeparation();updateBalls(h);updateIntruder(h);
         if(world.launchQ>0){world.launchQ-=h;if(world.launchQ<=0){world.launchQ=0;if(ballMode==='auto'&&dogs.some(d=>d.state==='waitThrow'))throwBall(autoThrowVel(),true)}}
         if(world.voiceUntil>0&&world.t>world.voiceUntil&&!world.voiceActive){world.voiceUntil=-1}
@@ -2665,12 +3281,13 @@ function frame(now){
       if(world.breakLoop){world.breakLoop=false;break}
     }
     quiet=false;
+    if(match)matchReal(realDt);
     if(player.dash>0)player.dash-=realDt;
     updateEscape(realDt);
   }
   if(world.fastNow)fastVisual(realDt);
   for(const h of hitPool)if(h.life>0){h.life-=realDt;if(h.life<=0)h.sp.visible=false}
-  for(const d of dogs)animateDog(d,realDt);animIntruder(realDt);animOwner(realDt);farmVisual(realDt);updateFood();updateTrajectory();updateLight();updateTV(realDt);
+  for(const d of dogs)animateDog(d,realDt);animIntruder(realDt);animOwner(realDt);if(match)match.villagers.forEach(v=>animHuman(v,realDt));farmVisual(realDt);updateFood();updateTrajectory();updateLight();updateTV(realDt);
   updateHomecamControl(realDt);updateMainCam(realDt);
   wallVisibility(mainCam);renderer.render(scene,mainCam);
   for(const k in walls)walls[k].visible=true;if(dev.homecam)dev.homecam.group.visible=true;
@@ -2702,13 +3319,13 @@ $('#aimCenter').onclick=()=>{const it=dev.launcher.it;const dx=-it.x,dz=-it.z;le
 $('#throwBtn').onclick=()=>{ac();throwBall(launchDir(),false)};
 $('#portion').oninput=e=>{$('#portionV').textContent=e.target.value+'g'};
 $('#feedBtn').onclick=()=>{
-  const want=parseFloat($('#portion').value);const room=world.foodCap-world.food;const g=Math.min(want,room,world.stock);
-  if(world.stock<=0){toast('사료 통이 비었어요',true);return}if(room<=1){toast('밥그릇이 이미 가득 찼어요');return}
-  world.food+=g;world.stock-=g;log(`밥그릇에 사료 ${Math.round(g)}g을 부었어요`,'good');blip(660,0.06,0.06);
+  const want=parseFloat($('#portion').value);const room=world.foodCap-world.food;if(feedLeft()<=0){toast('사료가 다 떨어졌어요. 기본 사료를 채우거나 농장 수확을 기다려 주세요',true);return}if(room<=1){toast('밥그릇이 이미 가득 찼어요');return}
+  const fromFarm=Math.min(world.farmFood,Math.min(want,room));const g=takeFeed(Math.min(want,room));
+  world.food+=g;log(`밥그릇에 사료 ${Math.round(g)}g을 부었어요${fromFarm>0?` (농장 사료 ${Math.round(fromFarm)}g 포함)`:''}`,'good');blip(660,0.06,0.06);
   dogs.forEach(d=>{if(d.hunger>25&&!['alert','sleep','eat'].includes(d.state))setState(d,'toFood',30)});
 };
 $('#refillBtn').onclick=()=>{world.tank=world.tankCap;world.lowWaterWarned=false;world.flagNoWater=false;log('급수대 물통을 가득 채웠어요','good');toast('급수대 물통을 채웠어요')};
-$('#stockBtn').onclick=()=>{world.stock=3000;log('사료 통을 채웠어요','good')};
+$('#stockBtn').onclick=()=>{world.stock=3000;log('기본 사료 통을 3000g으로 채웠어요','good')};
 $('#padMode').onchange=e=>{if(world)world.pad.mode=e.target.value};
 function setTV(on){
   if(on&&!tvs.length){toast('방에 TV장이 없어요. 방 꾸미기에서 TV장을 놓아 주세요',true);return}
@@ -2733,10 +3350,10 @@ function autoManager(dt){
   world.foodCap=Math.max(150,dogs.length*45);
   if(careMode!=='auto'||world.arena)return;autoT-=dt;if(autoT>0)return;autoT=5;
   const hungry=dogs.some(d=>d.hunger>45);
-  if(world.food<8*Math.max(1,dogs.length/4)&&hungry&&world.stock>0){const g=Math.min(Math.max(60,dogs.length*25),world.foodCap-world.food,world.stock);world.food+=g;world.stock-=g;log(`자동 급식기가 사료 ${Math.round(g)}g을 줬어요`,'good');
+  if(world.food<8*Math.max(1,dogs.length/4)&&hungry&&feedLeft()>0){const g=takeFeed(Math.min(Math.max(60,dogs.length*25),world.foodCap-world.food));world.food+=g;log(`자동 급식기가 사료 ${Math.round(g)}g을 줬어요`,'good');
     dogs.forEach(d=>{if(d.hunger>40&&['idle','sit','wander','waitFood'].includes(d.state))setState(d,'toFood',30)})}
   if(world.tank<world.tankCap*0.25){world.tank=world.tankCap;world.lowWaterWarned=false;world.flagNoWater=false;log('물통이 자동으로 다시 채워졌어요','good')}
-  if(world.stock<400+dogs.length*60){world.stock=Math.max(world.stock,3000);log('사료 통이 자동 주문으로 채워졌어요','good')}
+  if(feedLeft()<400+dogs.length*60){world.stock=Math.max(world.stock,3000);log('사료 통이 자동 주문으로 채워졌어요','good')}
   if(world.snacks<5){world.snacks=30;log('간식이 자동 주문으로 채워졌어요','good')}
   if(world.sheets<4){world.sheets=30;world.pad.noSheetWarned=false;log('배변 시트가 자동으로 보충됐어요','good')}
   if(world.floorMess.length){world.floorAutoT=(world.floorAutoT||0)+5;if(world.floorAutoT>=10){world.floorAutoT=0;const n=world.floorMess.length;world.floorMess.forEach(w=>scene.remove(w.mesh));world.floorMess=[];log(`로봇청소기가 바닥 실수 ${n}곳을 치웠어요`,'good')}}
@@ -2864,7 +3481,7 @@ function startSim(){
   if(layout.yard&&layout.yard.on&&!layout.items.some(i=>i.type==='petdoor')){$('#setupErr').textContent='마당을 쓰려면 벽에 마당 문을 놓아 주세요';return}
   if(layout.items.some(i=>i.type==='farm')&&!farmInYard()){$('#setupErr').textContent='자동화 농장은 마당 안에 있어야 해요. 마당을 켜거나 농장을 지워 주세요';return}
   if(!dogConf.length&&!catConf.length){$('#setupErr').textContent='강아지나 고양이를 한 마리 이상 골라 주세요';return}
-  $('#setupErr').textContent='';arenaConf=null;$('#sim').classList.remove('arena');$('#arenaRes').hidden=true;
+  $('#setupErr').textContent='';arenaConf=null;if(match)cleanupMatch(true);$('#sim').classList.remove('arena','soccer');$('#arenaRes').hidden=true;
   dogConf.forEach((d,i)=>{d.name=($('#dogName'+i).value||'').trim()||d.name;d.age=clamp(parseFloat($('#dogAge'+i).value)||0,0,14)});
   catConf.forEach((d,i)=>{d.name=($('#catName'+i).value||'').trim()||d.name;d.age=clamp(parseFloat($('#catAge'+i).value)||0,0,14)});
   $('#setup').hidden=true;$('#sim').hidden=false;
@@ -2892,17 +3509,161 @@ function startSim(){
 }
 $('#startBtn').onclick=startSim;
 $('#backSetup').onclick=()=>{
-  running=false;if(viewRec)viewRec.stop();if(intruder)intruder=null;if(menuOpen)toggleMenu(false);
+  const wasSoccer=world&&world.soccerOnly;if(match)cleanupMatch(true);
+  running=false;if(viewRec)viewRec.stop();if(intruder)intruder=null;if(menuOpen)toggleMenu(false);if(tacOpen)toggleTac(false);
   $('#sim').hidden=true;$('#setup').hidden=false;['#clockBox','#speedSeg','#pauseBtn','#soundBtn','#backSetup','#modeChip','#escBtn'].forEach(s=>$(s).hidden=true);
-  setAppMode(world&&world.arena?'arena':'home');
+  setAppMode(wasSoccer?'soccer':world&&world.arena?'arena':'home');
 };
 
+
+
+function kitNo(p){
+  if(p.villager)return p.num;
+  if(!p.kit){const used=new Set(dogs.filter(d=>d.kit).map(d=>d.kit));let n=27;while(used.has(n))n++;p.kit=n}
+  return p.kit;
+}
+const avatarCache=new Map();
+function avatarURL(p){
+  const key=(p.villager?'v'+p.name:'a'+p.id)+(p.sc?p.sc.team:'');if(avatarCache.has(key))return avatarCache.get(key);
+  const c=document.createElement('canvas');c.width=c.height=96;const g=c.getContext('2d');const tc=p.sc?TEAM_COL[p.sc.team]:'#888';
+  g.fillStyle=tc;g.beginPath();g.arc(48,48,47,0,7);g.fill();g.fillStyle='#eef3f2';g.beginPath();g.arc(48,48,40,0,7);g.fill();
+  g.save();g.beginPath();g.arc(48,48,40,0,7);g.clip();
+  g.fillStyle=tc;g.beginPath();g.ellipse(48,98,40,26,0,0,7);g.fill();
+  if(p.species==='human'){
+    g.fillStyle='#e8b894';g.beginPath();g.arc(48,48,21,0,7);g.fill();
+    g.fillStyle=p.hair||'#2a1d14';g.beginPath();g.ellipse(48,32,23,12,0,Math.PI,0);g.fill();g.fillRect(25,30,46,6);
+    if(p.sex==='여'){g.fillRect(24,32,8,26);g.fillRect(64,32,8,26)}
+    g.fillStyle='#222';g.beginPath();g.arc(40,49,2.6,0,7);g.arc(56,49,2.6,0,7);g.fill();
+    g.strokeStyle='#a0523a';g.lineWidth=2;g.beginPath();g.arc(48,56,6,0.2,Math.PI-0.2);g.stroke();
+    if(p.elder){g.strokeStyle='#555';g.lineWidth=1.5;g.strokeRect(34,44,10,8);g.strokeRect(52,44,10,8)}
+  }else{
+    const col=p.color||'#c98a42',dark=new THREE.Color(col).multiplyScalar(0.7).getStyle();
+    if(p.species==='cat'){g.fillStyle=dark;g.beginPath();g.moveTo(26,40);g.lineTo(30,14);g.lineTo(44,30);g.fill();g.beginPath();g.moveTo(70,40);g.lineTo(66,14);g.lineTo(52,30);g.fill()}
+    else{g.fillStyle=dark;g.beginPath();g.ellipse(25,44,9,17,0.35,0,7);g.fill();g.beginPath();g.ellipse(71,44,9,17,-0.35,0,7);g.fill()}
+    g.fillStyle=col;g.beginPath();g.ellipse(48,50,23,21,0,0,7);g.fill();
+    g.fillStyle=p.species==='cat'?'#f4ece0':new THREE.Color(col).lerp(new THREE.Color('#ffffff'),0.35).getStyle();g.beginPath();g.ellipse(48,60,11,9,0,0,7);g.fill();
+    g.fillStyle=p.species==='cat'?'#c8d84a':'#1a1a1a';g.beginPath();g.arc(39,46,3.2,0,7);g.arc(57,46,3.2,0,7);g.fill();
+    g.fillStyle=p.species==='cat'?'#e88a9a':'#151515';g.beginPath();g.ellipse(48,56,4,3,0,0,7);g.fill();
+  }
+  g.restore();
+  const url=c.toDataURL('image/png');avatarCache.set(key,url);return url;
+}
+const LU_ORDER=['GK','DEF','MID','FWD','SUB'];
+function formationText(t){const M=match,c={DEF:0,MID:0,FWD:0};M[t].forEach(p=>{const r=p.sc.slot.role;if(c[r]!=null)c[r]++});return [c.DEF,c.MID,c.FWD].filter(n=>n>0).join('-')}
+function lineupGroup(t,role){const M=match;return role==='SUB'?M.bench[t]:M[t].filter(p=>p.sc.slot.role===role)}
+function startLineup(){const M=match;M.phase='lineup';M.lu={team:'A',step:-1,t:0.2};$('#luSkip').hidden=M.only;$('#lineup').hidden=false;buildLineup('A')}
+function buildLineup(t){
+  const M=match;$('#lineup').style.setProperty('--lc',TEAM_COL[t]);
+  $('#luTeam').textContent=TEAM_KO[t];$('#luTitle').textContent='선발 라인업';
+  $('#luForm').textContent=`포메이션 ${formationText(t)} · ${TAC_OPTS.form[1].find(o=>o[0]===M.tac[t].form)[1]}`;
+  const mk=p=>{const sl=p.sc.slot,top=92-sl.u*84,left=50+sl.v*40;
+    return `<div class="lu-mark" data-role="${sl.role}" style="top:${top}%;left:${left}%"><img src="${avatarURL(p)}" alt=""><span class="no">${kitNo(p)}</span><span class="nm">${esc(p.name)}</span></div>`};
+  $('#luPitch').innerHTML='<i class="lu-half"></i><i class="lu-circle"></i><i class="lu-box top"></i><i class="lu-box bot"></i>'+M[t].map(mk).join('');
+  $('#luList').innerHTML=LU_ORDER.map(r=>{const g=lineupGroup(t,r);if(!g.length)return '';
+    return `<div class="lu-grp" data-role="${r}"><h4>${r==='SUB'?'교체 명단':ROLE_KO[r]} · ${g.length}명</h4>${g.map(p=>`<div class="lu-row"><img src="${avatarURL(p)}" alt=""><b class="lu-no">${kitNo(p)}</b><span class="lu-nm">${esc(p.name)}<small>${esc(actorDesc(p))}</small></span><span class="lu-ovr">종합 ${ovr(p)}</span></div>`).join('')}</div>`}).join('');
+  $('#luCap').textContent=`${TEAM_KO[t]}의 선발 라인업을 발표합니다`;
+}
+function lineupStep(realDt){
+  const M=match,L=M.lu;L.t-=realDt;if(L.t>0)return;
+  L.step++;
+  const roles=LU_ORDER.filter(r=>lineupGroup(L.team,r).length);
+  if(L.step===0){L.t=1.6;say(`${L.team}팀 선발 라인업입니다. 포메이션 ${formationText(L.team).split('-').join(' ')}.`);return}
+  if(L.step<=roles.length){
+    const r=roles[L.step-1],g=lineupGroup(L.team,r),lab=r==='SUB'?'교체 명단':ROLE_KO[r];
+    $$(`#luPitch .lu-mark[data-role="${r}"]`).forEach(m=>m.classList.add('on'));
+    $$('#luList .lu-grp').forEach(e=>e.classList.toggle('now',e.dataset.role===r));
+    const gEl=document.querySelector(`#luList .lu-grp[data-role="${r}"]`);if(gEl){gEl.classList.add('on');gEl.scrollIntoView({block:'nearest'})}
+    if(r==='SUB')$('#luTitle').textContent='교체 명단';
+    $('#luCap').textContent=`${lab}  ${g.map(p=>`${kitNo(p)} ${p.name}`).join(' · ')}`;
+    say(`${lab}, ${g.map(p=>`${kitNo(p)}번 ${p.name}`).join(', ')}`);
+    L.t=1.3+0.45*g.length;return;
+  }
+  if(L.team==='A'){L.team='B';L.step=-1;L.t=0.4;buildLineup('B');return}
+  endLineup();
+}
+function endLineup(){const M=match;if(!M)return;$('#lineup').hidden=true;kickoff('A');setSoccerView(M.pendingView);say('경기 시작합니다!')}
+function say(txt){if(!soundOn||!('speechSynthesis' in window))return;try{const u=new SpeechSynthesisUtterance(txt);u.lang='ko-KR';u.rate=1.25;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
+$('#luSkip').onclick=skipRollcall;
+/* ======================= SOCCER UI ======================= */
+let soccerRows=[{breed:'golden',n:2,age:3},{breed:'border',n:2,age:3},{breed:'maltese',n:2,age:2},{breed:'shiba',n:2,age:3},{breed:'korshort',n:2,age:2}];
+function renderSoccerRows(){
+  const box=$('#soRows');box.innerHTML='';
+  soccerRows.forEach((r,i)=>{
+    const row=document.createElement('div');row.className='trow';
+    row.innerHTML=`<select aria-label="${i+1}번 품종"><optgroup label="강아지">${breedOptions('dog',r.breed)}</optgroup><optgroup label="고양이">${breedOptions('cat',r.breed)}</optgroup></select>
+      <input type="number" min="1" max="26" value="${r.n}" aria-label="마리 수"><input type="number" min="0" max="14" step="0.5" value="${r.age}" aria-label="나이"><button class="x" aria-label="이 줄 지우기">✕</button>`;
+    const [sel,nIn,aIn]=row.querySelectorAll('select,input');
+    sel.onchange=e=>{r.breed=e.target.value};nIn.onchange=e=>{r.n=clamp(parseInt(e.target.value,10)||1,1,26);e.target.value=r.n;soccerCount()};
+    aIn.onchange=e=>{r.age=clamp(parseFloat(e.target.value)||0,0,14);e.target.value=r.age};
+    row.querySelector('.x').onclick=()=>{soccerRows.splice(i,1);renderSoccerRows()};box.appendChild(row);
+  });
+  if(!soccerRows.length)box.innerHTML='<p class="small">동물 없이 동네 사람들만 뛰어요. 아래에서 동물을 추가할 수 있어요.</p>';
+  soccerCount();
+}
+function soccerCount(){const n=soccerRows.reduce((a,r)=>a+r.n,0),need=(+$('#soSize').value+BENCH)*2;$('#soCount').textContent=`${n}마리 · 동네 모집 ${Math.max(0,need-n)}명`}
+$('#soAdd').onclick=()=>{soccerRows.push({breed:'jindo',n:1,age:3});renderSoccerRows()};
+$('#soSize').onchange=soccerCount;
+// tactics modal
+let tacOpen=false;
+function buildTac(){
+  $('#tacGrid').innerHTML=['A','B'].map(t=>`<div class="ai-col"><b style="color:${TEAM_COL[t]}">● ${TEAM_KO[t]}</b>${Object.entries(TAC_OPTS).map(([k,[lab,opts]])=>`<label class="f">${lab}<select data-tac="${t}.${k}">${opts.map(([v,n])=>`<option value="${v}"${TACTICS[t][k]===v?' selected':''}>${n}</option>`).join('')}</select></label>`).join('')}</div>`).join('');
+  $$('[data-tac]').forEach(sel=>sel.onchange=e=>{const [t,k]=sel.dataset.tac.split('.');TACTICS[t][k]=e.target.value;if(match&&k==='form'){assignRoles(t);buildRoster()}if(match)log(`📋 ${TEAM_KO[t]} 전술: ${TAC_OPTS[k][0]} → ${sel.options[sel.selectedIndex].text}`,'',true)});
+}
+function toggleTac(open){open=open===undefined?!tacOpen:open;if(open===tacOpen)return;tacOpen=open;if(open)buildTac();$('#tacModal').hidden=!open;menuOpen=open||!$('#escMenu').hidden;if(open)setTimeout(()=>$('#tacClose').focus(),0)}
+$('#tacClose').onclick=()=>toggleTac(false);$('#tacModal').addEventListener('click',e=>{if(e.target.id==='tacModal')toggleTac(false)});
+['#soTac','#soTac2','#scTac','#sbTac'].forEach(id=>$(id).onclick=()=>toggleTac(true));
+// start: home yard match
+function startHomeMatch(){
+  if(!yard||!yard.P){toast('마당 축구장이 없어요. 방 꾸미기에서 켜 주세요',true);return}
+  if(match)return;if(fights.length){toast('싸움이 끝난 뒤에 경기를 시작할 수 있어요',true);return}
+  const size=+$('#scSize').value;
+  const pets=dogs.filter(d=>!d.dead&&!d.fight&&!d.stray&&d.age>=0.5&&d.health>30);
+  startMatch({P:yard.P,pets,size,len:+$('#scLen').value,me:$('#scMe').value,only:false});
+}
+$('#scStart').onclick=()=>{ac();startHomeMatch()};
+// start: soccer only
+function startSoccerOnly(){
+  const size=+$('#soSize').value,need=(size+BENCH)*2,n=soccerRows.reduce((a,r)=>a+r.n,0);
+  if(n>need){$('#soErr').textContent=`${size}:${size} 경기에는 교체 명단까지 동물 ${need}마리까지 넣을 수 있어요 (지금 ${n}마리)`;return}
+  $('#soErr').textContent='';if(match)cleanupMatch(true);
+  const PS={3:[18,11],5:[26,16],7:[34,21],9:[42,26],11:[50,32]}[size]||[26,16],sc=+$('#soPitch').value;
+  const len=Math.round(PS[0]*sc),wid=Math.round(PS[1]*sc),L={W:len+3,D:wid+3,outdoor:true,yard:{on:false,depth:4},items:[]};
+  const used=new Set();arenaConf=[];
+  soccerRows.forEach(r=>{for(let i=0;i<r.n;i++){const sp=BREEDS[r.breed].sp,pool=sp==='cat'?CAT_NAMES:[...DOG_NAMES,...PUP_NAMES];const f=pool.filter(x=>!used.has(x));const nm=f.length?pick(f):pick(pool)+(used.size+1);used.add(nm);
+    arenaConf.push({species:sp,breed:r.breed,color:sp==='cat'?pick(CAT_COLORS):BREEDS[r.breed].c,sex:Math.random()<0.5?'f':'m',age:r.age,name:nm,at:{x:rand(-2,2),z:-wid/2-0.5}})}});
+  $('#setup').hidden=true;$('#sim').hidden=false;$('#sim').classList.add('arena','soccer');$('#arenaRes').hidden=true;
+  ['#clockBox','#speedSeg','#pauseBtn','#soundBtn','#backSetup','#escBtn'].forEach(x=>$(x).hidden=false);$('#modeChip').hidden=true;$('#phaseLbl').textContent='축구장';
+  player.spect=null;player.ctrl=null;player.side=null;player.escape=null;player.bannerFight=null;
+  $('#fightHud').hidden=true;$('#touchPad').hidden=true;$('#fightBanner').hidden=true;
+  if(owner.g&&scene)scene.remove(owner.g);Object.assign(owner,{visiting:false,dead:false,state:'out',fight:null,g:null});
+  initRenderers();const saved=layout;layout=L;buildWorld();layout=saved;resizeAll();
+  world=newWorldState(15*60);world.arena=true;world.soccerOnly=true;world.breedOn=false;$('#log').innerHTML='';speed=1;
+  const P=buildPitch({minx:-L.W/2+1.5,maxx:L.W/2-1.5,minz:-L.D/2+1.5,maxz:L.D/2-1.5});world.soccerP=P;
+  followId=dogs[0]?dogs[0].id:1;buildDogCards();renderEvents();buildSpeedSeg();setBallMode('auto');
+  $('#soTag').textContent=`${P.len.toFixed(0)}×${P.wid.toFixed(0)}m · ${size}:${size}`;
+  running=true;lastT=performance.now();
+  startMatch({P,pets:dogs.slice(),size,len:+$('#soLen').value,me:$('#soMe').value,only:true});
+}
+function soccerAgain(){
+  if(world&&world.soccerOnly){$('#matchRes').hidden=true;startMatch({P:world.soccerP,pets:dogs.filter(d=>!d.dead),size:+$('#soSize').value,len:+$('#soLen').value,me:$('#soMe').value,only:true})}
+  else{$('#matchRes').hidden=true;cleanupMatch(true);startHomeMatch()}
+}
+$('#soStart').onclick=()=>{ac();startSoccerOnly()};
+$('#soAgain2').onclick=()=>{ac();soccerAgain()};$('#mrAgain').onclick=()=>{ac();soccerAgain()};
+$('#soSetup2').onclick=()=>$('#backSetup').click();
+$('#mrExit').onclick=()=>{if(world&&world.soccerOnly)$('#backSetup').click();else cleanupMatch(false)};
+$('#sbStop').onclick=()=>{if(!match)return;if(match.only){if(match.phase!=='end')finishMatch()}else{if(match.phase!=='end')finishMatch()}};
+$('#sbView').onchange=e=>{if(match&&match.phase!=='rollcall')setSoccerView(e.target.value);else if(match)match.pendingView=e.target.value};
+$('#sbPick').onchange=e=>{const M=match;if(!M||M.ctrlMode!=='one')return;const list=M[M.ctrlTeam].filter(p=>!p.dead);M.ctrl=list[+e.target.value]||M.ctrl;e.target.blur()};
+$('#sbSubA').onclick=()=>{if(match&&!substitute('A',true))toast('교체할 수 있는 선수가 없어요')};
+$('#sbSubB').onclick=()=>{if(match&&!substitute('B',true))toast('교체할 수 있는 선수가 없어요')};
+$('#rcSkip').onclick=skipRollcall;
 /* ======================= ARENA RUN ======================= */
 function startArena(){
   const nA=teamTotal('A'),nB=teamTotal('B');
   if(!nA||!nB){$('#arenaErr').textContent='A편과 B편에 각각 한 마리 이상 있어야 해요';return}
   if(nA+nB>MAX_PETS+1){$('#arenaErr').textContent=`두 편 합쳐 ${MAX_PETS}마리까지 넣을 수 있어요 (지금 ${nA+nB}마리)`;return}
-  $('#arenaErr').textContent='';
+  $('#arenaErr').textContent='';if(match)cleanupMatch(true);
   const L=arenaLayout(),W0=L.W,D0=L.D,used=new Set();
   const nameFor=sp=>{const pool=sp==='cat'?CAT_NAMES:[...DOG_NAMES,...PUP_NAMES];const f=pool.filter(n=>!used.has(n));let n=f.length?pick(f):pick(pool)+(used.size+1);used.add(n);return n};
   arenaConf=[];
@@ -2913,7 +3674,7 @@ function startArena(){
       const x=(t==='A'?-1:1)*(W0/2-0.8-col*0.8),z=(rows>1?-D0*0.35+row*(D0*0.7/(rows-1)):0);
       arenaConf.push({species:sp,breed:r.breed,color:sp==='cat'?pick(CAT_COLORS):BREEDS[r.breed].c,sex:Math.random()<0.5?'f':'m',age:r.age,name:nameFor(sp),team:t,at:{x,z}})});
   }
-  $('#setup').hidden=true;$('#sim').hidden=false;$('#sim').classList.add('arena');$('#arenaRes').hidden=true;
+  $('#setup').hidden=true;$('#sim').hidden=false;$('#sim').classList.remove('soccer');$('#sim').classList.add('arena');$('#arenaRes').hidden=true;
   ['#clockBox','#speedSeg','#pauseBtn','#soundBtn','#backSetup','#escBtn'].forEach(s=>$(s).hidden=false);$('#modeChip').hidden=true;
   $('#phaseLbl').textContent='싸움장';
   player.spect=null;player.ctrl=null;player.side=null;player.escape=null;player.bannerFight=null;
@@ -2983,10 +3744,11 @@ $('#fhEscape').onclick=()=>startEscape();
 // on-screen pad for touch
 $$('#touchPad [data-k]').forEach(b=>{const k=b.dataset.k;const on=e=>{e.preventDefault();player.keys[k]=true};const off=()=>{player.keys[k]=false};
   b.addEventListener('pointerdown',on);b.addEventListener('pointerup',off);b.addEventListener('pointerleave',off);b.addEventListener('pointercancel',off)});
-$('#tpAtk').addEventListener('pointerdown',e=>{e.preventDefault();player.atk=true});
-$('#tpDash').addEventListener('pointerdown',e=>{e.preventDefault();if(player.ctrl&&player.dash<=0){player.dash=0.5;player.ctrl.stamina-=2}});
-$('#tpTab').addEventListener('pointerdown',e=>{e.preventDefault();cycleCtrl()});
-$('#tpEsc').addEventListener('pointerdown',e=>{e.preventDefault();startEscape()});
+$('#tpAtk').addEventListener('pointerdown',e=>{e.preventDefault();if(match&&match.ctrl)match.act='shoot';else player.atk=true});
+$('#tpDash').addEventListener('pointerdown',e=>{e.preventDefault();if(match&&match.ctrl){player.keys.sprint=true;return}if(player.ctrl&&player.dash<=0){player.dash=0.5;player.ctrl.stamina-=2}});
+['pointerup','pointerleave','pointercancel'].forEach(ev=>$('#tpDash').addEventListener(ev,()=>{player.keys.sprint=false}));
+$('#tpTab').addEventListener('pointerdown',e=>{e.preventDefault();if(match&&match.ctrl)switchCtrl(true);else cycleCtrl()});
+$('#tpEsc').addEventListener('pointerdown',e=>{e.preventDefault();if(match&&match.ctrl)match.act='pass';else startEscape()});
 // ESC menu
 let menuWasPaused=false;
 function toggleMenu(open){
@@ -3012,10 +3774,18 @@ $('#escMenu').addEventListener('click',e=>{if(e.target.id==='escMenu')toggleMenu
 const MOVE_KEYS={arrowup:'up',w:'up',arrowdown:'down',s:'down',arrowleft:'left',a:'left',arrowright:'right',d:'right'};
 window.addEventListener('keydown',e=>{
   if(!running)return;
-  if(e.key==='Escape'){e.preventDefault();toggleMenu();return}
+  if(e.key==='Escape'){e.preventDefault();if(tacOpen){toggleTac(false);return}toggleMenu();return}
   if(menuOpen)return;
   if(e.target.matches('input,select,textarea'))return;
   const k=e.key.toLowerCase();
+  if(match&&match.ctrl){
+    if(MOVE_KEYS[k]){player.keys[MOVE_KEYS[k]]=true;e.preventDefault();return}
+    if(k===' '){match.act='shoot';e.preventDefault();return}
+    if(k==='j'||k==='k'){match.act='pass';return}
+    if(k==='shift'){player.keys.sprint=true;return}
+    if(k==='tab'){e.preventDefault();if(match.ctrlMode==='team')switchCtrl(true);return}
+    return;
+  }
   if(player.ctrl){
     if(MOVE_KEYS[k]){player.keys[MOVE_KEYS[k]]=true;e.preventDefault();return}
     if(k===' '||k==='j'){player.atk=true;e.preventDefault();return}
@@ -3028,12 +3798,12 @@ window.addEventListener('keydown',e=>{
   if(e.key===' '){$('#pauseBtn').click();e.preventDefault()}
 });
 window.addEventListener('keyup',e=>{
-  const k=e.key.toLowerCase();if(MOVE_KEYS[k])player.keys[MOVE_KEYS[k]]=false;
+  const k=e.key.toLowerCase();if(MOVE_KEYS[k])player.keys[MOVE_KEYS[k]]=false;if(k==='shift')player.keys.sprint=false;if(match&&match.ctrl&&k===' ')e.preventDefault();
   if(player.ctrl&&k===' ')e.preventDefault();
   const map={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down'};if(map[e.key])camKeys[map[e.key]]=false});
 
 /* init */
-buildTools();buildDogList();renderArenaTeams();
+buildTools();buildDogList();renderArenaTeams();renderSoccerRows();
 new ResizeObserver(()=>{if(!$('#setup').hidden)edResize()}).observe(ed);
 edResize();
 requestAnimationFrame(frame);

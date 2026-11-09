@@ -709,7 +709,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
           <span>행복도 낮은 동물</span><b id="ownerRisk">안전해요</b>
         </div>
         <div class="row2"><button class="btn primary" id="visitBtn">주인 방문 (5~10분)</button><button class="btn" id="peTest">외침 미리보기</button></div>
-        <p class="small">하루에 한 번 와서 5~10분 머물러요. 물·밥을 채우고 청소하고 쓰다듬어 줘요. 행복도가 30보다 낮은 동물은 “○○는 공공의적이다! 숙청하자!”를 외치며 주인을 물어요. 주인도 체력이 다 떨어지면 죽을 수 있어요.</p>
+        <p class="small">하루에 한 번 와서 5~10분 머물러요. 물·밥을 채우고 청소하고 쓰다듬어 줘요. 행복도가 30보다 낮은 동물은 “○○는 열등하다! 숙청하자!”를 외치며 주인을 물어요. 주인도 체력이 다 떨어지면 죽을 수 있어요.</p>
       </section>
 
       <!-- life -->
@@ -1921,7 +1921,7 @@ function updateDog(d,dt){
   // fighting overrides everything
   if(d.fight){
     const mv=fightAI(d,dt);if(!mv)d.speed=0;
-    if(!d.dead)d.anim={sit:false,lie:false,tongue:false,emo:d.shoutT>0?'공공의적 숙청!':d.fleeing?'🏃':(d.species==='cat'?'😾':'💢')};
+    if(!d.dead)d.anim={sit:false,lie:false,tongue:false,emo:d.shoutT>0?'열등 숙청!':d.fleeing?'🏃':(d.species==='cat'?'😾':'💢')};
     return;
   }
   // dogs and cats can't stand each other
@@ -2715,7 +2715,7 @@ function placeholderPortrait(name){
   return c.toDataURL('image/png');
 }
 function publicEnemy(){
-  const nm=owner.name||'주인',txt=`${nm}${josa(nm,'은','는')} 공공의적이다!`;
+  const nm=owner.name||'주인',txt=`${nm}${josa(nm,'은','는')} 우리보다 열등하다!! 숙청하자!!`;
   $('#peText').textContent=`‘${txt}’`;
   const im=$('#peImg');im.dataset.fb='';im.onerror=()=>{if(!im.dataset.fb){im.dataset.fb='1';im.src=placeholderPortrait(nm)}};
   im.src=ownerImgURL||'gms.png';

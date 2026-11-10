@@ -431,7 +431,8 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
           <label class="modecard"><input type="radio" name="careMode" value="manual" id="modeManual"><span><b>내가 직접 조작</b><small>밥·물통·배변판 청소·공 던지기·TV를 내가 직접 해요. 놓치면 강아지들이 힘들어해요.</small></span></label>
           <label class="modecard"><input type="radio" name="careMode" value="auto" id="modeAuto" checked><span><b>모두 자동화</b><small>밥·물 보충, 배변판·바닥 청소, 공 회수와 발사, 낮 TV까지 집이 알아서 관리해요. 나는 지켜보면 돼요.</small></span></label>
         </div>
-      </div>
+      <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" data-autobreak> 자동화일 때 싸움을 자동으로 말리기</label>
+        </div>
       <div class="stack">
         <h3>시작 시각</h3>
         <label class="f">시뮬레이션 시작 시간<input type="time" id="startTime" value="08:00"></label>
@@ -558,6 +559,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
             <button class="chip" id="fhPlayA">A편으로 플레이</button>
             <button class="chip" id="fhPlayB">B편으로 플레이</button>
             <button class="chip" id="fhMenu">⚙ 설정 (Esc)</button>
+            <button class="chip" id="fhBreak">🧯 싸움 말리기</button>
             <button class="chip" id="fhStop">관전 끝내기</button>
           </div>
         </div>
@@ -726,6 +728,15 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" data-fightallow checked> 싸움 허용</label>
         <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="breedOn" checked> 번식 허용 (행복도 80 이상인 1살 넘은 암수)</label>
         <div class="row2"><button class="btn" id="corpseBtn" disabled>시체 치우기 (0구)</button><button class="btn" id="watchBtn" disabled>싸움 관전</button></div>
+        <button class="btn" id="breakBtn" disabled>🧯 싸움 말리기 (5~10초)</button>
+        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" data-autobreak> 모두 자동화일 때 싸움 자동으로 말리기</label>
+        <h3>강제 번식</h3>
+        <div class="row2">
+          <label class="f">첫 번째<select id="fbA" aria-label="번식시킬 첫 번째 동물"></select></label>
+          <label class="f">두 번째<select id="fbB" aria-label="번식시킬 두 번째 동물"></select></label>
+        </div>
+        <button class="btn" id="breedForce">🏳️‍🌈🏳️‍🌈강제로 번식시키기🏳️‍🌈🏳️‍🌈</button>
+        <p class="small">같은 종의 암컷·수컷 한 쌍을 고르세요. 행복도·건강 조건은 무시하지만, 1살 이상이어야 하고 이미 임신 중이면 안 돼요.</p>
         <p class="small">수명은 15~20살이에요. 소형견은 한 번에 2~5마리, 중·대형견은 5~15마리, 고양이는 2~6마리를 낳아요. 동물은 최대 40마리까지 살 수 있어요.</p>
       </section>
 
@@ -2564,7 +2575,7 @@ function endFight(f){
     if(d.species==='human')owner.state=owner.left>0?'visit':'leaving';else setState(d,'idle',rand(2,5));
   }
   if(player.ctrl&&!player.ctrl.fight){player.ctrl=null;player.escape=null;$('#touchPad').hidden=true}
-  const res=win?`${win}편(${teamNames(win==='A'?f.A:f.B)}) 승리`:(f.A.length&&f.B.length?'시간이 지나 흩어졌어요':'모두 자리를 떴어요');
+  const res=win?`${win}편(${teamNames(win==='A'?f.A:f.B)}) 승리`:(f.A.length&&f.B.length?(f.stopped?'말려서 싸움이 멈췄어요':'시간이 지나 흩어졌어요'):'모두 자리를 떴어요');
   f.result=`${res}${f.deaths.length?' · 사망: '+f.deaths.join(', '):''}${f.fled.length?' · 도망: '+f.fled.join(', '):''}`;
   log(`⚔ 싸움 끝 (${Math.max(1,Math.round(world.t-f.t0))}분) · ${f.result}`,f.deaths.length?'bad':'',true);
   if(player.bannerFight===f)hideBanner();
@@ -2591,6 +2602,53 @@ function abstractFight(a,b){
   }
   for(const x of [...A,...Bt])if(!x.dead){x.stamina=Math.max(1,x.stamina);x.happy=clamp(x.happy-5);x.fightCD=world.t+8}
   log(`⚔ 싸움 (빠른 계산): ${teamNames(A)} vs ${teamNames(Bt)} · ${Math.round(t)}분${deaths.length?' · 사망: '+deaths.join(', '):''}${fled.length?' · 도망: '+fled.join(', '):''}`,deaths.length?'bad':'',true);
+}
+/* ---------- 싸움 말리기 (5~10초) ---------- */
+let autoBreak=false;
+function startBreakup(f,auto){
+  if(!f||f.ended||f.sep)return false;
+  f.sep={left:rand(5,10)};
+  const sec=Math.ceil(f.sep.left);
+  log(`🧯 ${auto?'집 도우미가':'내가'} 싸움을 말리는 중… (약 ${sec}초)`,'good',true);
+  toast(`🧯 싸움을 말리는 중… 약 ${sec}초`,false,true);blip(520,0.1,0.06);
+  return true;
+}
+function updateBreakups(realDt){
+  for(const f of fights.slice()){
+    if(!f.sep||f.ended)continue;
+    f.sep.left-=realDt;
+    if(f.sep.left<=0){f.stopped=true;endFight(f)}
+  }
+}
+function breakAll(){
+  const list=fights.filter(f=>!f.ended&&!f.sep);
+  if(!list.length){toast('말릴 싸움이 없어요');return}
+  list.forEach(f=>startBreakup(f,false));
+}
+/* ---------- 강제 번식 ---------- */
+function refreshBreed(){
+  for(const id of['fbA','fbB']){
+    const s=$('#'+id),v=s.value;
+    s.innerHTML=dogs.filter(d=>!d.dead&&!d.stray).map(d=>`<option value="${d.id}">${d.sex==='f'?'♀':'♂'} ${esc(d.name)} · ${BREEDS[d.breed]?BREEDS[d.breed].n:''} · ${fmtAge(d.age)}</option>`).join('');
+    if([...s.options].some(o=>o.value===v))s.value=v;else if(id==='fbB'&&s.options.length>1)s.selectedIndex=1;
+  }
+}
+function forceBreed(){
+  if(!world||world.arena)return;
+  const a=dogs.find(d=>d.id===+$('#fbA').value),b=dogs.find(d=>d.id===+$('#fbB').value);
+  if(!a||!b||a===b){toast('서로 다른 두 마리를 골라 주세요',true);return}
+  if(a.species!==b.species){toast('강아지와 고양이는 번식할 수 없어요',true);return}
+  if(a.sex===b.sex){toast('암컷과 수컷을 한 마리씩 골라 주세요',true);return}
+  const f=a.sex==='f'?a:b,m=f===a?b:a;
+  if(f.pregnant){toast(`${f.name}${josa(f.name,'은','는')} 이미 임신 중이에요`,true);return}
+  if(f.age<1||m.age<1){toast('두 마리 모두 1살 이상이어야 해요',true);return}
+  if(f.fight||m.fight){toast('싸우는 중에는 번식시킬 수 없어요',true);return}
+  if(dogs.length>=MAX_PETS){toast(`동물이 최대 ${MAX_PETS}마리라서 더 늘릴 수 없어요`,true);return}
+  const days=f.species==='cat'?65:63;
+  f.pregnant={due:world.t+days*1440,dad:m.id,dadBreed:m.breed,dadColor:m.color,dadSkills:m.skills,start:world.t};
+  f.mate=m.id;m.mate=f.id;
+  const msg=`💕 ${f.name}${josa(f.name,'과','와')} ${m.name} 사이에 아기가 생겼어요 (강제 번식 · ${days}일 뒤 출산 예정)`;
+  log(msg,'good',true);toast(msg,false,true);blip(880,0.12,0.07);world.cardsDirty=true;
 }
 function hourTick(){
   breedTick();
@@ -3513,7 +3571,7 @@ function wallVisibility(cam){
 /* ======================= UI SYNC ======================= */
 function markFollowCards(){$$('.dogcard').forEach(c=>c.setAttribute('aria-pressed',String(camMode==='follow'&&c.dataset.id===String(followId))))}
 function buildDogCards(){
-  const box=$('#dogCards');box.innerHTML='';world.cardsDirty=false;
+  const box=$('#dogCards');box.innerHTML='';world.cardsDirty=false;refreshBreed();
   if(!dogs.length){box.innerHTML='<p class="small">살아 있는 동물이 없어요. 방 다시 꾸미기에서 새로 시작할 수 있어요.</p>';return}
   dogs.forEach(d=>{
     const b=document.createElement('button');b.className='dogcard'+(d.stray?' stray':'');b.dataset.id=d.id;
@@ -3538,7 +3596,7 @@ function syncFightHud(){
   const mineA=player.side?player.side==='A':true;
   $('#fhA').innerHTML=`<h4>A편${player.side==='A'?' · 내 편':(!player.side?' · 건 쪽':'')}</h4>`+rows(f.A);
   $('#fhB').innerHTML=`<h4>B편${player.side==='B'?' · 내 편':(!player.side?' · 맞선 쪽':'')}</h4>`+rows(f.B);
-  $('#fhTimer').textContent=f.ended?'':f.death?'죽을 때까지':`남은 시간 ${Math.max(0,Math.ceil(f.until-world.t))}분`;
+  $('#fhTimer').textContent=f.ended?'':f.sep?`🧯 말리는 중 ${Math.max(1,Math.ceil(f.sep.left))}초`:f.death?'죽을 때까지':`남은 시간 ${Math.max(0,Math.ceil(f.until-world.t))}분`;
   $('#fhPlayA').hidden=$('#fhPlayB').hidden=!!player.ctrl||f.ended;
   const c=player.ctrl;$('#fhCtrl').hidden=!c;
   if(c){$('#fhMe').textContent=`${c.name} · 체력 ${Math.round(c.stamina)} · 건강 ${Math.round(c.health)}`;
@@ -3598,6 +3656,11 @@ function syncUI(){
     $('#farmNext').textContent=F.anim>0?'지금':`${Math.ceil((1-F.growth)*C.grow/60)}시간 뒤`}
   $('#fastChip').hidden=!world.fastNow;
   syncFightHud();syncSoccer();
+  {const live=fights.filter(x=>!x.ended),cur=player.spect&&!player.spect.ended?player.spect:null;
+    $('#breakBtn').disabled=!live.some(x=>!x.sep);
+    $('#breakBtn').textContent=live.length&&!live.some(x=>!x.sep)?'🧯 말리는 중…':'🧯 싸움 말리기 (5~10초)';
+    $('#fhBreak').disabled=!cur||!!cur.sep;$('#fhBreak').textContent=cur&&cur.sep?'🧯 말리는 중…':'🧯 싸움 말리기';
+    $('#breedForce').disabled=!!world.arena||dogs.length<2;}
   const sp=$('#scStart');if(sp){const ok=!!(yard&&yard.P);sp.disabled=!ok||!!match;$('#scNote').textContent=match?'경기 중이에요.':ok?`축구장 ${yard.P.len.toFixed(0)}×${yard.P.wid.toFixed(0)}m · 동물이 모자라면 동네에서 보내 줘요.`:'방 꾸미기에서 마당과 "마당에 축구장 만들기"를 켜야 경기할 수 있어요.'}
 }
 
@@ -3637,7 +3700,7 @@ function frame(now){
     quiet=false;
     if(match)matchReal(realDt);
     if(player.dash>0)player.dash-=realDt;
-    updateEscape(realDt);
+    updateEscape(realDt);updateBreakups(realDt);
   }
   if(dev.tmParts&&world.tm){const T=world.tm,on=!!T.user;if(on)dev.tmParts.tex.offset.x-=realDt*speedVisual()*{slow:0.4,mid:0.75,fast:1.1}[T.speed];
     dev.tmParts.led.material=on?mat('#f0a43a',{emissive:'#f0a43a'}):mat('#2ad46a',{emissive:'#2ad46a'});}
@@ -3725,6 +3788,7 @@ function autoManager(dt){
   if(tvs.length){const h=hour();const want=h>=13&&h<16;
     if(want&&!world.tv.on){world.tv.ch='dog';$('#tvCh').value='dog';world.tv.byAuto=true;setTV(true)}
     else if(!want&&world.tv.on&&world.tv.byAuto){world.tv.byAuto=false;setTV(false)}}
+  if(autoBreak)for(const f of fights)if(!f.sep&&!f.ended&&f.cause!=='arena')startBreakup(f,true);
   if(corpses.length&&!fights.length&&corpses.every(c=>world.t-c.at>60))cleanCorpses('자동 장례 서비스가');
 }
 $('#tvCh').onchange=e=>{world.tv.ch=e.target.value;if(world.tv.on)log(`채널을 ${TV_CH[world.tv.ch]}(으)로 바꿨어요`)};
@@ -4090,6 +4154,11 @@ $('#arWatch').onclick=()=>{if(fights.length)startSpectate(fights[0]);else toast(
 $('#arMenu').onclick=()=>toggleMenu(true);
 
 /* ---------- life / owner / farm / fight panels ---------- */
+$('#breedForce').onclick=forceBreed;
+$('#breakBtn').onclick=breakAll;
+$('#fhBreak').onclick=()=>{const f=player.spect;if(f)startBreakup(f,false)};
+$$('[data-autobreak]').forEach(c=>c.onchange=e=>{autoBreak=e.target.checked;$$('[data-autobreak]').forEach(x=>x.checked=autoBreak);
+  if(world)log(autoBreak?'🧯 자동화가 싸움을 자동으로 말려요':'🧯 싸움을 자동으로 말리지 않아요','good',true)});
 $('#breedOn').onchange=e=>{if(world){world.breedOn=e.target.checked;log(e.target.checked?'번식을 허용했어요':'번식을 막았어요 (중성화)')}};
 $('#corpseBtn').onclick=()=>{if(!cleanCorpses('내가'))toast('치울 시체가 없어요')};
 $('#watchBtn').onclick=()=>{if(fights.length)startSpectate(fights[0])};

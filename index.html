@@ -727,6 +727,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         </div>
         <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" data-fightallow checked> 싸움 허용</label>
         <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="breedOn" checked> 번식 허용 (행복도 80 이상인 1살 넘은 암수)</label>
+        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="adoptOut"> 집이 꽉 차면 새로 태어난 아기를 새 가족에게 입양 보내기</label>
         <div class="row2"><button class="btn" id="corpseBtn" disabled>시체 치우기 (0구)</button><button class="btn" id="watchBtn" disabled>싸움 관전</button></div>
         <button class="btn" id="breakBtn" disabled>🧯 싸움 말리기 (5~10초)</button>
         <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" data-autobreak> 모두 자동화일 때 싸움 자동으로 말리기</label>
@@ -735,7 +736,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
           <label class="f">첫 번째<select id="fbA" aria-label="번식시킬 첫 번째 동물"></select></label>
           <label class="f">두 번째<select id="fbB" aria-label="번식시킬 두 번째 동물"></select></label>
         </div>
-        <button class="btn" id="breedForce">🏳️‍🌈🏳️‍🌈강제로 번식시키기🏳️‍🌈🏳️‍🌈</button>
+        <button class="btn" id="breedForce">💕 강제로 번식시키기</button>
         <p class="small">같은 종의 암컷·수컷 한 쌍을 고르세요. 행복도·건강 조건은 무시하지만, 1살 이상이어야 하고 이미 임신 중이면 안 돼요.</p>
         <p class="small">수명은 15~20살이에요. 소형견은 한 번에 2~5마리, 중·대형견은 5~15마리, 고양이는 2~6마리를 낳아요. 동물은 최대 40마리까지 살 수 있어요.</p>
       </section>
@@ -2023,7 +2024,7 @@ function updateDog(d,dt){
     case 'toVoice':{const t=voiceSpot(d);const dist=steer(d,t.x,t.z,run*0.85,dt);moving=true;emo='?';
       if(dist<0.2)setState(d,'listen',6);else if(d.think<=0&&!world.voiceActive)setState(d,'idle',1);break}
     case 'listen':{sit=true;emo='♥';const p=dev.homecam.p;face(d,p.x,p.z,dt);d.happy=clamp(d.happy+dt*1.2);
-      if(!world.voiceActive&&world.t>world.voiceUntil&&d.think<=0)setState(d,'idle',2);break}
+      if((!world.voiceActive&&world.t>world.voiceUntil&&d.think<=0)||d.actT>25)setState(d,'idle',2);break}
     case 'scared':{
       const f=d.scaredFrom||{x:0,z:0};let ax=d.pos.x-f.x,az=d.pos.y-f.z;const l=Math.hypot(ax,az)||1;
       const tx=clamp(d.pos.x+ax/l*2.2,B.minx+0.4,B.maxx-0.4),tz=clamp(d.pos.y+az/l*2.2,B.minz+0.4,B.maxz-0.4);
@@ -2352,12 +2353,12 @@ function breedTick(){
     const wed=f.mate!==m.id||m.mate!==f.id;
     f.pregnant={due:world.t+days*1440,dad:m.id,dadBreed:m.breed,dadColor:m.color,dadSkills:m.skills,start:world.t};f.mate=m.id;m.mate=f.id;
     if(wed){const msg=`💍 ${f.name}${josa(f.name,'과','와')} ${m.name}${josa(m.name,'이','가')} 결혼했어요`;toast(msg,false,true);log(msg,'good',true);blip(880,0.12,0.07);setTimeout(()=>blip(1175,0.18,0.07),140)}
-    log(`🏳️‍🌈 ${f.name}${josa(f.name,'과','와')} ${m.name} 사이에 아기가 생겼어요 (${days}일 뒤 출산 예정)`,'good',true);
+    log(`💕 ${f.name}${josa(f.name,'과','와')} ${m.name} 사이에 아기가 생겼어요 (${days}일 뒤 출산 예정)`,'good',true);
   }
 }
 function giveBirth(m){
   const P=m.pregnant;m.pregnant=null;m.lastBirth=world.t;
-  const n=Math.max(1,litterSize(BREEDS[m.breed]));const born=Math.min(n,Math.max(0,MAX_PETS-dogs.length));const kids=[];
+  const n=Math.max(1,litterSize(BREEDS[m.breed]));const born=$('#adoptOut').checked?Math.min(n,Math.max(0,MAX_PETS-dogs.length)):n;const kids=[];
   for(let i=0;i<born;i++){
     const br=Math.random()<0.5?m.breed:(P.dadBreed||m.breed),col=Math.random()<0.5?m.color:(P.dadColor||m.color);const dadA=dogs.find(x=>x.id===P.dad);
     const p=makeAnimal({species:m.species,breed:br,color:col,sex:Math.random()<0.5?'f':'m',age:0,name:newName(m.species),skills:mixSkills(m.skills,dadA?dadA.skills:P.dadSkills)},
@@ -2647,8 +2648,18 @@ function forceBreed(){
   const days=f.species==='cat'?65:63;
   f.pregnant={due:world.t+days*1440,dad:m.id,dadBreed:m.breed,dadColor:m.color,dadSkills:m.skills,start:world.t};
   f.mate=m.id;m.mate=f.id;
-  const msg=`🏳️‍🌈 ${f.name}${josa(f.name,'과','와')} ${m.name} 사이에 아기가 생겼어요 (강제 번식 · ${days}일 뒤 출산 예정)`;
+  const msg=`💕 ${f.name}${josa(f.name,'과','와')} ${m.name} 사이에 아기가 생겼어요 (강제 번식 · ${days}일 뒤 출산 예정)`;
   log(msg,'good',true);toast(msg,false,true);blip(880,0.12,0.07);world.cardsDirty=true;
+}
+/* ---------- 멈춤 방지 감시 ---------- */
+const wd={voice:0};
+function watchdogs(realDt){
+  if(!world)return;
+  if(world.voiceActive&&!talkHeld){wd.voice+=realDt;if(wd.voice>45){wd.voice=0;world.voiceActive=false;world.voiceUntil=world.t+1;$('#camTalking').hidden=true;log('홈캠 음성이 끝나지 않아 강제로 끝냈어요','',true)}}else wd.voice=0;
+  const I=intruder;
+  if(I&&(I.state==='sneak'||I.state==='steal')){if(I.t0==null)I.t0=world.t;if(world.t-I.t0>60){I.state='flee';log('침입자가 눈치를 보다 도망갔어요','good',true)}}
+  const M=match;
+  if(M&&M.phase==='end'&&!M.only){M.endT=(M.endT||0)+realDt;if(M.endT>30)cleanupMatch(false)}
 }
 function hourTick(){
   breedTick();
@@ -3700,7 +3711,7 @@ function frame(now){
     quiet=false;
     if(match)matchReal(realDt);
     if(player.dash>0)player.dash-=realDt;
-    updateEscape(realDt);updateBreakups(realDt);
+    updateEscape(realDt);watchdogs(realDt);updateBreakups(realDt);
   }
   if(dev.tmParts&&world.tm){const T=world.tm,on=!!T.user;if(on)dev.tmParts.tex.offset.x-=realDt*speedVisual()*{slow:0.4,mid:0.75,fast:1.1}[T.speed];
     dev.tmParts.led.material=on?mat('#f0a43a',{emissive:'#f0a43a'}):mat('#2ad46a',{emissive:'#2ad46a'});}

@@ -700,7 +700,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         <div class="panel-head"><h2>주인 방문</h2><span class="tag" id="ownerTag">집 밖</span></div>
         <div class="row2">
           <label class="f">주인 이름<input type="text" id="ownerName" value="김민수" maxlength="10"></label>
-          <label class="f">다른 사진 쓰기 (기본: gms.png)<input type="file" id="ownerImg" accept="image/*"></label>
+          <label class="f">다른 사진 쓰기 (기본: gmss.png)<input type="file" id="ownerImg" accept="image/*"></label>
         </div>
         <img id="ownerThumb" class="ownerthumb" alt="고른 주인 사진" hidden>
         <div class="kv">
@@ -2718,7 +2718,7 @@ function publicEnemy(){
   const nm=owner.name||'주인',txt=`${nm}${josa(nm,'은','는')} 우리보다 열등하다!! 숙청하자!!`;
   $('#peText').textContent=`‘${txt}’`;
   const im=$('#peImg');im.dataset.fb='';im.onerror=()=>{if(!im.dataset.fb){im.dataset.fb='1';im.src=placeholderPortrait(nm)}};
-  im.src=ownerImgURL||'gms.png';
+  im.src=ownerImgURL||'gmss.png';
   const el=$('#peOverlay');el.hidden=false;el.classList.remove('show');void el.offsetWidth;el.classList.add('show');
   clearTimeout(peTimer);peTimer=setTimeout(()=>{el.hidden=true;el.classList.remove('show')},3400);
   const f=owner.fight;if(f)(owner.team==='A'?f.B:f.A).forEach(d=>d.shoutT=6);

@@ -483,7 +483,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
       <div class="stack">
         <p class="err" id="arenaErr"></p>
         <button class="btn primary" id="arenaStart">싸움 시작</button>
-        <p class="small">밥·물·배변 걱정 없이 싸움만 해요. 동물은 두 편 합쳐 40마리까지예요. 시작한 뒤에도 Esc로 AI 경향과 규칙을 바꿀 수 있어요.</p>
+        <p class="small">밥·물·배변 걱정 없이 싸움만 해요. 동물 수 제한은 없어요. 시작한 뒤에도 Esc로 AI 경향과 규칙을 바꿀 수 있어요.</p>
       </div>
     </aside>
   </div>
@@ -736,9 +736,9 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
           <label class="f">첫 번째<select id="fbA" aria-label="번식시킬 첫 번째 동물"></select></label>
           <label class="f">두 번째<select id="fbB" aria-label="번식시킬 두 번째 동물"></select></label>
         </div>
-        <button class="btn" id="breedForce">💕 강제로 번식시키기</button>
+        <button class="btn" id="breedForce">🏳️‍🌈 강제로 번식시키기</button>
         <p class="small">같은 종의 암컷·수컷 한 쌍을 고르세요. 행복도·건강 조건은 무시하지만, 1살 이상이어야 하고 이미 임신 중이면 안 돼요.</p>
-        <p class="small">수명은 15~20살이에요. 소형견은 한 번에 2~5마리, 중·대형견은 5~15마리, 고양이는 2~6마리를 낳아요. 동물은 최대 40마리까지 살 수 있어요.</p>
+        <p class="small">수명은 15~20살이에요. 소형견은 한 번에 2~5마리, 중·대형견은 5~15마리, 고양이는 2~6마리를 낳아요. 동물은 마리 수 제한 없이 살 수 있어요.</p>
       </section>
 
       <!-- ball -->
@@ -994,7 +994,7 @@ const CAT_COLORS=['#c8a070','#8a96a3','#f2ece0','#3a3a3c','#e0a050','#ffffff','#
 const CAT_NAMES=['나비','치즈','루나','레오','미미','까망','냥냥','호랑','삼색이','모모','구름','라라'];
 const PUP_NAMES=['밤이','감자','호두','라떼','모카','별이','까미','솜이','탄이','달이','두리','토리','뭉치','방울','도토리','보배','사랑','코코','루루','봄이','단비','찰떡','인절미','순대','만두','콩떡','깨비','짱구','덕구','백구','누리','마루','바둑','꼬미','몽실','뽀삐','해피2','설탕','소금'];
 const DOG_BREED_ORDER=['golden','maltese','shiba','pomeranian','jindo','border','chihuahua','greatdane'];
-const MAX_PETS=40, FAST_SPEED=1000, YEAR_MIN=525600, STOCK_MAX=5000, SNACK_MAX=60;
+const MAX_PETS=Infinity, FAST_SPEED=1000, YEAR_MIN=525600, STOCK_MAX=5000, SNACK_MAX=60;
 const CROPS={
   corn:{n:'옥수수',grow:16*60,food:600,snack:0,c:'#f2c94c',leaf:'#4f9a3c'},
   potato:{n:'고구마',grow:12*60,food:450,snack:6,c:'#b0566a',leaf:'#3f8a46'},
@@ -2353,7 +2353,7 @@ function breedTick(){
     const wed=f.mate!==m.id||m.mate!==f.id;
     f.pregnant={due:world.t+days*1440,dad:m.id,dadBreed:m.breed,dadColor:m.color,dadSkills:m.skills,start:world.t};f.mate=m.id;m.mate=f.id;
     if(wed){const msg=`💍 ${f.name}${josa(f.name,'과','와')} ${m.name}${josa(m.name,'이','가')} 결혼했어요`;toast(msg,false,true);log(msg,'good',true);blip(880,0.12,0.07);setTimeout(()=>blip(1175,0.18,0.07),140)}
-    log(`💕 ${f.name}${josa(f.name,'과','와')} ${m.name} 사이에 아기가 생겼어요 (${days}일 뒤 출산 예정)`,'good',true);
+    log(`🏳️‍🌈 ${f.name}${josa(f.name,'과','와')} ${m.name} 사이에 아기가 생겼어요 (${days}일 뒤 출산 예정)`,'good',true);
   }
 }
 function giveBirth(m){
@@ -2497,7 +2497,7 @@ function pickTarget(d,en,T){
 }
 function applyHit(a,t){
   const base=a.species==='human'?3.0:a.species==='cat'?1.7:2.0;
-  const dmg=base*rand(0.7,1.3)*Math.pow(Math.max(0.3,a.k)/Math.max(0.3,t.k),0.6)*(a.stamina<20?0.7:1);
+  const dmg=base*rand(0.7,1.3)*Math.pow(Math.max(0.3,a.k)/Math.max(0.3,t.k),0.6)*(a.stamina<20?0.7:1)*(a.name==='콩이'?2.2:1)/(t.name==='콩이'?3:1);
   t.stamina-=dmg;t.health=Math.max(0,t.health-dmg*0.5);t.happy=clamp(t.happy-dmg*0.35);
   a.stamina-=0.6;a.happy=clamp(a.happy-0.25);return dmg;
 }
@@ -2648,7 +2648,7 @@ function forceBreed(){
   const days=f.species==='cat'?65:63;
   f.pregnant={due:world.t+days*1440,dad:m.id,dadBreed:m.breed,dadColor:m.color,dadSkills:m.skills,start:world.t};
   f.mate=m.id;m.mate=f.id;
-  const msg=`💕 ${f.name}${josa(f.name,'과','와')} ${m.name} 사이에 아기가 생겼어요 (강제 번식 · ${days}일 뒤 출산 예정)`;
+  const msg=`🏳️‍🌈 ${f.name}${josa(f.name,'과','와')} ${m.name} 사이에 아기가 생겼어요 (강제 번식 · ${days}일 뒤 출산 예정)`;
   log(msg,'good',true);toast(msg,false,true);blip(880,0.12,0.07);world.cardsDirty=true;
 }
 /* ---------- 멈춤 방지 감시 ---------- */
@@ -2889,7 +2889,7 @@ function villagerSkills(elder,g,name,sex){const o={};
     else if(MID_F.has(name))v=rand(57,72);
     else if(sex==='여')v-=7;
     o[k]=Math.round(clamp(v,10,95))});return o}
-function effSkill(d,k){let v=(d.skills||{})[k]||50;const a=d.age;if(a!=null){if(a<1)v*=0.55+0.45*a;else if(a>9)v*=Math.max(0.6,1-(a-9)*0.05)}return Math.round(clamp(v,5,99))}
+function effSkill(d,k){if(d.name==='콩이')return 99;let v=(d.skills||{})[k]||50;const a=d.age;if(a!=null){if(a<1)v*=0.55+0.45*a;else if(a>9)v*=Math.max(0.6,1-(a-9)*0.05)}return Math.round(clamp(v,5,99))}
 function ovr(d){const w={spd:.18,sta:.12,dri:.16,sho:.16,pas:.14,tac:.14,rea:.10};let s=0;for(const k in w)s+=effSkill(d,k)*w[k];return Math.round(s)}
 function skillLine(d){return SKILL_KEYS.map(k=>`${SKILL_KO[k]} ${effSkill(d,k)}`).join(' · ')}
 function actorDesc(p){return p.villager?`${p.from} · ${p.sex}`:`${BREEDS[p.breed]?BREEDS[p.breed].n:''} · ${fmtAge(p.age)}`}
@@ -3646,7 +3646,7 @@ function syncUI(){
   $('#logTag').textContent=world.stolen?`도난 ${world.stolen}건`:'';
   // life panel
   const nd=dogs.filter(d=>d.species==='dog').length,nc=dogs.filter(d=>d.species==='cat'&&!d.stray).length,ns=dogs.filter(d=>d.stray).length;
-  $('#popTag').textContent=`${dogs.length}/${MAX_PETS}마리`;
+  $('#popTag').textContent=`${dogs.length}마리`;
   $('#lifeDogs').textContent=nd+'마리';$('#lifeCats').textContent=nc+'마리'+(ns?` (+길고양이 ${ns})`:'');
   $('#lifePreg').textContent=dogs.filter(d=>d.pregnant).length+'마리';$('#lifeBorn').textContent=world.born+'마리';$('#lifeDead').textContent=world.deaths+'마리';
   $('#lifeFights').textContent=fights.length?`${fights.length}건 진행 중`:'없음';$('#lifeFights').style.color=fights.length?'var(--alert)':'';

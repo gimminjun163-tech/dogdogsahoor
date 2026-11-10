@@ -2352,7 +2352,7 @@ function breedTick(){
     const wed=f.mate!==m.id||m.mate!==f.id;
     f.pregnant={due:world.t+days*1440,dad:m.id,dadBreed:m.breed,dadColor:m.color,dadSkills:m.skills,start:world.t};f.mate=m.id;m.mate=f.id;
     if(wed){const msg=`💍 ${f.name}${josa(f.name,'과','와')} ${m.name}${josa(m.name,'이','가')} 결혼했어요`;toast(msg,false,true);log(msg,'good',true);blip(880,0.12,0.07);setTimeout(()=>blip(1175,0.18,0.07),140)}
-    log(`💕 ${f.name}${josa(f.name,'과','와')} ${m.name} 사이에 아기가 생겼어요 (${days}일 뒤 출산 예정)`,'good',true);
+    log(`🏳️‍🌈 ${f.name}${josa(f.name,'과','와')} ${m.name} 사이에 아기가 생겼어요 (${days}일 뒤 출산 예정)`,'good',true);
   }
 }
 function giveBirth(m){
@@ -2647,7 +2647,7 @@ function forceBreed(){
   const days=f.species==='cat'?65:63;
   f.pregnant={due:world.t+days*1440,dad:m.id,dadBreed:m.breed,dadColor:m.color,dadSkills:m.skills,start:world.t};
   f.mate=m.id;m.mate=f.id;
-  const msg=`💕 ${f.name}${josa(f.name,'과','와')} ${m.name} 사이에 아기가 생겼어요 (강제 번식 · ${days}일 뒤 출산 예정)`;
+  const msg=`🏳️‍🌈 ${f.name}${josa(f.name,'과','와')} ${m.name} 사이에 아기가 생겼어요 (강제 번식 · ${days}일 뒤 출산 예정)`;
   log(msg,'good',true);toast(msg,false,true);blip(880,0.12,0.07);world.cardsDirty=true;
 }
 function hourTick(){

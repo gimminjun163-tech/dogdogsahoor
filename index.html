@@ -72,6 +72,14 @@ input[type="range"]{width:100%;accent-color:var(--accent)}
 .hint{font-size:12px;color:var(--muted)}
 .setup-side{padding:14px;display:grid;gap:16px}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.skipgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.skipgrid .btn{padding-left:4px;padding-right:4px}
+textarea{font:inherit;width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--surface);color:var(--ink);resize:vertical}
+.skipov{position:fixed;inset:0;background:rgba(8,14,16,.62);display:grid;place-items:center;z-index:60;padding:16px}
+.skipcard{background:var(--surface);color:var(--ink);border-radius:14px;padding:18px;width:min(440px,100%);display:grid;gap:10px;box-shadow:0 18px 50px rgba(0,0,0,.35)}
+.skipcard b{font-size:20px}
+.skipcard .esc-bar{height:10px;border-radius:999px;background:var(--surface-2);overflow:hidden}
+.skipcard .esc-bar span{display:block;height:100%;width:0;background:var(--accent,#2a9d8f)}
 .dogrow{display:grid;grid-template-columns:22px minmax(0,1fr) 90px;gap:8px;align-items:center}
 .petrow{display:grid;grid-template-columns:22px minmax(0,1fr) 72px;gap:6px 8px;align-items:center;padding-bottom:8px;border-bottom:1px solid var(--line)}
 .sexbtn{border:1px solid var(--line);background:var(--surface-2);border-radius:7px;padding:5px 4px;font-size:12px}
@@ -423,7 +431,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
           </label>
         </div>
         <div class="stack" id="dogList"></div>
-        <p class="small">이름·성별·품종·시작 나이를 정할 수 있어요. 수명은 15~20살 사이에서 정해져요. 강아지와 고양이는 마주치면 싸워요.</p>
+        <p class="small">이름·성별·품종·시작 나이를 정할 수 있어요. 수명은 <span id="lifeNotePre">15~20살</span> 사이에서 정해져요. 강아지와 고양이는 마주치면 싸워요.</p>
       </div>
       <div class="stack">
         <h3>관리 방식</h3>
@@ -433,6 +441,16 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         </div>
       <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" data-autobreak> 자동화일 때 싸움을 자동으로 말리기</label>
         </div>
+      <div class="stack">
+        <h3>생명 · 시간 넘기기 (미리 설정)</h3>
+        <div class="row2"><label class="f">수명 최소 (살)<input type="number" id="lifeMinPre" data-mirror="lifeMin" value="15" min="1" max="10000" step="0.5"></label><label class="f">수명 최대 (살)<input type="number" id="lifeMaxPre" data-mirror="lifeMax" value="20" min="1" max="10000" step="0.5"></label></div>
+        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="lifeInfPre" data-mirror="lifeInf"> 무한 수명 (자연사하지 않아요)</label>
+        <label class="f">시간 넘길 때 최대 마릿수 (넘치면 입양)<input type="number" id="skipCapPre" data-mirror="skipCap" value="60" min="2" max="300" step="1"></label>
+        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="skipInfPre" data-mirror="skipInf"> 넘길 때 마릿수 무한 (브라우저 보호를 위해 300마리부터는 입양)</label>
+        <label class="f">태어날 강아지 이름 (쉼표나 줄바꿈으로 구분)<textarea id="nameListPre" data-mirror="nameList" rows="3">밤이, 감자, 호두, 라떼, 모카, 별이, 까미, 솜이, 탄이, 달이, 두리, 토리, 뭉치, 방울, 도토리, 보배, 사랑, 코코, 루루, 봄이, 단비, 찰떡, 인절미, 순대, 만두, 콩떡, 깨비, 짱구, 덕구, 백구, 누리, 마루, 바둑, 꼬미, 몽실, 뽀삐, 해피2, 설탕, 소금</textarea></label>
+        <label class="f">같은 이름이 나오면<select id="dupModePre" data-mirror="dupMode"><option value="num">뒤에 숫자 붙이기 (OO2, OO3)</option><option value="same">그냥 모두 OO으로 부르기</option></select></label>
+        <p class="small muted">시작한 뒤에도 오른쪽 '생명 · 가족' 패널에서 바꿀 수 있어요. 수명은 처음 동물들에게도 적용돼요.</p>
+      </div>
       <div class="stack">
         <h3>시작 시각</h3>
         <label class="f">시뮬레이션 시작 시간<input type="time" id="startTime" value="08:00"></label>
@@ -500,7 +518,8 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
       <div class="stack">
         <h3>경기</h3>
         <div class="row2">
-          <label class="f">선발 인원 (팀당)<select id="soSize"><option value="3">3:3</option><option value="5">5:5</option><option value="7">7:7</option><option value="9">9:9</option><option value="11" selected>11:11</option></select></label>
+          <label class="f">선발 인원 (팀당)<select id="soSize"><option value="1">1:1</option><option value="2">2:2</option><option value="3">3:3</option><option value="5">5:5</option><option value="7">7:7</option><option value="9">9:9</option><option value="11" selected>11:11</option></select></label>
+          <label class="f">경기 방식<select id="soKind"><option value="match">일반 경기 (전·후반)</option><option value="pk">승부차기만 (5명씩, 같으면 서든데스)</option></select></label>
           <label class="f">전·후반 길이 (각, 최대 45분)<select id="soLen"><option value="180">3분</option><option value="300">5분</option><option value="600" selected>10분</option><option value="900">15분</option><option value="1200">20분</option><option value="1800">30분</option><option value="2700">45분</option></select></label>
         </div>
         <label class="f">경기장 크기<select id="soPitch"><option value="0.8">작게</option><option value="1" selected>보통</option><option value="1.2">크게</option></select></label>
@@ -682,7 +701,8 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
       <section class="card panel home-only">
         <div class="panel-head"><h2>마당 축구</h2><span class="tag" id="soccerTag"></span></div>
         <div class="row2">
-          <label class="f">선발 인원 (팀당)<select id="scSize"><option value="3">3:3</option><option value="5">5:5</option><option value="7">7:7</option><option value="9">9:9</option><option value="11" selected>11:11</option></select></label>
+          <label class="f">선발 인원 (팀당)<select id="scSize"><option value="1">1:1</option><option value="2">2:2</option><option value="3">3:3</option><option value="5">5:5</option><option value="7">7:7</option><option value="9">9:9</option><option value="11" selected>11:11</option></select></label>
+          <label class="f">경기 방식<select id="scKind"><option value="match">일반 경기 (전·후반)</option><option value="pk">승부차기만 (5명씩, 같으면 서든데스)</option></select></label>
           <label class="f">전·후반 길이 (각)<select id="scLen"><option value="180">3분</option><option value="300">5분</option><option value="600" selected>10분</option><option value="900">15분</option><option value="1200">20분</option><option value="1800">30분</option><option value="2700">45분</option></select></label>
         </div>
         <label class="f">나는<select id="scMe"><option value="watch">관전 (공을 따라가는 카메라)</option><option value="teamA">A팀(빨강) 전체 조종 · 공 근처 선수로 자동 전환</option><option value="oneA">A팀(빨강) 한 선수만 조종</option><option value="teamB">B팀(파랑) 전체 조종</option><option value="oneB">B팀(파랑) 한 선수만 조종</option></select></label>
@@ -731,6 +751,20 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         <div class="row2"><button class="btn" id="corpseBtn" disabled>시체 치우기 (0구)</button><button class="btn" id="watchBtn" disabled>싸움 관전</button></div>
         <button class="btn" id="breakBtn" disabled>🧯 싸움 말리기 (5~10초)</button>
         <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" data-autobreak> 모두 자동화일 때 싸움 자동으로 말리기</label>
+        <h3>⏩ 시간 넘기기</h3>
+        <div class="skipgrid"><button class="btn" data-skip="1">1년</button><button class="btn" data-skip="5">5년</button><button class="btn" data-skip="10">10년</button><button class="btn" data-skip="50">50년</button><button class="btn" data-skip="100">100년</button><button class="btn" data-skip="500">500년</button><button class="btn" data-skip="1000">1000년</button></div>
+        <label class="f">넘기는 동안 최대 마릿수 (넘치면 입양)<input type="number" id="skipCap" value="60" min="2" max="300" step="1"></label>
+        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="skipInf"> 무한 (입양 안 보내기 · 브라우저 보호를 위해 300마리부터는 입양)</label>
+        <p class="small muted">넘기는 동안 밥·물·배변은 자동으로 챙긴다고 보고, 나이 먹기·자연사·결혼·출산만 계산해요. 싸움과 병은 일어나지 않아요.</p>
+        <h3>🕊 수명 (자연사)</h3>
+        <div class="row2"><label class="f">최소 (살)<input type="number" id="lifeMin" value="15" min="1" max="10000" step="0.5"></label><label class="f">최대 (살)<input type="number" id="lifeMax" value="20" min="1" max="10000" step="0.5"></label></div>
+        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="lifeInf"> 무한 수명 (자연사하지 않아요)</label>
+        <button class="btn" id="lifeApply">지금 있는 동물 수명도 다시 정하기</button>
+        <p class="small muted" id="lifeNote">새로 태어나는 동물은 15~20살 사이에 자연사해요.</p>
+        <h3>🏷 태어날 아기 이름</h3>
+        <label class="f">강아지 이름 (쉼표나 줄바꿈으로 구분)<textarea id="nameList" rows="3">밤이, 감자, 호두, 라떼, 모카, 별이, 까미, 솜이, 탄이, 달이, 두리, 토리, 뭉치, 방울, 도토리, 보배, 사랑, 코코, 루루, 봄이, 단비, 찰떡, 인절미, 순대, 만두, 콩떡, 깨비, 짱구, 덕구, 백구, 누리, 마루, 바둑, 꼬미, 몽실, 뽀삐, 해피2, 설탕, 소금</textarea></label>
+        <label class="f">같은 이름이 나오면<select id="dupMode"><option value="num">뒤에 숫자 붙이기 (OO2, OO3)</option><option value="same">그냥 모두 OO으로 부르기</option></select></label>
+        <button class="btn" id="nameReset">기본 이름으로 되돌리기</button>
         <h3>강제 번식</h3>
         <div class="row2">
           <label class="f">첫 번째<select id="fbA" aria-label="번식시킬 첫 번째 동물"></select></label>
@@ -930,6 +964,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
   </div>
 </div>
 
+<div class="skipov" id="skipOv" hidden role="dialog" aria-modal="true" aria-labelledby="skipTitle"><div class="skipcard"><b id="skipTitle">⏩ 시간 넘기는 중</b><div class="esc-bar"><span id="skipBar"></span></div><span id="skipText"></span><div id="skipRes" class="small"></div><div class="row2"><button class="btn" id="skipStop">멈추기</button><button class="btn primary" id="skipClose" hidden>확인</button></div></div></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script>
@@ -994,6 +1029,7 @@ const CAT_COLORS=['#c8a070','#8a96a3','#f2ece0','#3a3a3c','#e0a050','#ffffff','#
 const CAT_NAMES=['나비','치즈','루나','레오','미미','까망','냥냥','호랑','삼색이','모모','구름','라라'];
 const PUP_NAMES=['밤이','감자','호두','라떼','모카','별이','까미','솜이','탄이','달이','두리','토리','뭉치','방울','도토리','보배','사랑','코코','루루','봄이','단비','찰떡','인절미','순대','만두','콩떡','깨비','짱구','덕구','백구','누리','마루','바둑','꼬미','몽실','뽀삐','해피2','설탕','소금'];
 const DOG_BREED_ORDER=['golden','maltese','shiba','pomeranian','jindo','border','chihuahua','greatdane'];
+const LIFE={min:15,max:20,inf:false},SKIP_SAFE=300,NAMES={dog:null,dup:'num'};
 const MAX_PETS=Infinity, FAST_SPEED=1000, YEAR_MIN=525600, STOCK_MAX=5000, SNACK_MAX=60;
 const CROPS={
   corn:{n:'옥수수',grow:16*60,food:600,snack:0,c:'#f2c94c',leaf:'#4f9a3c'},
@@ -1661,7 +1697,7 @@ function makeAnimal(c,at){
   const d=Object.assign({id:animalUid++,species:c.species,breed:c.breed,sex:c.sex||'f',name:c.name,color:c.color,baseK:Bd.k,k:Bd.k,r:0.24*Bd.k,root,pose,emo,label,
     pos:new THREE.Vector2(spawn.x,spawn.z),heading:rand(0,6.28),speed:0,state:'idle',think:rand(0.5,2),target:null,
     hunger:rand(25,40),thirst:rand(25,40),pee:rand(10,45),poo:rand(5,40),happy:rand(72,86),health:rand(90,98),stamina:rand(70,90),
-    skills:c.skills||genSkills(c.breed),age:c.age||0,lifespan:rand(15,20),temper:rand(-8,8),pregnant:null,lastBirth:-1e9,mom:null,dad:null,stray:!!c.stray,
+    skills:c.skills||genSkills(c.breed),age:c.age||0,lifespan:c.lifespan||rollLife(),temper:rand(-8,8),pregnant:null,lastBirth:-1e9,mom:null,dad:null,stray:!!c.stray,
     fight:null,team:null,fightCD:0,scanT:rand(0,1),atkCD:0,fleeing:false,fleeT:0,shoutT:0,fastT:0,
     walkPh:rand(0,6),wake:0,stuck:{t:0,d:1e9},detour:null,ball:null,flags:{},barkT:0,actT:0},parts);
   applyGrowth(d);return d;
@@ -2337,10 +2373,14 @@ function animIntruder(realDt){
 
 /* ======================= LIFE CYCLE ======================= */
 function isFamily(a,b){if(!a||!b||a.species==='human'||b.species==='human')return false;return a.mom===b.id||a.dad===b.id||b.mom===a.id||b.dad===a.id||(a.mom!=null&&a.mom===b.mom)||a.mate===b.id}
-function newName(sp){
-  const used=new Set(dogs.map(d=>d.name));const pool=sp==='cat'?CAT_NAMES:PUP_NAMES;
+function rollLife(){if(LIFE.inf)return Infinity;const a=Math.min(LIFE.min,LIFE.max),b=Math.max(LIFE.min,LIFE.max);return rand(a,b)}
+function namePool(sp){return sp==='cat'?CAT_NAMES:(NAMES.dog&&NAMES.dog.length?NAMES.dog:PUP_NAMES)}
+// unused names first; when a name repeats it becomes OO2, OO3 … or stays plain OO (setting)
+function newName(sp,used){
+  used=used||new Set(dogs.map(d=>d.name));const pool=namePool(sp);
   const free=pool.filter(n=>!used.has(n));if(free.length)return pick(free);
-  const base=pick(pool);let i=2;while(used.has(base+i))i++;return base+i;
+  const base=pick(pool);if(NAMES.dup==='same')return base;
+  let i=2;while(used.has(base+i))i++;return base+i;
 }
 function litterSize(Bd){const [lo,hi]=Bd.litter;if(Bd.sz==='소형'||Bd.sp==='cat')return Math.round((rand(lo,hi)+rand(lo,hi))/2);return lo+Math.floor(Math.pow(Math.random(),1.5)*(hi-lo+1))}
 function canBreed(d){return !d.dead&&!d.stray&&!d.fight&&d.age>=1&&d.happy>=80&&d.health>=60}
@@ -2866,7 +2906,7 @@ const BREED_SKILL={
   korshort:[76,48,80,54,44,50,74,82],russianblue:[74,46,78,52,46,48,76,84],persian:[56,40,66,46,48,40,70,70]};
 const TEAM_COL={A:'#d4473a',B:'#2f7fd0'},TEAM_KO={A:'A팀 (빨강)',B:'B팀 (파랑)'};
 const ROLE_KO={GK:'골키퍼',DEF:'수비수',MID:'미드필더',FWD:'공격수',SUB:'교체 선수'};
-const VILLAGERS=[['준민','남'],['서윤','남'],['아선','여'],['희소','여'],['아윤','여'],['리율','여'],['오지','남'],['감자용','남'],['태준','남'],['현태','남'],['희태','여'],['린태','여'],['현서','여'],['우서','여'],['준하','남'],['윤채','여'],['리설','여'],['성망','남'],['원주','여'],['하루','남'],['생츈','남'],['라아','여'],['호지','남'],['호건','남'],['호준','남'],['황트','남'],['아준','남'],['박찬영','남'],['종현','남'],['민겸','남'],['니거(남)','남'],['니거(여)','여']];
+const VILLAGERS=[['준민','남'],['서윤','남'],['아선','여'],['희소','여'],['아윤','여'],['리율','여'],['오지','남'],['감자용','남'],['태준','남'],['현태','남'],['희태','여'],['린태','여'],['현서','여'],['우서','여'],['준하','남'],['윤채','여'],['리설','여'],['성망','남'],['원주','여'],['하루','남'],['생츈','남'],['라아','여'],['호지','남'],['호건','남'],['호준','남'],['황트','남'],['아준','남'],['박찬영','남'],['종현','남'],['민겸','남']];
 const VILLAGE_FROM=['1학년','2학년','3학년','4학년','5학년','6학년','양로원'];
 const TACTICS={A:{form:'bal',press:'mid',pass:'short',shoot:'mid',line:'mid'},B:{form:'bal',press:'mid',pass:'short',shoot:'mid',line:'mid'}};
 const TAC_OPTS={form:['포메이션',[['atk','공격형'],['bal','균형'],['def','수비형']]],press:['압박',[['low','낮게 (1명)'],['mid','보통 (2명)'],['high','강하게 (3명)']]],
@@ -2877,7 +2917,7 @@ let match=null,soccerStats={A:0,B:0,draw:0};
 function genSkills(breed){const b=BREED_SKILL[breed]||BREED_SKILL.golden,o={};SKILL_KEYS.forEach((k,i)=>o[k]=Math.round(clamp(b[i]+rand(-12,12),20,99)));return o}
 function mixSkills(a,b){const o={};SKILL_KEYS.forEach(k=>o[k]=Math.round(clamp(((a?a[k]:60)+(b?b[k]:(a?a[k]:60)))/2+rand(-8,8),20,99)));return o}
 const STAR_V=new Set(['하루','현태','호건']),WEAK_V=new Set(['린태','아윤','원주']),SHORT_V=new Set(['현태','호건']);
-const DECENT_M=new Set(['오지','감자용','성망','생츈','호지','호준','황트','아준', '종현', '박찬영','민겸','니거(남)']),MID_F=new Set(['아선','희소','희태','현서','우서','윤채','리설','라아','니거(여)']);
+const DECENT_M=new Set(['오지','감자용','성망','생츈','호지','호준','황트','아준', '종현', '박찬영','민겸']),MID_F=new Set(['아선','희소','희태','현서','우서','윤채','리설','라아']);
 function villagerSkills(elder,g,name,sex){const o={};
   const base=elder?{spd:32,sta:38,dri:50,sho:45,pas:66,tac:45,gk:52,rea:44}:{spd:38+g*6,sta:40+g*5,dri:36+g*6,sho:32+g*6,pas:34+g*6,tac:32+g*5,gk:34+g*5,rea:40+g*5};
   SKILL_KEYS.forEach(k=>{let v=base[k]+rand(-10,10);
@@ -2930,6 +2970,8 @@ function addVest(d,team){
 }
 function removeVest(d){if(d.vest){d.vest.forEach(m=>d.pose.remove(m));d.vest=null}setSprite(d.label,d.name,d.stray?'rgba(140,60,40,.85)':'rgba(12,20,22,.78)')}
 function formationSlots(n,form){
+  if(n===1)return [{role:'MID',u:0.36,v:0}]; // 1:1 — no keeper, one all-rounder
+  if(n===2)return [{role:'GK',u:0.03,v:0},{role:'MID',u:0.5,v:0}]; // 2:2 — keeper + one outfield player
   const out=[{role:'GK',u:0.03,v:0}];const f=n-1;if(f<=0)return out;
   const r={atk:[0.3,0.3,0.4],bal:[0.4,0.35,0.25],def:[0.5,0.35,0.15]}[form]||[0.4,0.35,0.25];
   let d=Math.max(1,Math.round(f*r[0])),fw=Math.max(f>=3?1:0,Math.round(f*r[2]));let m=f-d-fw;if(m<0){fw=Math.max(0,fw+m);m=f-d-fw}
@@ -2972,7 +3014,9 @@ function goalTarget(t){const P=match.P;return toW(P,dirOf(t)*(P.len/2+0.4),rand(
 function ageOf(p){return p.villager?p.yrs:p.age}
 function avgAge(t){const M=match;if(!M)return '';const l=[...M[t],...M.bench[t],...M.out[t]].filter(p=>!p.dead);if(!l.length)return '-';return (l.reduce((a,p)=>a+(ageOf(p)||0),0)/l.length).toFixed(1)+'살'}
 function keeperCatch(scorer){
-  const M=match,P=M.P,def=scorer==='A'?'B':'A',gk=M[def].find(q=>q.sc.slot&&q.sc.slot.role==='GK');if(!gk)return false;
+  const M=match,P=M.P,def=scorer==='A'?'B':'A';let gk=M[def].find(q=>q.sc.slot&&q.sc.slot.role==='GK');
+  if(!gk){ // no keeper (1:1): the defender closest to their own goal throws themselves in front of it
+    const og=toW(P,dirOf(def)*-1*P.len/2,0);gk=M[def].filter(q=>!q.dead).sort((x,y)=>Math.hypot(x.pos.x-og.x,x.pos.y-og.z)-Math.hypot(y.pos.x-og.x,y.pos.y-og.z))[0];if(!gk)return false}
   const b=M.ball,ga=dirOf(def)*-1*(P.len/2-0.6),w=toW(P,ga,clamp(fromW(P,b.pos.x,b.pos.z).c,-P.goalW/2,P.goalW/2));
   gk.pos.set(w.x,w.z);b.vel.set(0,0,0);b.pos.set(w.x,b.r,w.z);M.carrier=gk;M.lastTouch=gk;gk.sc.saves=(gk.sc.saves||0)+1;gk.sc.hold=0;
   if(gk.root)gk.root.userData.barkPulse=1;log(`🧤 ${gk.name} 골문 앞 선방!`,'good',true);return true;
@@ -2981,18 +3025,21 @@ function keeperCatch(scorer){
 const GOALS_PER_MATCH=2.6;
 function expectedGoals(){const M=match;return GOALS_PER_MATCH*Math.min(1,M.t/(2*M.halfLen))}
 function oppKeeper(p){const M=match;return M[p.sc.team==='A'?'B':'A'].find(q=>q.sc.slot&&q.sc.slot.role==='GK')}
+// keeps the total near a realistic score even when there are lots of shots (small games like 1:1)
+function paceK(){const M=match,r=(expectedGoals()+0.6)/(M.score.A+M.score.B+0.6);return clamp(r<1?Math.pow(r,3):Math.min(r,1.6),0.01,2.5)}
+// a normal match has about 24 shots; lots more shots (tiny pitch, 1:1) means each one is worth less
+function volK(){const M=match,exp=24*Math.min(1,M.t/(2*M.halfLen));return clamp((exp+4)/((M.shots||0)+4),0.06,1.4)}
 function convChance(p){
   const M=match,P=M.P,g=toW(P,dirOf(p.sc.team)*P.len/2,0),dG=Math.hypot(g.x-p.pos.x,g.z-p.pos.y),gk=oppKeeper(p);
   const qual=(0.45+effSkill(p,'sho')/100)*clamp(1.5-dG/(P.len*0.42),0.25,1.5)*(1.25-(gk?effSkill(gk,'gk'):40)/100*0.6);
-  const pace=clamp((expectedGoals()+0.6)/(M.score.A+M.score.B+0.6),0.15,2.5);
-  return clamp(0.13*qual*pace,0.01,0.5);
+  return clamp(0.13*qual*paceK()*volK(),0.002,0.5);
 }
 // pw (0..1) = how hard the human player pressed; undefined for AI shots
 function shotPowMul(pw){return pw===undefined?1:0.55+0.75*pw}
 function shotConvMul(pw){if(pw===undefined)return 1;return pw<0.7?0.45+pw*0.9:1.08-(pw-0.7)*1.9} // sweet spot about 60~80%
 function shoot(p,pw){
   const M=match,P=M.P,dir=dirOf(p.sc.team),gw=P.goalW,sho=effSkill(p,'sho'),side=pick([-1,1]),pow=(8+6*sho/100+p.k*1.2)*shotPowMul(pw);
-  const r=Math.random(),conv=clamp(convChance(p)*shotConvMul(pw),0.005,0.6);p.sc.shots=(p.sc.shots||0)+1;
+  const r=Math.random(),conv=clamp(convChance(p)*shotConvMul(pw),0.002,0.6);p.sc.shots=(p.sc.shots||0)+1;M.shots=(M.shots||0)+1;
   const overP=pw===undefined?0.5:clamp(0.25+(pw-0.6)*1.6,0.1,0.92); // blasting it sends it over the bar
   if(pw!==undefined&&pw<0.3&&r>=conv){const gk=oppKeeper(p),gc=gk?fromW(P,gk.pos.x,gk.pos.y).c:0;const t=toW(P,dir*(P.len/2+0.4),clamp(gc+rand(-0.5,0.5),-gw*0.45,gw*0.45));kickBall(p,t.x,t.z,pow,rand(0.1,0.5),0.04);M.ball.save=true;return} // soft shot: easy for the keeper
   if(r<conv){const t=toW(P,dir*(P.len/2+0.4),side*rand(gw*0.26,gw*0.42));kickBall(p,t.x,t.z,pow+1.5,rand(0.2,1.1),0.02);M.ball.sure=true}
@@ -3190,7 +3237,7 @@ function ballStep(dt){
   }
   const g=ballBounds();
   b.mesh.position.copy(b.pos);b.mesh.rotation.x+=b.vel.z*dt/b.r;b.mesh.rotation.z-=b.vel.x*dt/b.r;
-  if(g){if(!b.sure&&Math.random()>0.07*clamp((expectedGoals()+0.6)/(M.score.A+M.score.B+0.6),0.15,2.5)&&keeperCatch(g))return;onGoal(g)}
+  if(g){if(!b.sure&&Math.random()>0.07*paceK()*volK()&&keeperCatch(g))return;onGoal(g)}
 }
 function possessionStep(dt){
   const M=match,b=M.ball;if(M.carrier||b.pos.y>0.5)return;
@@ -3285,7 +3332,8 @@ function startShootout(){
   // everyone not involved waits around the centre circle
   for(const t of['A','B'])[...M[t],...M.bench[t],...M.out[t]].forEach((p,i,arr)=>{const w=toW(P,(t==='A'?-1:1)*0.9,-P.wid*0.35+P.wid*0.7*(arr.length>1?i/(arr.length-1):0.5));p.pos.set(w.x,w.z);p.speed=0});
   $('#pkBoard').hidden=false;renderPK();
-  log(`🥅 ${M.score.A} : ${M.score.B} 무승부! 승부차기로 승자를 가려요`,'good',true);toast('🥅 무승부! 승부차기에 들어가요',false,true);say('무승부입니다. 승부차기에 들어갑니다.');
+  if(M.pkOnly){log('🥅 승부차기 대결 시작! 5명씩 차고, 같으면 서든데스예요','good',true);toast('🥅 승부차기 대결 시작!',false,true);say('승부차기 대결을 시작합니다.')}
+  else{log(`🥅 ${M.score.A} : ${M.score.B} 무승부! 승부차기로 승자를 가려요`,'good',true);toast('🥅 무승부! 승부차기에 들어가요',false,true);say('무승부입니다. 승부차기에 들어갑니다.')}
   pkSetup();
 }
 function pkKicker(t){const M=match,o=M.pk.order[t];return o.length?o[M.pk.idx[t]%o.length]:null}
@@ -3332,7 +3380,7 @@ function pkUpdate(dt){
     if(K.res==='save'&&!K.def&&ba.a>hl-0.9){K.def=true;if(P.lx){b.vel.x*=-0.35;b.vel.z=rand(-3,3)}else{b.vel.z*=-0.35;b.vel.x=rand(-3,3)}b.vel.y=1.5;if(g&&g.root)g.root.userData.barkPulse=1}
     ballStep(dt);
     if(K.t<=0){
-      const t=K.turn,ok=K.res==='goal';K.kicks[t].push(ok);M.pk.idx[t]++;
+      const t=K.turn,ok=K.res==='goal';K.kicks[t].push(ok);if(k)(K.log=K.log||[]).push({t,name:k.name,ok,saved:K.res==='save'?(g?g.name:''):null});M.pk.idx[t]++;
       const nm=k?k.name:'';
       log(ok?`🥅 승부차기 ${t}팀 ${nm} 성공!`:K.res==='save'?`🧤 승부차기 ${t}팀 ${nm}의 슛을 ${g?g.name:''}${josa(g?g.name:'','이','가')} 막았어요`:`❌ 승부차기 ${t}팀 ${nm} 실축`,ok?'good':'bad',true);
       if(ok){blip(990,0.15,0.09);say('골!')}else blip(200,0.25,0.09);
@@ -3377,13 +3425,15 @@ function finishMatch(){
   const mvp=all.length?all.reduce((a,b)=>((b.sc.goals||0)*3+(b.sc.saves||0)*2+(b.sc.tackles||0)+(b.sc.passes||0)*0.3)>((a.sc.goals||0)*3+(a.sc.saves||0)*2+(a.sc.tackles||0)+(a.sc.passes||0)*0.3)?b:a):null;
   $('#mrTitle').textContent=w?`${TEAM_KO[w]} 승리!`:'무승부';
   $('#mrText').textContent=`최종 스코어 ${M.score.A} : ${M.score.B}${pkTxt}. 평균 나이 A ${avgAge('A')} · B ${avgAge('B')}. ${top.length?'득점: '+top.map(([n,c])=>`${n} ${c}골`).join(', ')+'. ':'골이 없었어요. '}${mvp?`MVP: ${mvp.name}.`:''}`;
+  if(M.pkOnly&&M.pk){const L=M.pk.log||[],ok=L.filter(x=>x.ok).map(x=>`${x.t} ${x.name}`),sv={};L.forEach(x=>{if(x.saved)sv[x.saved]=(sv[x.saved]||0)+1});const best=Object.entries(sv).sort((a,b)=>b[1]-a[1])[0];
+    $('#mrText').textContent=`승부차기 결과 ${M.pk.kicks.A.filter(Boolean).length} : ${M.pk.kicks.B.filter(Boolean).length} (${L.length}번 찼어요). 평균 나이 A ${avgAge('A')} · B ${avgAge('B')}. ${ok.length?'성공: '+ok.join(', ')+'. ':'아무도 넣지 못했어요. '}${best?`최고 골키퍼: ${best[0]} (${best[1]}번 선방).`:''}`}
   $('#matchRes').hidden=false;
   log(`🏁 경기 끝 · ${M.score.A} : ${M.score.B}${pkTxt}${w?` · ${TEAM_KO[w]} 승리`:' · 무승부'}`,'good',true);
   for(let i=0;i<3;i++)setTimeout(()=>blip(880,0.25,0.08),i*350);
 }
 function cleanupMatch(silent){
   const M=match;if(!M)return;
-  scene.remove(M.ball.mesh);
+  scene.remove(M.ball.mesh);if(M.flood){if(M.flood.bg0&&scene.background)scene.background.copy(M.flood.bg0);scene.remove(M.flood.g);scene.remove(M.flood.light,M.flood.light.target,M.flood.light2,M.flood.light2.target)}
   for(const v of M.villagers)scene.remove(v.g);
   for(const p of allActors().concat(M.out.A,M.out.B))if(p.species!=='human'&&!p.dead){removeVest(p);p.sc=null;p.state='idle';p.think=1}
   if(!silent&&M.villagers.length)log(`👋 동네에서 온 ${M.villagers.length}명이 집으로 돌아갔어요`,'',true);
@@ -3396,13 +3446,32 @@ function makeSoccerBall(){
   scene.add(m);return m;
 }
 // cfg: {P, pets, size, len, me, only}
+
+// four floodlight towers at the pitch corners + two soft lights that cover the whole pitch evenly
+function buildFloodlights(P){
+  const g=new THREE.Group(),heads=[],beams=[],hl=P.len/2+0.9,hw=P.wid/2+0.9,H=Math.max(4.5,P.len*0.22);
+  const pole=new THREE.MeshLambertMaterial({color:'#8d969a'});
+  for(const sa of[-1,1])for(const sc of[-1,1]){
+    const w=toW(P,sa*hl,sc*hw),c=toW(P,0,0);
+    const m=new THREE.Mesh(new THREE.CylinderGeometry(0.06,0.09,H,8),pole);m.position.set(w.x,H/2,w.z);g.add(m);
+    const head=new THREE.Mesh(new THREE.BoxGeometry(0.9,0.5,0.14),new THREE.MeshStandardMaterial({color:'#f4f8ff',emissive:'#eef4ff',emissiveIntensity:0.2}));
+    head.position.set(w.x,H+0.2,w.z);head.lookAt(c.x,0,c.z);g.add(head);heads.push(head);
+    const len=Math.hypot(c.x-w.x,c.z-w.z,H)*0.75,beam=new THREE.Mesh(new THREE.ConeGeometry(len*0.32,len,16,1,true),new THREE.MeshBasicMaterial({color:'#eef4ff',transparent:true,opacity:0,depthWrite:false,side:THREE.DoubleSide}));
+    beam.geometry.translate(0,-len/2,0);beam.position.copy(head.position);beam.lookAt(c.x+(w.x-c.x)*0.1,0,c.z+(w.z-c.z)*0.1);beam.rotateX(-Math.PI/2);g.add(beam);beams.push(beam);
+  }
+  scene.add(g);const c=toW(P,0,0);
+  const light=new THREE.DirectionalLight('#eaf1ff',0);light.position.set(c.x+P.len*0.3,H*2,c.z+P.wid*0.4);light.target.position.set(c.x,0,c.z);
+  const light2=new THREE.DirectionalLight('#eaf1ff',0);light2.position.set(c.x-P.len*0.3,H*2,c.z-P.wid*0.4);light2.target.position.set(c.x,0,c.z);
+  scene.add(light,light.target,light2,light2.target);
+  return {g,heads,beams,light,light2,bg0:scene.background?scene.background.clone():null,night:new THREE.Color('#0b1222')};
+}
 function startMatch(cfg){
   if(match)cleanupMatch(true);
   const P=cfg.P,size=cfg.size;
   const pets=cfg.pets.slice().sort(()=>Math.random()-0.5).slice(0,(size+BENCH)*2);
-  const M={P,size,halfLen:cfg.len,half:1,swapped:false,halfRest:12,drainK:clamp(600/cfg.len,0.2,3),only:!!cfg.only,A:[],B:[],bench:{A:[],B:[]},out:{A:[],B:[]},subCount:{A:0,B:0},villagers:[],score:{A:0,B:0},goals:[],t:0,phase:'prep',carrier:null,lastTouch:null,
+  const M={P,size,halfLen:cfg.len,half:1,swapped:false,halfRest:12,drainK:clamp(600/cfg.len,0.2,3),only:!!cfg.only,pkOnly:cfg.kind==='pk',A:[],B:[],bench:{A:[],B:[]},out:{A:[],B:[]},subCount:{A:0,B:0},villagers:[],score:{A:0,B:0},goals:[],t:0,phase:'prep',carrier:null,lastTouch:null,
     tac:TACTICS,ctrl:null,ctrlMode:null,ctrlTeam:null,act:null,ball:{r:0.12,pos:new THREE.Vector3(),vel:new THREE.Vector3(),mesh:null}};
-  match=M;M.ball.mesh=makeSoccerBall();const c0=toW(P,0,0);M.ball.pos.set(c0.x,0.12,c0.z);M.ball.mesh.position.copy(M.ball.pos);
+  match=M;M.ball.mesh=makeSoccerBall();M.flood=buildFloodlights(P);const c0=toW(P,0,0);M.ball.pos.set(c0.x,0.12,c0.z);M.ball.mesh.position.copy(M.ball.pos);
   // fill up from the village, then split by the balance slider (best players start, the rest sit on the bench)
   const pool=pets.slice(),used=new Set(dogs.map(d=>d.name));
   while(pool.length<(size+BENCH)*2){const v=villagerData(used);if(!v){log(`🏘 동네에 더 보낼 사람이 없어요. ${(size+BENCH)*2-pool.length}자리는 비워 두고 뛰어요`,'bad',true);break}M.villagers.push(v);pool.push(v)}
@@ -3534,6 +3603,9 @@ function updateLight(){
   let day=0;if(h>=6&&h<8)day=(h-6)/2;else if(h>=8&&h<18)day=1;else if(h>=18&&h<20)day=1-(h-18)/2;
   const lampOn=(h>=17.5&&h<23)||(h>=5.5&&h<7);
   hemi.intensity=0.12+0.5*day;sunLight.intensity=0.08+0.85*day;lamp.intensity=lampOn?0.9:0;
+  // soccer: the whole pitch stays bright day or night — at night the floodlights take over (cool white, glowing heads)
+  if(match&&match.flood){const n=1-day,F=match.flood;hemi.intensity=Math.max(hemi.intensity,0.42);
+    F.light.intensity=0.55*n;F.light2.intensity=0.3*n;if(F.bg0&&scene.background)scene.background.copy(F.bg0).lerp(F.night,n*0.9);F.heads.forEach(m=>{m.material.emissiveIntensity=0.15+1.6*n});F.beams.forEach(m=>{m.material.opacity=0.12*n})}
   sunLight.color.setHSL(0.1,0.5,0.6+0.3*day);
   if(dev.window)dev.window.glass.material=day>0.4?mat('#9fd3ee',{emissive:'#5aa6cf',emissiveIntensity:0.5}):mat('#1c2a4a',{emissive:'#0c1428',emissiveIntensity:0.6});
   $('#camScreen').classList.toggle('night',day<0.25&&!lampOn);
@@ -3675,6 +3747,102 @@ function syncUI(){
   const sp=$('#scStart');if(sp){const ok=!!(yard&&yard.P);sp.disabled=!ok||!!match;$('#scNote').textContent=match?'경기 중이에요.':ok?`축구장 ${yard.P.len.toFixed(0)}×${yard.P.wid.toFixed(0)}m · 동물이 모자라면 동네에서 보내 줘요.`:'방 꾸미기에서 마당과 "마당에 축구장 만들기"를 켜야 경기할 수 있어요.'}
 }
 
+
+/* ======================= TIME SKIP (1 ~ 1000 years) ======================= */
+// light-weight life simulation: aging, natural death, marriage and births only; newborns stay as plain data until the end
+let skipping=null;
+function skipBlocked(){if(match)return '축구 경기 중';if(world.arena)return '싸움장 모드';if(fights.length)return '싸움 중';if(intruder)return '침입자가 있어요';if(owner.visiting)return '주인이 와 있어요';if(dogs.some(d=>d.stray))return '길고양이가 들어와 있어요';return null}
+function skipHappyTarget(d){
+  let t=72+(d.temper||0)+(yard?(d.species==='cat'?4:10):0)+(world.tv.on?5:0)+(d.species==='dog'&&ballMode==='auto'?6:0)+(d.species==='cat'?6:0)+4;
+  t-=Math.min(30,world.dirt*2)+corpses.length*5;return clamp(t);
+}
+function startSkip(Y){
+  if(skipping||!world)return;const why=skipBlocked();if(why){toast(`지금은 시간을 넘길 수 없어요 (${why})`,true);return}
+  const cap=$('#skipInf').checked?Infinity:clamp(Math.round(+$('#skipCap').value||60),2,SKIP_SAFE);
+  const H=Y<=10?1440:Y<=100?1440*7:1440*14;
+  const recs=dogs.filter(d=>!d.dead).map(d=>{d.gen=d.gen||1;return d});
+  skipping={Y,H,cap,t0:world.t,end:world.t+Y*YEAR_MIN,recs,dead:[],born:0,adopted:0,wed:0,stop:false,maxGen:Math.max(1,...recs.map(r=>r.gen)),peak:recs.length,
+    used:new Set(recs.map(r=>r.name)),lastNames:[],safe:false};
+  $('#skipOv').hidden=false;$('#skipClose').hidden=true;$('#skipStop').hidden=false;$('#skipRes').textContent='';$('#skipTitle').textContent=`⏩ ${Y}년 넘기는 중…`;
+  hideBanner&&hideBanner();setTimeout(skipChunk,30);
+}
+function skipStep(S){
+  const t=Math.min(S.end,world.t+S.H),h=t-world.t;world.t=t;
+  const alive=S.recs;
+  for(const r of alive.slice()){
+    r.age+=h/YEAR_MIN;r.happy=clamp(r.happy+(skipHappyTarget(r)-r.happy)*(1-Math.exp(-h/240)));r.health=Math.max(r.health,80);
+    r.hunger=30;r.thirst=30;
+    if(r.pregnant&&world.t>=r.pregnant.due)skipBirth(S,r);
+    if(r.age>=r.lifespan){S.recs.splice(S.recs.indexOf(r),1);if(r.root)S.dead.push(r);S.deathN=(S.deathN||0)+1;if(NAMES.dup!=='same'||!S.recs.some(o=>o.name===r.name))S.used.delete(r.name);S.lastNames.push(`${r.name}(${Math.floor(r.age)}살)`);if(S.lastNames.length>6)S.lastNames.shift()}
+  }
+  if(world.breedOn){
+    const ok=r=>r.age>=1&&r.happy>=80&&r.health>=60&&!r.stray;
+    const males={dog:[],cat:[]};for(const m of S.recs)if(m.sex==='m'&&ok(m)&&m.age<12)(males[m.species]||(males[m.species]=[])).push(m);
+    for(const f of S.recs){
+      if(f.sex!=='f'||f.pregnant||!ok(f)||f.age>=10||world.t-f.lastBirth<120*1440)continue;
+      const pool=males[f.species]||[],cand=pool.length>40?Array.from({length:40},()=>pick(pool)):pool;
+      const ms=cand.filter(m=>m.id!==f.mom&&m.id!==f.dad&&m.mom!==f.id&&!(m.mom!=null&&m.mom===f.mom));
+      if(!ms.length)continue;const m=ms.find(x=>x.id===f.mate)||pick(ms);const days=f.species==='cat'?65:63;
+      if(f.mate!==m.id)S.wed++;
+      f.pregnant={due:world.t+days*1440,dad:m.id,dadBreed:m.breed,dadColor:m.color,dadSkills:m.skills,dadGen:m.gen||1,start:world.t};f.mate=m.id;m.mate=f.id;
+    }
+  }
+  S.peak=Math.max(S.peak,S.recs.length);
+}
+function skipBirth(S,m){
+  const P=m.pregnant;m.pregnant=null;m.lastBirth=world.t;
+  const n=Math.max(1,litterSize(BREEDS[m.breed]));let room=Math.max(0,Math.min(S.cap,SKIP_SAFE)-S.recs.length);
+  // house full: the oldest animals past breeding age (females 10+, males 12+) go to a new family so the family line goes on
+  if(room<n){const old=S.recs.filter(r=>r!==m&&r.id!==P.dad&&!r.pregnant&&r.age>=(r.sex==='f'?10:12)).sort((a,b)=>b.age-a.age);
+    while(room<n&&old.length){const r=old.shift();S.recs.splice(S.recs.indexOf(r),1);if(r.root)S.dead.push(r);S.retired=(S.retired||0)+1;if(NAMES.dup!=='same'||!S.recs.some(o=>o.name===r.name))S.used.delete(r.name);room++}}
+  const born=Math.min(n,room);S.adopted+=n-born;
+  const dad=S.recs.find(x=>x.id===P.dad),gen=Math.max(m.gen||1,dad?dad.gen||1:P.dadGen||1)+1;S.maxGen=Math.max(S.maxGen,gen);
+  for(let i=0;i<born;i++){
+    const sp=m.species,name=newName(sp,S.used);S.used.add(name);
+    S.recs.push({light:true,id:animalUid++,species:sp,breed:Math.random()<0.5?m.breed:(P.dadBreed||m.breed),color:Math.random()<0.5?m.color:(P.dadColor||m.color),
+      sex:Math.random()<0.5?'f':'m',age:0,name,skills:mixSkills(m.skills,dad?dad.skills:P.dadSkills),lifespan:rollLife(),temper:rand(-8,8),
+      happy:92,health:100,pregnant:null,lastBirth:-1e9,mom:m.id,dad:P.dad,mate:null,gen});
+    S.born++;
+  }
+}
+function skipChunk(){
+  const S=skipping;if(!S)return;const t0=performance.now();
+  while(world.t<S.end&&!S.stop&&performance.now()-t0<28){skipStep(S);if(S.recs.length>=SKIP_SAFE)S.safe=true}
+  const done=(world.t-S.t0)/(S.end-S.t0);
+  $('#skipBar').style.width=(done*100).toFixed(1)+'%';
+  $('#skipText').textContent=`${Math.floor((world.t-S.t0)/YEAR_MIN)}년 / ${S.Y}년 · 지금 ${S.recs.length}마리 · 태어남 ${S.born} · 떠남 ${S.deathN||0} · ${S.maxGen}세대`;
+  if(world.t>=S.end||S.stop)finishSkip();else setTimeout(skipChunk,0);
+}
+function finishSkip(){
+  const S=skipping;if(!S)return;
+  world.nextHourT=Math.ceil(world.t/60)*60+0.001;
+  if(world.events.length){world.events=world.events.filter(e=>e.at>world.t);renderEvents()}
+  if(world.tv.on&&world.tv.offAt>0&&world.tv.offAt<=world.t)setTV(false);
+  // old animals who passed away during the skip are laid to rest quietly (no corpses left behind)
+  for(const d of S.dead){d.dead=true;tmRelease(d);scene.remove(d.root);for(const b of balls){if(b.chasedBy===d.id)b.chasedBy=null;if(b.carrier===d){b.state='free';b.carrier=null}}}
+  const deadSet=new Set(S.dead);dogs=dogs.filter(d=>!deadSet.has(d));
+  // newborns who are still alive become real animals now
+  for(const r of S.recs)if(r.light){
+    const p=makeAnimal({species:r.species,breed:r.breed,color:r.color,sex:r.sex,age:r.age,name:r.name,skills:r.skills,lifespan:r.lifespan});
+    Object.assign(p,{id:r.id,temper:r.temper,happy:r.happy,health:r.health,pregnant:r.pregnant,lastBirth:r.lastBirth,mom:r.mom,dad:r.dad,mate:r.mate,gen:r.gen});dogs.push(p);
+  }
+  for(const d of dogs){if(d.age<1.25)applyGrowth(d);d.state='idle';d.target=null;d.hunger=Math.min(d.hunger,40);d.thirst=Math.min(d.thirst,40)}
+  if(!dogs.some(d=>d.id===followId)&&dogs[0])followId=dogs[0].id;
+  world.born+=S.born;world.deaths+=S.deathN||0;world.cardsDirty=true;
+  const yrs=((world.t-S.t0)/YEAR_MIN),yTxt=yrs>=S.Y-0.01?`${S.Y}년`:`${yrs.toFixed(1)}년`;
+  const oldest=dogs.slice().sort((a,b)=>b.age-a.age)[0];
+  const res=`${yTxt}이 지났어요 · 태어남 ${S.born}마리 · 세상을 떠남 ${S.deathN||0}마리${S.adopted?` · 아기 입양 ${S.adopted}마리`:''}${S.retired?` · 나이 든 동물 입양 ${S.retired}마리`:''} · 결혼 ${S.wed}쌍 · 가장 많을 때 ${S.peak}마리 · ${S.maxGen}세대까지`+
+    (dogs.length?` · 지금 ${dogs.length}마리 (최고령 ${oldest.name} ${fmtAge(oldest.age)})`:' · 모두 무지개다리를 건너 집이 비었어요');
+  log('⏩ '+res,'good',true);toast('⏩ '+yTxt+'이 지났어요',false,true);
+  $('#skipTitle').textContent=`⏩ ${yTxt} 넘기기 끝`;$('#skipBar').style.width='100%';$('#skipText').textContent=res;
+  $('#skipRes').textContent=(S.safe?`⚠ 동물이 ${SKIP_SAFE}마리에 닿아서, 브라우저가 멈추지 않도록 그 뒤로 태어난 아기는 입양 보냈어요. `:'')+(S.lastNames.length?`최근 떠난 동물: ${S.lastNames.join(', ')}`:'');
+  if(S.safe)log(`⚠ 동물이 ${SKIP_SAFE}마리에 닿아서 그 뒤로 태어난 아기는 입양 보냈어요 (브라우저 보호)`,'bad',true);
+  $('#skipStop').hidden=true;$('#skipClose').hidden=false;$('#skipClose').focus();
+  skipping=null;lastT=performance.now();
+}
+function lifeNote(){const a=Math.min(LIFE.min,LIFE.max),b=Math.max(LIFE.min,LIFE.max);
+  $('#lifeNote').textContent=LIFE.inf?'무한 수명: 늙어서 세상을 떠나지 않아요 (싸움·병은 그대로).':`새로 태어나는 동물은 ${a}~${b}살 사이에 자연사해요.`;$('#lifeNotePre').textContent=LIFE.inf?'무한':`${a}~${b}살`;
+  ['#lifeMin','#lifeMax','#lifeMinPre','#lifeMaxPre'].forEach(i=>$(i).disabled=LIFE.inf);['#skipCap','#skipCapPre'].forEach(i=>$(i).disabled=$('#skipInf').checked)}
 /* ======================= MAIN LOOP ======================= */
 let lastT=performance.now(),uiT=0;
 function frame(now){
@@ -3682,7 +3850,7 @@ function frame(now){
   const realDt=Math.min(0.1,(now-lastT)/1000);lastT=now;
   const fast=!world.arena&&speed>=FAST_SPEED&&!fights.length&&!intruder&&!owner.visiting&&!dogs.some(d=>d.stray)&&!player.spect&&!match;
   world.fastNow=fast;
-  if(!paused&&!menuOpen){
+  if(!paused&&!menuOpen&&!skipping){
     quiet=fast;
     const simDt=realDt*speed;
     const steps=fast?Math.max(1,Math.min(200,Math.ceil(simDt/30))):Math.max(1,Math.min(160,Math.ceil(simDt/0.05)));
@@ -4019,7 +4187,7 @@ function lineupStep(realDt){
   if(L.team==='A'){L.team='B';L.step=-1;L.t=0.4;buildLineup('B');return}
   endLineup();
 }
-function endLineup(){const M=match;if(!M)return;$('#lineup').hidden=true;kickoff('A');setSoccerView(M.pendingView);say('경기 시작합니다!')}
+function endLineup(){const M=match;if(!M)return;$('#lineup').hidden=true;setSoccerView(M.pendingView);if(M.pkOnly){startShootout();return}kickoff('A');say('경기 시작합니다!')}
 function say(txt){if(!soundOn||!('speechSynthesis' in window))return;try{const u=new SpeechSynthesisUtterance(txt);u.lang='ko-KR';u.rate=1.25;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
 $('#luSkip').onclick=skipRollcall;
 /* ======================= SOCCER UI ======================= */
@@ -4056,7 +4224,7 @@ function startHomeMatch(){
   if(match)return;if(fights.length){toast('싸움이 끝난 뒤에 경기를 시작할 수 있어요',true);return}
   const size=+$('#scSize').value;
   const pets=dogs.filter(d=>!d.dead&&!d.fight&&!d.stray&&d.age>=0.5&&d.health>30);
-  startMatch({P:yard.P,pets,size,len:+$('#scLen').value,me:$('#scMe').value,only:false});
+  startMatch({P:yard.P,pets,size,len:+$('#scLen').value,me:$('#scMe').value,only:false,kind:$('#scKind').value});
 }
 $('#scStart').onclick=()=>{ac();startHomeMatch()};
 // start: soccer only
@@ -4064,7 +4232,7 @@ function startSoccerOnly(){
   const size=+$('#soSize').value,need=(size+BENCH)*2,n=soccerRows.reduce((a,r)=>a+r.n,0);
   if(n>need){$('#soErr').textContent=`${size}:${size} 경기에는 교체 명단까지 동물 ${need}마리까지 넣을 수 있어요 (지금 ${n}마리)`;return}
   $('#soErr').textContent='';if(match)cleanupMatch(true);
-  const PS={3:[18,11],5:[26,16],7:[34,21],9:[42,26],11:[50,32]}[size]||[26,16],sc=+$('#soPitch').value;
+  const PS={1:[12,8],2:[15,10],3:[18,11],5:[26,16],7:[34,21],9:[42,26],11:[50,32]}[size]||[26,16],sc=+$('#soPitch').value;
   const len=Math.round(PS[0]*sc),wid=Math.round(PS[1]*sc),L={W:len+3,D:wid+3,outdoor:true,yard:{on:false,depth:4},items:[]};
   const used=new Set();arenaConf=[];
   soccerRows.forEach(r=>{for(let i=0;i<r.n;i++){const sp=BREEDS[r.breed].sp,pool=sp==='cat'?CAT_NAMES:[...DOG_NAMES,...PUP_NAMES];const f=pool.filter(x=>!used.has(x));const nm=f.length?pick(f):pick(pool)+(used.size+1);used.add(nm);
@@ -4080,10 +4248,10 @@ function startSoccerOnly(){
   followId=dogs[0]?dogs[0].id:1;buildDogCards();renderEvents();buildSpeedSeg();setBallMode('auto');
   $('#soTag').textContent=`${P.len.toFixed(0)}×${P.wid.toFixed(0)}m · ${size}:${size}`;
   running=true;lastT=performance.now();
-  startMatch({P,pets:dogs.slice(),size,len:+$('#soLen').value,me:$('#soMe').value,only:true});
+  startMatch({P,pets:dogs.slice(),size,len:+$('#soLen').value,me:$('#soMe').value,only:true,kind:$('#soKind').value});
 }
 function soccerAgain(){
-  if(world&&world.soccerOnly){$('#matchRes').hidden=true;startMatch({P:world.soccerP,pets:dogs.filter(d=>!d.dead),size:+$('#soSize').value,len:+$('#soLen').value,me:$('#soMe').value,only:true})}
+  if(world&&world.soccerOnly){$('#matchRes').hidden=true;startMatch({P:world.soccerP,pets:dogs.filter(d=>!d.dead),size:+$('#soSize').value,len:+$('#soLen').value,me:$('#soMe').value,only:true,kind:$('#soKind').value})}
   else{$('#matchRes').hidden=true;cleanupMatch(true);startHomeMatch()}
 }
 $('#soStart').onclick=()=>{ac();startSoccerOnly()};
@@ -4170,6 +4338,22 @@ $('#breakBtn').onclick=breakAll;
 $('#fhBreak').onclick=()=>{const f=player.spect;if(f)startBreakup(f,false)};
 $$('[data-autobreak]').forEach(c=>c.onchange=e=>{autoBreak=e.target.checked;$$('[data-autobreak]').forEach(x=>x.checked=autoBreak);
   if(world)log(autoBreak?'🧯 자동화가 싸움을 자동으로 말려요':'🧯 싸움을 자동으로 말리지 않아요','good',true)});
+$$('[data-skip]').forEach(b=>b.onclick=()=>startSkip(+b.dataset.skip));
+// start-screen copies of the life settings: both sides stay in sync
+$$('[data-mirror]').forEach(pre=>{const main=$('#'+pre.dataset.mirror);
+  const k=pre.type==='checkbox'?'checked':'value';
+  pre.addEventListener('change',()=>{main[k]=pre[k];main.dispatchEvent(new Event('change'))});
+  main.addEventListener('change',()=>{pre[k]=main[k]});});
+$('#skipStop').onclick=()=>{if(skipping)skipping.stop=true};
+$('#skipClose').onclick=()=>{$('#skipOv').hidden=true};
+['#lifeMin','#lifeMax'].forEach(id=>$(id).onchange=()=>{LIFE.min=clamp(+$('#lifeMin').value||15,1,10000);LIFE.max=clamp(+$('#lifeMax').value||20,1,10000);$('#lifeMin').value=LIFE.min;$('#lifeMax').value=LIFE.max;lifeNote()});
+$('#lifeInf').onchange=e=>{LIFE.inf=e.target.checked;lifeNote()};
+$('#skipInf').onchange=()=>lifeNote();
+$('#lifeApply').onclick=()=>{if(!world)return;for(const d of dogs)if(!d.dead)d.lifespan=rollLife();world.cardsDirty=true;const a=Math.min(LIFE.min,LIFE.max),b=Math.max(LIFE.min,LIFE.max),txt=LIFE.inf?'무한':`${a}~${b}살`;toast(`지금 있는 동물의 수명을 ${txt}으로 다시 정했어요`);log(`🕊 수명을 ${txt}으로 바꾸고 지금 있는 동물에게도 적용했어요`,'',true)};
+const readNames=()=>{const l=$('#nameList').value.split(/[,\n]/).map(x=>x.trim()).filter(Boolean);NAMES.dog=l.length?[...new Set(l)]:null};
+$('#nameList').onchange=()=>{readNames();toast(NAMES.dog?`아기 강아지 이름 ${NAMES.dog.length}개를 저장했어요`:'이름이 비어 있어서 기본 이름을 써요')};
+$('#nameReset').onclick=()=>{$('#nameList').value=PUP_NAMES.join(', ');NAMES.dog=null;toast('기본 이름으로 되돌렸어요')};
+$('#dupMode').onchange=e=>{NAMES.dup=e.target.value;toast(NAMES.dup==='same'?'같은 이름이 나오면 그냥 같은 이름으로 불러요':'같은 이름이 나오면 OO2, OO3처럼 숫자를 붙여요')};
 $('#breedOn').onchange=e=>{if(world){world.breedOn=e.target.checked;log(e.target.checked?'번식을 허용했어요':'번식을 막았어요 (중성화)')}};
 $('#corpseBtn').onclick=()=>{if(!cleanCorpses('내가'))toast('치울 시체가 없어요')};
 $('#watchBtn').onclick=()=>{if(fights.length)startSpectate(fights[0])};

@@ -129,6 +129,13 @@ input[type="range"]{width:100%;accent-color:var(--accent)}
 .st-tip{position:absolute;pointer-events:none;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:12px;box-shadow:0 6px 18px rgba(0,0,0,.15);white-space:nowrap;z-index:2}
 .st-tip b{display:block;margin-bottom:2px}
 .st-cut{font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);font-size:11px;margin-left:6px}
+.bigtoggle{display:flex;gap:10px;align-items:center;border:2px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface-2);cursor:pointer}
+.bigtoggle input{width:22px;height:22px;accent-color:var(--accent);flex:none}
+.bigtoggle b{display:block;font-size:16px}
+.bigtoggle small{display:block;font-size:12px;color:var(--muted)}
+.bigtoggle:has(input:not(:checked)){border-color:var(--accent)}
+.st-group{font-size:18px;margin:4px 0 -4px}
+.st-sec.sm .st-pie canvas{width:120px;height:120px}
 .st-three{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
 .st-chart.sm{height:170px}
 .st-now{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}
@@ -547,6 +554,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         </div>
       <div class="stack">
         <h3>생명 · 시간 넘기기 (미리 설정)</h3>
+        <label class="bigtoggle"><input type="checkbox" data-illon checked><span><b>🦠 병으로 죽는 것 허용</b><small data-illnote>건강이 0이 되면 병으로 세상을 떠나요.</small></span></label>
         <div class="row2"><label class="f">수명 최소 (살)<input type="number" id="lifeMinPre" data-mirror="lifeMin" value="15" min="1" max="10000" step="0.5"></label><label class="f">수명 최대 (살)<input type="number" id="lifeMaxPre" data-mirror="lifeMax" value="20" min="1" max="10000" step="0.5"></label></div>
         <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="lifeInfPre" data-mirror="lifeInf"> 무한 수명 (자연사하지 않아요)</label>
         <label class="f">시간 넘길 때 최대 마릿수 (넘치면 입양)<input type="number" id="skipCapPre" data-mirror="skipCap" value="60" min="2" max="300" step="1"></label>
@@ -851,6 +859,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
           <span>싸움</span><b id="lifeFights">없음</b>
         </div>
         <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" data-fightallow checked> 싸움 허용</label>
+        <label class="bigtoggle"><input type="checkbox" data-illon checked><span><b>🦠 병으로 죽는 것 허용</b><small data-illnote>건강이 0이 되면 병으로 세상을 떠나요.</small></span></label>
         <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="breedOn" checked> 번식 허용 (행복도 80 이상인 1살 넘은 암수)</label>
         <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="adoptOut"> 집이 꽉 차면 새로 태어난 아기를 새 가족에게 입양 보내기</label>
         <div class="row2"><button class="btn" id="corpseBtn" disabled>시체 치우기 (0구)</button><button class="btn" id="watchBtn" disabled>싸움 관전</button></div>
@@ -1121,6 +1130,9 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
   </div>
   <section class="st-sec"><div class="st-sh"><h3>평균 행복도 · 체력 · 건강 추이 <small class="st-cut" id="stAvgNote"></small></h3><div class="st-leg" id="stAvgLeg"></div></div><div class="st-chart"><canvas id="stAvg" aria-label="평균 상태 추이 꺾은선그래프" role="img"></canvas><div class="st-tip" id="stAvgTip" hidden></div></div></section>
   <div class="st-three"><section class="st-sec"><div class="st-sh"><h3>😊 평균 행복도</h3><span class="st-now" id="stHapNow"></span></div><div class="st-chart sm"><canvas id="stHap" aria-label="평균 😊 평균 행복도 추이 꺾은선그래프" role="img"></canvas><div class="st-tip" id="stHapTip" hidden></div></div></section><section class="st-sec"><div class="st-sh"><h3>⚡ 평균 체력</h3><span class="st-now" id="stStaNow"></span></div><div class="st-chart sm"><canvas id="stSta" aria-label="평균 ⚡ 평균 체력 추이 꺾은선그래프" role="img"></canvas><div class="st-tip" id="stStaTip" hidden></div></div></section><section class="st-sec"><div class="st-sh"><h3>❤ 평균 건강</h3><span class="st-now" id="stHpNow"></span></div><div class="st-chart sm"><canvas id="stHp" aria-label="평균 ❤ 평균 건강 추이 꺾은선그래프" role="img"></canvas><div class="st-tip" id="stHpTip" hidden></div></div></section></div>
+  <h3 class="st-group">🕯 사망 통계 <small class="st-cut" id="stDeathN"></small></h3>
+  <div class="st-two"><section class="st-sec "><h3>사망 연령대</h3><div class="st-pie"><canvas id="stDAge" aria-label="사망 연령대 원그래프" role="img"></canvas><div class="st-pieleg" id="stDAgeLeg"></div></div></section><section class="st-sec "><h3>전체 사망 원인</h3><div class="st-pie"><canvas id="stDCause" aria-label="전체 사망 원인 원그래프" role="img"></canvas><div class="st-pieleg" id="stDCauseLeg"></div></div></section></div>
+  <div class="st-three"><section class="st-sec sm"><h3>🍼 아기 때 사망 원인</h3><div class="st-pie"><canvas id="stDC_baby" aria-label="🍼 아기 때 사망 원인 원그래프" role="img"></canvas><div class="st-pieleg" id="stDC_babyLeg"></div></div></section><section class="st-sec sm"><h3>🐕 어른 때 사망 원인</h3><div class="st-pie"><canvas id="stDC_adult" aria-label="🐕 어른 때 사망 원인 원그래프" role="img"></canvas><div class="st-pieleg" id="stDC_adultLeg"></div></div></section><section class="st-sec sm"><h3>👴 노령 때 사망 원인</h3><div class="st-pie"><canvas id="stDC_old" aria-label="👴 노령 때 사망 원인 원그래프" role="img"></canvas><div class="st-pieleg" id="stDC_oldLeg"></div></div></section></div>
   <details class="st-sec"><summary>표로 보기 (최근 기록 12개)</summary><div class="st-tablewrap"><table class="st-table" id="stTable"></table></div></details>
 </div></div>
 <div class="skipov" id="warnOv" hidden role="alertdialog" aria-modal="true" aria-labelledby="warnTitle"><div class="skipcard"><b id="warnTitle">⚠ 300마리 제한을 풀까요?</b><span>제한을 풀면 동물이 아주 빠르게 늘어나요 (테스트: 강아지 60마리로 시작해 5년 만에 약 5만 마리). 수명을 짧게 하거나 넘기는 해를 짧게 하면 덜 늘어나요. 그러면 계산이 아주 오래 걸리고, 끝난 뒤 3D 화면이 매우 느려지거나 브라우저 탭이 멈추고 꺼질 수 있어요. 진행 중 저장되지 않은 내용은 사라질 수 있어요.</span><div class="row2"><button class="btn" id="warnNo">취소 (제한 유지)</button><button class="btn danger" id="warnYes">그래도 풀기</button></div></div></div>
@@ -1942,7 +1954,7 @@ function newWorldState(startMin){
   return {t:startMin,day:1,tank:2000,tankCap:2000,bowl:0,bowlCap:300,food:0,foodCap:150,stock:3000,
     pump:{on:false,ml:0,dog:null},launcherBalls:3,launchQ:0,events:[],evId:1,lastAlertT:-99,
     voiceUntil:-1,voiceActive:false,stolen:0,alertShown:false,lowWaterWarned:false,emptyFoodWarned:false,
-    pad:{waste:[],cleaning:0,waitT:0,mode:$('#padMode')?$('#padMode').value:'3',noSheetWarned:false,dirtyWarned:false},floorMess:[],sheets:30,dirt:0,snacks:30,tv:{on:false,ch:'dog',offAt:-1},music:{on:false,genre:'classic',offAt:-1},ai:null,hist:[],histEvery:60,histLast:-1e18,farmFood:0,tm:{user:null,speed:'mid',auto:true,minutes:0,start:0},
+    pad:{waste:[],cleaning:0,waitT:0,mode:$('#padMode')?$('#padMode').value:'3',noSheetWarned:false,dirtyWarned:false},floorMess:[],sheets:30,dirt:0,snacks:30,tv:{on:false,ch:'dog',offAt:-1},music:{on:false,genre:'classic',offAt:-1},deathStats:{baby:{},adult:{},old:{}},ai:null,hist:[],histEvery:60,histLast:-1e18,farmFood:0,tm:{user:null,speed:'mid',auto:true,minutes:0,start:0},
     nextHourT:Math.ceil(startMin/60)*60+0.001,born:0,deaths:0,strayN:0,lastVisitDay:-1,ownerDead:false,autoDrop:null,breakLoop:false,fastNow:false,
     farm:{crop:'corn',growth:0.35,anim:0,harvests:0,foodMade:0,snackMade:0},breedOn:true,cardsDirty:true};
 }
@@ -2579,7 +2591,7 @@ function lifeStep(h){
     if(d.age<1.25)applyGrowth(d);
     if(d.pregnant&&world.t>=d.pregnant.due)giveBirth(d);
     if(d.age>=d.lifespan){die(d,'노환');continue}
-    if(d.health<=0){die(d,d.fight?'싸움':'병');continue}
+    if(d.health<=0){if(!d.fight&&!ILL.on){d.health=1}else{die(d,d.fight?'싸움':'병');continue}}
     if(d.fight&&d.stamina<=0)die(d,'싸움');
   }
 }
@@ -2598,7 +2610,7 @@ function die(x,cause){
   x.ball=null;x.speed=0;
   x.pose.rotation.set(Math.PI/2,0,0);x.pose.position.y=0.13;x.legs.forEach(l=>l.rotation.z=0.3);x.tongue.visible=false;
   setSprite(x.emo,'');setSprite(x.label,'✝ '+x.name,'rgba(70,74,80,.85)');
-  corpses.push({root:x.root,name:x.name,species:x.species,at:world.t,cause});
+  corpses.push({root:x.root,name:x.name,species:x.species,at:world.t,cause});recDeath(x,cause);
   world.deaths++;world.cardsDirty=true;
   const sub=josa(x.name,'이','가'),age=fmtAge(x.age);
   const msg=cause==='노환'?`🕊 ${x.name}${sub} ${age}에 무지개다리를 건넜어요`:cause==='싸움'?`💀 ${x.name}${sub} 싸움 중에 쓰러졌어요 (${age})`:`🕯 ${x.name}${sub} 병으로 세상을 떠났어요 (${age})`;
@@ -3941,7 +3953,7 @@ function skipStep(S){
     r.age+=h/YEAR_MIN;r.happy=clamp(r.happy+(skipHappyTarget(r)-r.happy)*(1-Math.exp(-h/240)));r.health=Math.max(r.health,80);
     r.hunger=30;r.thirst=30;
     if(r.pregnant&&world.t>=r.pregnant.due)skipBirth(S,r);
-    if(r.age>=r.lifespan){S.recs.splice(S.recs.indexOf(r),1);if(r.root)S.dead.push(r);S.deathN=(S.deathN||0)+1;if(NAMES.dup!=='same'||!S.recs.some(o=>o.name===r.name))S.used.delete(r.name);S.lastNames.push(`${r.name}(${Math.floor(r.age)}살)`);if(S.lastNames.length>6)S.lastNames.shift()}
+    if(r.age>=r.lifespan){recDeath(r,'노환');S.recs.splice(S.recs.indexOf(r),1);if(r.root)S.dead.push(r);S.deathN=(S.deathN||0)+1;if(NAMES.dup!=='same'||!S.recs.some(o=>o.name===r.name))S.used.delete(r.name);S.lastNames.push(`${r.name}(${Math.floor(r.age)}살)`);if(S.lastNames.length>6)S.lastNames.shift()}
   }
   if(world.breedOn){
     const ok=r=>r.age>=1&&r.happy>=80&&r.health>=60&&!r.stray;
@@ -4193,6 +4205,7 @@ function renderStats(){
   $('#stAgeLeg').innerHTML=ageParts.map(p=>`<div><span><i style="background:${p.col}"></i>${p.n}</span><b>${p.v}마리 · ${pups.length?Math.round(p.v/pups.length*100):0}%</b></div>`).join('')+(pups.length?`<div class="small muted">노령: 8살 이상이거나 자기 수명의 60%를 넘은 강아지</div>`:'<div class="small muted">강아지가 없어요</div>');
   const bars=[['행복도',avg('happy'),'#eb6834'],['체력',avg('stamina'),'#2a78d6'],['건강',avg('health'),'#1baf7a'],['배고픔',avg('hunger'),'#eda100'],['목마름',avg('thirst'),'#6250d6']];
   $('#stBars').innerHTML=bars.map(([l,v,c])=>`<div class="st-bar"><span>${l}</span><span class="tr"><i style="width:${clamp(v)}%;background:${c}"></i></span><b>${n?Math.round(v):'-'}</b></div>`).join('')+'<p class="small muted" style="margin:0">배고픔·목마름은 낮을수록 좋아요.</p>';
+  renderDeaths();
   const last=H.slice(-12).reverse();
   $('#stTable').innerHTML='<thead><tr><th>시각</th><th>강아지</th><th>고양이</th><th>행복도</th><th>체력</th><th>건강</th></tr></thead><tbody>'+last.map(r=>`<tr><td>${fmtTFull(r[0])}</td><td>${r[1]}</td><td>${r[2]}</td><td>${Math.round(r[3])}</td><td>${Math.round(r[4])}</td><td>${Math.round(r[5])}</td></tr>`).join('')+'</tbody>';
 }
@@ -4331,6 +4344,24 @@ function autoFightCorpses(){
   log(`🧹 자동 수거 로봇이 ${go.every(c=>c.cause==='싸움')?'싸움에서 쓰러진 ':'세상을 떠난 '}${names.slice(0,5).join(', ')}${names.length>5?` 외 ${names.length-5}`:''}${josa(names[Math.min(names.length,5)-1],'을','를')} 치우고 묻어 줬어요`,'good',true);
   return go.length;
 }
+
+/* ---------- death statistics & illness switch ---------- */
+const ILL={on:true};
+function recDeath(d,cause){
+  if(!world||!world.deathStats||d.species==='human'||d.stray)return;
+  const g=d.age<1?'baby':isOld(d)?'old':'adult',c=cause==='노환'||cause==='싸움'?cause:'병';world.deathStats[g][c]=(world.deathStats[g][c]||0)+1;
+}
+const D_CAUSE=[['노환','🕊 노환','#2a78d6'],['병','🦠 병','#eb6834'],['싸움','⚔ 싸움','#6250d6']];
+const D_AGE=[['baby','🍼 아기 (1살 미만)','아기','#86b6ef'],['adult','🐕 어른','어른','#2a78d6'],['old','👴 노령','노령','#104281']];
+function pieLeg(parts,tot,empty){return parts.map(p=>`<div><span><i style="background:${p.col}"></i>${p.n}</span><b>${p.v}마리 · ${tot?Math.round(p.v/tot*100):0}%</b></div>`).join('')+(tot?'':`<div class="small muted">${empty}</div>`)}
+function renderDeaths(){
+  const D=world.deathStats||{baby:{},adult:{},old:{}},sum=o=>Object.values(o).reduce((a,v)=>a+v,0),tot=sum(D.baby)+sum(D.adult)+sum(D.old);
+  $('#stDeathN').textContent=tot?`지금까지 ${tot.toLocaleString()}마리 (고양이 포함)`:'';
+  const ages=D_AGE.map(([k,n,sh,col])=>({n,sh,col,v:sum(D[k])}));drawPie($('#stDAge'),ages);$('#stDAgeLeg').innerHTML=pieLeg(ages,tot,'아직 떠난 동물이 없어요');
+  const causes=D_CAUSE.map(([k,n,col])=>({n,sh:k,col,v:(D.baby[k]||0)+(D.adult[k]||0)+(D.old[k]||0)}));drawPie($('#stDCause'),causes);$('#stDCauseLeg').innerHTML=pieLeg(causes,tot,'아직 떠난 동물이 없어요');
+  for(const [k] of D_AGE){const ps=D_CAUSE.map(([c,n,col])=>({n,sh:c,col,v:D[k][c]||0})),t=sum(D[k]);drawPie($('#stDC_'+k),ps);$('#stDC_'+k+'Leg').innerHTML=pieLeg(ps,t,'이 나이대에 떠난 동물이 없어요')}
+}
+function setIll(on){ILL.on=on;$$('[data-illon]').forEach(x=>x.checked=on);$$('[data-illnote]').forEach(n=>n.textContent=on?'건강이 0이 되면 병으로 세상을 떠나요.':'건강이 0이 되어도 1로 버텨요. 싸움으로 죽거나 노환은 그대로예요.')}
 /* ======================= MAIN LOOP ======================= */
 let lastT=performance.now(),uiT=0;
 function frame(now){
@@ -4919,6 +4950,7 @@ for(const side of['mine','enemy']){const p=side==='mine'?'aiM':'aiE';
   $('#'+p+'Target').onchange=e=>{AI[side].target=e.target.value};
   $('#'+p+'Focus').onchange=e=>{AI[side].focus=e.target.checked};}
 $('#fightEnd').onchange=e=>{FIGHT.end=e.target.value};
+$$('[data-illon]').forEach(c=>c.addEventListener('change',e=>{setIll(e.target.checked);if(world){log(ILL.on?'🦠 병으로 죽는 것을 허용했어요':'🦠 이제 병으로 죽지 않아요 (건강 0이 되어도 버텨요)','',true);toast(ILL.on?'병으로 죽는 것을 허용했어요':'병으로 죽지 않게 했어요')}}));
 $$('[data-fightallow]').forEach(c=>c.onchange=e=>{FIGHT.allowed=e.target.checked;$$('[data-fightallow]').forEach(x=>x.checked=FIGHT.allowed);
   if(!world)return;
   if(!FIGHT.allowed){const n=fights.filter(f=>f.cause!=='arena').length;fights.filter(f=>f.cause!=='arena').slice().forEach(f=>endFight(f));hideBanner();log(`🕊 싸움을 막았어요${n?` · 진행 중이던 싸움 ${n}건을 말렸어요`:''}`,'good',true);toast('🕊 이제 싸움이 일어나지 않아요',false,true)}

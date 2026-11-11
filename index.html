@@ -2877,7 +2877,7 @@ let match=null,soccerStats={A:0,B:0,draw:0};
 function genSkills(breed){const b=BREED_SKILL[breed]||BREED_SKILL.golden,o={};SKILL_KEYS.forEach((k,i)=>o[k]=Math.round(clamp(b[i]+rand(-12,12),20,99)));return o}
 function mixSkills(a,b){const o={};SKILL_KEYS.forEach(k=>o[k]=Math.round(clamp(((a?a[k]:60)+(b?b[k]:(a?a[k]:60)))/2+rand(-8,8),20,99)));return o}
 const STAR_V=new Set(['하루','현태','호건']),WEAK_V=new Set(['린태','아윤','원주']),SHORT_V=new Set(['현태','호건']);
-const DECENT_M=new Set(['오지','감자용','성망','생츈','호지','호준','황트','아준']),MID_F=new Set(['아선','희소','희태','현서','우서','윤채','리설','라아']);
+const DECENT_M=new Set(['오지','감자용','성망','생츈','호지','호준','황트','아준', '종현', '박찬영','민겸']),MID_F=new Set(['아선','희소','희태','현서','우서','윤채','리설','라아']);
 function villagerSkills(elder,g,name,sex){const o={};
   const base=elder?{spd:32,sta:38,dri:50,sho:45,pas:66,tac:45,gk:52,rea:44}:{spd:38+g*6,sta:40+g*5,dri:36+g*6,sho:32+g*6,pas:34+g*6,tac:32+g*5,gk:34+g*5,rea:40+g*5};
   SKILL_KEYS.forEach(k=>{let v=base[k]+rand(-10,10);

@@ -2866,7 +2866,7 @@ const BREED_SKILL={
   korshort:[76,48,80,54,44,50,74,82],russianblue:[74,46,78,52,46,48,76,84],persian:[56,40,66,46,48,40,70,70]};
 const TEAM_COL={A:'#d4473a',B:'#2f7fd0'},TEAM_KO={A:'A팀 (빨강)',B:'B팀 (파랑)'};
 const ROLE_KO={GK:'골키퍼',DEF:'수비수',MID:'미드필더',FWD:'공격수',SUB:'교체 선수'};
-const VILLAGERS=[['준민','남'],['윤서','남'],['아선','여'],['희소','여'],['아윤','여'],['리율','여'],['오지','남'],['감자용','남'],['준태','남'],['현태','남'],['희태','여'],['린태','여'],['현서','여'],['우서','여'],['준하','남'],['윤채','여'],['리설','여'],['성망','남'],['원주','여'],['하루','남'],['생츈','남'],['라아','여'],['호지','남'],['호건','남'],['호준','남'],['황트','남'],['아준','남'],['박찬영','남'],['종현','남'],['민겸','남']];
+const VILLAGERS=[['준민','남'],['서윤','남'],['아선','여'],['희소','여'],['아윤','여'],['리율','여'],['오지','남'],['감자용','남'],['태준','남'],['현태','남'],['희태','여'],['린태','여'],['현서','여'],['우서','여'],['준하','남'],['윤채','여'],['리설','여'],['성망','남'],['원주','여'],['하루','남'],['생츈','남'],['라아','여'],['호지','남'],['호건','남'],['호준','남'],['황트','남'],['아준','남'],['박찬영','남'],['종현','남'],['민겸','남'],['니거(남)','남'],['니거(여)','여']];
 const VILLAGE_FROM=['1학년','2학년','3학년','4학년','5학년','6학년','양로원'];
 const TACTICS={A:{form:'bal',press:'mid',pass:'short',shoot:'mid',line:'mid'},B:{form:'bal',press:'mid',pass:'short',shoot:'mid',line:'mid'}};
 const TAC_OPTS={form:['포메이션',[['atk','공격형'],['bal','균형'],['def','수비형']]],press:['압박',[['low','낮게 (1명)'],['mid','보통 (2명)'],['high','강하게 (3명)']]],
@@ -2877,13 +2877,13 @@ let match=null,soccerStats={A:0,B:0,draw:0};
 function genSkills(breed){const b=BREED_SKILL[breed]||BREED_SKILL.golden,o={};SKILL_KEYS.forEach((k,i)=>o[k]=Math.round(clamp(b[i]+rand(-12,12),20,99)));return o}
 function mixSkills(a,b){const o={};SKILL_KEYS.forEach(k=>o[k]=Math.round(clamp(((a?a[k]:60)+(b?b[k]:(a?a[k]:60)))/2+rand(-8,8),20,99)));return o}
 const STAR_V=new Set(['하루','현태','호건']),WEAK_V=new Set(['린태','아윤','원주']),SHORT_V=new Set(['현태','호건']);
-const DECENT_M=new Set(['오지','감자용','성망','생츈','호지','호준','황트','아준', '종현', '박찬영','민겸']),MID_F=new Set(['아선','희소','희태','현서','우서','윤채','리설','라아']);
+const DECENT_M=new Set(['오지','감자용','성망','생츈','호지','호준','황트','아준', '종현', '박찬영','민겸','니거(남)']),MID_F=new Set(['아선','희소','희태','현서','우서','윤채','리설','라아','니거(여)']);
 function villagerSkills(elder,g,name,sex){const o={};
   const base=elder?{spd:32,sta:38,dri:50,sho:45,pas:66,tac:45,gk:52,rea:44}:{spd:38+g*6,sta:40+g*5,dri:36+g*6,sho:32+g*6,pas:34+g*6,tac:32+g*5,gk:34+g*5,rea:40+g*5};
   SKILL_KEYS.forEach(k=>{let v=base[k]+rand(-10,10);
     if(STAR_V.has(name))v=rand(82,93);
     else if(name==='준하')v=rand(81,90);
-    else if(name==='윤서')v=rand(77,86);
+    else if(name==='서윤')v=rand(77,86);
     else if(WEAK_V.has(name))v=Math.min(v-20,rand(14,26));
     else if(DECENT_M.has(name))v=rand(64,80);
     else if(MID_F.has(name))v=rand(57,72);

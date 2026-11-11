@@ -72,6 +72,8 @@ input[type="range"]{width:100%;accent-color:var(--accent)}
 .hint{font-size:12px;color:var(--muted)}
 .setup-side{padding:14px;display:grid;gap:16px}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.warnlbl{display:flex;gap:6px;align-items:center;color:#c0392b;font-weight:700}
+.btn.danger{background:#c0392b;border-color:#c0392b;color:#fff}
 .skipgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .skipgrid .btn{padding-left:4px;padding-right:4px}
 textarea{font:inherit;width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--surface);color:var(--ink);resize:vertical}
@@ -447,6 +449,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="lifeInfPre" data-mirror="lifeInf"> 무한 수명 (자연사하지 않아요)</label>
         <label class="f">시간 넘길 때 최대 마릿수 (넘치면 입양)<input type="number" id="skipCapPre" data-mirror="skipCap" value="60" min="2" max="300" step="1"></label>
         <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="skipInfPre" data-mirror="skipInf"> 넘길 때 마릿수 무한 (브라우저 보호를 위해 300마리부터는 입양)</label>
+        <label class="small warnlbl"><input type="checkbox" id="skipUnsafePre" data-mirror="skipUnsafe"> ⚠ 300마리 제한 풀기 (위험 · 브라우저가 느려지거나 멈출 수 있어요)</label>
         <label class="f">태어날 강아지 이름 (쉼표나 줄바꿈으로 구분)<textarea id="nameListPre" data-mirror="nameList" rows="3">밤이, 감자, 호두, 라떼, 모카, 별이, 까미, 솜이, 탄이, 달이, 두리, 토리, 뭉치, 방울, 도토리, 보배, 사랑, 코코, 루루, 봄이, 단비, 찰떡, 인절미, 순대, 만두, 콩떡, 깨비, 짱구, 덕구, 백구, 누리, 마루, 바둑, 꼬미, 몽실, 뽀삐, 해피2, 설탕, 소금</textarea></label>
         <label class="f">같은 이름이 나오면<select id="dupModePre" data-mirror="dupMode"><option value="num">뒤에 숫자 붙이기 (OO2, OO3)</option><option value="same">그냥 모두 OO으로 부르기</option></select></label>
         <p class="small muted">시작한 뒤에도 오른쪽 '생명 · 가족' 패널에서 바꿀 수 있어요. 수명은 처음 동물들에게도 적용돼요.</p>
@@ -755,6 +758,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         <div class="skipgrid"><button class="btn" data-skip="1">1년</button><button class="btn" data-skip="5">5년</button><button class="btn" data-skip="10">10년</button><button class="btn" data-skip="50">50년</button><button class="btn" data-skip="100">100년</button><button class="btn" data-skip="500">500년</button><button class="btn" data-skip="1000">1000년</button></div>
         <label class="f">넘기는 동안 최대 마릿수 (넘치면 입양)<input type="number" id="skipCap" value="60" min="2" max="300" step="1"></label>
         <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="skipInf"> 무한 (입양 안 보내기 · 브라우저 보호를 위해 300마리부터는 입양)</label>
+        <label class="small warnlbl"><input type="checkbox" id="skipUnsafe"> ⚠ 300마리 제한 풀기 (위험 · 브라우저가 느려지거나 멈출 수 있어요)</label>
         <p class="small muted">넘기는 동안 밥·물·배변은 자동으로 챙긴다고 보고, 나이 먹기·자연사·결혼·출산만 계산해요. 싸움과 병은 일어나지 않아요.</p>
         <h3>🕊 수명 (자연사)</h3>
         <div class="row2"><label class="f">최소 (살)<input type="number" id="lifeMin" value="15" min="1" max="10000" step="0.5"></label><label class="f">최대 (살)<input type="number" id="lifeMax" value="20" min="1" max="10000" step="0.5"></label></div>
@@ -964,6 +968,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
   </div>
 </div>
 
+<div class="skipov" id="warnOv" hidden role="alertdialog" aria-modal="true" aria-labelledby="warnTitle"><div class="skipcard"><b id="warnTitle">⚠ 300마리 제한을 풀까요?</b><span>제한을 풀면 동물이 아주 빠르게 늘어나요 (테스트: 강아지 60마리로 시작해 5년 만에 약 5만 마리). 수명을 짧게 하거나 넘기는 해를 짧게 하면 덜 늘어나요. 그러면 계산이 아주 오래 걸리고, 끝난 뒤 3D 화면이 매우 느려지거나 브라우저 탭이 멈추고 꺼질 수 있어요. 진행 중 저장되지 않은 내용은 사라질 수 있어요.</span><div class="row2"><button class="btn" id="warnNo">취소 (제한 유지)</button><button class="btn danger" id="warnYes">그래도 풀기</button></div></div></div>
 <div class="skipov" id="skipOv" hidden role="dialog" aria-modal="true" aria-labelledby="skipTitle"><div class="skipcard"><b id="skipTitle">⏩ 시간 넘기는 중</b><div class="esc-bar"><span id="skipBar"></span></div><span id="skipText"></span><div id="skipRes" class="small"></div><div class="row2"><button class="btn" id="skipStop">멈추기</button><button class="btn primary" id="skipClose" hidden>확인</button></div></div></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
@@ -1029,7 +1034,7 @@ const CAT_COLORS=['#c8a070','#8a96a3','#f2ece0','#3a3a3c','#e0a050','#ffffff','#
 const CAT_NAMES=['나비','치즈','루나','레오','미미','까망','냥냥','호랑','삼색이','모모','구름','라라'];
 const PUP_NAMES=['밤이','감자','호두','라떼','모카','별이','까미','솜이','탄이','달이','두리','토리','뭉치','방울','도토리','보배','사랑','코코','루루','봄이','단비','찰떡','인절미','순대','만두','콩떡','깨비','짱구','덕구','백구','누리','마루','바둑','꼬미','몽실','뽀삐','해피2','설탕','소금'];
 const DOG_BREED_ORDER=['golden','maltese','shiba','pomeranian','jindo','border','chihuahua','greatdane'];
-const LIFE={min:15,max:20,inf:false},SKIP_SAFE=300,NAMES={dog:null,dup:'num'};
+const LIFE={min:15,max:20,inf:false},SKIP_SAFE=300,SKIP={unsafe:false},NAMES={dog:null,dup:'num'};
 const MAX_PETS=Infinity, FAST_SPEED=1000, YEAR_MIN=525600, STOCK_MAX=5000, SNACK_MAX=60;
 const CROPS={
   corn:{n:'옥수수',grow:16*60,food:600,snack:0,c:'#f2c94c',leaf:'#4f9a3c'},
@@ -2376,11 +2381,11 @@ function isFamily(a,b){if(!a||!b||a.species==='human'||b.species==='human')retur
 function rollLife(){if(LIFE.inf)return Infinity;const a=Math.min(LIFE.min,LIFE.max),b=Math.max(LIFE.min,LIFE.max);return rand(a,b)}
 function namePool(sp){return sp==='cat'?CAT_NAMES:(NAMES.dog&&NAMES.dog.length?NAMES.dog:PUP_NAMES)}
 // unused names first; when a name repeats it becomes OO2, OO3 … or stays plain OO (setting)
-function newName(sp,used){
+function newName(sp,used,ctr){
   used=used||new Set(dogs.map(d=>d.name));const pool=namePool(sp);
   const free=pool.filter(n=>!used.has(n));if(free.length)return pick(free);
   const base=pick(pool);if(NAMES.dup==='same')return base;
-  let i=2;while(used.has(base+i))i++;return base+i;
+  let i=ctr&&ctr[base]||2;while(used.has(base+i))i++;if(ctr)ctr[base]=i+1;return base+i;
 }
 function litterSize(Bd){const [lo,hi]=Bd.litter;if(Bd.sz==='소형'||Bd.sp==='cat')return Math.round((rand(lo,hi)+rand(lo,hi))/2);return lo+Math.floor(Math.pow(Math.random(),1.5)*(hi-lo+1))}
 function canBreed(d){return !d.dead&&!d.stray&&!d.fight&&d.age>=1&&d.happy>=80&&d.health>=60}
@@ -3751,6 +3756,7 @@ function syncUI(){
 /* ======================= TIME SKIP (1 ~ 1000 years) ======================= */
 // light-weight life simulation: aging, natural death, marriage and births only; newborns stay as plain data until the end
 let skipping=null;
+function safeLimit(){return SKIP.unsafe?Infinity:SKIP_SAFE}
 function skipBlocked(){if(match)return '축구 경기 중';if(world.arena)return '싸움장 모드';if(fights.length)return '싸움 중';if(intruder)return '침입자가 있어요';if(owner.visiting)return '주인이 와 있어요';if(dogs.some(d=>d.stray))return '길고양이가 들어와 있어요';return null}
 function skipHappyTarget(d){
   let t=72+(d.temper||0)+(yard?(d.species==='cat'?4:10):0)+(world.tv.on?5:0)+(d.species==='dog'&&ballMode==='auto'?6:0)+(d.species==='cat'?6:0)+4;
@@ -3758,7 +3764,7 @@ function skipHappyTarget(d){
 }
 function startSkip(Y){
   if(skipping||!world)return;const why=skipBlocked();if(why){toast(`지금은 시간을 넘길 수 없어요 (${why})`,true);return}
-  const cap=$('#skipInf').checked?Infinity:clamp(Math.round(+$('#skipCap').value||60),2,SKIP_SAFE);
+  const cap=$('#skipInf').checked?Infinity:clamp(Math.round(+$('#skipCap').value||60),2,safeLimit());
   const H=Y<=10?1440:Y<=100?1440*7:1440*14;
   const recs=dogs.filter(d=>!d.dead).map(d=>{d.gen=d.gen||1;return d});
   skipping={Y,H,cap,t0:world.t,end:world.t+Y*YEAR_MIN,recs,dead:[],born:0,adopted:0,wed:0,stop:false,maxGen:Math.max(1,...recs.map(r=>r.gen)),peak:recs.length,
@@ -3791,14 +3797,14 @@ function skipStep(S){
 }
 function skipBirth(S,m){
   const P=m.pregnant;m.pregnant=null;m.lastBirth=world.t;
-  const n=Math.max(1,litterSize(BREEDS[m.breed]));let room=Math.max(0,Math.min(S.cap,SKIP_SAFE)-S.recs.length);
+  const n=Math.max(1,litterSize(BREEDS[m.breed]));let room=Math.max(0,Math.min(S.cap,safeLimit())-S.recs.length);
   // house full: the oldest animals past breeding age (females 10+, males 12+) go to a new family so the family line goes on
   if(room<n){const old=S.recs.filter(r=>r!==m&&r.id!==P.dad&&!r.pregnant&&r.age>=(r.sex==='f'?10:12)).sort((a,b)=>b.age-a.age);
     while(room<n&&old.length){const r=old.shift();S.recs.splice(S.recs.indexOf(r),1);if(r.root)S.dead.push(r);S.retired=(S.retired||0)+1;if(NAMES.dup!=='same'||!S.recs.some(o=>o.name===r.name))S.used.delete(r.name);room++}}
   const born=Math.min(n,room);S.adopted+=n-born;
   const dad=S.recs.find(x=>x.id===P.dad),gen=Math.max(m.gen||1,dad?dad.gen||1:P.dadGen||1)+1;S.maxGen=Math.max(S.maxGen,gen);
   for(let i=0;i<born;i++){
-    const sp=m.species,name=newName(sp,S.used);S.used.add(name);
+    const sp=m.species,name=newName(sp,S.used,S.ctr||(S.ctr={}));S.used.add(name);
     S.recs.push({light:true,id:animalUid++,species:sp,breed:Math.random()<0.5?m.breed:(P.dadBreed||m.breed),color:Math.random()<0.5?m.color:(P.dadColor||m.color),
       sex:Math.random()<0.5?'f':'m',age:0,name,skills:mixSkills(m.skills,dad?dad.skills:P.dadSkills),lifespan:rollLife(),temper:rand(-8,8),
       happy:92,health:100,pregnant:null,lastBirth:-1e9,mom:m.id,dad:P.dad,mate:null,gen});
@@ -3807,9 +3813,10 @@ function skipBirth(S,m){
 }
 function skipChunk(){
   const S=skipping;if(!S)return;const t0=performance.now();
-  while(world.t<S.end&&!S.stop&&performance.now()-t0<28){skipStep(S);if(S.recs.length>=SKIP_SAFE)S.safe=true}
+  while(world.t<S.end&&!S.stop&&performance.now()-t0<28){skipStep(S);if(S.recs.length>=safeLimit())S.safe=true}
   const done=(world.t-S.t0)/(S.end-S.t0);
   $('#skipBar').style.width=(done*100).toFixed(1)+'%';
+  if(SKIP.unsafe&&S.recs.length>SKIP_SAFE)$('#skipRes').textContent=`⚠ 제한 없음: 지금 ${S.recs.length}마리예요. 너무 느려지면 '멈추기'를 누르세요 (멈춰도 지금까지 태어난 동물은 모두 집에 생겨요).`;
   $('#skipText').textContent=`${Math.floor((world.t-S.t0)/YEAR_MIN)}년 / ${S.Y}년 · 지금 ${S.recs.length}마리 · 태어남 ${S.born} · 떠남 ${S.deathN||0} · ${S.maxGen}세대`;
   if(world.t>=S.end||S.stop)finishSkip();else setTimeout(skipChunk,0);
 }
@@ -3836,6 +3843,7 @@ function finishSkip(){
   log('⏩ '+res,'good',true);toast('⏩ '+yTxt+'이 지났어요',false,true);
   $('#skipTitle').textContent=`⏩ ${yTxt} 넘기기 끝`;$('#skipBar').style.width='100%';$('#skipText').textContent=res;
   $('#skipRes').textContent=(S.safe?`⚠ 동물이 ${SKIP_SAFE}마리에 닿아서, 브라우저가 멈추지 않도록 그 뒤로 태어난 아기는 입양 보냈어요. `:'')+(S.lastNames.length?`최근 떠난 동물: ${S.lastNames.join(', ')}`:'');
+  if(!S.safe&&dogs.length>SKIP_SAFE){$('#skipRes').textContent=`⚠ 지금 ${dogs.length}마리예요. 300마리가 넘으면 화면이 많이 느려질 수 있어요. `+$('#skipRes').textContent;toast(`⚠ ${dogs.length}마리! 게임이 느려질 수 있어요`,true,true)}
   if(S.safe)log(`⚠ 동물이 ${SKIP_SAFE}마리에 닿아서 그 뒤로 태어난 아기는 입양 보냈어요 (브라우저 보호)`,'bad',true);
   $('#skipStop').hidden=true;$('#skipClose').hidden=false;$('#skipClose').focus();
   skipping=null;lastT=performance.now();
@@ -4339,6 +4347,12 @@ $('#fhBreak').onclick=()=>{const f=player.spect;if(f)startBreakup(f,false)};
 $$('[data-autobreak]').forEach(c=>c.onchange=e=>{autoBreak=e.target.checked;$$('[data-autobreak]').forEach(x=>x.checked=autoBreak);
   if(world)log(autoBreak?'🧯 자동화가 싸움을 자동으로 말려요':'🧯 싸움을 자동으로 말리지 않아요','good',true)});
 $$('[data-skip]').forEach(b=>b.onclick=()=>startSkip(+b.dataset.skip));
+$('#skipUnsafe').addEventListener('change',e=>{
+  if(e.target.checked&&!SKIP.unsafe){$('#warnOv').hidden=false;$('#warnNo').focus()}
+  else if(!e.target.checked&&SKIP.unsafe){SKIP.unsafe=false;toast('300마리 제한을 다시 켰어요');if(world)log('🛡 시간 넘기기 300마리 제한을 다시 켰어요','',true)}
+});
+$('#warnYes').onclick=()=>{SKIP.unsafe=true;$('#warnOv').hidden=true;toast('⚠ 300마리 제한을 풀었어요. 너무 느려지면 멈추기를 누르세요',true);if(world)log('⚠ 시간 넘기기 300마리 제한을 풀었어요','bad',true)};
+$('#warnNo').onclick=()=>{$('#warnOv').hidden=true;const m=$('#skipUnsafe');m.checked=false;m.dispatchEvent(new Event('change'))};
 // start-screen copies of the life settings: both sides stay in sync
 $$('[data-mirror]').forEach(pre=>{const main=$('#'+pre.dataset.mirror);
   const k=pre.type==='checkbox'?'checked':'value';

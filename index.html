@@ -23,10 +23,33 @@
 :root[data-theme="dark"]{
   --bg:#0e1618; --surface:#162125; --surface-2:#1b282d; --ink:#e2ebeb; --muted:#8fa2a6; --line:#273739;
   --accent:#45bdb8; --accent-ink:#06201f; --ball:#f0c53a; --water:#4bb8e6; --alert:#ef6a5c; --good:#4cc07a; --warn:#f0a43a; color-scheme:dark}
+/* extra themes (picked in the top bar). They come after the system-dark block so they win over it */
+:root[data-theme="forest"]{--bg:#e9f0e4;--surface:#fbfdf8;--surface-2:#eef4e8;--ink:#1d2a1a;--muted:#5b6b55;--line:#cfdcc6;--accent:#3f7d32;--accent-ink:#fff;--ball:#c9a227;--water:#3a8fb7;--alert:#c4442f;--good:#3f8f3a;--warn:#c98a1b;color-scheme:light}
+:root[data-theme="ocean"]{--bg:#e6f0f8;--surface:#fbfdff;--surface-2:#edf4fb;--ink:#13263a;--muted:#55697d;--line:#cbdbe9;--accent:#1f6fb2;--accent-ink:#fff;--ball:#e0a81e;--water:#1f8fd0;--alert:#d04a3c;--good:#2e9a6a;--warn:#cf8a1a;color-scheme:light}
+:root[data-theme="sakura"]{--bg:#fbeef2;--surface:#fffafb;--surface-2:#fcf1f4;--ink:#3a1f29;--muted:#7d5d68;--line:#efd3dc;--accent:#c4497a;--accent-ink:#fff;--ball:#e3a92a;--water:#4b9bd1;--alert:#c93b3b;--good:#3d9a63;--warn:#cf8b1d;color-scheme:light}
+:root[data-theme="sunset"]{--bg:#fbf0e6;--surface:#fffaf4;--surface-2:#fcf2e8;--ink:#33200f;--muted:#7a6250;--line:#efdcc9;--accent:#c95f1e;--accent-ink:#fff;--ball:#d9a90f;--water:#3593c7;--alert:#c4382f;--good:#4a9150;--warn:#c47c12;color-scheme:light}
+:root[data-theme="midnight"]{--bg:#0f1024;--surface:#181a36;--surface-2:#1f2242;--ink:#e6e6fa;--muted:#9a9cc4;--line:#2c2f55;--accent:#8c7cf0;--accent-ink:#110c2e;--ball:#f2c94c;--water:#5bb6f0;--alert:#ff6b7a;--good:#5fd38d;--warn:#f5a945;color-scheme:dark}
+:root[data-theme="contrast"]{--bg:#000;--surface:#0a0a0a;--surface-2:#151515;--ink:#fff;--muted:#d6d6d6;--line:#8a8a8a;--accent:#ffd400;--accent-ink:#000;--ball:#ffd400;--water:#4fc3ff;--alert:#ff5a4f;--good:#3ee07a;--warn:#ffb020;color-scheme:dark}
+:root[data-theme="contrast"] .btn,:root[data-theme="contrast"] .iconbtn{border-color:#fff}
+.themesel{display:flex;align-items:center;gap:4px;font-size:13px}
+.themesel select{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:5px 6px;font:inherit;font-size:13px}
+.st-society{border-radius:12px;padding:14px 16px;display:grid;gap:8px;border:2px solid var(--sc);background:linear-gradient(90deg,color-mix(in srgb,var(--sc) 18%,var(--surface)),var(--surface))}
+.st-society .big{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+.st-society strong{font-family:var(--f-display);font-weight:400;font-size:clamp(30px,6vw,46px);line-height:1;color:var(--ink)}
+.st-society .pct{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums}
+.st-society .tag{background:var(--sc);color:#fff;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700}
+.st-society.ultra strong{animation:scpulse 1.4s ease-in-out infinite}
+@keyframes scpulse{50%{transform:scale(1.04)}}
+@media (prefers-reduced-motion:reduce){.st-society.ultra strong{animation:none}}
+.sc-scale{position:relative;height:14px;border-radius:999px;background:linear-gradient(90deg,#0ca30c 0 17.5%,#eda100 17.5% 35%,#ec835a 35% 50%,#d03b3b 50% 100%);margin-top:4px}
+.sc-scale b{position:absolute;top:-5px;width:4px;height:24px;border-radius:2px;background:var(--ink);box-shadow:0 0 0 2px var(--surface);transform:translateX(-2px);transition:left .4s}
+.sc-ticks{position:relative;height:16px;font-size:11px;color:var(--muted)}
+.sc-ticks span{position:absolute;transform:translateX(-50%);white-space:nowrap}
 html,body{background:var(--bg);color:var(--ink)}
 body{margin:0}
 img{max-width:100%}
 [hidden]{display:none!important}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 body{font-family:var(--f-body);font-size:14px;line-height:1.5;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 24px}
 *{box-sizing:border-box}
 button,input,select{font:inherit;color:inherit}
@@ -80,6 +103,50 @@ input[type="range"]{width:100%;accent-color:var(--accent)}
 .eq.on i:nth-child(2n){animation-duration:.62s}.eq.on i:nth-child(3n){animation-duration:1.15s}.eq.on i:nth-child(4n+1){animation-delay:-.3s}
 @keyframes eqb{from{height:3px}to{height:18px}}
 @media (prefers-reduced-motion:reduce){.eq.on i{animation:none;height:12px}}
+.mstats{width:100%;border-collapse:collapse;font-size:12px}
+.mstats th,.mstats td{padding:4px 3px;text-align:left;border-bottom:1px solid var(--line);font-weight:400}
+.mstats thead th{font-size:11px;color:var(--muted,#6b7a7d)}
+.mstats td{white-space:nowrap}.mstats td b{font-variant-numeric:tabular-nums;margin-left:4px;font-size:11px}
+.mstats tr.cur{background:var(--surface-2)}.mstats tr.cur th{font-weight:700}
+.mbar{display:inline-block;width:46px;height:7px;border-radius:999px;background:var(--surface-2);overflow:hidden;vertical-align:middle}
+.mbar i{display:block;height:100%;background:#f2a541;border-radius:999px}.mbar.sta i{background:#4aa3df}
+.statov{place-items:start center;overflow:auto}
+.statcard{background:var(--surface);color:var(--ink);border-radius:14px;padding:16px;width:min(980px,100%);display:grid;gap:14px;box-shadow:0 18px 50px rgba(0,0,0,.35);margin:auto 0}
+.st-head{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.st-head h2{font-size:24px}
+.st-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
+.st-tile{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--surface-2)}
+.st-tile small{display:block;color:var(--muted);font-size:11px}
+.st-tile b{font-size:19px;white-space:nowrap;font-variant-numeric:tabular-nums;line-height:1.2}
+.st-tile span{display:block;font-size:11px;color:var(--muted)}
+.st-sec{border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:grid;gap:8px;min-width:0}
+.st-sh{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;justify-content:space-between}
+.st-leg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--ink)}
+.st-leg i,.st-pieleg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.st-leg i.ln{height:3px;border-radius:2px;width:14px;vertical-align:3px}
+.st-chart{position:relative;height:220px}
+.st-chart canvas,.st-pie canvas{width:100%;height:100%;display:block}
+.st-tip{position:absolute;pointer-events:none;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:12px;box-shadow:0 6px 18px rgba(0,0,0,.15);white-space:nowrap;z-index:2}
+.st-tip b{display:block;margin-bottom:2px}
+.st-two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.st-pie{display:grid;grid-template-columns:1fr;gap:10px;justify-items:center}
+.st-pie canvas{height:150px;width:150px}
+.st-pieleg{width:100%}
+.st-pieleg{display:grid;gap:6px;font-size:13px}
+.st-pieleg div{display:flex;justify-content:space-between;gap:8px}
+.st-pieleg div span{white-space:nowrap}
+.st-pieleg b{font-variant-numeric:tabular-nums}
+.st-bars{display:grid;gap:8px}
+.st-bar{display:grid;grid-template-columns:70px 1fr 38px;gap:8px;align-items:center;font-size:12px}
+.st-bar .tr{height:10px;border-radius:999px;background:var(--surface-2);overflow:hidden}
+.st-bar .tr i{display:block;height:100%;border-radius:999px}
+.st-bar b{text-align:right;font-variant-numeric:tabular-nums}
+.st-tablewrap{overflow:auto}
+.st-table{border-collapse:collapse;font-size:12px;width:100%;font-variant-numeric:tabular-nums}
+.st-table th,.st-table td{padding:4px 8px;border-bottom:1px solid var(--line);text-align:right}
+.st-table th:first-child,.st-table td:first-child{text-align:left}
+details.st-sec summary{cursor:pointer;font-size:13px;font-weight:700}
+@media (max-width:520px){.st-chart{height:190px}}
 .skipgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .skipgrid .btn{padding-left:4px;padding-right:4px}
 textarea{font:inherit;width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--surface);color:var(--ink);resize:vertical}
@@ -386,7 +453,12 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
   <button class="iconbtn" id="pauseBtn" aria-pressed="false" hidden>⏸ 일시정지</button>
   <button class="iconbtn" id="soundBtn" aria-pressed="true" hidden>🔊 소리</button>
   <button class="iconbtn" id="escBtn" hidden>⚙ 설정 (Esc)</button>
+  <button class="iconbtn" id="statBtn" hidden>📊 통계</button>
   <button class="iconbtn" id="backSetup" hidden>방 다시 꾸미기</button>
+  <label class="themesel">🎨<span class="sr-only">테마</span><select id="themeSel" aria-label="테마">
+    <option value="system">시스템 설정</option><option value="light">☀ 라이트</option><option value="dark">🌙 다크</option>
+    <option value="forest">🌲 숲</option><option value="ocean">🌊 바다</option><option value="sakura">🌸 벚꽃</option><option value="sunset">🌅 노을</option>
+    <option value="midnight">🌌 한밤 (다크)</option><option value="contrast">⬛ 고대비</option></select></label>
 </header>
 
 <main>
@@ -445,9 +517,10 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         <h3>관리 방식</h3>
         <div class="modes" role="radiogroup" aria-label="관리 방식">
           <label class="modecard"><input type="radio" name="careMode" value="manual" id="modeManual"><span><b>내가 직접 조작</b><small>밥·물통·배변판 청소·공 던지기·TV를 내가 직접 해요. 놓치면 강아지들이 힘들어해요.</small></span></label>
-          <label class="modecard"><input type="radio" name="careMode" value="auto" id="modeAuto" checked><span><b>모두 자동화</b><small>밥·물 보충, 배변판·바닥 청소, 공 회수와 발사, 낮 TV까지 집이 알아서 관리해요. 나는 지켜보면 돼요.</small></span></label>
+          <label class="modecard"><input type="radio" name="careMode" value="auto" id="modeAuto" checked><span><b>모두 자동화</b><small>밥·물 보충, 배변판·바닥 청소, 공 회수와 발사, 낮 TV, 음악까지 집이 알아서 관리해요. 나는 지켜보면 돼요.</small></span></label>
         </div>
       <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" data-autobreak> 자동화일 때 싸움을 자동으로 말리기</label>
+      <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="musicAutoPre" data-mirror="musicAuto" checked> 자동화일 때 음악 자동으로 틀기 (밤엔 자장가, 지치면 자장가, 우울하면 신나는 동요)</label>
         </div>
       <div class="stack">
         <h3>생명 · 시간 넘기기 (미리 설정)</h3>
@@ -834,6 +907,14 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         <label class="f">음량<input type="range" id="musicVol" min="0" max="100" value="50" aria-label="음악 음량"></label>
         <div class="eq" id="musicEq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
         <button class="btn primary" id="musicBtn">🎵 음악 틀기</button>
+        <table class="mstats" aria-label="음악 장르별 효과">
+          <thead><tr><th scope="col">장르</th><th scope="col">행복도 / 시간</th><th scope="col">체력 / 시간</th></tr></thead>
+          <tbody><tr data-mrow="classic"><th scope="row">🎹 클래식</th><td><span class="mbar"><i style="width:71%"></i></span><b>+6.0</b></td><td><span class="mbar sta"><i style="width:56%"></i></span><b>+1.5</b></td></tr><tr data-mrow="lullaby"><th scope="row">🌙 자장가</th><td><span class="mbar"><i style="width:50%"></i></span><b>+4.2</b></td><td><span class="mbar sta"><i style="width:100%"></i></span><b>+2.7</b></td></tr><tr data-mrow="happy"><th scope="row">🎉 신나는 동요</th><td><span class="mbar"><i style="width:100%"></i></span><b>+8.4</b></td><td><span class="mbar sta"><i style="width:27%"></i></span><b>+0.7</b></td></tr><tr data-mrow="nature"><th scope="row">🐦 자연의 소리</th><td><span class="mbar"><i style="width:64%"></i></span><b>+5.4</b></td><td><span class="mbar sta"><i style="width:67%"></i></span><b>+1.8</b></td></tr></tbody>
+        </table>
+        <p class="small muted">게임 시간 1시간 동안 한 마리가 얻는 양이에요. 자는 동물은 행복도 ×0.6, 체력 ×1.5.</p>
+        <div class="kv small" id="musicLive">지금 듣는 동물 없음</div>
+        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="musicAuto" checked> 🤖 자동화일 때 음악 자동으로 틀기</label>
+
         <p class="small" id="musicNote">음악을 틀면 집과 마당의 동물들 행복도가 오르고 체력이 조금씩 회복돼요.</p>
       </section>
 
@@ -987,6 +1068,21 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
   </div>
 </div>
 
+<div class="skipov statov" id="statOv" hidden role="dialog" aria-modal="true" aria-labelledby="statTitle"><div class="statcard">
+  <div class="st-head"><h2 id="statTitle">📊 통계</h2>
+    <div class="seg" id="stRange" role="group" aria-label="기간"><button data-srange="1440">1일</button><button data-srange="10080">7일</button><button data-srange="43200">30일</button><button data-srange="525600">1년</button><button data-srange="0" aria-pressed="true">전체</button></div>
+    <button class="iconbtn" id="statClose" aria-label="통계 닫기">✕ 닫기</button></div>
+  <div class="st-tiles" id="stTiles"></div>
+  <div class="st-society" id="stSociety" aria-live="polite"></div>
+  <section class="st-sec"><div class="st-sh"><h3>동물 수 추이</h3><div class="st-leg" id="stPopLeg"></div></div><div class="st-chart"><canvas id="stPop" aria-label="동물 수 추이 꺾은선그래프" role="img"></canvas><div class="st-tip" id="stPopTip" hidden></div></div></section>
+  <div class="st-two">
+    <section class="st-sec"><h3>행복한 동물 비율</h3><div class="st-pie"><canvas id="stPie" aria-label="행복도 비율 원그래프" role="img"></canvas><div class="st-pieleg" id="stPieLeg"></div></div></section>
+    <section class="st-sec"><h3>늙은 강아지 비율</h3><div class="st-pie"><canvas id="stAgePie" aria-label="강아지 나이대 비율 원그래프" role="img"></canvas><div class="st-pieleg" id="stAgeLeg"></div></div></section>
+    <section class="st-sec"><h3>지금 평균 상태</h3><div class="st-bars" id="stBars"></div></section>
+  </div>
+  <section class="st-sec"><div class="st-sh"><h3>평균 행복도 · 체력 · 건강 추이</h3><div class="st-leg" id="stAvgLeg"></div></div><div class="st-chart"><canvas id="stAvg" aria-label="평균 상태 추이 꺾은선그래프" role="img"></canvas><div class="st-tip" id="stAvgTip" hidden></div></div></section>
+  <details class="st-sec"><summary>표로 보기 (최근 기록 12개)</summary><div class="st-tablewrap"><table class="st-table" id="stTable"></table></div></details>
+</div></div>
 <div class="skipov" id="warnOv" hidden role="alertdialog" aria-modal="true" aria-labelledby="warnTitle"><div class="skipcard"><b id="warnTitle">⚠ 300마리 제한을 풀까요?</b><span>제한을 풀면 동물이 아주 빠르게 늘어나요 (테스트: 강아지 60마리로 시작해 5년 만에 약 5만 마리). 수명을 짧게 하거나 넘기는 해를 짧게 하면 덜 늘어나요. 그러면 계산이 아주 오래 걸리고, 끝난 뒤 3D 화면이 매우 느려지거나 브라우저 탭이 멈추고 꺼질 수 있어요. 진행 중 저장되지 않은 내용은 사라질 수 있어요.</span><div class="row2"><button class="btn" id="warnNo">취소 (제한 유지)</button><button class="btn danger" id="warnYes">그래도 풀기</button></div></div></div>
 <div class="skipov" id="skipOv" hidden role="dialog" aria-modal="true" aria-labelledby="skipTitle"><div class="skipcard"><b id="skipTitle">⏩ 시간 넘기는 중</b><div class="esc-bar"><span id="skipBar"></span></div><span id="skipText"></span><div id="skipRes" class="small"></div><div class="row2"><button class="btn" id="skipStop">멈추기</button><button class="btn primary" id="skipClose" hidden>확인</button></div></div></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -1806,7 +1902,7 @@ function newWorldState(startMin){
   return {t:startMin,day:1,tank:2000,tankCap:2000,bowl:0,bowlCap:300,food:0,foodCap:150,stock:3000,
     pump:{on:false,ml:0,dog:null},launcherBalls:3,launchQ:0,events:[],evId:1,lastAlertT:-99,
     voiceUntil:-1,voiceActive:false,stolen:0,alertShown:false,lowWaterWarned:false,emptyFoodWarned:false,
-    pad:{waste:[],cleaning:0,waitT:0,mode:$('#padMode')?$('#padMode').value:'3',noSheetWarned:false,dirtyWarned:false},floorMess:[],sheets:30,dirt:0,snacks:30,tv:{on:false,ch:'dog',offAt:-1},music:{on:false,genre:'classic',offAt:-1},farmFood:0,tm:{user:null,speed:'mid',auto:true,minutes:0,start:0},
+    pad:{waste:[],cleaning:0,waitT:0,mode:$('#padMode')?$('#padMode').value:'3',noSheetWarned:false,dirtyWarned:false},floorMess:[],sheets:30,dirt:0,snacks:30,tv:{on:false,ch:'dog',offAt:-1},music:{on:false,genre:'classic',offAt:-1},hist:[],histEvery:60,histLast:-1e18,farmFood:0,tm:{user:null,speed:'mid',auto:true,minutes:0,start:0},
     nextHourT:Math.ceil(startMin/60)*60+0.001,born:0,deaths:0,strayN:0,lastVisitDay:-1,ownerDead:false,autoDrop:null,breakLoop:false,fastNow:false,
     farm:{crop:'corn',growth:0.35,anim:0,harvests:0,foodMade:0,snackMade:0},breedOn:true,cardsDirty:true};
 }
@@ -2727,6 +2823,7 @@ function watchdogs(realDt){
   if(M&&M.phase==='end'&&!M.only){M.endT=(M.endT||0)+realDt;if(M.endT>30)cleanupMatch(false)}
 }
 function hourTick(){
+  recordHist();
   breedTick();
   if(!world.fastNow)return;
   for(const d of dogs.slice()){
@@ -3732,6 +3829,7 @@ function syncUI(){
   const mood=world.dirt<=0?'좋음':world.dirt<3?'조금 신경 씀':world.dirt<7?'불쾌함':'매우 불쾌함';$('#dirtMood').textContent=mood;$('#dirtMood').style.color=world.dirt>=3?'var(--alert)':'';
   $('#ballAdd').disabled=balls.length>=MAX_BALLS;
   const watching=dogs.filter(d=>d.state==='watchTV').length;
+  musicLive();
   $('#tvTag').textContent=!tvs.length?'TV장 없음':world.tv.on?`${TV_CH[world.tv.ch]} · ${watching}마리 시청${world.tv.offAt>0?' · '+fmtClock(world.tv.offAt)+' 꺼짐':''}`:'꺼짐';
   for(const d of dogs){if(!d.card)continue;
     const st=d.card.querySelector('.st');st.textContent=world.fastNow?(d.state==='sleep'?'자는 중':'생활 중'):(STATE_KO[d.state]||d.state);st.classList.toggle('hot',!!d.fight);
@@ -3815,6 +3913,7 @@ function skipStep(S){
     }
   }
   S.peak=Math.max(S.peak,S.recs.length);
+  recordHist(false,S.recs);
 }
 function skipBirth(S,m){
   const P=m.pregnant;m.pregnant=null;m.lastBirth=world.t;
@@ -3923,11 +4022,132 @@ function musicFx(rdt){
   const s=textSprite(pick(['♪','♫','♩','♬']),{bg:'rgba(0,0,0,0)',fg:pick(['#ff7aa8','#7ab8ff','#ffd166','#7bd389']),size:0.3});s.material.transparent=true;
   s.position.set(d.pos.x+rand(-0.2,0.2),(d.species==='cat'?0.9:1.2)*d.k+0.2,d.pos.y+rand(-0.2,0.2));scene.add(s);noteFxs.push({s,life:1.6,ph:rand(0,6)});
 }
+
+// automation: picks a genre for the situation (night → lullaby, tired → lullaby, gloomy → upbeat, otherwise classic / morning nature) and stops when everyone is fine
+function musicPick(){
+  const live=dogs.filter(d=>!d.dead&&!d.stray);if(!live.length)return null;
+  const aH=live.reduce((a,d)=>a+d.happy,0)/live.length,aS=live.reduce((a,d)=>a+d.stamina,0)/live.length,h=hour();
+  if(h>=21||h<6)return 'lullaby';if(aS<45)return 'lullaby';if(aH<65)return 'happy';if(aH<88||aS<70)return h<10?'nature':'classic';return null;
+}
+function autoMusic(){
+  const M=world.music;if(!$('#musicAuto').checked||world.arena||match){if(M.on&&M.byAuto&&!$('#musicAuto').checked){M.byAuto=false;setMusic(false)}return}
+  if(M.holdUntil&&world.t<M.holdUntil)return;if(M.on&&!M.byAuto)return;
+  if(world.t<(M.autoNext||0))return;M.autoNext=world.t+20;
+  const g=musicPick();
+  if(g&&(!M.on||M.genre!==g)){M.genre=g;$('#musicGenre').value=g;M.byAuto=true;$('#musicTimer').value='0';if(M.on){musicStep=0;log(`🤖 자동 음악: ${MUSIC[g].n}(으)로 바꿨어요`);musicUI()}else{setMusic(true);log(`🤖 자동 음악이 ${MUSIC[g].n}을(를) 틀었어요`)}}
+  else if(!g&&M.on&&M.byAuto){M.byAuto=false;setMusic(false);log('🤖 모두 기분 좋고 힘이 넘쳐서 자동 음악을 껐어요')}
+}
+function musicLive(){
+  if(!world)return;const live=dogs.filter(d=>!d.dead&&!d.stray);const on=world.music.on;
+  $$('[data-mrow]').forEach(r=>r.classList.toggle('cur',r.dataset.mrow===world.music.genre));
+  if(!live.length){$('#musicLive').textContent='동물이 없어요';return}
+  const aH=Math.round(live.reduce((a,d)=>a+d.happy,0)/live.length),aS=Math.round(live.reduce((a,d)=>a+d.stamina,0)/live.length);
+  $('#musicLive').textContent=on?`♪ ${live.length}마리가 듣는 중 · 평균 행복도 ${aH} · 평균 체력 ${aS}${world.music.byAuto?' · 🤖 자동':''}`:`꺼짐 · 평균 행복도 ${aH} · 평균 체력 ${aS}`;
+}
+
+/* ======================= STATISTICS ======================= */
+// history sample: [time, dogs, cats, avgHappy, avgStamina, avgHealth]; thinned out automatically so long games stay light
+function recordHist(force,list){
+  if(!world||!world.hist)return;if(!force&&world.t-world.histLast<world.histEvery)return;
+  const live=(list||dogs).filter(d=>!d.dead&&!d.stray),n=live.length||1,avg=k=>Math.round(live.reduce((a,d)=>a+d[k],0)/n*10)/10;
+  world.hist.push([world.t,live.filter(d=>d.species!=='cat').length,live.filter(d=>d.species==='cat').length,live.length?avg('happy'):0,live.length?avg('stamina'):0,live.length?avg('health'):0]);world.histLast=world.t;
+  if(world.hist.length>3000){world.hist=world.hist.filter((r,i)=>i%2===0||i===world.hist.length-1);world.histEvery*=2}
+  if(!$('#statOv').hidden&&!skipping)statQueued=true;
+}
+let statRange=0,statQueued=false,statT=0;
+const ST_COL={dog:'#2a78d6',cat:'#eb6834',all:'#1baf7a',happy:'#eb6834',sta:'#2a78d6',hp:'#1baf7a'};
+function cssVar(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim()||'#888'}
+function fmtT(t,span){const day=Math.floor(t/1440)+1;if(span>YEAR_MIN*3)return (t/YEAR_MIN).toFixed(t/YEAR_MIN<10?1:0)+'년';if(span>4320)return day+'일';return `${day}일 ${fmtClock(t)}`}
+function fmtTFull(t){const y=Math.floor(t/YEAR_MIN);return `${Math.floor(t/1440)+1}일차 ${fmtClock(t)}${y?` (${y}년째)`:''}`}
+function niceMax(v){if(v<=5)return 5;const p=Math.pow(10,Math.floor(Math.log10(v))),f=v/p;return (f<=1?1:f<=2?2:f<=5?5:10)*p}
+function prepCanvas(cv){const r=cv.getBoundingClientRect(),dpr=window.devicePixelRatio||1;cv.width=Math.max(1,r.width*dpr);cv.height=Math.max(1,r.height*dpr);const c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);return {c,w:r.width,h:r.height}}
+function drawLineChart(cv,tip,rows,series,opt){
+  const {c,w,h}=prepCanvas(cv),ink=cssVar('--ink'),muted=cssVar('--muted'),line=cssVar('--line');
+  const L=40,R=12,T=10,B=24,pw=w-L-R,ph=h-T-B;c.clearRect(0,0,w,h);c.font='11px '+cssVar('--f-body');
+  if(rows.length<2){c.fillStyle=muted;c.textAlign='center';c.fillText('기록이 쌓이는 중이에요 (1시간마다 기록)',w/2,h/2);cv._g=null;return}
+  const t0=rows[0][0],t1=rows[rows.length-1][0],span=Math.max(1,t1-t0);
+  let ymax=opt.max||niceMax(Math.max(1,...rows.map(r=>Math.max(...series.map(s=>s.v(r))))));
+  const X=t=>L+(t-t0)/span*pw,Y=v=>T+ph-(v/ymax)*ph;
+  c.strokeStyle=line;c.lineWidth=1;c.fillStyle=muted;c.textAlign='right';c.textBaseline='middle';
+  for(let i=0;i<=4;i++){const v=ymax*i/4,y=Y(v);c.beginPath();c.moveTo(L,y);c.lineTo(w-R,y);c.stroke();c.fillText(Math.round(v).toLocaleString(),L-6,y)}
+  c.textAlign='center';c.textBaseline='top';for(let i=0;i<=4;i++){const t=t0+span*i/4;c.textAlign=i===0?'left':i===4?'right':'center';c.fillText(fmtT(t,span),X(t),h-B+6)}
+  // thin rows to ~1 point per pixel
+  const step=Math.max(1,Math.floor(rows.length/pw)),pts=rows.filter((r,i)=>i%step===0||i===rows.length-1);
+  c.lineJoin='round';c.lineCap='round';
+  for(const s of series){c.strokeStyle=s.col;c.lineWidth=2;c.beginPath();pts.forEach((r,i)=>{const x=X(r[0]),y=Y(s.v(r));i?c.lineTo(x,y):c.moveTo(x,y)});c.stroke()}
+  cv._g={rows:pts,X,Y,series,L,R,T,B,w,h,span,fmt:opt.fmt||(v=>Math.round(v).toLocaleString())};
+  if(cv._hx!=null)hoverLine(cv,tip,cv._hx);
+}
+function hoverLine(cv,tip,mx){
+  const g=cv._g;if(!g){tip.hidden=true;return}cv._hx=mx;
+  const {rows,X,Y,series}=g;let best=rows[0],bd=1e9;for(const r of rows){const d=Math.abs(X(r[0])-mx);if(d<bd){bd=d;best=r}}
+  const c=cv.getContext('2d'),x=X(best[0]);c.save();c.strokeStyle=cssVar('--muted');c.setLineDash([3,3]);c.lineWidth=1;c.beginPath();c.moveTo(x,g.T);c.lineTo(x,g.h-g.B);c.stroke();c.setLineDash([]);
+  for(const s of series){const y=Y(s.v(best));c.fillStyle=s.col;c.strokeStyle=cssVar('--surface');c.lineWidth=2;c.beginPath();c.arc(x,y,4,0,Math.PI*2);c.fill();c.stroke()}c.restore();
+  tip.innerHTML=`<b>${fmtTFull(best[0])}</b>`+series.map(s=>`<div><i style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${s.col};margin-right:5px"></i>${s.n} <b style="display:inline">${g.fmt(s.v(best))}</b></div>`).join('');
+  tip.hidden=false;const tw=tip.offsetWidth;tip.style.left=Math.min(g.w-tw-4,Math.max(4,x+10-(x>g.w/2?tw+20:0)))+'px';tip.style.top='6px';
+}
+function drawPie(cv,parts,focus){
+  const {c,w,h}=prepCanvas(cv),cx=w/2,cy=h/2,r=Math.min(w,h)/2-4,ir=r*0.58,tot=parts.reduce((a,p)=>a+p.v,0);c.clearRect(0,0,w,h);
+  if(!tot){c.strokeStyle=cssVar('--line');c.lineWidth=r-ir;c.beginPath();c.arc(cx,cy,(r+ir)/2,0,Math.PI*2);c.stroke();return}
+  let a=-Math.PI/2;for(const p of parts){if(!p.v)continue;const da=p.v/tot*Math.PI*2;c.fillStyle=p.col;c.beginPath();c.arc(cx,cy,r,a,a+da);c.arc(cx,cy,ir,a+da,a,true);c.closePath();c.fill();
+    if(parts.filter(q=>q.v).length>1){c.strokeStyle=cssVar('--surface');c.lineWidth=2;c.stroke()}a+=da}
+  const top=focus?parts.find(p=>p.sh===focus):parts.slice().sort((x,y)=>y.v-x.v)[0];c.fillStyle=cssVar('--ink');c.textAlign='center';c.textBaseline='middle';c.font='700 20px '+cssVar('--f-body');c.fillText(Math.round(top.v/tot*100)+'%',cx,cy-7);c.font='11px '+cssVar('--f-body');c.fillStyle=cssVar('--muted');c.fillText(top.sh||top.n,cx,cy+12);
+}
+function statRows(){const H=world.hist;if(!statRange)return H;const from=world.t-statRange;let i=H.findIndex(r=>r[0]>=from);if(i<0)return H.slice(-1);return H.slice(Math.max(0,i-1))}
+function renderStats(){
+  if(!world||$('#statOv').hidden)return;statQueued=false;
+  const live=dogs.filter(d=>!d.dead&&!d.stray),n=live.length,avg=k=>n?live.reduce((a,d)=>a+d[k],0)/n:0;
+  const dogN=live.filter(d=>d.species!=='cat').length,catN=n-dogN,oldest=live.slice().sort((a,b)=>b.age-a.age)[0],gen=Math.max(1,...live.map(d=>d.gen||1));
+  const H=world.hist,peak=Math.max(n,...H.map(r=>r[1]+r[2]));
+  const tile=(l,v,sub)=>`<div class="st-tile"><small>${l}</small><b>${v}</b>${sub?`<span>${sub}</span>`:''}</div>`;
+  $('#stTiles').innerHTML=tile('지금 동물',`${n}마리`,`강아지 ${dogN} · 고양이 ${catN}`)+tile('가장 많았을 때',`${peak}마리`)+tile('태어남 / 떠남',`${world.born||0} / ${world.deaths||0}`)+
+    tile('평균 나이',n?fmtAge(avg('age')):'-')+tile('최고령',oldest?oldest.name:'-',oldest?fmtAge(oldest.age):'')+tile('세대',`${gen}세대`)+tile('흐른 시간',`${Math.floor(world.t/1440)+1}일차`,world.t>=YEAR_MIN?`${(world.t/YEAR_MIN).toFixed(1)}년째`:'');
+  const rows=statRows();
+  // with only one species the total line would sit exactly on top of it, so it is shown only when both live together
+  const hasCat=rows.some(r=>r[2]>0),hasDog=rows.some(r=>r[1]>0);
+  const popS=[{n:'강아지',col:ST_COL.dog,v:r=>r[1]},{n:'고양이',col:ST_COL.cat,v:r=>r[2]},{n:'전체',col:ST_COL.all,v:r=>r[1]+r[2]}].filter(x=>x.n==='전체'?hasCat&&hasDog:x.n==='고양이'?hasCat||!hasDog:true);
+  $('#stPopLeg').innerHTML=popS.map(s=>`<span><i class="ln" style="background:${s.col}"></i>${s.n}</span>`).join('');
+  drawLineChart($('#stPop'),$('#stPopTip'),rows,popS,{fmt:v=>v+'마리'});
+  const avgS=[{n:'행복도',col:ST_COL.happy,v:r=>r[3]},{n:'체력',col:ST_COL.sta,v:r=>r[4]},{n:'건강',col:ST_COL.hp,v:r=>r[5]}];
+  $('#stAvgLeg').innerHTML=avgS.map(s=>`<span><i class="ln" style="background:${s.col}"></i>${s.n}</span>`).join('');
+  drawLineChart($('#stAvg'),$('#stAvgTip'),rows,avgS,{max:100,fmt:v=>Math.round(v)});
+  const parts=[{n:'😊 행복 (70 이상)',sh:'행복',col:'#0ca30c',v:live.filter(d=>d.happy>=70).length},{n:'😐 보통 (40~69)',sh:'보통',col:'#fab219',v:live.filter(d=>d.happy>=40&&d.happy<70).length},{n:'😢 우울 (40 미만)',sh:'우울',col:'#d03b3b',v:live.filter(d=>d.happy<40).length}];
+  drawPie($('#stPie'),parts);
+  $('#stPieLeg').innerHTML=parts.map(p=>`<div><span><i style="background:${p.col}"></i>${p.n}</span><b>${p.v}마리 · ${n?Math.round(p.v/n*100):0}%</b></div>`).join('')+(n?'':'<div class="small muted">동물이 없어요</div>');
+  // dogs only: senior = 8+ years, or 60% of its own lifespan reached (so short custom lifespans still show old dogs)
+  const pups=live.filter(d=>d.species!=='cat'),old=d=>d.age>=8||(isFinite(d.lifespan)&&d.age>=d.lifespan*0.6);
+  const ageParts=[{n:'🍼 아기 (1살 미만)',sh:'아기',col:'#86b6ef',v:pups.filter(d=>d.age<1).length},{n:'🐕 어른',sh:'어른',col:'#2a78d6',v:pups.filter(d=>d.age>=1&&!old(d)).length},{n:'👴 노령',sh:'노령',col:'#104281',v:pups.filter(d=>d.age>=1&&old(d)).length}];
+  drawPie($('#stAgePie'),ageParts,'노령');
+  // aging society (UN): 7% aging, 14% aged, 20% super-aged
+  const oldN=ageParts[2].v,ratio=pups.length?oldN/pups.length*100:0;
+  const SC=ratio>=20?['👴 초고령 사회','#d03b3b','노령 20% 이상','ultra']:ratio>=14?['🧓 고령 사회','#ec835a','노령 14~20%','']:ratio>=7?['🙂 고령화 사회','#c98500','노령 7~14%','']:['🌱 젊은 사회','#0ca30c','노령 7% 미만',''];
+  const sv=$('#stSociety');sv.className='st-society '+SC[3];sv.style.setProperty('--sc',SC[1]);
+  sv.innerHTML=pups.length?`<div class="big"><strong>${SC[0]}</strong><span class="pct">${ratio.toFixed(1)}%</span><span class="tag">${SC[2]}</span></div>
+    <div class="small">강아지 ${pups.length}마리 중 노령 ${oldN}마리 · 노령 비율이 7%면 고령화 사회, 14%면 고령 사회, 20%면 초고령 사회예요 (UN 기준).</div>
+    <div class="sc-scale" role="img" aria-label="노령 비율 ${ratio.toFixed(1)}%"><b style="left:${Math.min(100,ratio/40*100)}%"></b></div>
+    <div class="sc-ticks"><span style="left:0;transform:none">0%</span><span style="left:17.5%">7%</span><span style="left:35%">14%</span><span style="left:50%">20%</span><span style="left:100%;transform:translateX(-100%)">40%+</span></div>`
+    :`<div class="big"><strong>🏚 강아지가 없어요</strong></div>`;
+  $('#stAgeLeg').innerHTML=ageParts.map(p=>`<div><span><i style="background:${p.col}"></i>${p.n}</span><b>${p.v}마리 · ${pups.length?Math.round(p.v/pups.length*100):0}%</b></div>`).join('')+(pups.length?`<div class="small muted">노령: 8살 이상이거나 자기 수명의 60%를 넘은 강아지</div>`:'<div class="small muted">강아지가 없어요</div>');
+  const bars=[['행복도',avg('happy'),'#eb6834'],['체력',avg('stamina'),'#2a78d6'],['건강',avg('health'),'#1baf7a'],['배고픔',avg('hunger'),'#eda100'],['목마름',avg('thirst'),'#6250d6']];
+  $('#stBars').innerHTML=bars.map(([l,v,c])=>`<div class="st-bar"><span>${l}</span><span class="tr"><i style="width:${clamp(v)}%;background:${c}"></i></span><b>${n?Math.round(v):'-'}</b></div>`).join('')+'<p class="small muted" style="margin:0">배고픔·목마름은 낮을수록 좋아요.</p>';
+  const last=H.slice(-12).reverse();
+  $('#stTable').innerHTML='<thead><tr><th>시각</th><th>강아지</th><th>고양이</th><th>행복도</th><th>체력</th><th>건강</th></tr></thead><tbody>'+last.map(r=>`<tr><td>${fmtTFull(r[0])}</td><td>${r[1]}</td><td>${r[2]}</td><td>${Math.round(r[3])}</td><td>${Math.round(r[4])}</td><td>${Math.round(r[5])}</td></tr>`).join('')+'</tbody>';
+}
+function openStats(){if(!world)return;recordHist(true);$('#statOv').hidden=false;renderStats();$('#statClose').focus()}
+
+/* ======================= THEME ======================= */
+function applyTheme(t){
+  if(t==='system')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',t);
+  try{localStorage.setItem('mh-theme',t)}catch(e){}
+  if(typeof renderStats==='function'&&world&&!$('#statOv').hidden)renderStats();
+}
+(()=>{let t='system';try{t=localStorage.getItem('mh-theme')||'system'}catch(e){}const sel=document.getElementById('themeSel');if(sel){sel.value=t;sel.addEventListener('change',e=>applyTheme(e.target.value))}applyTheme(t)})();
 /* ======================= MAIN LOOP ======================= */
 let lastT=performance.now(),uiT=0;
 function frame(now){
   requestAnimationFrame(frame);if(!running)return;
   const realDt=Math.min(0.1,(now-lastT)/1000);lastT=now;musicFx(realDt);
+  if(!$('#statOv').hidden){statT-=realDt;if(statT<=0||statQueued){statT=1;renderStats()}}
   const fast=!world.arena&&speed>=FAST_SPEED&&!fights.length&&!intruder&&!owner.visiting&&!dogs.some(d=>d.stray)&&!player.spect&&!match;
   world.fastNow=fast;
   if(!paused&&!menuOpen&&!skipping){
@@ -4020,8 +4240,17 @@ function setTV(on){
   log(on?`TV를 켰어요 (${TV_CH[world.tv.ch]})`:'TV를 껐어요');blip(on?900:400,0.05,0.05);
   if(on)dogs.filter(d=>['idle','sit','wander'].includes(d.state)).slice(0,Math.ceil(dogs.length/2)).forEach(d=>setState(d,'toTV',30));
 }
-$('#musicBtn').onclick=()=>{ac();setMusic(!world.music.on)};
-$('#musicGenre').onchange=e=>{if(!world)return;world.music.genre=e.target.value;musicStep=0;if(world.music.on)log(`🎵 ${MUSIC[world.music.genre].n}(으)로 바꿨어요`);musicUI()};
+$('#statBtn').onclick=openStats;
+$('#statClose').onclick=()=>{$('#statOv').hidden=true;$('#statBtn').focus()};
+$('#statOv').addEventListener('click',e=>{if(e.target.id==='statOv')$('#statOv').hidden=true});
+$$('[data-srange]').forEach(b=>b.onclick=()=>{statRange=+b.dataset.srange;$$('[data-srange]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));['#stPop','#stAvg'].forEach(i=>$(i)._hx=null);$('#stPopTip').hidden=$('#stAvgTip').hidden=true;renderStats()});
+[['#stPop','#stPopTip'],['#stAvg','#stAvgTip']].forEach(([c,t])=>{const cv=$(c),tip=$(t);
+  cv.addEventListener('pointermove',e=>{const r=cv.getBoundingClientRect();cv._hx=e.clientX-r.left;renderStats()});
+  cv.addEventListener('pointerleave',()=>{cv._hx=null;tip.hidden=true;renderStats()});});
+window.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#statOv').hidden){$('#statOv').hidden=true;e.stopImmediatePropagation()}},true);
+$('#musicBtn').onclick=()=>{ac();world.music.byAuto=false;world.music.holdUntil=world.t+120;setMusic(!world.music.on)};
+$('#musicAuto').onchange=e=>{if(world){world.music.autoNext=0;world.music.holdUntil=0;toast(e.target.checked?'자동화일 때 음악을 알아서 틀어요':'자동 음악을 껐어요')}};
+$('#musicGenre').onchange=e=>{if(!world)return;world.music.genre=e.target.value;if(world.music.byAuto){world.music.byAuto=false;world.music.holdUntil=world.t+120}musicStep=0;if(world.music.on)log(`🎵 ${MUSIC[world.music.genre].n}(으)로 바꿨어요`);musicUI()};
 $('#musicTimer').onchange=e=>{if(!world)return;const m=parseInt(e.target.value,10);if(world.music.on){world.music.offAt=m>0?world.t+m:-1;musicUI()}};
 $('#musicVol').oninput=()=>{if(musicGain)musicGain.gain.value=(+$('#musicVol').value/100)*0.5};
 $('#tvBtn').onclick=()=>{world.tv.byAuto=false;setTV(!world.tv.on)};
@@ -4052,6 +4281,7 @@ function autoManager(dt){
   if(tvs.length){const h=hour();const want=h>=13&&h<16;
     if(want&&!world.tv.on){world.tv.ch='dog';$('#tvCh').value='dog';world.tv.byAuto=true;setTV(true)}
     else if(!want&&world.tv.on&&world.tv.byAuto){world.tv.byAuto=false;setTV(false)}}
+  autoMusic();
   if(autoBreak)for(const f of fights)if(!f.sep&&!f.ended&&f.cause!=='arena')startBreakup(f,true);
   if(corpses.length&&!fights.length&&corpses.every(c=>world.t-c.at>60))cleanCorpses('자동 장례 서비스가');
 }
@@ -4176,7 +4406,7 @@ function startSim(){
   dogConf.forEach((d,i)=>{d.name=($('#dogName'+i).value||'').trim()||d.name;d.age=clamp(parseFloat($('#dogAge'+i).value)||0,0,14)});
   catConf.forEach((d,i)=>{d.name=($('#catName'+i).value||'').trim()||d.name;d.age=clamp(parseFloat($('#catAge'+i).value)||0,0,14)});
   $('#setup').hidden=true;$('#sim').hidden=false;
-  ['#clockBox','#speedSeg','#pauseBtn','#soundBtn','#backSetup','#modeChip','#escBtn'].forEach(s=>$(s).hidden=false);$('#phaseLbl').textContent='2단계 · 시뮬레이션';
+  ['#clockBox','#speedSeg','#pauseBtn','#soundBtn','#backSetup','#modeChip','#escBtn','#statBtn'].forEach(s=>$(s).hidden=false);$('#phaseLbl').textContent='2단계 · 시뮬레이션';
   player.spect=null;player.ctrl=null;player.side=null;player.escape=null;player.bannerFight=null;
   $('#fightHud').hidden=true;$('#touchPad').hidden=true;$('#fightBanner').hidden=true;
   Object.assign(owner,{visiting:false,dead:false,state:'out',fight:null,g:null,stamina:100,health:100});
@@ -4184,6 +4414,7 @@ function startSim(){
   const [hh,mm]=($('#startTime').value||'08:00').split(':').map(Number);
   world=newWorldState(hh*60+mm);$('#log').innerHTML='';speed=1;
   clearInterval(musicIv);musicIv=0;world.music.genre=$('#musicGenre').value;musicUI();
+  setTimeout(()=>{if(world)recordHist(true)},0);
   world.breedOn=$('#breedOn').checked;world.tm.speed=$('#tmSpeed').value;world.tm.auto=$('#tmAuto').checked;$('#farmCrop').value='corn';
   followId=dogs[0]?dogs[0].id:1;
   buildDogCards();renderEvents();setCamMode('free');buildSpeedSeg();
@@ -4203,7 +4434,7 @@ $('#startBtn').onclick=startSim;
 $('#backSetup').onclick=()=>{
   const wasSoccer=world&&world.soccerOnly;if(match)cleanupMatch(true);
   running=false;if(viewRec)viewRec.stop();if(intruder)intruder=null;if(menuOpen)toggleMenu(false);if(tacOpen)toggleTac(false);
-  $('#sim').hidden=true;$('#setup').hidden=false;['#clockBox','#speedSeg','#pauseBtn','#soundBtn','#backSetup','#modeChip','#escBtn'].forEach(s=>$(s).hidden=true);
+  $('#sim').hidden=true;$('#setup').hidden=false;['#clockBox','#speedSeg','#pauseBtn','#soundBtn','#backSetup','#modeChip','#escBtn','#statBtn'].forEach(s=>$(s).hidden=true);$('#statOv').hidden=true;
   setAppMode(wasSoccer?'soccer':world&&world.arena?'arena':'home');
 };
 

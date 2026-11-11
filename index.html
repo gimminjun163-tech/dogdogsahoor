@@ -541,7 +541,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
       <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" data-autobreak> 자동화일 때 싸움을 자동으로 말리기</label>
       <div class="row2" style="align-items:end"><label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="autoCorpsePre" data-mirror="autoCorpse"> 자동화일 때 시체 자동 치우기</label><label class="f">치울 시체<select id="corpseScopePre" data-mirror="corpseScope"><option value="all">모든 시체 (노환·병·싸움)</option><option value="fight">전투 사망만</option></select></label></div>
       <div class="row2"><label class="f">치우는 때<select id="corpseDelayPre" data-mirror="corpseDelay"><option value="0">바로</option><option value="10">10분 뒤</option><option value="30">30분 뒤</option><option value="60">1시간 뒤</option></select></label></div>
-      <label class="f" style="margin-top:4px">고령화 위험 시 자동화가 강제 번식 쓰기<select id="aiFBPre" data-mirror="aiFB"><option value="off">쓰지 않기</option><option value="aged">고령 사회(노령 14%) 이상이면 쓰기</option><option value="ultra">초고령 사회(노령 20%) 이상일 때만 쓰기</option></select></label>
+      <label class="f" style="margin-top:4px">고령화 위험 시 자동화가 강제 번식 쓰기<select id="aiFBPre" data-mirror="aiFB"><option value="off">쓰지 않기</option><option value="young">젊은 사회에도 쓰기 (항상)</option><option value="aging">고령화 사회(노령 7%) 이상이면 쓰기</option><option value="aged" selected>고령 사회(노령 14%) 이상이면 쓰기</option><option value="ultra">초고령 사회(노령 20%) 이상일 때만 쓰기</option></select></label>
       <label class="f" style="margin-top:4px">자동화 스타일<select id="aiStylePre" data-mirror="aiStyle"><option value="balance">⚖ 균형</option><option value="health">❤ 건강중시</option><option value="happy">😊 행복중시</option><option value="stamina">⚡ 체력중시</option><option value="auto">🤖 자동 (가장 부족한 것 챙기기)</option></select></label>
       <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="musicAutoPre" data-mirror="musicAuto" checked> 자동화일 때 음악 자동으로 틀기 (밤엔 자장가, 지치면 자장가, 우울하면 신나는 동요)</label>
         </div>
@@ -928,7 +928,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         <label class="f">자동화 스타일<select id="aiStyle"><option value="balance">⚖ 균형</option><option value="health">❤ 건강중시</option><option value="happy">😊 행복중시</option><option value="stamina">⚡ 체력중시</option><option value="auto">🤖 자동 (가장 부족한 것 챙기기)</option></select></label>
         <div class="ai-score" id="aiScore"></div>
         <div class="ai-chips" id="aiChips" aria-label="지금 자동화가 하고 있는 행동"></div>
-        <label class="f">고령화 위험 시 강제 번식 도구<select id="aiFB"><option value="off">쓰지 않기</option><option value="aged">고령 사회(노령 14%) 이상이면 쓰기</option><option value="ultra">초고령 사회(노령 20%) 이상일 때만 쓰기</option></select></label>
+        <label class="f">고령화 위험 시 강제 번식 도구<select id="aiFB"><option value="off">쓰지 않기</option><option value="young">젊은 사회에도 쓰기 (항상)</option><option value="aging">고령화 사회(노령 7%) 이상이면 쓰기</option><option value="aged" selected>고령 사회(노령 14%) 이상이면 쓰기</option><option value="ultra">초고령 사회(노령 20%) 이상일 때만 쓰기</option></select></label>
         <p class="small muted" id="aiFBNote">자동화가 강제 번식 도구를 쓰지 않아요.</p>
         <h3>행동 피드백 기록</h3>
         <ol class="ai-log" id="aiLog"><li class="muted">아직 기록이 없어요. 3시간(게임 시간)마다 평균을 보고 행동을 하나씩 고쳐요.</li></ol>
@@ -3955,7 +3955,7 @@ function skipStep(S){
       f.pregnant={due:world.t+days*1440,dad:m.id,dadBreed:m.breed,dadColor:m.color,dadSkills:m.skills,dadGen:m.gen||1,start:world.t};f.mate=m.id;m.mate=f.id;
     }
   }
-  if(careMode==='auto'&&aiFBLimit()&&world.t>=(S.fbNext||0)){S.fbNext=world.t+90*1440;S.fb=(S.fb||0)+skipForceBreed(S)}
+  if(careMode==='auto'&&aiFBLimit()!=null&&world.t>=(S.fbNext||0)){S.fbNext=world.t+90*1440;S.fb=(S.fb||0)+skipForceBreed(S)}
   S.peak=Math.max(S.peak,S.recs.length);
   recordHist(false,S.recs);
 }
@@ -4291,7 +4291,9 @@ function aiUI(){
 
 // senior dog: 8+ years, or 60% of its own lifespan reached
 function isOld(d){return d.age>=8||(isFinite(d.lifespan)&&d.age>=d.lifespan*0.6)}
-function aiFBLimit(){const v=$('#aiFB').value;return v==='aged'?14:v==='ultra'?20:0}
+// null = off; 0 = always (even a young society); otherwise the senior % that triggers it
+function aiFBLimit(){const v=$('#aiFB').value;return v==='young'?0:v==='aging'?7:v==='aged'?14:v==='ultra'?20:null}
+const societyName=r=>r>=20?'초고령 사회':r>=14?'고령 사회':r>=7?'고령화 사회':'젊은 사회';
 function seniorRatio(list){const p=list.filter(d=>d.species!=='cat'&&!d.dead&&!d.stray);return p.length?p.filter(isOld).length/p.length*100:0}
 const related=(a,b)=>a.id===b.mom||a.id===b.dad||b.id===a.mom||b.id===a.dad||(a.mom!=null&&a.mom===b.mom);
 // pairs young, unrelated dogs (not old, not pregnant, no birth in the last 60 days); returns how many pairs it made
@@ -4301,13 +4303,16 @@ function pickPairs(list,max){
   const out=[];for(const f of fs){if(out.length>=max)break;const m=ms.find(x=>!related(f,x));if(m)out.push([f,m])}return out;
 }
 function aiForceBreed(){
-  const lim=aiFBLimit();if(!lim||!world.ai)return;
+  const lim=aiFBLimit();if(lim==null||!world.ai)return;
   const r=seniorRatio(dogs);if(r<lim)return;
   const room=safeLimit()-dogs.length;if(room<=0){aiLog(`⚠ 노령 ${r.toFixed(0)}%지만 동물이 ${dogs.length}마리라 강제 번식을 미뤘어요`,'bad');return}
   const pairs=pickPairs(dogs,Math.min(3,Math.max(1,Math.ceil(dogs.length*0.08))));
-  if(!pairs.length){aiLog(`⚠ ${r>=20?'초고령':'고령'} 사회(노령 ${r.toFixed(0)}%)지만 번식할 수 있는 젊은 암수 한 쌍이 없어요`,'bad');return}
+  if(!pairs.length){
+    // females just pregnant or resting after a birth: simply wait. Only warn (once a day) when there really is no young pair
+    const waiting=dogs.some(d=>d.species!=='cat'&&!d.dead&&d.sex==='f'&&d.age>=1&&!isOld(d)&&(d.pregnant||world.t-(d.lastBirth||-1e12)<=60*1440));
+    const day=Math.floor(world.t/1440);if(!waiting&&world.ai.fbWarnDay!==day){world.ai.fbWarnDay=day;aiLog(`⚠ ${societyName(r)}(노령 ${r.toFixed(0)}%)지만 번식할 수 있는 젊은 암수 한 쌍이 없어요`,'bad')}return}
   pairs.forEach(([f,m])=>forcePair(f,m,true));
-  aiLog(`🏳️‍🌈 ${r>=20?'초고령':'고령'} 사회(노령 ${r.toFixed(0)}%)라서 강제 번식 도구를 썼어요: ${pairs.map(([f,m])=>`${f.name}♀+${m.name}♂`).join(', ')}`,'try');
+  aiLog(`🏳️‍🌈 ${societyName(r)}(노령 ${r.toFixed(0)}%)라서 강제 번식 도구를 썼어요: ${pairs.map(([f,m])=>`${f.name}♀+${m.name}♂`).join(', ')}`,'try');
 }
 function skipForceBreed(S){
   if(seniorRatio(S.recs)<aiFBLimit())return 0;
@@ -4315,7 +4320,7 @@ function skipForceBreed(S){
   for(const [f,m] of pairs){if(f.mate!==m.id)S.wed++;f.pregnant={due:world.t+63*1440,dad:m.id,dadBreed:m.breed,dadColor:m.color,dadSkills:m.skills,dadGen:m.gen||1,start:world.t};f.mate=m.id;m.mate=f.id}
   return pairs.length;
 }
-function aiFBNote(){const l=aiFBLimit(),n=$('#aiFBNote');if(!n)return;n.textContent=l?`강아지 중 노령이 ${l}% 이상이면 3시간마다 젊고 핏줄이 다른 암수를 골라 강제 번식시켜요 (한 번에 최대 3쌍, 시간 넘기기 중엔 90일마다). 동물이 ${isFinite(safeLimit())?safeLimit()+'마리':'제한 없음'} 이상이면 멈춰요.`:'자동화가 강제 번식 도구를 쓰지 않아요.'}
+function aiFBNote(){const l=aiFBLimit(),n=$('#aiFBNote');if(!n)return;n.textContent=l!=null?`${l?`강아지 중 노령이 ${l}% 이상이면`:'노령 비율과 상관없이 항상'} 3시간마다 젊고 핏줄이 다른 암수를 골라 강제 번식시켜요 (한 번에 최대 3쌍, 시간 넘기기 중엔 90일마다). 동물이 ${isFinite(safeLimit())?safeLimit()+'마리':'제한 없음'} 이상이면 멈춰요.`:'자동화가 강제 번식 도구를 쓰지 않아요.'}
 
 // automation: bodies of animals (or the owner) who fell in a fight are taken away after the chosen delay, even while the fight goes on
 function autoFightCorpses(){
@@ -4433,7 +4438,8 @@ $$('[data-srange]').forEach(b=>b.onclick=()=>{statRange=+b.dataset.srange;$$('[d
   cv.addEventListener('pointermove',e=>{const r=cv.getBoundingClientRect();cv._hx=e.clientX-r.left;renderStats()});
   cv.addEventListener('pointerleave',()=>{cv._hx=null;tip.hidden=true;renderStats()});});
 window.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#statOv').hidden){$('#statOv').hidden=true;e.stopImmediatePropagation()}},true);
-$('#aiFB').addEventListener('change',()=>{aiFBNote();if(world&&world.ai){const l=aiFBLimit();aiLog(l?`고령화 위험(노령 ${l}% 이상) 때 강제 번식 도구를 쓸 수 있게 했어요`:'강제 번식 도구를 쓰지 않게 했어요',l?'try':'')}});
+$('#aiFB').addEventListener('change',()=>{aiFBNote();if(world&&world.ai){const l=aiFBLimit();aiLog(l!=null?(l?`고령화 위험(노령 ${l}% 이상) 때 강제 번식 도구를 쓸 수 있게 했어요`:'젊은 사회에도 항상 강제 번식 도구를 쓸 수 있게 했어요'):'강제 번식 도구를 쓰지 않게 했어요',l?'try':'')}});
+aiFBNote();
 $('#aiStyle').addEventListener('change',e=>{if(!world||!world.ai)return;const A=world.ai;A.style=e.target.value;A.trial=null;A.next=world.t+30;aiLog(`스타일을 ${AI_STYLE[A.style].n}(으)로 바꿨어요. 30분 뒤부터 이 기준으로 행동을 고쳐요`,'try')});
 $('#musicBtn').onclick=()=>{ac();world.music.byAuto=false;world.music.holdUntil=world.t+120;setMusic(!world.music.on)};
 $('#musicAuto').onchange=e=>{if(world){world.music.autoNext=0;world.music.holdUntil=0;toast(e.target.checked?'자동화일 때 음악을 알아서 틀어요':'자동 음악을 껐어요')}};

@@ -128,6 +128,11 @@ input[type="range"]{width:100%;accent-color:var(--accent)}
 .st-chart canvas,.st-pie canvas{width:100%;height:100%;display:block}
 .st-tip{position:absolute;pointer-events:none;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:12px;box-shadow:0 6px 18px rgba(0,0,0,.15);white-space:nowrap;z-index:2}
 .st-tip b{display:block;margin-bottom:2px}
+.st-cut{font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);font-size:11px;margin-left:6px}
+.st-three{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.st-chart.sm{height:170px}
+.st-now{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}
+.st-now i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
 .st-two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
 .st-pie{display:grid;grid-template-columns:1fr;gap:10px;justify-items:center}
 .st-pie canvas{height:150px;width:150px}
@@ -147,6 +152,20 @@ input[type="range"]{width:100%;accent-color:var(--accent)}
 .st-table th:first-child,.st-table td:first-child{text-align:left}
 details.st-sec summary{cursor:pointer;font-size:13px;font-weight:700}
 @media (max-width:520px){.st-chart{height:190px}}
+.ai-score{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.ai-score div{border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:var(--surface-2);font-size:11px;color:var(--muted)}
+.ai-score div.focus{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.ai-score b{display:block;font-size:18px;color:var(--ink);font-variant-numeric:tabular-nums}
+.ai-score .w{font-size:10px}
+.ai-total{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--ink)!important}
+.ai-total b{display:inline!important;font-size:20px!important}
+.ai-chips{display:flex;flex-wrap:wrap;gap:5px}
+.ai-chips span{font-size:11px;border:1px solid var(--line);border-radius:999px;padding:2px 8px;background:var(--surface)}
+.ai-chips span.new{border-color:var(--accent);color:var(--accent);font-weight:700}
+.ai-log{list-style:none;margin:0;padding:0;display:grid;gap:5px;max-height:220px;overflow:auto;font-size:12px}
+.ai-log li{border-left:3px solid var(--line);padding:3px 8px;background:var(--surface-2);border-radius:0 6px 6px 0}
+.ai-log li.good{border-color:var(--good)}.ai-log li.bad{border-color:var(--alert)}.ai-log li.try{border-color:var(--accent)}
+.ai-log time{color:var(--muted);font-family:var(--f-mono);font-size:11px;margin-right:4px}
 .skipgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .skipgrid .btn{padding-left:4px;padding-right:4px}
 textarea{font:inherit;width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--surface);color:var(--ink);resize:vertical}
@@ -520,6 +539,10 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
           <label class="modecard"><input type="radio" name="careMode" value="auto" id="modeAuto" checked><span><b>모두 자동화</b><small>밥·물 보충, 배변판·바닥 청소, 공 회수와 발사, 낮 TV, 음악까지 집이 알아서 관리해요. 나는 지켜보면 돼요.</small></span></label>
         </div>
       <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" data-autobreak> 자동화일 때 싸움을 자동으로 말리기</label>
+      <div class="row2" style="align-items:end"><label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="autoCorpsePre" data-mirror="autoCorpse"> 자동화일 때 시체 자동 치우기</label><label class="f">치울 시체<select id="corpseScopePre" data-mirror="corpseScope"><option value="all">모든 시체 (노환·병·싸움)</option><option value="fight">전투 사망만</option></select></label></div>
+      <div class="row2"><label class="f">치우는 때<select id="corpseDelayPre" data-mirror="corpseDelay"><option value="0">바로</option><option value="10">10분 뒤</option><option value="30">30분 뒤</option><option value="60">1시간 뒤</option></select></label></div>
+      <label class="f" style="margin-top:4px">고령화 위험 시 자동화가 강제 번식 쓰기<select id="aiFBPre" data-mirror="aiFB"><option value="off">쓰지 않기</option><option value="aged">고령 사회(노령 14%) 이상이면 쓰기</option><option value="ultra">초고령 사회(노령 20%) 이상일 때만 쓰기</option></select></label>
+      <label class="f" style="margin-top:4px">자동화 스타일<select id="aiStylePre" data-mirror="aiStyle"><option value="balance">⚖ 균형</option><option value="health">❤ 건강중시</option><option value="happy">😊 행복중시</option><option value="stamina">⚡ 체력중시</option><option value="auto">🤖 자동 (가장 부족한 것 챙기기)</option></select></label>
       <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="musicAutoPre" data-mirror="musicAuto" checked> 자동화일 때 음악 자동으로 틀기 (밤엔 자장가, 지치면 자장가, 우울하면 신나는 동요)</label>
         </div>
       <div class="stack">
@@ -833,6 +856,8 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         <div class="row2"><button class="btn" id="corpseBtn" disabled>시체 치우기 (0구)</button><button class="btn" id="watchBtn" disabled>싸움 관전</button></div>
         <button class="btn" id="breakBtn" disabled>🧯 싸움 말리기 (5~10초)</button>
         <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" data-autobreak> 모두 자동화일 때 싸움 자동으로 말리기</label>
+        <div class="row2" style="align-items:end"><label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="autoCorpse"> 🧹 모두 자동화일 때 시체 자동 치우기</label><label class="f">치울 시체<select id="corpseScope"><option value="all">모든 시체 (노환·병·싸움)</option><option value="fight">전투 사망만</option></select></label></div>
+        <div class="row2"><label class="f">치우는 때<select id="corpseDelay"><option value="0">바로</option><option value="10">10분 뒤</option><option value="30">30분 뒤</option><option value="60">1시간 뒤</option></select></label></div>
         <h3>⏩ 시간 넘기기</h3>
         <div class="skipgrid"><button class="btn" data-skip="1">1년</button><button class="btn" data-skip="5">5년</button><button class="btn" data-skip="10">10년</button><button class="btn" data-skip="50">50년</button><button class="btn" data-skip="100">100년</button><button class="btn" data-skip="500">500년</button><button class="btn" data-skip="1000">1000년</button></div>
         <label class="f">넘기는 동안 최대 마릿수 (넘치면 입양)<input type="number" id="skipCap" value="60" min="2" max="300" step="1"></label>
@@ -895,6 +920,19 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         </div>
         <button class="btn primary" id="tvBtn">TV 켜기</button>
         <p class="small" id="tvNote">TV를 켜면 강아지들이 앞에 앉아서 봐요. 강아지 채널을 가장 좋아해서 행복도가 더 많이 올라요.</p>
+      </section>
+
+      <!-- automation brain -->
+      <section class="card panel home-only">
+        <div class="panel-head"><h2>🧠 자동화 두뇌</h2><span class="tag" id="aiTag">대기 중</span></div>
+        <label class="f">자동화 스타일<select id="aiStyle"><option value="balance">⚖ 균형</option><option value="health">❤ 건강중시</option><option value="happy">😊 행복중시</option><option value="stamina">⚡ 체력중시</option><option value="auto">🤖 자동 (가장 부족한 것 챙기기)</option></select></label>
+        <div class="ai-score" id="aiScore"></div>
+        <div class="ai-chips" id="aiChips" aria-label="지금 자동화가 하고 있는 행동"></div>
+        <label class="f">고령화 위험 시 강제 번식 도구<select id="aiFB"><option value="off">쓰지 않기</option><option value="aged">고령 사회(노령 14%) 이상이면 쓰기</option><option value="ultra">초고령 사회(노령 20%) 이상일 때만 쓰기</option></select></label>
+        <p class="small muted" id="aiFBNote">자동화가 강제 번식 도구를 쓰지 않아요.</p>
+        <h3>행동 피드백 기록</h3>
+        <ol class="ai-log" id="aiLog"><li class="muted">아직 기록이 없어요. 3시간(게임 시간)마다 평균을 보고 행동을 하나씩 고쳐요.</li></ol>
+        <p class="small muted">3시간마다 평균 행복도·체력·건강을 스타일에 맞는 점수로 바꿔요. 가장 부족한 걸 돕는 행동을 하나 바꿔 보고, 3시간 뒤 어제 같은 시간대보다 점수가 오르면 👍 유지, 내려가면 👎 되돌려요. 잘 통한 행동은 기억해서 다음에 더 자주 골라요. '모두 자동화'일 때만 작동해요.</p>
       </section>
 
       <!-- music -->
@@ -1071,16 +1109,18 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
 <div class="skipov statov" id="statOv" hidden role="dialog" aria-modal="true" aria-labelledby="statTitle"><div class="statcard">
   <div class="st-head"><h2 id="statTitle">📊 통계</h2>
     <div class="seg" id="stRange" role="group" aria-label="기간"><button data-srange="1440">1일</button><button data-srange="10080">7일</button><button data-srange="43200">30일</button><button data-srange="525600">1년</button><button data-srange="0" aria-pressed="true">전체</button></div>
+    <div class="seg" id="stFlat" role="group" aria-label="꺾은선 그래프 표시 방식"><button data-sflat="0" aria-pressed="true">모두 표시</button><button data-sflat="1">일정한 구간 빼기</button></div>
     <button class="iconbtn" id="statClose" aria-label="통계 닫기">✕ 닫기</button></div>
   <div class="st-tiles" id="stTiles"></div>
   <div class="st-society" id="stSociety" aria-live="polite"></div>
-  <section class="st-sec"><div class="st-sh"><h3>동물 수 추이</h3><div class="st-leg" id="stPopLeg"></div></div><div class="st-chart"><canvas id="stPop" aria-label="동물 수 추이 꺾은선그래프" role="img"></canvas><div class="st-tip" id="stPopTip" hidden></div></div></section>
+  <section class="st-sec"><div class="st-sh"><h3>동물 수 추이 <small class="st-cut" id="stPopNote"></small></h3><div class="st-leg" id="stPopLeg"></div></div><div class="st-chart"><canvas id="stPop" aria-label="동물 수 추이 꺾은선그래프" role="img"></canvas><div class="st-tip" id="stPopTip" hidden></div></div></section>
   <div class="st-two">
     <section class="st-sec"><h3>행복한 동물 비율</h3><div class="st-pie"><canvas id="stPie" aria-label="행복도 비율 원그래프" role="img"></canvas><div class="st-pieleg" id="stPieLeg"></div></div></section>
     <section class="st-sec"><h3>늙은 강아지 비율</h3><div class="st-pie"><canvas id="stAgePie" aria-label="강아지 나이대 비율 원그래프" role="img"></canvas><div class="st-pieleg" id="stAgeLeg"></div></div></section>
     <section class="st-sec"><h3>지금 평균 상태</h3><div class="st-bars" id="stBars"></div></section>
   </div>
-  <section class="st-sec"><div class="st-sh"><h3>평균 행복도 · 체력 · 건강 추이</h3><div class="st-leg" id="stAvgLeg"></div></div><div class="st-chart"><canvas id="stAvg" aria-label="평균 상태 추이 꺾은선그래프" role="img"></canvas><div class="st-tip" id="stAvgTip" hidden></div></div></section>
+  <section class="st-sec"><div class="st-sh"><h3>평균 행복도 · 체력 · 건강 추이 <small class="st-cut" id="stAvgNote"></small></h3><div class="st-leg" id="stAvgLeg"></div></div><div class="st-chart"><canvas id="stAvg" aria-label="평균 상태 추이 꺾은선그래프" role="img"></canvas><div class="st-tip" id="stAvgTip" hidden></div></div></section>
+  <div class="st-three"><section class="st-sec"><div class="st-sh"><h3>😊 평균 행복도</h3><span class="st-now" id="stHapNow"></span></div><div class="st-chart sm"><canvas id="stHap" aria-label="평균 😊 평균 행복도 추이 꺾은선그래프" role="img"></canvas><div class="st-tip" id="stHapTip" hidden></div></div></section><section class="st-sec"><div class="st-sh"><h3>⚡ 평균 체력</h3><span class="st-now" id="stStaNow"></span></div><div class="st-chart sm"><canvas id="stSta" aria-label="평균 ⚡ 평균 체력 추이 꺾은선그래프" role="img"></canvas><div class="st-tip" id="stStaTip" hidden></div></div></section><section class="st-sec"><div class="st-sh"><h3>❤ 평균 건강</h3><span class="st-now" id="stHpNow"></span></div><div class="st-chart sm"><canvas id="stHp" aria-label="평균 ❤ 평균 건강 추이 꺾은선그래프" role="img"></canvas><div class="st-tip" id="stHpTip" hidden></div></div></section></div>
   <details class="st-sec"><summary>표로 보기 (최근 기록 12개)</summary><div class="st-tablewrap"><table class="st-table" id="stTable"></table></div></details>
 </div></div>
 <div class="skipov" id="warnOv" hidden role="alertdialog" aria-modal="true" aria-labelledby="warnTitle"><div class="skipcard"><b id="warnTitle">⚠ 300마리 제한을 풀까요?</b><span>제한을 풀면 동물이 아주 빠르게 늘어나요 (테스트: 강아지 60마리로 시작해 5년 만에 약 5만 마리). 수명을 짧게 하거나 넘기는 해를 짧게 하면 덜 늘어나요. 그러면 계산이 아주 오래 걸리고, 끝난 뒤 3D 화면이 매우 느려지거나 브라우저 탭이 멈추고 꺼질 수 있어요. 진행 중 저장되지 않은 내용은 사라질 수 있어요.</span><div class="row2"><button class="btn" id="warnNo">취소 (제한 유지)</button><button class="btn danger" id="warnYes">그래도 풀기</button></div></div></div>
@@ -1902,7 +1942,7 @@ function newWorldState(startMin){
   return {t:startMin,day:1,tank:2000,tankCap:2000,bowl:0,bowlCap:300,food:0,foodCap:150,stock:3000,
     pump:{on:false,ml:0,dog:null},launcherBalls:3,launchQ:0,events:[],evId:1,lastAlertT:-99,
     voiceUntil:-1,voiceActive:false,stolen:0,alertShown:false,lowWaterWarned:false,emptyFoodWarned:false,
-    pad:{waste:[],cleaning:0,waitT:0,mode:$('#padMode')?$('#padMode').value:'3',noSheetWarned:false,dirtyWarned:false},floorMess:[],sheets:30,dirt:0,snacks:30,tv:{on:false,ch:'dog',offAt:-1},music:{on:false,genre:'classic',offAt:-1},hist:[],histEvery:60,histLast:-1e18,farmFood:0,tm:{user:null,speed:'mid',auto:true,minutes:0,start:0},
+    pad:{waste:[],cleaning:0,waitT:0,mode:$('#padMode')?$('#padMode').value:'3',noSheetWarned:false,dirtyWarned:false},floorMess:[],sheets:30,dirt:0,snacks:30,tv:{on:false,ch:'dog',offAt:-1},music:{on:false,genre:'classic',offAt:-1},ai:null,hist:[],histEvery:60,histLast:-1e18,farmFood:0,tm:{user:null,speed:'mid',auto:true,minutes:0,start:0},
     nextHourT:Math.ceil(startMin/60)*60+0.001,born:0,deaths:0,strayN:0,lastVisitDay:-1,ownerDead:false,autoDrop:null,breakLoop:false,fastNow:false,
     farm:{crop:'corn',growth:0.35,anim:0,harvests:0,foodMade:0,snackMade:0},breedOn:true,cardsDirty:true};
 }
@@ -2053,11 +2093,11 @@ function decide(d){
     if(Math.random()<0.55){const p=outside?findYardSpot():findFree(rand(-W/2+0.6,W/2-0.6),rand(-D/2+0.6,D/2-0.6));d.target=p;setState(d,'wander',outside?30:15);return}
     setState(d,Math.random()<0.6?'sit':'idle',rand(4,9));return;
   }
-  if(dev.treadmill&&world.tm&&world.tm.auto&&!world.tm.user&&d.stamina>60&&d.age>=0.5&&Math.random()<0.08){setState(d,'toTM',25);return}
+  if(dev.treadmill&&world.tm&&world.tm.auto&&!aiQuiet()&&!world.tm.user&&d.stamina>60&&d.age>=0.5&&Math.random()<0.08){setState(d,'toTM',25);return}
   const fb=freeBall(d);
   if(fb&&d.stamina>30){fb.chasedBy=d.id;d.ball=fb;setState(d,'chase',25);return}
   const r=Math.random();
-  if(r<0.18&&world.launcherBalls>0&&d.stamina>40&&!dogs.some(o=>o!==d&&(o.state==='toLauncher'||o.state==='waitThrow'))&&ballMode==='auto'){setState(d,'toLauncher',20);return}
+  if(r<0.18&&world.launcherBalls>0&&d.stamina>40&&!dogs.some(o=>o!==d&&(o.state==='toLauncher'||o.state==='waitThrow'))&&ballMode==='auto'&&aiBall()){setState(d,'toLauncher',20);return}
   if(world.tv.on&&tvs.length&&!night&&d.stamina>12&&Math.random()<(world.tv.ch==='dog'?0.42:0.25)){setState(d,'toTV',30);return}
   const h=hour();
   if(r<0.65){const outside=yard&&h>=7&&h<19&&Math.random()<0.45;const p=outside?findYardSpot():findFree(rand(-W/2+0.6,W/2-0.6),rand(-D/2+0.6,D/2-0.6));d.target=p;setState(d,'wander',outside?30:15);return}
@@ -2806,11 +2846,14 @@ function forceBreed(){
   if(f.age<1||m.age<1){toast('두 마리 모두 1살 이상이어야 해요',true);return}
   if(f.fight||m.fight){toast('싸우는 중에는 번식시킬 수 없어요',true);return}
   if(dogs.length>=MAX_PETS){toast(`동물이 최대 ${MAX_PETS}마리라서 더 늘릴 수 없어요`,true);return}
+  forcePair(f,m,false);
+}
+function forcePair(f,m,byAI){
   const days=f.species==='cat'?65:63;
   f.pregnant={due:world.t+days*1440,dad:m.id,dadBreed:m.breed,dadColor:m.color,dadSkills:m.skills,start:world.t};
   f.mate=m.id;m.mate=f.id;
-  const msg=`🏳️‍🌈 ${f.name}${josa(f.name,'과','와')} ${m.name} 사이에 아기가 생겼어요 (강제 번식 · ${days}일 뒤 출산 예정)`;
-  log(msg,'good',true);toast(msg,false,true);blip(880,0.12,0.07);world.cardsDirty=true;
+  const msg=`🏳️‍🌈 ${f.name}${josa(f.name,'과','와')} ${m.name} 사이에 아기가 생겼어요 (${byAI?'자동화 두뇌가 쓴 ':''}강제 번식 · ${days}일 뒤 출산 예정)`;
+  log(msg,'good',true);if(!byAI){toast(msg,false,true);blip(880,0.12,0.07)}world.cardsDirty=true;return days;
 }
 /* ---------- 멈춤 방지 감시 ---------- */
 const wd={voice:0};
@@ -2998,7 +3041,7 @@ function fastAnimal(d,h){
   if(yard&&!sl)tgt+=d.species==='cat'?4:10;
   if(world.tv.on)tgt+=5;
   if(world.music.on)tgt+=MUSIC[world.music.genre].fast;
-  if(d.species==='dog'&&ballMode==='auto'&&world.launcherBalls>0)tgt+=6;
+  if(d.species==='dog'&&ballMode==='auto'&&aiBall()&&world.launcherBalls>0)tgt+=6;
   if(d.species==='cat')tgt+=6;
   if(!world.pad.waste.length&&!world.floorMess.length)tgt+=4;
   tgt-=Math.min(30,world.dirt*2)+corpses.length*5;
@@ -3829,7 +3872,7 @@ function syncUI(){
   const mood=world.dirt<=0?'좋음':world.dirt<3?'조금 신경 씀':world.dirt<7?'불쾌함':'매우 불쾌함';$('#dirtMood').textContent=mood;$('#dirtMood').style.color=world.dirt>=3?'var(--alert)':'';
   $('#ballAdd').disabled=balls.length>=MAX_BALLS;
   const watching=dogs.filter(d=>d.state==='watchTV').length;
-  musicLive();
+  musicLive();aiUI();
   $('#tvTag').textContent=!tvs.length?'TV장 없음':world.tv.on?`${TV_CH[world.tv.ch]} · ${watching}마리 시청${world.tv.offAt>0?' · '+fmtClock(world.tv.offAt)+' 꺼짐':''}`:'꺼짐';
   for(const d of dogs){if(!d.card)continue;
     const st=d.card.querySelector('.st');st.textContent=world.fastNow?(d.state==='sleep'?'자는 중':'생활 중'):(STATE_KO[d.state]||d.state);st.classList.toggle('hot',!!d.fight);
@@ -3878,7 +3921,7 @@ let skipping=null;
 function safeLimit(){return SKIP.unsafe?Infinity:SKIP_SAFE}
 function skipBlocked(){if(match)return '축구 경기 중';if(world.arena)return '싸움장 모드';if(fights.length)return '싸움 중';if(intruder)return '침입자가 있어요';if(owner.visiting)return '주인이 와 있어요';if(dogs.some(d=>d.stray))return '길고양이가 들어와 있어요';return null}
 function skipHappyTarget(d){
-  let t=72+(d.temper||0)+(yard?(d.species==='cat'?4:10):0)+(world.tv.on?5:0)+(world.music.on?MUSIC[world.music.genre].fast:0)+(d.species==='dog'&&ballMode==='auto'?6:0)+(d.species==='cat'?6:0)+4;
+  let t=72+(d.temper||0)+(yard?(d.species==='cat'?4:10):0)+(world.tv.on?5:0)+(world.music.on?MUSIC[world.music.genre].fast:0)+(d.species==='dog'&&ballMode==='auto'&&aiBall()?6:0)+(d.species==='cat'?6:0)+4;
   t-=Math.min(30,world.dirt*2)+corpses.length*5;return clamp(t);
 }
 function startSkip(Y){
@@ -3912,6 +3955,7 @@ function skipStep(S){
       f.pregnant={due:world.t+days*1440,dad:m.id,dadBreed:m.breed,dadColor:m.color,dadSkills:m.skills,dadGen:m.gen||1,start:world.t};f.mate=m.id;m.mate=f.id;
     }
   }
+  if(careMode==='auto'&&aiFBLimit()&&world.t>=(S.fbNext||0)){S.fbNext=world.t+90*1440;S.fb=(S.fb||0)+skipForceBreed(S)}
   S.peak=Math.max(S.peak,S.recs.length);
   recordHist(false,S.recs);
 }
@@ -3959,7 +4003,7 @@ function finishSkip(){
   world.born+=S.born;world.deaths+=S.deathN||0;world.cardsDirty=true;
   const yrs=((world.t-S.t0)/YEAR_MIN),yTxt=yrs>=S.Y-0.01?`${S.Y}년`:`${yrs.toFixed(1)}년`;
   const oldest=dogs.slice().sort((a,b)=>b.age-a.age)[0];
-  const res=`${yTxt}이 지났어요 · 태어남 ${S.born}마리 · 세상을 떠남 ${S.deathN||0}마리${S.adopted?` · 아기 입양 ${S.adopted}마리`:''}${S.retired?` · 나이 든 동물 입양 ${S.retired}마리`:''} · 결혼 ${S.wed}쌍 · 가장 많을 때 ${S.peak}마리 · ${S.maxGen}세대까지`+
+  const res=`${yTxt}이 지났어요 · 태어남 ${S.born}마리 · 세상을 떠남 ${S.deathN||0}마리${S.adopted?` · 아기 입양 ${S.adopted}마리`:''}${S.retired?` · 나이 든 동물 입양 ${S.retired}마리`:''}${S.fb?` · 자동화 강제 번식 ${S.fb}쌍`:''} · 결혼 ${S.wed}쌍 · 가장 많을 때 ${S.peak}마리 · ${S.maxGen}세대까지`+
     (dogs.length?` · 지금 ${dogs.length}마리 (최고령 ${oldest.name} ${fmtAge(oldest.age)})`:' · 모두 무지개다리를 건너 집이 비었어요');
   log('⏩ '+res,'good',true);toast('⏩ '+yTxt+'이 지났어요',false,true);
   $('#skipTitle').textContent=`⏩ ${yTxt} 넘기기 끝`;$('#skipBar').style.width='100%';$('#skipText').textContent=res;
@@ -4027,6 +4071,7 @@ function musicFx(rdt){
 function musicPick(){
   const live=dogs.filter(d=>!d.dead&&!d.stray);if(!live.length)return null;
   const aH=live.reduce((a,d)=>a+d.happy,0)/live.length,aS=live.reduce((a,d)=>a+d.stamina,0)/live.length,h=hour();
+  if(careMode==='auto'&&world.ai){const m=world.ai.k.music;if(m==='off')return null;if(m!=='auto')return world.ai.k.nap&&(h>=22||h<7)?'lullaby':m}
   if(h>=21||h<6)return 'lullaby';if(aS<45)return 'lullaby';if(aH<65)return 'happy';if(aH<88||aS<70)return h<10?'nature':'classic';return null;
 }
 function autoMusic(){
@@ -4061,27 +4106,42 @@ function fmtT(t,span){const day=Math.floor(t/1440)+1;if(span>YEAR_MIN*3)return (
 function fmtTFull(t){const y=Math.floor(t/YEAR_MIN);return `${Math.floor(t/1440)+1}일차 ${fmtClock(t)}${y?` (${y}년째)`:''}`}
 function niceMax(v){if(v<=5)return 5;const p=Math.pow(10,Math.floor(Math.log10(v))),f=v/p;return (f<=1?1:f<=2?2:f<=5?5:10)*p}
 function prepCanvas(cv){const r=cv.getBoundingClientRect(),dpr=window.devicePixelRatio||1;cv.width=Math.max(1,r.width*dpr);cv.height=Math.max(1,r.height*dpr);const c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);return {c,w:r.width,h:r.height}}
+// "일정한 구간 빼기": drop points where nothing changed (flat, parallel to the x-axis); the x-axis then follows the kept points in order
+let STAT_FLAT=false;
+function dropFlat(rows,series){
+  if(rows.length<3)return {rows,cut:0};const out=[rows[0]];let cut=0;
+  for(let i=1;i<rows.length-1;i++){const r=rows[i],p=out[out.length-1];if(series.some(s=>Math.abs(s.v(r)-s.v(p))>(s.tol==null?0.5:s.tol)))out.push(r);else cut++}
+  out.push(rows[rows.length-1]);return {rows:out,cut};
+}
 function drawLineChart(cv,tip,rows,series,opt){
-  const {c,w,h}=prepCanvas(cv),ink=cssVar('--ink'),muted=cssVar('--muted'),line=cssVar('--line');
+  const {c,w,h}=prepCanvas(cv),muted=cssVar('--muted'),line=cssVar('--line');
   const L=40,R=12,T=10,B=24,pw=w-L-R,ph=h-T-B;c.clearRect(0,0,w,h);c.font='11px '+cssVar('--f-body');
-  if(rows.length<2){c.fillStyle=muted;c.textAlign='center';c.fillText('기록이 쌓이는 중이에요 (1시간마다 기록)',w/2,h/2);cv._g=null;return}
+  if(rows.length<2){c.fillStyle=muted;c.textAlign='center';c.fillText('기록이 쌓이는 중이에요 (1시간마다 기록)',w/2,h/2);cv._g=null;if(opt.note)opt.note('');return}
   const t0=rows[0][0],t1=rows[rows.length-1][0],span=Math.max(1,t1-t0);
+  let cut=0;if(STAT_FLAT){const d=dropFlat(rows,series);rows=d.rows;cut=d.cut}
+  if(opt.note)opt.note(STAT_FLAT?(cut?`일정한 구간 ${cut}개 뺌`:'뺄 구간 없음'):'');
   let ymax=opt.max||niceMax(Math.max(1,...rows.map(r=>Math.max(...series.map(s=>s.v(r))))));
-  const X=t=>L+(t-t0)/span*pw,Y=v=>T+ph-(v/ymax)*ph;
+  const n=rows.length,idx=new Map(rows.map((r,i)=>[r,i]));
+  const X=STAT_FLAT?(r=>L+(n>1?idx.get(r)/(n-1):0)*pw):(r=>L+(r[0]-t0)/span*pw),Y=v=>T+ph-(v/ymax)*ph;
   c.strokeStyle=line;c.lineWidth=1;c.fillStyle=muted;c.textAlign='right';c.textBaseline='middle';
   for(let i=0;i<=4;i++){const v=ymax*i/4,y=Y(v);c.beginPath();c.moveTo(L,y);c.lineTo(w-R,y);c.stroke();c.fillText(Math.round(v).toLocaleString(),L-6,y)}
-  c.textAlign='center';c.textBaseline='top';for(let i=0;i<=4;i++){const t=t0+span*i/4;c.textAlign=i===0?'left':i===4?'right':'center';c.fillText(fmtT(t,span),X(t),h-B+6)}
-  // thin rows to ~1 point per pixel
-  const step=Math.max(1,Math.floor(rows.length/pw)),pts=rows.filter((r,i)=>i%step===0||i===rows.length-1);
+  c.textBaseline='top';
+  for(let i=0;i<=4;i++){let x,t;if(STAT_FLAT){const r=rows[Math.round((n-1)*i/4)];x=X(r);t=r[0]}else{t=t0+span*i/4;x=L+pw*i/4}
+    c.textAlign=i===0?'left':i===4?'right':'center';c.fillText(fmtT(t,span),x,h-B+6)}
+  // where a flat stretch was cut out, a faint dashed line marks the jump in time
+  if(STAT_FLAT&&cut){const gap=(world.histEvery||60)*2.5;c.save();c.strokeStyle=muted;c.globalAlpha=0.45;c.setLineDash([2,4]);
+    for(let i=1;i<n;i++)if(rows[i][0]-rows[i-1][0]>gap){const x=(X(rows[i])+X(rows[i-1]))/2;c.beginPath();c.moveTo(x,T);c.lineTo(x,T+ph);c.stroke()}c.restore()}
+  const step=Math.max(1,Math.floor(n/pw)),pts=rows.filter((r,i)=>i%step===0||i===n-1);
   c.lineJoin='round';c.lineCap='round';
-  for(const s of series){c.strokeStyle=s.col;c.lineWidth=2;c.beginPath();pts.forEach((r,i)=>{const x=X(r[0]),y=Y(s.v(r));i?c.lineTo(x,y):c.moveTo(x,y)});c.stroke()}
+  for(const s of series){c.strokeStyle=s.col;c.lineWidth=2;c.beginPath();pts.forEach((r,i)=>{const x=X(r),y=Y(s.v(r));i?c.lineTo(x,y):c.moveTo(x,y)});c.stroke();
+    if(pts.length<=40)pts.forEach(r=>{c.fillStyle=s.col;c.beginPath();c.arc(X(r),Y(s.v(r)),STAT_FLAT?3:0,0,Math.PI*2);c.fill()})}
   cv._g={rows:pts,X,Y,series,L,R,T,B,w,h,span,fmt:opt.fmt||(v=>Math.round(v).toLocaleString())};
   if(cv._hx!=null)hoverLine(cv,tip,cv._hx);
 }
 function hoverLine(cv,tip,mx){
   const g=cv._g;if(!g){tip.hidden=true;return}cv._hx=mx;
-  const {rows,X,Y,series}=g;let best=rows[0],bd=1e9;for(const r of rows){const d=Math.abs(X(r[0])-mx);if(d<bd){bd=d;best=r}}
-  const c=cv.getContext('2d'),x=X(best[0]);c.save();c.strokeStyle=cssVar('--muted');c.setLineDash([3,3]);c.lineWidth=1;c.beginPath();c.moveTo(x,g.T);c.lineTo(x,g.h-g.B);c.stroke();c.setLineDash([]);
+  const {rows,X,Y,series}=g;let best=rows[0],bd=1e9;for(const r of rows){const d=Math.abs(X(r)-mx);if(d<bd){bd=d;best=r}}
+  const c=cv.getContext('2d'),x=X(best);c.save();c.strokeStyle=cssVar('--muted');c.setLineDash([3,3]);c.lineWidth=1;c.beginPath();c.moveTo(x,g.T);c.lineTo(x,g.h-g.B);c.stroke();c.setLineDash([]);
   for(const s of series){const y=Y(s.v(best));c.fillStyle=s.col;c.strokeStyle=cssVar('--surface');c.lineWidth=2;c.beginPath();c.arc(x,y,4,0,Math.PI*2);c.fill();c.stroke()}c.restore();
   tip.innerHTML=`<b>${fmtTFull(best[0])}</b>`+series.map(s=>`<div><i style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${s.col};margin-right:5px"></i>${s.n} <b style="display:inline">${g.fmt(s.v(best))}</b></div>`).join('');
   tip.hidden=false;const tw=tip.offsetWidth;tip.style.left=Math.min(g.w-tw-4,Math.max(4,x+10-(x>g.w/2?tw+20:0)))+'px';tip.style.top='6px';
@@ -4105,17 +4165,20 @@ function renderStats(){
   const rows=statRows();
   // with only one species the total line would sit exactly on top of it, so it is shown only when both live together
   const hasCat=rows.some(r=>r[2]>0),hasDog=rows.some(r=>r[1]>0);
-  const popS=[{n:'강아지',col:ST_COL.dog,v:r=>r[1]},{n:'고양이',col:ST_COL.cat,v:r=>r[2]},{n:'전체',col:ST_COL.all,v:r=>r[1]+r[2]}].filter(x=>x.n==='전체'?hasCat&&hasDog:x.n==='고양이'?hasCat||!hasDog:true);
+  const popS=[{n:'강아지',col:ST_COL.dog,v:r=>r[1],tol:0},{n:'고양이',col:ST_COL.cat,v:r=>r[2],tol:0},{n:'전체',col:ST_COL.all,v:r=>r[1]+r[2],tol:0}].filter(x=>x.n==='전체'?hasCat&&hasDog:x.n==='고양이'?hasCat||!hasDog:true);
   $('#stPopLeg').innerHTML=popS.map(s=>`<span><i class="ln" style="background:${s.col}"></i>${s.n}</span>`).join('');
-  drawLineChart($('#stPop'),$('#stPopTip'),rows,popS,{fmt:v=>v+'마리'});
+  drawLineChart($('#stPop'),$('#stPopTip'),rows,popS,{fmt:v=>v+'마리',note:t=>$('#stPopNote').textContent=t});
   const avgS=[{n:'행복도',col:ST_COL.happy,v:r=>r[3]},{n:'체력',col:ST_COL.sta,v:r=>r[4]},{n:'건강',col:ST_COL.hp,v:r=>r[5]}];
   $('#stAvgLeg').innerHTML=avgS.map(s=>`<span><i class="ln" style="background:${s.col}"></i>${s.n}</span>`).join('');
-  drawLineChart($('#stAvg'),$('#stAvgTip'),rows,avgS,{max:100,fmt:v=>Math.round(v)});
+  drawLineChart($('#stAvg'),$('#stAvgTip'),rows,avgS,{max:100,fmt:v=>Math.round(v),note:t=>$('#stAvgNote').textContent=t});
+  // the same three lines, each on its own chart (same 0~100 scale so they compare fairly)
+  [['#stHap',avgS[0],avg('happy')],['#stSta',avgS[1],avg('stamina')],['#stHp',avgS[2],avg('health')]].forEach(([id,ser,now])=>{
+    let nt='';drawLineChart($(id),$(id+'Tip'),rows,[ser],{max:100,fmt:v=>Math.round(v),note:t=>nt=t});$(id+'Now').innerHTML=`<i style="background:${ser.col}"></i>지금 ${n?Math.round(now):'-'}${nt?` <small class="muted" style="font-weight:400">· ${nt}</small>`:''}`});
   const parts=[{n:'😊 행복 (70 이상)',sh:'행복',col:'#0ca30c',v:live.filter(d=>d.happy>=70).length},{n:'😐 보통 (40~69)',sh:'보통',col:'#fab219',v:live.filter(d=>d.happy>=40&&d.happy<70).length},{n:'😢 우울 (40 미만)',sh:'우울',col:'#d03b3b',v:live.filter(d=>d.happy<40).length}];
   drawPie($('#stPie'),parts);
   $('#stPieLeg').innerHTML=parts.map(p=>`<div><span><i style="background:${p.col}"></i>${p.n}</span><b>${p.v}마리 · ${n?Math.round(p.v/n*100):0}%</b></div>`).join('')+(n?'':'<div class="small muted">동물이 없어요</div>');
   // dogs only: senior = 8+ years, or 60% of its own lifespan reached (so short custom lifespans still show old dogs)
-  const pups=live.filter(d=>d.species!=='cat'),old=d=>d.age>=8||(isFinite(d.lifespan)&&d.age>=d.lifespan*0.6);
+  const pups=live.filter(d=>d.species!=='cat'),old=isOld;
   const ageParts=[{n:'🍼 아기 (1살 미만)',sh:'아기',col:'#86b6ef',v:pups.filter(d=>d.age<1).length},{n:'🐕 어른',sh:'어른',col:'#2a78d6',v:pups.filter(d=>d.age>=1&&!old(d)).length},{n:'👴 노령',sh:'노령',col:'#104281',v:pups.filter(d=>d.age>=1&&old(d)).length}];
   drawPie($('#stAgePie'),ageParts,'노령');
   // aging society (UN): 7% aging, 14% aged, 20% super-aged
@@ -4142,6 +4205,127 @@ function applyTheme(t){
   if(typeof renderStats==='function'&&world&&!$('#statOv').hidden)renderStats();
 }
 (()=>{let t='system';try{t=localStorage.getItem('mh-theme')||'system'}catch(e){}const sel=document.getElementById('themeSel');if(sel){sel.value=t;sel.addEventListener('change',e=>applyTheme(e.target.value))}applyTheme(t)})();
+
+/* ======================= AUTOMATION BRAIN (feedback loop) ======================= */
+const AI_STYLE={balance:{n:'⚖ 균형',w:{happy:1/3,sta:1/3,hp:1/3}},health:{n:'❤ 건강중시',w:{happy:0.2,sta:0.2,hp:0.6}},happy:{n:'😊 행복중시',w:{happy:0.6,sta:0.2,hp:0.2}},stamina:{n:'⚡ 체력중시',w:{happy:0.2,sta:0.6,hp:0.2}},auto:{n:'🤖 자동',w:null}};
+const AI_M={happy:'행복도',sta:'체력',hp:'건강'};
+// every action the brain can try, with a first guess of what it helps (learned values Q take over with experience)
+const AI_ACT=[
+  {k:'ball',v:true,n:'공 발사기 켜기',h:{happy:2,sta:-1}},{k:'ball',v:false,n:'공 발사기 끄기',h:{sta:2,happy:-1}},
+  {k:'tv',v:0,n:'TV 안 켜기',h:{sta:0.4,happy:-1}},{k:'tv',v:3,n:'TV 3시간 (13~16시)',h:{happy:1}},{k:'tv',v:6,n:'TV 6시간 (12~18시)',h:{happy:1.5}},{k:'tv',v:10,n:'TV 10시간 (10~20시)',h:{happy:2,sta:0.3}},
+  {k:'tm',v:true,n:'런닝머신 자동 운동 켜기',h:{hp:2,happy:0.5,sta:-1.5}},{k:'tm',v:false,n:'런닝머신 끄기',h:{sta:1.5,hp:-0.5}},
+  {k:'music',v:'auto',n:'음악은 상황 따라',h:{happy:1,sta:1}},{k:'music',v:'happy',n:'신나는 동요 위주',h:{happy:2}},{k:'music',v:'lullaby',n:'자장가 위주',h:{sta:2,happy:0.5}},
+  {k:'music',v:'classic',n:'클래식 위주',h:{happy:1,sta:1,hp:0.3}},{k:'music',v:'nature',n:'자연의 소리 위주',h:{happy:1,sta:1.2}},{k:'music',v:'off',n:'음악 끄기',h:{}},
+  {k:'brk',v:true,n:'싸움 바로 말리기',h:{hp:2,happy:0.3}},{k:'brk',v:false,n:'싸움 안 말리기',h:{}},
+  {k:'feed',v:'more',n:'사료 넉넉히 주기',h:{hp:1.5,happy:0.5}},{k:'feed',v:'normal',n:'사료 보통으로',h:{}},
+  {k:'nap',v:true,n:'밤엔 조용히 재우기',h:{sta:2,hp:0.3}},{k:'nap',v:false,n:'밤에도 놀게 두기',h:{happy:0.5}},
+];
+const AI_PERIOD=180;
+const aiId=a=>a.k+':'+a.v;
+function aiInit(){
+  const st=$('#aiStyle').value||'balance';
+  world.ai={style:st,k:{ball:true,tv:3,tm:!!world.tm.auto,music:'auto',brk:!!autoBreak,feed:'normal',nap:false},Q:{},log:[],trial:null,next:world.t+AI_PERIOD,last:null,tabu:null,dirty:true,lastChange:null,tries:0,good:0};
+}
+const nightH=()=>{const h=hour();return h>=22||h<7};
+function aiQuiet(){return careMode==='auto'&&world.ai&&world.ai.k.nap&&nightH()}
+function aiBall(){if(careMode!=='auto'||!world.ai)return true;return world.ai.k.ball&&!aiQuiet()}
+function aiTvWant(h){if(!world.ai)return h>=13&&h<16;if(aiQuiet())return false;const w=world.ai.k.tv;return w===0?false:w===3?h>=13&&h<16:w===6?h>=12&&h<18:h>=10&&h<20}
+function aiWeights(avg){
+  const S=AI_STYLE[world.ai.style];if(S.w)return S.w;
+  // auto: the weaker a stat is, the more it counts
+  const need={happy:105-avg.happy,sta:105-avg.sta,hp:105-avg.hp},t=need.happy+need.sta+need.hp;return {happy:need.happy/t,sta:need.sta/t,hp:need.hp/t};
+}
+function aiAvgWindow(from,to){
+  const R=world.hist.filter(r=>r[0]>from&&r[0]<=to);if(!R.length)return null;
+  return {happy:R.reduce((a,r)=>a+r[3],0)/R.length,sta:R.reduce((a,r)=>a+r[4],0)/R.length,hp:R.reduce((a,r)=>a+r[5],0)/R.length};
+}
+function aiNow(){const L=dogs.filter(d=>!d.dead&&!d.stray),n=L.length||1;return {happy:L.reduce((a,d)=>a+d.happy,0)/n,sta:L.reduce((a,d)=>a+d.stamina,0)/n,hp:L.reduce((a,d)=>a+d.health,0)/n}}
+const aiScore=(avg,w)=>avg.happy*w.happy+avg.sta*w.sta+avg.hp*w.hp;
+function aiApply(k,v){
+  const A=world.ai;A.k[k]=v;
+  if(k==='tm'){world.tm.auto=v;$('#tmAuto').checked=v}
+  if(k==='brk'){autoBreak=v;$$('[data-autobreak]').forEach(x=>x.checked=v)}
+  if(k==='music'){world.music.autoNext=0;world.music.holdUntil=0}
+  if(k==='ball'&&!v)world.launchQ=0;
+}
+function aiLog(text,cls){const A=world.ai;A.log.unshift({t:world.t,text,cls});if(A.log.length>30)A.log.pop();A.dirty=true;log('🧠 '+text,cls==='bad'?'bad':'good',cls!=='try')}
+function aiTick(){
+  const A=world.ai;if(!A||careMode!=='auto'||world.arena||match||!dogs.some(d=>!d.dead&&!d.stray))return;
+  if(world.t<A.next)return;A.next=world.t+AI_PERIOD;
+  recordHist(true);aiForceBreed();
+  const cur=aiAvgWindow(world.t-AI_PERIOD,world.t)||aiNow(),w=aiWeights(cur),score=aiScore(cur,w);
+  A.last={avg:cur,w,score};A.dirty=true;
+  // 1) judge the last change: compare with the same hours yesterday (day/night swings cancel out), or with the previous period on day 1
+  if(A.trial){
+    const T=A.trial,ref=aiAvgWindow(world.t-AI_PERIOD-1440,world.t-1440),base=ref?aiScore(ref,w):T.base,d=score-base,act=AI_ACT.find(a=>aiId(a)===T.id);
+    A.Q[T.id]=(A.Q[T.id]||0)+0.4*(d-(A.Q[T.id]||0));A.tries++;
+    if(d<-0.3){aiApply(T.k,T.from);A.tabu=T.id;aiLog(`👎 '${act.n}' 뒤 점수 ${d.toFixed(1)} → 되돌렸어요 (${ref?'어제 같은 시간 대비':'직전 3시간 대비'})`,'bad')}
+    else{A.good+=d>0.3?1:0;aiLog(d>0.3?`👍 '${act.n}' 뒤 점수 +${d.toFixed(1)} → 계속 유지해요`:`➖ '${act.n}' 뒤 점수 ${d>=0?'+':''}${d.toFixed(1)} → 큰 차이 없어서 유지해요`,d>0.3?'good':'')}
+    A.trial=null;
+  }
+  // 2) pick one new action that should help the stat that most needs it
+  const need={happy:(100-cur.happy)/100+0.05,sta:(100-cur.sta)/100+0.05,hp:(100-cur.hp)/100+0.05};
+  const focus=Object.keys(need).sort((a,b)=>w[b]*need[b]-w[a]*need[a])[0];A.focus=focus;
+  const cand=AI_ACT.filter(a=>A.k[a.k]!==a.v&&aiId(a)!==A.tabu&&!(a.k==='tm'&&!dev.treadmill)&&!(a.k==='tv'&&!tvs.length));
+  if(!cand.length)return;
+  const val=a=>Object.keys(a.h).reduce((s,m)=>s+w[m]*need[m]*a.h[m]*10,0)+(A.Q[aiId(a)]||0)*0.6+Math.random()*1.2;
+  const best=cand.map(a=>({a,v:val(a)})).sort((x,y)=>y.v-x.v)[0];
+  if(best.v<=0.2&&Math.random()<0.6){aiLog(`🙂 지금 행동이 괜찮아 보여서 이번엔 그대로 둬요 (가장 부족한 것: ${AI_M[focus]} ${Math.round(cur[focus])})`,'');return}
+  const a=best.a;A.trial={id:aiId(a),k:a.k,from:A.k[a.k],base:score};A.lastChange=a.k;aiApply(a.k,a.v);
+  aiLog(`🔧 ${AI_M[focus]}${josa(AI_M[focus],'을','를')} 올리려고 (지금 평균 ${Math.round(cur[focus])}) '${a.n}'${josa(a.n,'을','를')} 해봐요`,'try');
+}
+function aiKnobText(){
+  const k=world.ai.k;const mu={auto:'상황 따라',happy:'신나는 동요',lullaby:'자장가',classic:'클래식',nature:'자연의 소리',off:'끔'};
+  return [['ball',`🎾 공 발사기 ${k.ball?'켬':'끔'}`],['tv',`📺 TV ${k.tv?k.tv+'시간':'안 켬'}`],['tm',`🏃 런닝머신 ${k.tm?'켬':'끔'}`],['music',`🎵 음악 ${mu[k.music]}`],['brk',`🧯 싸움 ${k.brk?'말림':'안 말림'}`],['feed',`🍚 사료 ${k.feed==='more'?'넉넉히':'보통'}`],['nap',`🌙 밤 ${k.nap?'조용히':'자유'}`]];
+}
+let aiUIT=0;
+function aiUI(){
+  if(!world||!world.ai)return;const A=world.ai;
+  const on=careMode==='auto';$('#aiTag').textContent=on?`${AI_STYLE[A.style].n} · 다음 점검 ${fmtClock(A.next)}`:'직접 조작 중 (꺼짐)';
+  const now=aiNow(),w=aiWeights(A.last?A.last.avg:now),sc=aiScore(now,w),f=A.focus;
+  $('#aiScore').innerHTML=['happy','sta','hp'].map(m=>`<div class="${m===f?'focus':''}">${AI_M[m]}<b>${Math.round(now[m])}</b><span class="w">비중 ${Math.round(w[m]*100)}%${m===f?' · 집중':''}</span></div>`).join('')+`<div class="ai-total">스타일 점수 <b>${sc.toFixed(1)}</b><span class="small muted">시도 ${A.tries}번 · 성공 ${A.good}번</span></div>`;
+  if(!A.dirty)return;A.dirty=false;
+  $('#aiChips').innerHTML=aiKnobText().map(([k,t])=>`<span class="${A.trial&&A.trial.k===k?'new':''}">${t}${A.trial&&A.trial.k===k?' (시험 중)':''}</span>`).join('');
+  $('#aiLog').innerHTML=A.log.length?A.log.slice(0,12).map(l=>`<li class="${l.cls}"><time>${Math.floor(l.t/1440)+1}일 ${fmtClock(l.t)}</time>${l.text}</li>`).join(''):'<li class="muted">아직 기록이 없어요. 3시간(게임 시간)마다 평균을 보고 행동을 하나씩 고쳐요.</li>';
+}
+
+// senior dog: 8+ years, or 60% of its own lifespan reached
+function isOld(d){return d.age>=8||(isFinite(d.lifespan)&&d.age>=d.lifespan*0.6)}
+function aiFBLimit(){const v=$('#aiFB').value;return v==='aged'?14:v==='ultra'?20:0}
+function seniorRatio(list){const p=list.filter(d=>d.species!=='cat'&&!d.dead&&!d.stray);return p.length?p.filter(isOld).length/p.length*100:0}
+const related=(a,b)=>a.id===b.mom||a.id===b.dad||b.id===a.mom||b.id===a.dad||(a.mom!=null&&a.mom===b.mom);
+// pairs young, unrelated dogs (not old, not pregnant, no birth in the last 60 days); returns how many pairs it made
+function pickPairs(list,max){
+  const ok=d=>d.species!=='cat'&&!d.dead&&!d.stray&&!d.fight&&d.age>=1&&!isOld(d);
+  const fs=list.filter(d=>ok(d)&&d.sex==='f'&&!d.pregnant&&world.t-(d.lastBirth||-1e12)>60*1440).sort((a,b)=>a.age-b.age),ms=list.filter(d=>ok(d)&&d.sex==='m').sort((a,b)=>a.age-b.age);
+  const out=[];for(const f of fs){if(out.length>=max)break;const m=ms.find(x=>!related(f,x));if(m)out.push([f,m])}return out;
+}
+function aiForceBreed(){
+  const lim=aiFBLimit();if(!lim||!world.ai)return;
+  const r=seniorRatio(dogs);if(r<lim)return;
+  const room=safeLimit()-dogs.length;if(room<=0){aiLog(`⚠ 노령 ${r.toFixed(0)}%지만 동물이 ${dogs.length}마리라 강제 번식을 미뤘어요`,'bad');return}
+  const pairs=pickPairs(dogs,Math.min(3,Math.max(1,Math.ceil(dogs.length*0.08))));
+  if(!pairs.length){aiLog(`⚠ ${r>=20?'초고령':'고령'} 사회(노령 ${r.toFixed(0)}%)지만 번식할 수 있는 젊은 암수 한 쌍이 없어요`,'bad');return}
+  pairs.forEach(([f,m])=>forcePair(f,m,true));
+  aiLog(`🏳️‍🌈 ${r>=20?'초고령':'고령'} 사회(노령 ${r.toFixed(0)}%)라서 강제 번식 도구를 썼어요: ${pairs.map(([f,m])=>`${f.name}♀+${m.name}♂`).join(', ')}`,'try');
+}
+function skipForceBreed(S){
+  if(seniorRatio(S.recs)<aiFBLimit())return 0;
+  const pairs=pickPairs(S.recs,Math.min(3,Math.max(1,Math.ceil(S.recs.length*0.08))));
+  for(const [f,m] of pairs){if(f.mate!==m.id)S.wed++;f.pregnant={due:world.t+63*1440,dad:m.id,dadBreed:m.breed,dadColor:m.color,dadSkills:m.skills,dadGen:m.gen||1,start:world.t};f.mate=m.id;m.mate=f.id}
+  return pairs.length;
+}
+function aiFBNote(){const l=aiFBLimit(),n=$('#aiFBNote');if(!n)return;n.textContent=l?`강아지 중 노령이 ${l}% 이상이면 3시간마다 젊고 핏줄이 다른 암수를 골라 강제 번식시켜요 (한 번에 최대 3쌍, 시간 넘기기 중엔 90일마다). 동물이 ${isFinite(safeLimit())?safeLimit()+'마리':'제한 없음'} 이상이면 멈춰요.`:'자동화가 강제 번식 도구를 쓰지 않아요.'}
+
+// automation: bodies of animals (or the owner) who fell in a fight are taken away after the chosen delay, even while the fight goes on
+function autoFightCorpses(){
+  if(!$('#autoCorpse').checked||!corpses.length)return 0;
+  const wait=+$('#corpseDelay').value||0,all=$('#corpseScope').value==='all',go=corpses.filter(c=>(all||c.cause==='싸움')&&world.t-c.at>=wait);if(!go.length)return 0;
+  go.forEach(c=>scene.remove(c.root));corpses=corpses.filter(c=>!go.includes(c));world.cardsDirty=true;
+  const names=go.map(c=>c.name);
+  log(`🧹 자동 수거 로봇이 ${go.every(c=>c.cause==='싸움')?'싸움에서 쓰러진 ':'세상을 떠난 '}${names.slice(0,5).join(', ')}${names.length>5?` 외 ${names.length-5}`:''}${josa(names[Math.min(names.length,5)-1],'을','를')} 치우고 묻어 줬어요`,'good',true);
+  return go.length;
+}
 /* ======================= MAIN LOOP ======================= */
 let lastT=performance.now(),uiT=0;
 function frame(now){
@@ -4243,11 +4427,14 @@ function setTV(on){
 $('#statBtn').onclick=openStats;
 $('#statClose').onclick=()=>{$('#statOv').hidden=true;$('#statBtn').focus()};
 $('#statOv').addEventListener('click',e=>{if(e.target.id==='statOv')$('#statOv').hidden=true});
-$$('[data-srange]').forEach(b=>b.onclick=()=>{statRange=+b.dataset.srange;$$('[data-srange]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));['#stPop','#stAvg'].forEach(i=>$(i)._hx=null);$('#stPopTip').hidden=$('#stAvgTip').hidden=true;renderStats()});
-[['#stPop','#stPopTip'],['#stAvg','#stAvgTip']].forEach(([c,t])=>{const cv=$(c),tip=$(t);
+$$('[data-sflat]').forEach(b=>b.onclick=()=>{STAT_FLAT=b.dataset.sflat==='1';$$('[data-sflat]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));['#stPop','#stAvg','#stHap','#stSta','#stHp'].forEach(i=>{$(i)._hx=null;$(i+'Tip').hidden=true});renderStats()});
+$$('[data-srange]').forEach(b=>b.onclick=()=>{statRange=+b.dataset.srange;$$('[data-srange]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));['#stPop','#stAvg','#stHap','#stSta','#stHp'].forEach(i=>{$(i)._hx=null;$(i+'Tip').hidden=true});renderStats()});
+[['#stPop','#stPopTip'],['#stAvg','#stAvgTip'],['#stHap','#stHapTip'],['#stSta','#stStaTip'],['#stHp','#stHpTip']].forEach(([c,t])=>{const cv=$(c),tip=$(t);
   cv.addEventListener('pointermove',e=>{const r=cv.getBoundingClientRect();cv._hx=e.clientX-r.left;renderStats()});
   cv.addEventListener('pointerleave',()=>{cv._hx=null;tip.hidden=true;renderStats()});});
 window.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#statOv').hidden){$('#statOv').hidden=true;e.stopImmediatePropagation()}},true);
+$('#aiFB').addEventListener('change',()=>{aiFBNote();if(world&&world.ai){const l=aiFBLimit();aiLog(l?`고령화 위험(노령 ${l}% 이상) 때 강제 번식 도구를 쓸 수 있게 했어요`:'강제 번식 도구를 쓰지 않게 했어요',l?'try':'')}});
+$('#aiStyle').addEventListener('change',e=>{if(!world||!world.ai)return;const A=world.ai;A.style=e.target.value;A.trial=null;A.next=world.t+30;aiLog(`스타일을 ${AI_STYLE[A.style].n}(으)로 바꿨어요. 30분 뒤부터 이 기준으로 행동을 고쳐요`,'try')});
 $('#musicBtn').onclick=()=>{ac();world.music.byAuto=false;world.music.holdUntil=world.t+120;setMusic(!world.music.on)};
 $('#musicAuto').onchange=e=>{if(world){world.music.autoNext=0;world.music.holdUntil=0;toast(e.target.checked?'자동화일 때 음악을 알아서 틀어요':'자동 음악을 껐어요')}};
 $('#musicGenre').onchange=e=>{if(!world)return;world.music.genre=e.target.value;if(world.music.byAuto){world.music.byAuto=false;world.music.holdUntil=world.t+120}musicStep=0;if(world.music.on)log(`🎵 ${MUSIC[world.music.genre].n}(으)로 바꿨어요`);musicUI()};
@@ -4268,8 +4455,9 @@ $('#modeChip').onclick=()=>{applyMode(careMode==='auto'?'manual':'auto',true);to
 function autoManager(dt){
   world.foodCap=Math.max(150,dogs.length*45);
   if(careMode!=='auto'||world.arena)return;autoT-=dt;if(autoT>0)return;autoT=5;
-  const hungry=dogs.some(d=>d.hunger>45);
-  if(world.food<8*Math.max(1,dogs.length/4)&&hungry&&feedLeft()>0){const g=takeFeed(Math.min(Math.max(60,dogs.length*25),world.foodCap-world.food));world.food+=g;log(`자동 급식기가 사료 ${Math.round(g)}g을 줬어요`,'good');
+  const more=world.ai&&world.ai.k.feed==='more',hungry=dogs.some(d=>d.hunger>(more?30:45));
+  aiTick();
+  if(world.food<8*Math.max(1,dogs.length/4)*(more?2:1)&&hungry&&feedLeft()>0){const g=takeFeed(Math.min(Math.max(60,dogs.length*25),world.foodCap-world.food));world.food+=g;log(`자동 급식기가 사료 ${Math.round(g)}g을 줬어요`,'good');
     dogs.forEach(d=>{if(d.hunger>40&&['idle','sit','wander','waitFood'].includes(d.state))setState(d,'toFood',30)})}
   if(world.tank<world.tankCap*0.25){world.tank=world.tankCap;world.lowWaterWarned=false;world.flagNoWater=false;log('물통이 자동으로 다시 채워졌어요','good')}
   if(feedLeft()<400+dogs.length*60){world.stock=Math.max(world.stock,3000);log('사료 통이 자동 주문으로 채워졌어요','good')}
@@ -4278,11 +4466,12 @@ function autoManager(dt){
   if(world.floorMess.length){world.floorAutoT=(world.floorAutoT||0)+5;if(world.floorAutoT>=10){world.floorAutoT=0;const n=world.floorMess.length;world.floorMess.forEach(w=>scene.remove(w.mesh));world.floorMess=[];log(`로봇청소기가 바닥 실수 ${n}곳을 치웠어요`,'good')}}
   if(world.launcherBalls===0&&!balls.some(b=>b.state==='carried'||b.state==='fly'||b.chasedBy!==null)){
     let n=0;for(const b of balls)if(b.state==='free'){b.state='in';b.vel.set(0,0,0);world.launcherBalls++;n++}if(n)log(`흩어진 공 ${n}개를 자동으로 회수했어요`,'good')}
-  if(tvs.length){const h=hour();const want=h>=13&&h<16;
+  if(tvs.length){const h=hour();const want=aiTvWant(h);
     if(want&&!world.tv.on){world.tv.ch='dog';$('#tvCh').value='dog';world.tv.byAuto=true;setTV(true)}
     else if(!want&&world.tv.on&&world.tv.byAuto){world.tv.byAuto=false;setTV(false)}}
   autoMusic();
   if(autoBreak)for(const f of fights)if(!f.sep&&!f.ended&&f.cause!=='arena')startBreakup(f,true);
+  autoFightCorpses();
   if(corpses.length&&!fights.length&&corpses.every(c=>world.t-c.at>60))cleanCorpses('자동 장례 서비스가');
 }
 $('#tvCh').onchange=e=>{world.tv.ch=e.target.value;if(world.tv.on)log(`채널을 ${TV_CH[world.tv.ch]}(으)로 바꿨어요`)};
@@ -4416,6 +4605,7 @@ function startSim(){
   clearInterval(musicIv);musicIv=0;world.music.genre=$('#musicGenre').value;musicUI();
   setTimeout(()=>{if(world)recordHist(true)},0);
   world.breedOn=$('#breedOn').checked;world.tm.speed=$('#tmSpeed').value;world.tm.auto=$('#tmAuto').checked;$('#farmCrop').value='corn';
+  aiInit();
   followId=dogs[0]?dogs[0].id:1;
   buildDogCards();renderEvents();setCamMode('free');buildSpeedSeg();
   $('#camZoom').value=1;$('#camZoomV').textContent='x1.0';
@@ -4678,6 +4868,8 @@ $('#nameList').onchange=()=>{readNames();toast(NAMES.dog?`아기 강아지 이�
 $('#nameReset').onclick=()=>{$('#nameList').value=PUP_NAMES.join(', ');NAMES.dog=null;toast('기본 이름으로 되돌렸어요')};
 $('#dupMode').onchange=e=>{NAMES.dup=e.target.value;toast(NAMES.dup==='same'?'같은 이름이 나오면 그냥 같은 이름으로 불러요':'같은 이름이 나오면 OO2, OO3처럼 숫자를 붙여요')};
 $('#breedOn').onchange=e=>{if(world){world.breedOn=e.target.checked;log(e.target.checked?'번식을 허용했어요':'번식을 막았어요 (중성화)')}};
+$('#corpseScope').addEventListener('change',()=>{if(world&&$('#autoCorpse').checked&&careMode==='auto')autoFightCorpses()});
+$('#autoCorpse').addEventListener('change',e=>{if(world)log(e.target.checked?`🧹 자동화가 ${$('#corpseScope').value==='all'?'모든':'싸움으로 쓰러진 동물의'} 시체를 자동으로 치워요`:'🧹 시체 자동 치우기를 껐어요','',true);if(e.target.checked&&world&&careMode==='auto')autoFightCorpses()});
 $('#corpseBtn').onclick=()=>{if(!cleanCorpses('내가'))toast('치울 시체가 없어요')};
 $('#watchBtn').onclick=()=>{if(fights.length)startSpectate(fights[0])};
 $('#visitBtn').onclick=()=>{ac();startVisit()};

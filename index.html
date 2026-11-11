@@ -74,6 +74,12 @@ input[type="range"]{width:100%;accent-color:var(--accent)}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .warnlbl{display:flex;gap:6px;align-items:center;color:#c0392b;font-weight:700}
 .btn.danger{background:#c0392b;border-color:#c0392b;color:#fff}
+.eq{display:flex;align-items:flex-end;gap:3px;height:26px;padding:4px 6px;border-radius:8px;background:var(--surface-2)}
+.eq i{flex:1;height:3px;border-radius:2px;background:var(--accent,#2a9d8f);opacity:.45}
+.eq.on i{opacity:1;animation:eqb .9s ease-in-out infinite alternate}
+.eq.on i:nth-child(2n){animation-duration:.62s}.eq.on i:nth-child(3n){animation-duration:1.15s}.eq.on i:nth-child(4n+1){animation-delay:-.3s}
+@keyframes eqb{from{height:3px}to{height:18px}}
+@media (prefers-reduced-motion:reduce){.eq.on i{animation:none;height:12px}}
 .skipgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .skipgrid .btn{padding-left:4px;padding-right:4px}
 textarea{font:inherit;width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--surface);color:var(--ink);resize:vertical}
@@ -816,6 +822,19 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         </div>
         <button class="btn primary" id="tvBtn">TV 켜기</button>
         <p class="small" id="tvNote">TV를 켜면 강아지들이 앞에 앉아서 봐요. 강아지 채널을 가장 좋아해서 행복도가 더 많이 올라요.</p>
+      </section>
+
+      <!-- music -->
+      <section class="card panel home-only">
+        <div class="panel-head"><h2>음악</h2><span class="tag" id="musicTag">꺼짐</span></div>
+        <div class="row2">
+          <label class="f">장르<select id="musicGenre"><option value="classic">🎹 클래식</option><option value="lullaby">🌙 자장가</option><option value="happy">🎉 신나는 동요</option><option value="nature">🐦 자연의 소리</option></select></label>
+          <label class="f">꺼짐 예약<select id="musicTimer"><option value="0">안 함</option><option value="30">30분 뒤</option><option value="60">1시간 뒤</option><option value="120">2시간 뒤</option><option value="480">8시간 뒤</option></select></label>
+        </div>
+        <label class="f">음량<input type="range" id="musicVol" min="0" max="100" value="50" aria-label="음악 음량"></label>
+        <div class="eq" id="musicEq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <button class="btn primary" id="musicBtn">🎵 음악 틀기</button>
+        <p class="small" id="musicNote">음악을 틀면 집과 마당의 동물들 행복도가 오르고 체력이 조금씩 회복돼요.</p>
       </section>
 
       <!-- treadmill -->
@@ -1787,7 +1806,7 @@ function newWorldState(startMin){
   return {t:startMin,day:1,tank:2000,tankCap:2000,bowl:0,bowlCap:300,food:0,foodCap:150,stock:3000,
     pump:{on:false,ml:0,dog:null},launcherBalls:3,launchQ:0,events:[],evId:1,lastAlertT:-99,
     voiceUntil:-1,voiceActive:false,stolen:0,alertShown:false,lowWaterWarned:false,emptyFoodWarned:false,
-    pad:{waste:[],cleaning:0,waitT:0,mode:$('#padMode')?$('#padMode').value:'3',noSheetWarned:false,dirtyWarned:false},floorMess:[],sheets:30,dirt:0,snacks:30,tv:{on:false,ch:'dog',offAt:-1},farmFood:0,tm:{user:null,speed:'mid',auto:true,minutes:0,start:0},
+    pad:{waste:[],cleaning:0,waitT:0,mode:$('#padMode')?$('#padMode').value:'3',noSheetWarned:false,dirtyWarned:false},floorMess:[],sheets:30,dirt:0,snacks:30,tv:{on:false,ch:'dog',offAt:-1},music:{on:false,genre:'classic',offAt:-1},farmFood:0,tm:{user:null,speed:'mid',auto:true,minutes:0,start:0},
     nextHourT:Math.ceil(startMin/60)*60+0.001,born:0,deaths:0,strayN:0,lastVisitDay:-1,ownerDead:false,autoDrop:null,breakLoop:false,fastNow:false,
     farm:{crop:'corn',growth:0.35,anim:0,harvests:0,foodMade:0,snackMade:0},breedOn:true,cardsDirty:true};
 }
@@ -1985,6 +2004,7 @@ function updateDog(d,dt){
   if(intruderActive()&&d.state!=='alert'&&d.state!=='sleep'&&d.state!=='carry'){if(cat){if(d.state!=='scared')scare(d,intruder.pos.x,intruder.pos.y)}else setState(d,'alert',99)}
   if(!cat&&!d.stray&&world.voiceActive&&!['toVoice','listen','alert','sleep','scared','leave'].includes(d.state)&&!intruderActive()){setState(d,'toVoice',20)}
   if(yard&&!sl&&!inRoom(d.pos.x,d.pos.y))d.happy=clamp(d.happy+dt*0.04);
+  if(world.music.on&&!d.stray){const G=MUSIC[world.music.genre];d.happy=clamp(d.happy+dt*G.hap*(sl?0.6:1));d.stamina=clamp(d.stamina+dt*G.sta*(sl?1.5:1))}
   const walk=0.9*Math.sqrt(d.k),run=2.6*Math.sqrt(d.k);
   let moving=false,emo='',sit=false,lie=false,tongue=false;
   switch(d.state){
@@ -2871,7 +2891,7 @@ function fastAnimal(d,h){
   if(sl)d.state='sleep';else if(d.state==='sleep'||!['sit','idle'].includes(d.state))d.state='idle';
   d.hunger=clamp(d.hunger+h*0.1*(sl?0.5:1)*(d.pregnant?1.3:1));d.thirst=clamp(d.thirst+h*0.16*(sl?0.4:1));
   d.pee=clamp(d.pee+h*0.06*(sl?0.4:1));d.poo=clamp(d.poo+h*0.03*(sl?0.4:1));
-  d.stamina=clamp(d.stamina+(sl?h*0.35:-h*0.05));
+  d.stamina=clamp(d.stamina+(sl?h*0.35:-h*0.05)+(world.music.on?h*MUSIC[world.music.genre].sta*0.5:0));
   if(d.thirst>55){const need=d.thirst*4.5;let got=Math.min(world.bowl,need);world.bowl-=got;if(got<need&&dev.water){const t=Math.min(world.tank,need-got);world.tank-=t;got+=t}
     if(got>0){d.thirst=clamp(d.thirst-got*0.22);d.pee=clamp(d.pee+got*0.12)}}
   if(d.hunger>50&&world.food>0){const g=Math.min(world.food,d.hunger/0.75);world.food-=g;d.hunger=clamp(d.hunger-g*0.75);d.poo=clamp(d.poo+g*0.35)}
@@ -2880,6 +2900,7 @@ function fastAnimal(d,h){
   let tgt=72+d.temper;
   if(yard&&!sl)tgt+=d.species==='cat'?4:10;
   if(world.tv.on)tgt+=5;
+  if(world.music.on)tgt+=MUSIC[world.music.genre].fast;
   if(d.species==='dog'&&ballMode==='auto'&&world.launcherBalls>0)tgt+=6;
   if(d.species==='cat')tgt+=6;
   if(!world.pad.waste.length&&!world.floorMess.length)tgt+=4;
@@ -3759,7 +3780,7 @@ let skipping=null;
 function safeLimit(){return SKIP.unsafe?Infinity:SKIP_SAFE}
 function skipBlocked(){if(match)return '축구 경기 중';if(world.arena)return '싸움장 모드';if(fights.length)return '싸움 중';if(intruder)return '침입자가 있어요';if(owner.visiting)return '주인이 와 있어요';if(dogs.some(d=>d.stray))return '길고양이가 들어와 있어요';return null}
 function skipHappyTarget(d){
-  let t=72+(d.temper||0)+(yard?(d.species==='cat'?4:10):0)+(world.tv.on?5:0)+(d.species==='dog'&&ballMode==='auto'?6:0)+(d.species==='cat'?6:0)+4;
+  let t=72+(d.temper||0)+(yard?(d.species==='cat'?4:10):0)+(world.tv.on?5:0)+(world.music.on?MUSIC[world.music.genre].fast:0)+(d.species==='dog'&&ballMode==='auto'?6:0)+(d.species==='cat'?6:0)+4;
   t-=Math.min(30,world.dirt*2)+corpses.length*5;return clamp(t);
 }
 function startSkip(Y){
@@ -3825,6 +3846,7 @@ function finishSkip(){
   world.nextHourT=Math.ceil(world.t/60)*60+0.001;
   if(world.events.length){world.events=world.events.filter(e=>e.at>world.t);renderEvents()}
   if(world.tv.on&&world.tv.offAt>0&&world.tv.offAt<=world.t)setTV(false);
+  if(world.music.on&&world.music.offAt>0&&world.music.offAt<=world.t)setMusic(false);
   // old animals who passed away during the skip are laid to rest quietly (no corpses left behind)
   for(const d of S.dead){d.dead=true;tmRelease(d);scene.remove(d.root);for(const b of balls){if(b.chasedBy===d.id)b.chasedBy=null;if(b.carrier===d){b.state='free';b.carrier=null}}}
   const deadSet=new Set(S.dead);dogs=dogs.filter(d=>!deadSet.has(d));
@@ -3851,11 +3873,61 @@ function finishSkip(){
 function lifeNote(){const a=Math.min(LIFE.min,LIFE.max),b=Math.max(LIFE.min,LIFE.max);
   $('#lifeNote').textContent=LIFE.inf?'무한 수명: 늙어서 세상을 떠나지 않아요 (싸움·병은 그대로).':`새로 태어나는 동물은 ${a}~${b}살 사이에 자연사해요.`;$('#lifeNotePre').textContent=LIFE.inf?'무한':`${a}~${b}살`;
   ['#lifeMin','#lifeMax','#lifeMinPre','#lifeMaxPre'].forEach(i=>$(i).disabled=LIFE.inf);['#skipCap','#skipCapPre'].forEach(i=>$(i).disabled=$('#skipInf').checked)}
+
+/* ======================= MUSIC ======================= */
+// hap/sta = per game minute while playing; fast = happiness bonus in fast mode / time skip
+const MUSIC={classic:{n:'클래식',hap:0.10,sta:0.025,fast:7,bpm:76,note:'잔잔한 피아노예요. 행복도와 체력이 고르게 올라요.'},
+  lullaby:{n:'자장가',hap:0.07,sta:0.045,fast:5,bpm:58,note:'조용한 자장가예요. 체력이 가장 잘 회복되고, 자는 동물에게 특히 좋아요.'},
+  happy:{n:'신나는 동요',hap:0.14,sta:0.012,fast:9,bpm:118,note:'신나는 노래예요. 행복도가 가장 많이 오르지만 체력 회복은 적어요.'},
+  nature:{n:'자연의 소리',hap:0.09,sta:0.03,fast:6,bpm:50,note:'새소리와 바람 소리예요. 마음이 편해져서 행복도와 체력이 올라요.'}};
+let musicGain=null,musicIv=0,musicNext=0,musicStep=0,melIdx=2;const noteFxs=[];let noteFxT=0;
+const midiF=m=>440*Math.pow(2,(m-69)/12),PENTA=[0,2,4,7,9];
+function musicOut(){const a=ac();if(!a)return null;if(!musicGain){musicGain=a.createGain();musicGain.connect(a.destination)}musicGain.gain.value=(+$('#musicVol').value/100)*0.5;return a}
+function mNote(a,m,t,dur,type,vol){const o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.value=midiF(m);g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+0.015);g.gain.exponentialRampToValueAtTime(0.0001,t+dur);o.connect(g);g.connect(musicGain);o.start(t);o.stop(t+dur+0.05)}
+function chirp(a,t){const o=a.createOscillator(),g=a.createGain(),f=rand(2200,3600);o.type='sine';o.frequency.setValueAtTime(f,t);o.frequency.exponentialRampToValueAtTime(f*rand(1.2,1.6),t+0.06);o.frequency.exponentialRampToValueAtTime(f*0.9,t+0.12);g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(0.05,t+0.01);g.gain.exponentialRampToValueAtTime(0.0001,t+0.13);o.connect(g);g.connect(musicGain);o.start(t);o.stop(t+0.15)}
+function melody(step){melIdx=clamp(melIdx+pick([-1,-1,0,1,1,2,-2]),0,9);return 72+PENTA[melIdx%5]+12*Math.floor(melIdx/5)-(step?0:0)}
+function playStep(g,a,t,i,beat){
+  const PROG=[[48,0],[45,1],[41,0],[43,0]],bar=g==='lullaby'?6:8,[root,minor]=PROG[Math.floor(i/bar)%4],ch=minor?[0,3,7]:[0,4,7];
+  if(g==='classic'){const pat=[0,1,2,1,0,1,2,3],iv=pat[i%8]===3?12:ch[pat[i%8]];mNote(a,root+12+iv,t,beat*2.2,'triangle',0.09);
+    if(i%8===0)mNote(a,root,t,beat*7,'sine',0.12);if(i%2===0&&Math.random()<0.55)mNote(a,melody(),t,beat*1.8,'sine',0.06)}
+  else if(g==='lullaby'){mNote(a,root+24+ch[i%3],t,beat*2.5,'sine',0.05);if(i%6===0)mNote(a,root+12,t,beat*5.5,'sine',0.07);if(i%3===0&&Math.random()<0.6)mNote(a,melody()+12,t,beat*2.8,'sine',0.035)}
+  else if(g==='happy'){if(i%2===0)mNote(a,root+(i%4===0?0:7),t,beat*0.9,'square',0.035);if(Math.random()<0.75)mNote(a,melody(),t,beat*0.8,'square',0.025);
+    if(i%4===0)mNote(a,36,t,0.12,'sine',0.2);if(i%4===2)mNote(a,84,t,0.03,'triangle',0.03);if(i%8===0)mNote(a,root+12+ch[1],t,beat*3,'triangle',0.04)}
+  else{if(i%16===0){for(const iv of ch)mNote(a,root+12+iv,t,beat*15,'sine',0.025)}if(Math.random()<0.18){chirp(a,t);if(Math.random()<0.5)chirp(a,t+0.16)}}
+}
+function musicSchedule(){
+  if(!world||!world.music.on||paused||skipping||!soundOn)return;const a=musicOut();if(!a)return;
+  const beat=60/MUSIC[world.music.genre].bpm/2;if(musicNext<a.currentTime)musicNext=a.currentTime+0.05;
+  while(musicNext<a.currentTime+0.3){playStep(world.music.genre,a,musicNext,musicStep++,beat);musicNext+=beat}
+}
+function musicUI(){
+  const on=world&&world.music.on,G=MUSIC[world?world.music.genre:'classic'];
+  $('#musicBtn').textContent=on?'⏹ 음악 끄기':'🎵 음악 틀기';$('#musicBtn').classList.toggle('primary',!on);$('#musicEq').classList.toggle('on',!!on);
+  $('#musicTag').textContent=on?`${G.n} 재생 중${world.music.offAt>0?' · '+fmtClock(world.music.offAt)+' 꺼짐':''}${soundOn?'':' · 소리 끔'}`:'꺼짐';
+  $('#musicNote').textContent=(on?'♪ ':'')+G.note+(soundOn?'':' (소리를 꺼도 효과는 그대로예요)');
+}
+function setMusic(on){
+  if(!world)return;world.music.on=on;const m=parseInt($('#musicTimer').value,10);world.music.offAt=on&&m>0?world.t+m:-1;
+  clearInterval(musicIv);musicIv=0;
+  if(on){musicStep=0;musicNext=0;musicIv=setInterval(musicSchedule,80);musicSchedule()}
+  else noteFxs.forEach(n=>n.life=0);
+  log(on?`🎵 음악을 틀었어요 (${MUSIC[world.music.genre].n})`:'🎵 음악을 껐어요');musicUI();
+}
+// little ♪ notes float up from the animals while music plays
+function musicFx(rdt){
+  for(let i=noteFxs.length-1;i>=0;i--){const n=noteFxs[i];n.life-=rdt;n.s.position.y+=rdt*0.45;n.s.position.x+=Math.sin(n.life*4+n.ph)*rdt*0.15;n.s.material.opacity=clamp(n.life/1.6,0,1);
+    if(n.life<=0){scene.remove(n.s);n.s.material.map&&n.s.material.map.dispose();n.s.material.dispose();noteFxs.splice(i,1)}}
+  if(!world||!world.music.on||paused||skipping||match||world.arena)return;
+  noteFxT-=rdt;if(noteFxT>0||noteFxs.length>14)return;noteFxT=rand(0.25,0.6);
+  const ds=dogs.filter(d=>!d.dead&&!d.stray&&d.root.visible!==false);if(!ds.length)return;const d=pick(ds);
+  const s=textSprite(pick(['♪','♫','♩','♬']),{bg:'rgba(0,0,0,0)',fg:pick(['#ff7aa8','#7ab8ff','#ffd166','#7bd389']),size:0.3});s.material.transparent=true;
+  s.position.set(d.pos.x+rand(-0.2,0.2),(d.species==='cat'?0.9:1.2)*d.k+0.2,d.pos.y+rand(-0.2,0.2));scene.add(s);noteFxs.push({s,life:1.6,ph:rand(0,6)});
+}
 /* ======================= MAIN LOOP ======================= */
 let lastT=performance.now(),uiT=0;
 function frame(now){
   requestAnimationFrame(frame);if(!running)return;
-  const realDt=Math.min(0.1,(now-lastT)/1000);lastT=now;
+  const realDt=Math.min(0.1,(now-lastT)/1000);lastT=now;musicFx(realDt);
   const fast=!world.arena&&speed>=FAST_SPEED&&!fights.length&&!intruder&&!owner.visiting&&!dogs.some(d=>d.stray)&&!player.spect&&!match;
   world.fastNow=fast;
   if(!paused&&!menuOpen&&!skipping){
@@ -3873,6 +3945,7 @@ function frame(now){
       world.launcherBalls=balls.filter(b=>b.state==='in').length;
       updatePotty(h);autoManager(h);updateFarm(h);
       if(world.tv.on&&world.tv.offAt>0&&world.t>=world.tv.offAt){setTV(false);log('꺼짐 예약 시간이 되어 TV가 꺼졌어요')}
+      if(world.music.on&&world.music.offAt>0&&world.t>=world.music.offAt){setMusic(false);log('꺼짐 예약 시간이 되어 음악이 꺼졌어요')}
       if(world.fastNow){for(const d of dogs.slice())fastAnimal(d,h)}
       else{
         for(const d of dogs.slice())updateDog(d,h);
@@ -3910,7 +3983,7 @@ function buildSpeedSeg(){
   for(const s of SPEEDS){const b=document.createElement('button');b.textContent='x'+s;b.dataset.s=String(s);b.title=s>=FAST_SPEED?`x${s} — 하루가 ${(1440/s).toFixed(s>=1440?(s>=86400?3:1):1)}초 (빠른 계산)`:`x${s}`;b.setAttribute('aria-pressed',String(s===speed));b.onclick=()=>{if(world)world.autoDrop=null;setSpeed(s)};seg.appendChild(b)}
 }
 $('#pauseBtn').onclick=e=>{paused=!paused;e.currentTarget.setAttribute('aria-pressed',String(paused));e.currentTarget.textContent=paused?'▶ 계속':'⏸ 일시정지'};
-$('#soundBtn').onclick=e=>{soundOn=!soundOn;e.currentTarget.setAttribute('aria-pressed',String(soundOn));e.currentTarget.textContent=soundOn?'🔊 소리':'🔈 소리 끔'};
+$('#soundBtn').onclick=e=>{soundOn=!soundOn;e.currentTarget.setAttribute('aria-pressed',String(soundOn));e.currentTarget.textContent=soundOn?'🔊 소리':'🔈 소리 끔';if(world)musicUI()};
 $$('#camModes .chip').forEach(b=>b.onclick=()=>{if(player.spect){player.prevCam=b.dataset.mode;stopSpectate()}setCamMode(b.dataset.mode);markFollowCards()});
 $$('.dpad [data-cam]').forEach(b=>{
   const k=b.dataset.cam;const on=e=>{e.preventDefault();camKeys[k]=true;$('#camTrack').checked=false};const off=()=>{camKeys[k]=false};
@@ -3947,6 +4020,10 @@ function setTV(on){
   log(on?`TV를 켰어요 (${TV_CH[world.tv.ch]})`:'TV를 껐어요');blip(on?900:400,0.05,0.05);
   if(on)dogs.filter(d=>['idle','sit','wander'].includes(d.state)).slice(0,Math.ceil(dogs.length/2)).forEach(d=>setState(d,'toTV',30));
 }
+$('#musicBtn').onclick=()=>{ac();setMusic(!world.music.on)};
+$('#musicGenre').onchange=e=>{if(!world)return;world.music.genre=e.target.value;musicStep=0;if(world.music.on)log(`🎵 ${MUSIC[world.music.genre].n}(으)로 바꿨어요`);musicUI()};
+$('#musicTimer').onchange=e=>{if(!world)return;const m=parseInt(e.target.value,10);if(world.music.on){world.music.offAt=m>0?world.t+m:-1;musicUI()}};
+$('#musicVol').oninput=()=>{if(musicGain)musicGain.gain.value=(+$('#musicVol').value/100)*0.5};
 $('#tvBtn').onclick=()=>{world.tv.byAuto=false;setTV(!world.tv.on)};
 
 /* ---------- care mode: manual vs full automation ---------- */
@@ -4106,6 +4183,7 @@ function startSim(){
   initRenderers();buildWorld();resizeAll();
   const [hh,mm]=($('#startTime').value||'08:00').split(':').map(Number);
   world=newWorldState(hh*60+mm);$('#log').innerHTML='';speed=1;
+  clearInterval(musicIv);musicIv=0;world.music.genre=$('#musicGenre').value;musicUI();
   world.breedOn=$('#breedOn').checked;world.tm.speed=$('#tmSpeed').value;world.tm.auto=$('#tmAuto').checked;$('#farmCrop').value='corn';
   followId=dogs[0]?dogs[0].id:1;
   buildDogCards();renderEvents();setCamMode('free');buildSpeedSeg();

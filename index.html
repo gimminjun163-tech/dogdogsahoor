@@ -548,6 +548,9 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
       <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" data-autobreak> 자동화일 때 싸움을 자동으로 말리기</label>
       <div class="row2" style="align-items:end"><label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="autoCorpsePre" data-mirror="autoCorpse"> 자동화일 때 시체 자동 치우기</label><label class="f">치울 시체<select id="corpseScopePre" data-mirror="corpseScope"><option value="all">모든 시체 (노환·병·싸움)</option><option value="fight">전투 사망만</option></select></label></div>
       <div class="row2"><label class="f">치우는 때<select id="corpseDelayPre" data-mirror="corpseDelay"><option value="0">바로</option><option value="10">10분 뒤</option><option value="30">30분 뒤</option><option value="60">1시간 뒤</option></select></label></div>
+      <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="aiSoccerPre" data-mirror="aiSoccer" checked> 필요하면 AI가 마당 축구 경기 열기</label>
+      <label class="f">AI가 연 축구 경기는<select id="aiSoccerViewPre" data-mirror="aiSoccerView"><option value="watch">경기 보기 (관전)</option><option value="skip">넘기고 결과만 보기</option></select></label>
+      <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="aiEmergPre" data-mirror="aiEmerg" checked> 위급할 때 AI가 바로 대응하기</label>
       <label class="f" style="margin-top:4px">고령화 위험 시 자동화가 강제 번식 쓰기<select id="aiFBPre" data-mirror="aiFB"><option value="off">쓰지 않기</option><option value="young">젊은 사회에도 쓰기 (항상)</option><option value="aging">고령화 사회(노령 7%) 이상이면 쓰기</option><option value="aged" selected>고령 사회(노령 14%) 이상이면 쓰기</option><option value="ultra">초고령 사회(노령 20%) 이상일 때만 쓰기</option></select></label>
       <label class="f" style="margin-top:4px">자동화 스타일<select id="aiStylePre" data-mirror="aiStyle"><option value="balance">⚖ 균형</option><option value="health">❤ 건강중시</option><option value="happy">😊 행복중시</option><option value="stamina">⚡ 체력중시</option><option value="auto">🤖 자동 (가장 부족한 것 챙기기)</option></select></label>
       <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="musicAutoPre" data-mirror="musicAuto" checked> 자동화일 때 음악 자동으로 틀기 (밤엔 자장가, 지치면 자장가, 우울하면 신나는 동요)</label>
@@ -707,7 +710,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
           <div class="fh-actions">
             <select id="sbView" aria-label="보기와 조종"><option value="watch">관전 (공을 따라가는 카메라)</option><option value="teamA">A팀(빨강) 전체 조종 · 공 근처 선수로 자동 전환</option><option value="oneA">A팀(빨강) 한 선수만 조종</option><option value="teamB">B팀(파랑) 전체 조종</option><option value="oneB">B팀(파랑) 한 선수만 조종</option></select>
             <select id="sbPick" aria-label="조종할 선수" hidden></select>
-            <button class="chip" id="sbSubA">A 교체</button><button class="chip" id="sbSubB">B 교체</button>
+            <button class="chip" id="sbSubA">A 교체</button><button class="chip" id="sbSubB">B 교체</button><button class="chip" id="sbAISkip" hidden>⏭ 경기 넘기기</button>
             <button class="chip" id="sbTac">전술</button><button class="chip" id="sbStop">경기 그만하기</button>
           </div>
           <div class="fh-ctrl" id="sbCtrl" hidden><div>🎮 <b id="sbMe"></b></div><div>WASD 이동 · Space 꾹 눌렀다 떼기 = 슛/태클 · J 꾹 = 패스 (오래 누를수록 세게) · Shift 질주 · Tab 선수 바꾸기</div></div>
@@ -937,6 +940,9 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         <label class="f">자동화 스타일<select id="aiStyle"><option value="balance">⚖ 균형</option><option value="health">❤ 건강중시</option><option value="happy">😊 행복중시</option><option value="stamina">⚡ 체력중시</option><option value="auto">🤖 자동 (가장 부족한 것 챙기기)</option></select></label>
         <div class="ai-score" id="aiScore"></div>
         <div class="ai-chips" id="aiChips" aria-label="지금 자동화가 하고 있는 행동"></div>
+        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="aiSoccer" checked> ⚽ 필요하면 AI가 마당에서 축구 경기 열기</label>
+        <label class="f">AI가 연 축구 경기는<select id="aiSoccerView"><option value="watch">경기 보기 (관전)</option><option value="skip">넘기고 결과만 보기</option></select></label>
+        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="aiEmerg" checked> 🚨 위급할 때 바로 대응하기 (3시간 점검을 기다리지 않음)</label>
         <label class="f">고령화 위험 시 강제 번식 도구<select id="aiFB"><option value="off">쓰지 않기</option><option value="young">젊은 사회에도 쓰기 (항상)</option><option value="aging">고령화 사회(노령 7%) 이상이면 쓰기</option><option value="aged" selected>고령 사회(노령 14%) 이상이면 쓰기</option><option value="ultra">초고령 사회(노령 20%) 이상일 때만 쓰기</option></select></label>
         <p class="small muted" id="aiFBNote">자동화가 강제 번식 도구를 쓰지 않아요.</p>
         <h3>행동 피드백 기록</h3>
@@ -2385,11 +2391,12 @@ function accident(d){
   doBusiness(d,false);if(d.state!=='alert')setState(d,'idle',2);
   log(`${d.name}이(가) 참지 못하고 바닥에 실수했어요`,'bad');toast(`${d.name}이(가) 바닥에 실수했어요. 바닥 청소를 해 주세요`,true);
 }
+const PAD_CLEAN=1; // minutes the roller takes to clean the pad (was 3)
 function startClean(auto){
   const P=world.pad;if(P.cleaning>0||!dev.potty)return;
   if(!P.waste.length){if(!auto)toast('배변판이 이미 깨끗해요');return}
   if(world.sheets<=0){if(!auto||!P.noSheetWarned){P.noSheetWarned=true;toast('배변 시트가 없어서 청소할 수 없어요. 시트를 채워 주세요',true);log('배변 시트가 떨어져서 배변판을 못 치웠어요','bad')}return}
-  world.sheets--;P.cleaning=3;P.cleanAuto=auto;blip(520,0.1,0.06);
+  world.sheets--;P.cleaning=PAD_CLEAN;P.cleanAuto=auto;blip(520,0.1,0.06);
 }
 function finishClean(){
   const P=world.pad;const poo=P.waste.filter(w=>w.kind==='poo').length,pee=P.waste.length-poo;
@@ -2403,14 +2410,14 @@ function updatePotty(dt){
   if(!dev.potty)return;
   const parts=dev.pottyParts;
   if(P.cleaning>0){
-    P.cleaning-=dt;const prog=1-Math.max(0,P.cleaning)/3;
+    P.cleaning-=dt;const prog=1-Math.max(0,P.cleaning)/PAD_CLEAN;
     parts.roller.position.z=-parts.d/2+0.06+(parts.d-0.12)*(prog<0.5?prog*2:2-prog*2);
     if(P.cleaning<=0){P.cleaning=0;finishClean()}
   }else{
     parts.roller.position.z=-parts.d/2+0.06;
     const need=P.mode==='now'?1:P.mode==='3'?3:Infinity;
     const busy=dogs.some(d=>d.state==='doPotty');
-    if(P.waste.length>=need&&!busy){P.waitT+=dt;if(P.waitT>(P.mode==='now'?1.5:1)){P.waitT=0;startClean(true)}}else P.waitT=0;
+    if(P.waste.length>=need&&!busy){P.waitT+=dt;if(P.waitT>0.3){P.waitT=0;startClean(true)}}else P.waitT=0;
   }
   if(P.waste.length>=6&&!P.dirtyWarned){P.dirtyWarned=true;toast('배변판이 더러워서 강아지들 기분이 나빠지고 있어요',true);log('배변판이 많이 더러워졌어요','bad')}
   const ledCol=P.cleaning>0?'#45bdb8':P.waste.length>=6?'#ef4b3c':P.waste.length?'#f0a43a':'#2ad46a';
@@ -3605,6 +3612,8 @@ function finishMatch(){
   $('#mrText').textContent=`최종 스코어 ${M.score.A} : ${M.score.B}${pkTxt}. 평균 나이 A ${avgAge('A')} · B ${avgAge('B')}. ${top.length?'득점: '+top.map(([n,c])=>`${n} ${c}골`).join(', ')+'. ':'골이 없었어요. '}${mvp?`MVP: ${mvp.name}.`:''}`;
   if(M.pkOnly&&M.pk){const L=M.pk.log||[],ok=L.filter(x=>x.ok).map(x=>`${x.t} ${x.name}`),sv={};L.forEach(x=>{if(x.saved)sv[x.saved]=(sv[x.saved]||0)+1});const best=Object.entries(sv).sort((a,b)=>b[1]-a[1])[0];
     $('#mrText').textContent=`승부차기 결과 ${M.pk.kicks.A.filter(Boolean).length} : ${M.pk.kicks.B.filter(Boolean).length} (${L.length}번 찼어요). 평균 나이 A ${avgAge('A')} · B ${avgAge('B')}. ${ok.length?'성공: '+ok.join(', ')+'. ':'아무도 넣지 못했어요. '}${best?`최고 골키퍼: ${best[0]} (${best[1]}번 선방).`:''}`}
+  if(!M.only)for(const t of['A','B'])for(const p of [...M[t],...M.bench[t],...M.out[t]])if(!p.villager&&!p.dead){p.happy=clamp(p.happy+(w===t?16:w?8:11));p.health=clamp(p.health+2)}
+  if(M.byAI){setTimeout(()=>{if(match===M&&!$('#matchRes').hidden){cleanupMatch(false);log('🧠 AI가 연 축구 경기가 끝나서 모두 집으로 돌아왔어요 (뛴 동물 행복도 +8~16)','good',true)}},4000)}
   $('#matchRes').hidden=false;
   log(`🏁 경기 끝 · ${M.score.A} : ${M.score.B}${pkTxt}${w?` · ${TEAM_KO[w]} 승리`:' · 무승부'}`,'good',true);
   for(let i=0;i<3;i++)setTimeout(()=>blip(880,0.25,0.08),i*350);
@@ -3720,6 +3729,7 @@ function syncSoccer(){
   $('#sbAges').textContent=`평균 나이  A ${avgAge('A')}  ·  B ${avgAge('B')}   |   평균 종합  A ${M.avg?M.avg.A:'-'}  ·  B ${M.avg?M.avg.B:'-'}`;
   const fm=s=>`${String(Math.floor(s/60)).padStart(2,'0')}:${String(Math.floor(s%60)).padStart(2,'0')}`;
   $('#sbTime').textContent=M.phase==='rollcall'?'선수 호명 중':M.phase==='lineup'?'라인업 발표':M.phase==='end'?'경기 끝':M.phase==='half'?`하프타임 · 휴식 ${Math.max(0,Math.ceil(M.phaseT))}초`:M.phase==='pk'?'승부차기':`${M.half===1?'전반':'후반'} ${fm(Math.min(M.halfLen,M.t-(M.half-1)*M.halfLen))} / ${fm(M.halfLen)}${M.phase==='goal'?' · 골!':M.phase==='kickoff'?' · 킥오프':''}`;
+  $('#sbAISkip').hidden=!M.byAI||M.phase==='end';
   $('#sbSubA').textContent=`A 교체 (${M.subCount.A}회)`;$('#sbSubB').textContent=`B 교체 (${M.subCount.B}회)`;
   const noSub=['rollcall','lineup','end'].includes(M.phase);$('#sbSubA').disabled=noSub||!benchPool('A').length;$('#sbSubB').disabled=noSub||!benchPool('B').length;
   if(M.ctrl)$('#sbMe').textContent=`${M.ctrl.name} · ${ROLE_KO[M.ctrl.sc.slot.role]} · 체력 ${Math.round(M.ctrl.stamina)}${M.ctrlMode==='team'?' (팀 조종: 공과 가까운 선수로 자동 전환)':''}`;
@@ -4271,7 +4281,7 @@ function aiTick(){
   // 1) judge the last change: compare with the same hours yesterday (day/night swings cancel out), or with the previous period on day 1
   if(A.trial){
     const T=A.trial,ref=aiAvgWindow(world.t-AI_PERIOD-1440,world.t-1440),base=ref?aiScore(ref,w):T.base,d=score-base,act=AI_ACT.find(a=>aiId(a)===T.id);
-    A.Q[T.id]=(A.Q[T.id]||0)+0.4*(d-(A.Q[T.id]||0));A.tries++;
+    A.Q[T.id]=(A.Q[T.id]||0)+0.4*(d-(A.Q[T.id]||0));const cx=T.ctx+'|'+T.id;A.Q[cx]=(A.Q[cx]||0)+0.5*(d-(A.Q[cx]||0));A.tries++;
     if(d<-0.3){aiApply(T.k,T.from);A.tabu=T.id;aiLog(`👎 '${act.n}' 뒤 점수 ${d.toFixed(1)} → 되돌렸어요 (${ref?'어제 같은 시간 대비':'직전 3시간 대비'})`,'bad')}
     else{A.good+=d>0.3?1:0;aiLog(d>0.3?`👍 '${act.n}' 뒤 점수 +${d.toFixed(1)} → 계속 유지해요`:`➖ '${act.n}' 뒤 점수 ${d>=0?'+':''}${d.toFixed(1)} → 큰 차이 없어서 유지해요`,d>0.3?'good':'')}
     A.trial=null;
@@ -4281,11 +4291,74 @@ function aiTick(){
   const focus=Object.keys(need).sort((a,b)=>w[b]*need[b]-w[a]*need[a])[0];A.focus=focus;
   const cand=AI_ACT.filter(a=>A.k[a.k]!==a.v&&aiId(a)!==A.tabu&&!(a.k==='tm'&&!dev.treadmill)&&!(a.k==='tv'&&!tvs.length));
   if(!cand.length)return;
-  const val=a=>Object.keys(a.h).reduce((s,m)=>s+w[m]*need[m]*a.h[m]*10,0)+(A.Q[aiId(a)]||0)*0.6+Math.random()*1.2;
+  // context = which stat needs help + day/night; what worked in the same situation counts most, and random trying fades as it learns
+  const ctx=focus+(nightH()?'@밤':'@낮'),explore=1.2*Math.max(0.25,1-A.tries/80);
+  const val=a=>Object.keys(a.h).reduce((s,m)=>s+w[m]*need[m]*a.h[m]*10,0)+(A.Q[aiId(a)]||0)*0.4+(A.Q[ctx+'|'+aiId(a)]||0)*0.9+Math.random()*explore;
   const best=cand.map(a=>({a,v:val(a)})).sort((x,y)=>y.v-x.v)[0];
   if(best.v<=0.2&&Math.random()<0.6){aiLog(`🙂 지금 행동이 괜찮아 보여서 이번엔 그대로 둬요 (가장 부족한 것: ${AI_M[focus]} ${Math.round(cur[focus])})`,'');return}
-  const a=best.a;A.trial={id:aiId(a),k:a.k,from:A.k[a.k],base:score};A.lastChange=a.k;aiApply(a.k,a.v);
+  const a=best.a;A.trial={id:aiId(a),k:a.k,from:A.k[a.k],base:score,ctx};A.lastChange=a.k;aiApply(a.k,a.v);
   aiLog(`🔧 ${AI_M[focus]}${josa(AI_M[focus],'을','를')} 올리려고 (지금 평균 ${Math.round(cur[focus])}) '${a.n}'${josa(a.n,'을','를')} 해봐요`,'try');
+}
+
+// fast reactions between the 3-hour checks: floor accidents, emergencies, and (if allowed) a soccer match when the animals need fun
+function aiCare(){
+  const A=world.ai;if(!A||careMode!=='auto'||world.arena||match)return;
+  const live=dogs.filter(d=>!d.dead&&!d.stray);if(!live.length)return;
+  // robot vacuum: accidents on the floor are cleaned right away
+  if(world.floorMess.length){const n=world.floorMess.length;world.floorMess.forEach(w=>scene.remove(w.mesh));world.floorMess=[];log(`🤖 로봇청소기가 바닥 실수 ${n}곳을 치웠어요`,'good')}
+  if(dev.potty&&world.pad.waste.length&&!world.pad.cleaning&&!dogs.some(d=>d.state==='doPotty'))startClean(true);
+  const avg=aiNow(),day=Math.floor(world.t/1440);A.cd=A.cd||{};const ready=k=>world.t>=(A.cd[k]||0);
+  if($('#aiEmerg').checked){
+    if(avg.sta<30&&ready('sta')){A.cd.sta=world.t+120;if(A.k.ball)aiApply('ball',false);if(A.k.tm)aiApply('tm',false);if(world.music.genre!=='lullaby'||!world.music.on){world.music.genre='lullaby';$('#musicGenre').value='lullaby';world.music.byAuto=true;if(!world.music.on)setMusic(true);musicUI()}aiLog(`🚨 평균 체력이 ${Math.round(avg.sta)}까지 떨어져서 공 발사기·런닝머신을 끄고 자장가를 틀었어요`,'bad')}
+    if(avg.happy<45&&ready('happy')){A.cd.happy=world.t+120;if(!A.k.ball&&avg.sta>40)aiApply('ball',true);world.music.genre='happy';$('#musicGenre').value='happy';world.music.byAuto=true;if(!world.music.on)setMusic(true);musicUI();aiLog(`🚨 평균 행복도가 ${Math.round(avg.happy)}이라 신나는 동요를 틀고${A.k.ball?' 공 발사기를 켰어요':'어요'}`,'bad')}
+    if(avg.hp<50&&ready('hp')){A.cd.hp=world.t+180;if(A.k.feed!=='more')aiApply('feed','more');if(!A.k.brk)aiApply('brk',true);for(const d of live)if(d.hunger>40||d.thirst>40){d.hunger=Math.min(d.hunger,40);d.thirst=Math.min(d.thirst,40)}aiLog(`🚨 평균 건강이 ${Math.round(avg.hp)}이라 사료를 넉넉히 주고 싸움을 바로 말리게 했어요`,'bad')}
+  }
+  aiSoccer(live,avg);
+}
+function aiSoccer(live,avg){
+  const A=world.ai;if(!$('#aiSoccer').checked||!yard||!yard.P||match||fights.length||intruder||owner.visiting||dogs.some(d=>d.stray))return;
+  const h=hour();if(h<9||h>=18||world.t<(A.soccerNext||0))return;A.soccerNext=world.t+30;
+  const fit=live.filter(d=>d.age>=0.5&&d.health>50&&d.stamina>65&&!d.fight);if(fit.length<2)return;
+  const want={happy:85,balance:78,auto:78,health:72,stamina:70}[A.style]||75,since=world.t-(A.lastSoccer||-1e9);
+  const bored=avg.happy<want,exercise=since>3*1440&&avg.sta>75;if(!(bored||exercise)||since<1440)return;
+  if(A.style==='stamina'&&avg.sta<80)return;
+  A.lastSoccer=world.t;const size=clamp(Math.ceil(fit.length/2),3,7);
+  aiLog(`⚽ ${bored?`평균 행복도가 ${Math.round(avg.happy)}밖에 안 돼 심심해 보여서`:'며칠 동안 운동을 못 해서'} 마당에서 ${size}:${size} 축구 경기를 열었어요`,'try');
+  if($('#aiSoccerView').value==='skip'){quickSoccer(fit);return}
+  startMatch({P:yard.P,pets:fit,size,len:300,me:'watch',only:false,kind:'match'});if(match)match.byAI=true;
+}
+
+// skipped soccer: no 3D match — the result is worked out from the players' skills (realistic score, ~2.6 goals a game)
+function poisson(l){let k=0,p=1;const L=Math.exp(-l);do{k++;p*=Math.random()}while(p>L);return k-1}
+function simGoals(A,B,frac,base){
+  const sA=A.reduce((a,p)=>a+ovr(p),0)/Math.max(1,A.length),sB=B.reduce((a,p)=>a+ovr(p),0)/Math.max(1,B.length);
+  const share=Math.pow(sA,2.2)/(Math.pow(sA,2.2)+Math.pow(sB,2.2)),xg=2.6*frac;
+  const sc={A:base.A+poisson(xg*share),B:base.B+poisson(xg*(1-share))},who={A:[],B:[]};
+  for(const t of['A','B']){const T=t==='A'?A:B;for(let i=base[t];i<sc[t];i++){let r=Math.random()*T.reduce((a,p)=>a+effSkill(p,'sho')+10,0);const g=T.find(p=>(r-=effSkill(p,'sho')+10)<=0)||T[0];who[t].push(g.name)}}
+  return {sc,who};
+}
+function soccerAfter(pets,w,teamOf){
+  for(const p of pets){if(p.dead)continue;const t=teamOf(p);p.happy=clamp(p.happy+(w===t?16:w?8:11));p.health=clamp(p.health+2);p.stamina=clamp(p.stamina-rand(18,32));if(p.species!=='human'){p.thirst=clamp(p.thirst+15);p.hunger=clamp(p.hunger+10)}}
+  world.cardsDirty=true;
+}
+function quickSoccer(fit){
+  const sh=fit.slice().sort(()=>Math.random()-0.5),A=sh.filter((_,i)=>i%2===0),B=sh.filter((_,i)=>i%2===1);
+  const {sc,who}=simGoals(A,B,1,{A:0,B:0}),w=sc.A>sc.B?'A':sc.B>sc.A?'B':null;
+  soccerAfter(fit,w,p=>A.includes(p)?'A':'B');
+  const g=t=>who[t].length?` (${who[t].join(', ')})`:'';
+  aiLog(`⏭ AI 축구 경기를 넘겼어요: 빨강 ${sc.A} : ${sc.B} 파랑${w?` · ${w==='A'?'빨강':'파랑'} 승리`:' · 무승부'}${g('A')}${g('B')} · 뛴 동물 행복도 +8~16, 체력 −18~32`,'good');
+  log(`⚽ (넘김) 빨강팀 ${A.map(p=>p.name).join('·')} ${sc.A} : ${sc.B} ${B.map(p=>p.name).join('·')} 파랑팀`,'good',true);
+}
+// skip an AI match that is already running: the rest of the match is worked out from skills
+function skipAIMatch(){
+  const M=match;if(!M||!M.byAI)return;
+  const frac=M.phase==='pk'?0:Math.max(0,1-M.t/(2*M.halfLen));
+  const A=M.A.filter(p=>!p.dead),B=M.B.filter(p=>!p.dead),{sc,who}=simGoals(A,B,frac,{A:M.score.A,B:M.score.B}),w=sc.A>sc.B?'A':sc.B>sc.A?'B':null;
+  const pets=[...M.A,...M.B,...M.bench.A,...M.bench.B,...M.out.A,...M.out.B].filter(p=>!p.villager);
+  const side=p=>[...M.A,...M.bench.A,...M.out.A].includes(p)?'A':'B';
+  cleanupMatch(true);soccerAfter(pets,w,side);
+  const g=t=>who[t].length?` (${who[t].join(', ')})`:'';
+  aiLog(`⏭ 진행 중이던 AI 축구 경기를 넘겼어요: 빨강 ${sc.A} : ${sc.B} 파랑${w?` · ${w==='A'?'빨강':'파랑'} 승리`:' · 무승부'}${g('A')}${g('B')}`,'good');
 }
 function aiKnobText(){
   const k=world.ai.k;const mu={auto:'상황 따라',happy:'신나는 동요',lullaby:'자장가',classic:'클래식',nature:'자연의 소리',off:'끔'};
@@ -4469,6 +4542,7 @@ $$('[data-srange]').forEach(b=>b.onclick=()=>{statRange=+b.dataset.srange;$$('[d
   cv.addEventListener('pointermove',e=>{const r=cv.getBoundingClientRect();cv._hx=e.clientX-r.left;renderStats()});
   cv.addEventListener('pointerleave',()=>{cv._hx=null;tip.hidden=true;renderStats()});});
 window.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#statOv').hidden){$('#statOv').hidden=true;e.stopImmediatePropagation()}},true);
+$('#sbAISkip').onclick=skipAIMatch;
 $('#aiFB').addEventListener('change',()=>{aiFBNote();if(world&&world.ai){const l=aiFBLimit();aiLog(l!=null?(l?`고령화 위험(노령 ${l}% 이상) 때 강제 번식 도구를 쓸 수 있게 했어요`:'젊은 사회에도 항상 강제 번식 도구를 쓸 수 있게 했어요'):'강제 번식 도구를 쓰지 않게 했어요',l?'try':'')}});
 aiFBNote();
 $('#aiStyle').addEventListener('change',e=>{if(!world||!world.ai)return;const A=world.ai;A.style=e.target.value;A.trial=null;A.next=world.t+30;aiLog(`스타일을 ${AI_STYLE[A.style].n}(으)로 바꿨어요. 30분 뒤부터 이 기준으로 행동을 고쳐요`,'try')});
@@ -4493,7 +4567,7 @@ function autoManager(dt){
   world.foodCap=Math.max(150,dogs.length*45);
   if(careMode!=='auto'||world.arena)return;autoT-=dt;if(autoT>0)return;autoT=5;
   const more=world.ai&&world.ai.k.feed==='more',hungry=dogs.some(d=>d.hunger>(more?30:45));
-  aiTick();
+  aiCare();aiTick();
   if(world.food<8*Math.max(1,dogs.length/4)*(more?2:1)&&hungry&&feedLeft()>0){const g=takeFeed(Math.min(Math.max(60,dogs.length*25),world.foodCap-world.food));world.food+=g;log(`자동 급식기가 사료 ${Math.round(g)}g을 줬어요`,'good');
     dogs.forEach(d=>{if(d.hunger>40&&['idle','sit','wander','waitFood'].includes(d.state))setState(d,'toFood',30)})}
   if(world.tank<world.tankCap*0.25){world.tank=world.tankCap;world.lowWaterWarned=false;world.flagNoWater=false;log('물통이 자동으로 다시 채워졌어요','good')}

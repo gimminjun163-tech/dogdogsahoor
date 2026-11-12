@@ -3262,6 +3262,21 @@ function keeperCatch(scorer){
 }
 
 
+
+/* ---------- stoppage (added) time ---------- */
+// delays = goal celebrations, set-piece setup, substitutions, fouls, cards and penalties (as a share of the half)
+function addDelay(frac){const M=match;if(!M||!M.delay)return;M.delay[M.half]+=frac*M.halfLen}
+function extraTxt(v){return v>=60?`+${Math.round(v/60)}분`:`+${Math.round(v)}초`}
+function stoppageCheck(){
+  const M=match;if(!M||!M.delay||M.extra[M.half]!=null)return;
+  const end=M.half*M.halfLen,warn=Math.min(60,M.halfLen*0.1);if(M.t<end-warn)return;
+  const d=M.delay[M.half]+M.halfLen*0.01;
+  // announced like a real 4th official: whole minutes on long halves, 15-second steps on short ones
+  const v=M.halfLen>=600?clamp(Math.ceil(d/60),1,8)*60:clamp(Math.ceil(d/15)*15,15,M.halfLen*0.25);
+  M.extra[M.half]=v;M.saveFlash={t:2.6,txt:`⏱ 추가 시간 ${extraTxt(v)}`};
+  log(`⏱ ${M.half===1?'전반':'후반'} 추가 시간 ${extraTxt(v)} (지연 ${Math.round(M.delay[M.half])}초)`,'',true);
+  if(soundOn&&!quiet){blip(1320,0.12,0.05);setTimeout(()=>blip(1760,0.18,0.05),160)}
+}
 /* ======================= SET PIECES: throw-in, corner, goal kick, free kick, penalty ======================= */
 const SP_N={throw:'↩ 스로인',corner:'🚩 코너킥',goalkick:'🥅 골킥',free:'🎯 프리킥',penalty:'⚽ 페널티킥'};
 const otherT=t=>t==='A'?'B':'A';
@@ -3278,7 +3293,8 @@ function foul(off,vic,hard){
   const M=match,P=M.P,w=fromW(P,vic.pos.x,vic.pos.y),t=vic.sc.team,s=dirOf(t),B=penBox(P);
   M.carrier=null;off.sc.fouls=(off.sc.fouls||0)+1;M.fouls=M.fouls||{A:0,B:0};M.fouls[off.sc.team]++;
   const inBox=w.a*s>P.len/2-B.d&&Math.abs(w.c)<B.w/2;
-  let card='';if(hard||Math.random()<0.12){off.sc.yellow=(off.sc.yellow||0)+1;card=off.sc.yellow>=2?' 🟥 경고 2번 퇴장!':' 🟨 경고'}
+  let card='';if(hard||Math.random()<0.12){off.sc.yellow=(off.sc.yellow||0)+1;card=off.sc.yellow>=2?' 🟥 경고 2번 퇴장!':' 🟨 경고';addDelay(0.008)}
+  addDelay(inBox?0.012:0.003);
   log(`🟡 반칙! ${off.name}${josa(off.name,'이','가')} ${vic.name}${josa(vic.name,'을','를')} 넘어뜨렸어요${card}`,'bad',true);
   if(card.includes('퇴장')){const T=off.sc.team;M[T]=M[T].filter(x=>x!==off);off.sc.sentOff=true;M.out[T].push(off);off.speed=0;const bs=benchSpot(T,M.out[T].length+3);off.pos.set(bs.x,bs.z);if(M.ctrl===off)M.ctrl=null}
   if(soundOn&&!quiet){blip(2400,0.12,0.06);setTimeout(()=>blip(2400,0.3,0.06),150)}
@@ -3632,7 +3648,7 @@ function substitute(t,manual){
   const tired=M[t].filter(p=>!p.dead&&p!==M.ctrl&&(!(p.sc.slot&&p.sc.slot.role==='GK')||p.stamina<15)).sort((a,b)=>a.stamina-b.stamina)[0];if(!tired)return false;
   if(!manual&&tired.stamina>25)return false;
   const sub=benchPool(t).filter(p=>p.stamina>=(manual?30:50)).sort((a,b)=>b.stamina-a.stamina)[0];if(!sub||sub.stamina<=tired.stamina+10)return false;
-  M.bench[t]=M.bench[t].filter(x=>x!==sub);M.out[t]=M.out[t].filter(x=>x!==sub);M.subCount[t]++;
+  M.bench[t]=M.bench[t].filter(x=>x!==sub);M.out[t]=M.out[t].filter(x=>x!==sub);M.subCount[t]++;addDelay(0.008);
   const i=M[t].indexOf(tired);M[t][i]=sub;sub.sc.slot=tired.sc.slot;tired.sc.slot={role:'SUB',u:0,v:0};
   const spot=toW(M.P,0,-(M.P.wid/2-0.4));sub.pos.set(spot.x,spot.z);
   M.out[t].push(tired);const bs=benchSpot(t,M.out[t].length+1);tired.pos.set(bs.x,bs.z);tired.speed=0;if(M.carrier===tired)M.carrier=null;
@@ -3713,7 +3729,7 @@ function onGoal(t){
   for(const p of [...M.A,...M.B])p.sc.move=null;
   for(let i=0;i<3;i++)setTimeout(()=>blip(660+i*220,0.12,0.09),i*120);
   if(soundOn&&'speechSynthesis' in window){try{const u=new SpeechSynthesisUtterance(`골! ${sc?sc.name:''}`);u.lang='ko-KR';u.rate=1.2;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
-  M.carrier=null;M.phase='goal';M.phaseT=3;M.nextKick=t==='A'?'B':'A';
+  M.carrier=null;M.phase='goal';M.phaseT=3;M.nextKick=t==='A'?'B':'A';addDelay(0.012);
 }
 function updateMatch(dt){
   const M=match;if(!M)return;
@@ -3726,16 +3742,17 @@ function updateMatch(dt){
     if(p.species!=='human'){p.thirst=clamp(p.thirst-dt*(M.phase==='half'?6:0.05*K));if(M.phase==='half'){p.hunger=clamp(p.hunger-dt*4);p.happy=clamp(p.happy+dt*2.5);p.health=Math.min(100,p.health+dt*2)}p.anim={sit:true,emo:p.stamina<60?'💧':''}}}
   for(const v of M.villagers)if(M.A.includes(v)||M.B.includes(v))soccerTick(v,dt);
   if(M.phase==='kickoff'){M.phaseT-=dt;if(M.phaseT<=0)M.phase='play'}
-  else if(M.phase==='goal'){M.phaseT-=dt;if(M.phaseT<=0)kickoff(M.nextKick)}
+  else if(M.phase==='goal'){M.phaseT-=dt;M.delay[M.half]+=dt;if(M.phaseT<=0)kickoff(M.nextKick)}
   else if(M.phase==='pk'){pkUpdate(dt);return}
-  else if(M.phase==='setpiece'){M.t+=dt;setPieceStep(dt);ballStep(dt);return}
+  else if(M.phase==='setpiece'){M.t+=dt;M.delay[M.half]+=dt*0.6;stoppageCheck();setPieceStep(dt);ballStep(dt);return}
   else if(M.phase==='half'){M.phaseT-=dt;$('#htBar').style.width=((1-M.phaseT/M.halfRest)*100)+'%';if(M.phaseT<=0)secondHalf();return}
   else if(M.phase==='play'){
     M.t+=dt;
     M.swT=(M.swT||0)-dt;if(M.swT<=0){M.swT=0.5;switchCtrl(false);for(const t of['A','B'])substitute(t,false)}
     possessionStep(dt);
-    if(M.half===1&&M.t>=M.halfLen){startHalftime();return}
-    if(M.t>=M.halfLen*2){if(PK_ON&&M.score.A===M.score.B&&M.A.length&&M.B.length)startShootout();else finishMatch();return}
+    stoppageCheck();
+    if(M.half===1&&M.t>=M.halfLen+(M.extra[1]||0)){startHalftime();return}
+    if(M.t>=M.halfLen*2+(M.extra[2]||0)){if(PK_ON&&M.score.A===M.score.B&&M.A.length&&M.B.length)startShootout();else finishMatch();return}
   }
   ballStep(dt);
 }
@@ -3865,6 +3882,7 @@ function finishMatch(){
     $('#mrText').textContent=`승부차기 결과 ${M.pk.kicks.A.filter(Boolean).length} : ${M.pk.kicks.B.filter(Boolean).length} (${L.length}번 찼어요). 평균 나이 A ${avgAge('A')} · B ${avgAge('B')}. ${ok.length?'성공: '+ok.join(', ')+'. ':'아무도 넣지 못했어요. '}${best?`최고 골키퍼: ${best[0]} (${best[1]}번 선방).`:''}`}
   if(!M.only)for(const t of['A','B'])for(const p of [...M[t],...M.bench[t],...M.out[t]])if(!p.villager&&!p.dead){p.happy=clamp(p.happy+(w===t?16:w?8:11));p.health=clamp(p.health+2)}
   if(M.byAI){setTimeout(()=>{if(match===M&&!$('#matchRes').hidden){cleanupMatch(false);log('🧠 AI가 연 축구 경기가 끝나서 모두 집으로 돌아왔어요 (뛴 동물 행복도 +8~16)','good',true)}},4000)}
+  if(M.extra&&(M.extra[1]!=null||M.extra[2]!=null))$('#mrText').textContent+=` 추가 시간: 전반 ${M.extra[1]!=null?extraTxt(M.extra[1]):'없음'} · 후반 ${M.extra[2]!=null?extraTxt(M.extra[2]):'없음'}.`;
   $('#matchRes').hidden=false;
   log(`🏁 경기 끝 · ${M.score.A} : ${M.score.B}${pkTxt}${w?` · ${TEAM_KO[w]} 승리`:' · 무승부'}`,'good',true);
   for(let i=0;i<3;i++)setTimeout(()=>blip(880,0.25,0.08),i*350);
@@ -3907,7 +3925,7 @@ function startMatch(cfg){
   if(match)cleanupMatch(true);
   const P=cfg.P,size=cfg.size;
   const pets=cfg.pets.slice().sort(()=>Math.random()-0.5).slice(0,(size+BENCH)*2);
-  const M={P,size,halfLen:cfg.len,half:1,swapped:false,halfRest:12,drainK:clamp(600/cfg.len,0.2,3),only:!!cfg.only,pkOnly:cfg.kind==='pk',A:[],B:[],bench:{A:[],B:[]},out:{A:[],B:[]},subCount:{A:0,B:0},villagers:[],score:{A:0,B:0},goals:[],t:0,phase:'prep',carrier:null,lastTouch:null,
+  const M={P,size,halfLen:cfg.len,half:1,delay:{1:0,2:0},extra:{1:null,2:null},swapped:false,halfRest:12,drainK:clamp(600/cfg.len,0.2,3),only:!!cfg.only,pkOnly:cfg.kind==='pk',A:[],B:[],bench:{A:[],B:[]},out:{A:[],B:[]},subCount:{A:0,B:0},villagers:[],score:{A:0,B:0},goals:[],t:0,phase:'prep',carrier:null,lastTouch:null,
     tac:TACTICS,ctrl:null,ctrlMode:null,ctrlTeam:null,act:null,ball:{r:0.12,pos:new THREE.Vector3(),vel:new THREE.Vector3(),mesh:null}};
   match=M;M.ball.mesh=makeSoccerBall();M.flood=buildFloodlights(P);const c0=toW(P,0,0);M.ball.pos.set(c0.x,0.12,c0.z);M.ball.mesh.position.copy(M.ball.pos);
   // fill up from the village, then split by the balance slider (best players start, the rest sit on the bench)
@@ -3979,7 +3997,7 @@ function syncSoccer(){
   $('#sbA').textContent=M.score.A;$('#sbB').textContent=M.score.B;
   $('#sbAges').textContent=`평균 나이  A ${avgAge('A')}  ·  B ${avgAge('B')}   |   평균 종합  A ${M.avg?M.avg.A:'-'}  ·  B ${M.avg?M.avg.B:'-'}`;
   const fm=s=>`${String(Math.floor(s/60)).padStart(2,'0')}:${String(Math.floor(s%60)).padStart(2,'0')}`;
-  $('#sbTime').textContent=M.phase==='rollcall'?'선수 호명 중':M.phase==='lineup'?'라인업 발표':M.phase==='end'?'경기 끝':M.phase==='setpiece'&&M.sp?`${SP_N[M.sp.type]} · ${M.sp.team}팀${M.ctrl===M.sp.taker?' (Space/J로 차기)':''}`:M.phase==='half'?`하프타임 · 휴식 ${Math.max(0,Math.ceil(M.phaseT))}초`:M.phase==='pk'?'승부차기':`${M.half===1?'전반':'후반'} ${fm(Math.min(M.halfLen,M.t-(M.half-1)*M.halfLen))} / ${fm(M.halfLen)}${M.phase==='goal'?' · 골!':M.phase==='kickoff'?' · 킥오프':''}`;
+  $('#sbTime').textContent=M.phase==='rollcall'?'선수 호명 중':M.phase==='lineup'?'라인업 발표':M.phase==='end'?'경기 끝':M.phase==='setpiece'&&M.sp?`${SP_N[M.sp.type]} · ${M.sp.team}팀${M.ctrl===M.sp.taker?' (Space/J로 차기)':''}`:M.phase==='half'?`하프타임 · 휴식 ${Math.max(0,Math.ceil(M.phaseT))}초`:M.phase==='pk'?'승부차기':`${M.half===1?'전반':'후반'} ${fm(Math.min(M.halfLen,M.t-(M.half-1)*M.halfLen))}${M.t-(M.half-1)*M.halfLen>M.halfLen?` +${fm(M.t-(M.half-1)*M.halfLen-M.halfLen)}`:''} / ${fm(M.halfLen)}${M.extra[M.half]!=null?` (추가 ${extraTxt(M.extra[M.half])})`:''}${M.phase==='goal'?' · 골!':M.phase==='kickoff'?' · 킥오프':''}`;
   $('#sbAISkip').hidden=!M.byAI||M.phase==='end';
   $('#sbSubA').textContent=`A 교체 (${M.subCount.A}회)`;$('#sbSubB').textContent=`B 교체 (${M.subCount.B}회)`;
   const noSub=['rollcall','lineup','end'].includes(M.phase);$('#sbSubA').disabled=noSub||!benchPool('A').length;$('#sbSubB').disabled=noSub||!benchPool('B').length;

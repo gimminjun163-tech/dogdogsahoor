@@ -430,6 +430,9 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
 .charge-bar span{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,#7bd389,#f2c14e 60%,#e4572e);border-radius:999px}
 .charge-sweet{position:absolute;top:0;bottom:0;border-left:2px solid #fff;border-right:2px solid #fff;opacity:.7;z-index:1}
 .charge b{min-width:38px;text-align:right;font-variant-numeric:tabular-nums}
+.saveflash{left:50%;top:22%;transform:translateX(-50%);font-family:var(--f-display);font-size:clamp(28px,6vw,52px);color:#fff;text-shadow:0 3px 0 #1d5fa8,0 6px 18px rgba(0,0,0,.5);pointer-events:none;animation:sflash .5s ease-out}
+@keyframes sflash{from{transform:translateX(-50%) scale(.6);opacity:0}to{transform:translateX(-50%) scale(1);opacity:1}}
+@media (prefers-reduced-motion:reduce){.saveflash{animation:none}}
 .halftime{left:50%;bottom:14px;transform:translateX(-50%);width:min(460px,calc(100% - 100px));background:rgba(12,20,22,.92);color:#fff;border-radius:12px;padding:12px 14px;display:grid;gap:6px;border-top:5px solid #5fc0d6;font-size:13px}
 .halftime b{font-family:var(--f-display);font-weight:400;font-size:26px;line-height:1}
 .halftime .esc-bar span{background:#5fc0d6}
@@ -736,6 +739,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
           </div>
         </div>
         <div class="ov charge" id="charge" hidden aria-hidden="true"><span id="chargeLbl">슛</span><div class="charge-bar"><i class="charge-sweet" id="chargeSweet"></i><span id="chargeFill"></span></div><b id="chargePct">0%</b></div>
+        <div class="ov saveflash" id="saveFlash" hidden aria-live="polite"></div>
         <div class="ov halftime" id="halftime" hidden aria-live="polite"><b>⏸ 하프타임</b><span id="htText"></span><div class="esc-bar"><span id="htBar"></span></div></div>
         <div class="ov pkboard" id="pkBoard" hidden aria-live="polite">
           <b class="pk-title">승부차기</b>
@@ -3241,7 +3245,7 @@ function moveTo(p,x,z,sp,dt){const d=steer(p,x,z,sp,dt);if(d<0.15){p.speed=0;con
 function kickBall(p,tx,tz,power,loft,err){
   const M=match,b=M.ball;let dx=tx-b.pos.x,dz=tz-b.pos.z;const l=Math.hypot(dx,dz)||1;dx/=l;dz/=l;
   const e=rand(-err,err),c=Math.cos(e),s=Math.sin(e);const rx=dx*c-dz*s,rz=dx*s+dz*c;
-  b.sure=false;b.save=false;b.vel.set(rx*power,loft,rz*power);b.pos.y=Math.max(b.pos.y,b.r+0.02);
+  b.sure=false;b.save=false;b.planned=false;b.vel.set(rx*power,loft,rz*power);b.pos.y=Math.max(b.pos.y,b.r+0.02);
   M.carrier=null;M.lastTouch=p;p.sc.cd=0.45;if(p.root)p.root.userData.barkPulse=1;p.heading=Math.atan2(rz,rx);
   blip(240+power*12,0.05,0.07);
 }
@@ -3252,9 +3256,87 @@ function keeperCatch(scorer){
   const M=match,P=M.P,def=scorer==='A'?'B':'A';let gk=M[def].find(q=>q.sc.slot&&q.sc.slot.role==='GK');
   if(!gk){ // no keeper (1:1): the defender closest to their own goal throws themselves in front of it
     const og=toW(P,dirOf(def)*-1*P.len/2,0);gk=M[def].filter(q=>!q.dead).sort((x,y)=>Math.hypot(x.pos.x-og.x,x.pos.y-og.z)-Math.hypot(y.pos.x-og.x,y.pos.y-og.z))[0];if(!gk)return false}
-  const b=M.ball,ga=dirOf(def)*-1*(P.len/2-0.6),w=toW(P,ga,clamp(fromW(P,b.pos.x,b.pos.z).c,-P.goalW/2,P.goalW/2));
-  gk.pos.set(w.x,w.z);b.vel.set(0,0,0);b.pos.set(w.x,b.r,w.z);M.carrier=gk;M.lastTouch=gk;gk.sc.saves=(gk.sc.saves||0)+1;gk.sc.hold=0;
-  if(gk.root)gk.root.userData.barkPulse=1;log(`🧤 ${gk.name} 골문 앞 선방!`,'good',true);return true;
+  const b=M.ball,ga=dirOf(def)*-1*(P.len/2-0.45),w=toW(P,ga,clamp(fromW(P,b.pos.x,b.pos.z).c,-P.goalW/2,P.goalW/2));
+  if(Math.hypot(gk.pos.x-w.x,gk.pos.y-w.z)>1.8)return false; // too far away: it goes in
+  startDive(gk,w,b.pos.y,'save',0,0.12);resolveSave(gk,true);return true;
+}
+
+/* ---------- goalkeeper saves: read the shot, react, dive, then catch / parry / tip over ---------- */
+function goalKeeperOf(t){const M=match;return M[t].find(q=>!q.dead&&q.sc.slot&&q.sc.slot.role==='GK')}
+// a shot heading for goal: where/when/how high it crosses the line, and what the keeper does about it
+function gkWatch(){
+  const M=match,P=M.P,b=M.ball;if(M.carrier||b.planned)return;
+  for(const t of['A','B']){
+    const gk=goalKeeperOf(t);if(!gk||gk.sc.dive)continue;const dir=dirOf(t),ownA=-dir*P.len/2,bw=fromW(P,b.pos.x,b.pos.z);
+    const va=P.lx?b.vel.x:b.vel.z,vc=P.lx?b.vel.z:b.vel.x;if(va*dir>-3)continue;
+    const tt=(ownA-bw.a)/va;if(!(tt>0&&tt<1.1))continue;
+    const c=bw.c+vc*tt,y=Math.max(b.r,b.pos.y+b.vel.y*tt+0.5*G*tt*tt);
+    if(Math.abs(c)>P.goalW/2+0.35||y>P.goalH+0.4)continue; // going wide/over: just watch it
+    b.planned=true;
+    const leak=b.sure||Math.random()<0.07*paceK()*volK(),gkS=effSkill(gk,'gk'),rea=effSkill(gk,'rea');
+    const react=clamp(0.26-0.16*rea/100+rand(-0.03,0.04),0.06,0.32);
+    let target=toW(P,ownA+dir*0.35,clamp(c,-P.goalW/2+0.05,P.goalW/2-0.05)),outcome='save';
+    const gw=fromW(P,gk.pos.x,gk.pos.y),lateral=Math.abs(c-gw.c),reachMax=1.2+0.9*gkS/100+0.35*gk.k;
+    if(leak||lateral>reachMax||tt<react+0.04){outcome='beaten';const sh=rand(0.35,0.75)*Math.sign(c-gw.c||1);target=toW(P,ownA+dir*0.4,clamp(c-sh,-P.goalW/2,P.goalW/2))}
+    if(lateral<0.35&&y<0.6&&outcome==='save'){startDive(gk,target,y,'save',react*0.6,0.16,true);continue} // straight at the keeper: just step and gather
+    startDive(gk,target,y,outcome,react,clamp(tt-react,0.14,0.5));
+  }
+}
+function startDive(p,to,h,outcome,react,dur,block){
+  const M=match,P=M.P,dx=to.x-p.pos.x,dz=to.z-p.pos.y,L=Math.hypot(dx,dz)||0.001;
+  const lx=-Math.sin(p.heading),lz=Math.cos(p.heading),side=Math.sign(dx*lx+dz*lz)||1;
+  p.sc.dive={phase:react>0?'wait':'fly',t:0,react,dur,from:{x:p.pos.x,z:p.pos.y},to:{x:to.x,z:to.z},side,h,outcome,block:!!block||L<0.35,done:false,lift:0,roll:0};
+  p.speed=0;
+}
+function gkDiveStep(dt){
+  const M=match;
+  for(const p of allPlayers()){const D=p.sc.dive;if(!D)continue;D.t+=dt;
+    if(D.phase==='wait'){p.speed=0;if(D.t>=D.react){D.phase='fly';D.t=0;if(!D.block&&p.species!=='human'&&soundOn&&!quiet)blip(300,0.05,0.04)}}
+    else if(D.phase==='fly'){
+      const k=Math.min(1,D.t/D.dur),e=1-Math.pow(1-k,2.2);
+      p.pos.x=D.from.x+(D.to.x-D.from.x)*e;p.pos.y=D.from.z+(D.to.z-D.from.z)*e;p.speed=Math.hypot(D.to.x-D.from.x,D.to.z-D.from.z)/D.dur;
+      if(!D.block){const hi=clamp(D.h-0.2,0,0.9);D.lift=Math.sin(Math.PI*Math.min(1,k*1.15))*(0.12+hi*0.7)*(p.species==='human'?1:0.8);D.roll=D.side*(hi>0.45?1.05:1.4)*Math.min(1,k*1.6)}
+      if(D.outcome==='save'&&!D.done&&M.ball&&!M.carrier){const b=M.ball,hx=(p.pos.x+(D.to.x-p.pos.x)*0.3),hz=(p.pos.y+(D.to.z-p.pos.y)*0.3);
+        if(Math.hypot(b.pos.x-hx,b.pos.z-hz)<0.45+0.25*p.k+0.15*effSkill(p,'gk')/100&&b.pos.y<1.5+D.lift)resolveSave(p,false)}
+      if(k>=1){D.phase=D.block?'up':'down';D.t=0;if(!D.block){D.lift=0}}
+    }
+    else if(D.phase==='down'){p.speed=0;D.lift=0;if(D.t>=(D.outcome==='beaten'?0.7:0.45)){D.phase='up';D.t=0}}
+    else if(D.phase==='up'){p.speed=0;D.roll*=Math.max(0,1-dt*6);if(D.t>=0.35){p.sc.dive=null}}
+  }
+}
+function saveSound(catchIt){if(!soundOn||quiet)return;blip(catchIt?180:240,0.08,0.12);setTimeout(()=>blip(catchIt?140:420,0.06,0.06),60)}
+// the ball reaches the keeper's hands
+function resolveSave(gk,atLine){
+  const M=match,P=M.P,b=M.ball,D=gk.sc.dive;if(D)D.done=true;
+  const t=gk.sc.team,dir=dirOf(t),spd=Math.hypot(b.vel.x,b.vel.z),gks=effSkill(gk,'gk'),lat=D?Math.hypot(D.to.x-D.from.x,D.to.z-D.from.z):0;
+  const high=b.pos.y>Math.min(P.goalH*0.75,0.95);
+  if(atLine){const bw=fromW(P,b.pos.x,b.pos.z),w=toW(P,-dir*(P.len/2-0.35),clamp(bw.c,-P.goalW/2,P.goalW/2));b.pos.x=w.x;b.pos.z=w.z} // keep it out of the net
+  gk.sc.saves=(gk.sc.saves||0)+1;M.lastTouch=gk;gk.sc.hold=0;
+  let kind;
+  if(high&&lat>0.4){kind='tip';const vA=-dir*1.4,vC=rand(-0.8,0.8);if(P.lx)b.vel.set(vA,3.8,vC);else b.vel.set(vC,3.8,vA);b.pos.y=Math.max(b.pos.y,P.goalH*0.8)} // over the bar and out
+  else{
+    const catchP=clamp(0.3+0.55*gks/100-(spd-8)*0.04-lat*0.18+(D&&D.block?0.35:0),0.08,0.95);
+    if(Math.random()<catchP){kind='catch';b.vel.set(0,0,0);M.carrier=gk}
+    else{kind='parry';const bw=fromW(P,b.pos.x,b.pos.z),awayC=Math.sign(bw.c||rand(-1,1)),va=dir*rand(2,3.5),vc=awayC*rand(2.5,4.5);
+      if(P.lx)b.vel.set(va,1.1,vc);else b.vel.set(vc,1.1,va);gk.sc.cd=0.5}
+  }
+  if(gk.root)gk.root.userData.barkPulse=1;saveSound(kind==='catch');
+  const nm=gk.name;log(kind==='catch'?`🧤 ${nm}${D&&!D.block?' 몸을 날려':''} 공을 잡아냈어요!`:kind==='parry'?`🧤 ${nm}${josa(nm,'이','가')} 몸을 날려 쳐냈어요!`:`🧤 ${nm}${josa(nm,'이','가')} 손끝으로 크로스바 위로 넘겼어요!`,'good',true);
+  M.saveFlash={t:1.2,txt:kind==='catch'?'🧤 캐치!':kind==='parry'?'🧤 선방!':'🧤 슈퍼 세이브!'};
+}
+// visual: roll the body sideways, lift it off the ground, stretch the arms toward the ball
+function diveAnim(realDt){
+  const M=match;
+  for(const p of allPlayers()){
+    const D=p.sc.dive,r=p.root;if(!r)continue;r.rotation.order='YXZ';
+    if(!D){if(r.rotation.x){r.rotation.x*=0.7;if(Math.abs(r.rotation.x)<0.01)r.rotation.x=0}continue}
+    const crouch=D.phase==='wait'?0.06:0;
+    r.rotation.x=(p.species==='human'?1:1)*D.roll*(p.species==='human'?1:0.95);
+    r.position.y=(p.lift||0)+D.lift-crouch+(Math.abs(D.roll)>0.6&&p.species==='human'?0.18:0.05*Math.abs(D.roll));
+    if(p.species==='human'&&p.arms){const up=D.phase==='wait'?0.5:D.phase==='fly'||D.phase==='down'?2.9:1.2;p.arms.forEach((a,i)=>{a.rotation.x=(i===0?-1:1)*up*0.5;a.rotation.z=-up*0.55})}
+    if(p.species!=='human'&&p.legs&&(D.phase==='fly')){p.legs[0].rotation.z=p.legs[1].rotation.z=-0.9;p.legs[2].rotation.z=p.legs[3].rotation.z=0.7}
+  }
+  if(M.saveFlash&&M.saveFlash.t>0){M.saveFlash.t-=realDt;const el=$('#saveFlash');if(el){el.hidden=M.saveFlash.t<=0;el.textContent=M.saveFlash.txt}}
 }
 // realistic scoring: about 2-3 goals a match whatever the length; skill still decides who scores
 const GOALS_PER_MATCH=2.6;
@@ -3336,11 +3418,12 @@ function gkAI(p,dt,sp){
   const M=match,P=M.P,t=p.sc.team,dir=dirOf(t),b=M.ball,bw=fromW(P,b.pos.x,b.pos.z);
   const ownA=-dir*P.len/2,dBall=Math.hypot(bw.a-ownA,bw.c);
   if(!M.carrier&&dBall<3.2&&b.vel.length()<6){moveTo(p,b.pos.x,b.pos.z,sp,dt);return}
-  let c=clamp(bw.c*0.55,-P.goalW/2+0.2,P.goalW/2-0.2);
+  let c=clamp(bw.c*0.55,-P.goalW/2+0.2,P.goalW/2-0.2),out=0.5;
+  const cr=M.carrier;if(cr&&cr.sc.team!==t){const cw=fromW(P,cr.pos.x,cr.pos.y),dd=Math.hypot(cw.a-ownA,cw.c);if(dd<8){out=0.5+clamp((8-dd)*0.22,0,1.4)*(0.6+0.4*effSkill(p,'gk')/100);c=clamp(cw.c*(out/Math.max(dd,1))*1.1+c*0.3,-P.goalW/2,P.goalW/2)}}
   // read a shot coming in: slide to where it will cross the line
   const va=P.lx?b.vel.x:b.vel.z,vc=P.lx?b.vel.z:b.vel.x;
   if(!M.carrier&&va*dir<-3){const tt=(ownA-bw.a)/va;if(tt>0&&tt<1.5)c=clamp(bw.c+vc*tt,-P.goalW/2,P.goalW/2)}
-  const w=toW(P,ownA+dir*0.5,c);moveTo(p,w.x,w.z,sp*(0.8+0.4*effSkill(p,'rea')/100),dt);
+  const w=toW(P,ownA+dir*out,c);moveTo(p,w.x,w.z,sp*(0.8+0.4*effSkill(p,'rea')/100),dt);
 }
 function persOf(p){return p.sc.pers||(p.sc.pers={du:rand(-0.06,0.06),dv:rand(-0.14,0.14),runner:Math.random(),dribbler:Math.random(),ph:rand(0,6.28),jx:0,jz:0,jt:0})}
 function soccerAI(p,dt){
@@ -3425,7 +3508,7 @@ function soccerTick(p,dt){
   if(M.phase!=='play'){p.speed=0;
     if(M.phase==='goal'&&p.sc.team===M.lastGoal){p.sc.jump=(p.sc.jump||0)+dt}
     if(M.phase!=='rollcall'){const b=M.ball.pos;face(p,b.x,b.z,dt)}
-  }else if(M.ctrl===p)soccerCtrl(p,dt);else soccerAI(p,dt);
+  }else if(p.sc.dive)p.speed=0;else if(M.ctrl===p)soccerCtrl(p,dt);else soccerAI(p,dt);
   const K=M.drainK||1;
   if(M.phase==='half'){p.stamina=Math.min(100,p.stamina+dt*5);p.health=Math.min(100,p.health+dt*2)}
   else if(p.speed>0.5)p.stamina=Math.max(0,p.stamina-dt*0.06*K*(1.6-effSkill(p,'sta')/100));else p.stamina=Math.min(100,p.stamina+dt*0.03*K);
@@ -3463,6 +3546,7 @@ function ballBounds(){
 }
 function ballStep(dt){
   const M=match,b=M.ball;
+  gkDiveStep(dt);if(M.phase==='play')gkWatch();
   if(M.carrier){const c=M.carrier,hx=Math.cos(c.heading),hz=Math.sin(c.heading),off=c.r+b.r+0.04;
     b.pos.set(c.pos.x+hx*off,b.r,c.pos.y+hz*off);b.vel.set(hx*c.speed,0,hz*c.speed);}
   else{
@@ -3472,7 +3556,10 @@ function ballStep(dt){
   }
   const g=ballBounds();
   b.mesh.position.copy(b.pos);b.mesh.rotation.x+=b.vel.z*dt/b.r;b.mesh.rotation.z-=b.vel.x*dt/b.r;
-  if(g){if(!b.sure&&Math.random()>0.07*paceK()*volK()&&keeperCatch(g))return;onGoal(g)}
+  if(g){
+    const gk=goalKeeperOf(g==='A'?'B':'A'),D=gk&&gk.sc.dive;
+    if(D&&D.outcome==='save'&&!D.done){resolveSave(gk,true);return}
+    if(!b.sure&&!b.planned&&Math.random()>0.07*paceK()*volK()&&keeperCatch(g))return;onGoal(g)}
 }
 function possessionStep(dt){
   const M=match,b=M.ball;if(M.carrier||b.pos.y>0.5)return;
@@ -3480,6 +3567,8 @@ function possessionStep(dt){
   const cands=allPlayers().filter(p=>!p.dead&&p.sc.cd<=0).map(p=>({p,d:ballDist(p)})).sort((x,y)=>x.d-y.d);
   for(const {p,d} of cands){
     const gk=p.sc.slot&&p.sc.slot.role==='GK',reach=p.r+b.r+0.12+(gk?0.3:0);if(d>reach)break;
+    if(p.sc.dive&&p.sc.dive.phase!=='up'&&!(p.sc.dive.done&&M.carrier===p))continue;
+    if(gk&&b.planned&&spd>5&&!b.sure)continue;
     if(spd>5){if(b.sure&&M.lastTouch&&M.lastTouch.sc.team!==p.sc.team)return;
       const ch=b.save?(gk?1:0.1):gk?0.3+0.62*effSkill(p,'gk')/100:0.15+0.35*effSkill(p,'rea')/100;
       if(Math.random()<ch){if(gk){M.carrier=p;M.lastTouch=p;b.vel.set(0,0,0);p.sc.saves=(p.sc.saves||0)+1;log(`🧤 ${p.name} 선방!`,'good',true)}
@@ -3610,9 +3699,9 @@ function pkUpdate(dt){
     return;
   }
   if(K.step==='fly'){
-    if(g){const w=toW(P,hl-0.3,K.sideG*P.goalW*0.35);const dd=steer(g,w.x,w.z,6,dt);if(dd<0.1)g.speed=0}
+    if(g&&!g.sc.dive&&K.t<1.32){const w=toW(P,hl-0.3,K.sideG*P.goalW*0.38);if(K.sideG)startDive(g,w,K.res==='save'?0.4:0.6,K.res==='save'?'pk':'beaten',0,0.32);else g.speed=0}
     const ba=fromW(P,b.pos.x,b.pos.z);
-    if(K.res==='save'&&!K.def&&ba.a>hl-0.9){K.def=true;if(P.lx){b.vel.x*=-0.35;b.vel.z=rand(-3,3)}else{b.vel.z*=-0.35;b.vel.x=rand(-3,3)}b.vel.y=1.5;if(g&&g.root)g.root.userData.barkPulse=1}
+    if(K.res==='save'&&!K.def&&ba.a>hl-0.9){K.def=true;if(g&&g.sc.dive)g.sc.dive.done=true;saveSound(false);if(P.lx){b.vel.x*=-0.35;b.vel.z=rand(-3,3)}else{b.vel.z*=-0.35;b.vel.x=rand(-3,3)}b.vel.y=1.5;if(g&&g.root)g.root.userData.barkPulse=1}
     ballStep(dt);
     if(K.t<=0){
       const t=K.turn,ok=K.res==='goal';K.kicks[t].push(ok);if(k)(K.log=K.log||[]).push({t,name:k.name,ok,saved:K.res==='save'?(g?g.name:''):null});M.pk.idx[t]++;
@@ -4623,7 +4712,7 @@ function frame(now){
     dev.tmParts.led.material=on?mat('#f0a43a',{emissive:'#f0a43a'}):mat('#2ad46a',{emissive:'#2ad46a'});}
   if(world.fastNow)fastVisual(realDt);
   for(const h of hitPool)if(h.life>0){h.life-=realDt;if(h.life<=0)h.sp.visible=false}
-  for(const d of dogs)animateDog(d,realDt);animIntruder(realDt);animOwner(realDt);if(match)match.villagers.forEach(v=>animHuman(v,realDt));farmVisual(realDt);updateFood();updateTrajectory();updateLight();updateTV(realDt);
+  for(const d of dogs)animateDog(d,realDt);animIntruder(realDt);animOwner(realDt);if(match)match.villagers.forEach(v=>animHuman(v,realDt));if(match)diveAnim(realDt);farmVisual(realDt);updateFood();updateTrajectory();updateLight();updateTV(realDt);
   updateHomecamControl(realDt);updateMainCam(realDt);
   wallVisibility(mainCam);renderer.render(scene,mainCam);
   for(const k in walls)walls[k].visible=true;if(dev.homecam)dev.homecam.group.visible=true;

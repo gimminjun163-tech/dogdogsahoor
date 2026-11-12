@@ -1168,6 +1168,10 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
   <h3 class="st-group">🕯 사망 통계 <small class="st-cut" id="stDeathN"></small></h3>
   <div class="st-two"><section class="st-sec "><h3>사망 연령대</h3><div class="st-pie"><canvas id="stDAge" aria-label="사망 연령대 원그래프" role="img"></canvas><div class="st-pieleg" id="stDAgeLeg"></div></div></section><section class="st-sec "><h3>전체 사망 원인</h3><div class="st-pie"><canvas id="stDCause" aria-label="전체 사망 원인 원그래프" role="img"></canvas><div class="st-pieleg" id="stDCauseLeg"></div></div></section></div>
   <div class="st-three"><section class="st-sec sm"><h3>🍼 아기 때 사망 원인</h3><div class="st-pie"><canvas id="stDC_baby" aria-label="🍼 아기 때 사망 원인 원그래프" role="img"></canvas><div class="st-pieleg" id="stDC_babyLeg"></div></div></section><section class="st-sec sm"><h3>🐕 어른 때 사망 원인</h3><div class="st-pie"><canvas id="stDC_adult" aria-label="🐕 어른 때 사망 원인 원그래프" role="img"></canvas><div class="st-pieleg" id="stDC_adultLeg"></div></div></section><section class="st-sec sm"><h3>👴 노령 때 사망 원인</h3><div class="st-pie"><canvas id="stDC_old" aria-label="👴 노령 때 사망 원인 원그래프" role="img"></canvas><div class="st-pieleg" id="stDC_oldLeg"></div></div></section></div>
+  <h3 class="st-group">📈 연령대별 사망률 · 번식률</h3>
+  <div class="st-three"><section class="st-sec sm"><h3>🍼 아기 사망률</h3><div class="st-pie"><canvas id="stMR_baby" aria-label="🍼 아기 사망률 원그래프" role="img"></canvas><div class="st-pieleg" id="stMR_babyLeg"></div></div></section><section class="st-sec sm"><h3>🐕 어른 사망률</h3><div class="st-pie"><canvas id="stMR_adult" aria-label="🐕 어른 사망률 원그래프" role="img"></canvas><div class="st-pieleg" id="stMR_adultLeg"></div></div></section><section class="st-sec sm"><h3>👴 노령 사망률</h3><div class="st-pie"><canvas id="stMR_old" aria-label="👴 노령 사망률 원그래프" role="img"></canvas><div class="st-pieleg" id="stMR_oldLeg"></div></div></section></div>
+  <div class="st-three"><section class="st-sec sm"><h3>🐕 어른 암컷 번식률</h3><div class="st-pie"><canvas id="stBR_adult" aria-label="🐕 어른 암컷 번식률 원그래프" role="img"></canvas><div class="st-pieleg" id="stBR_adultLeg"></div></div></section><section class="st-sec sm"><h3>👴 노령 암컷 번식률</h3><div class="st-pie"><canvas id="stBR_old" aria-label="👴 노령 암컷 번식률 원그래프" role="img"></canvas><div class="st-pieleg" id="stBR_oldLeg"></div></div></section><section class="st-sec sm"><h3>💞 전체 암컷 번식률</h3><div class="st-pie"><canvas id="stBR_all" aria-label="💞 전체 암컷 번식률 원그래프" role="img"></canvas><div class="st-pieleg" id="stBR_allLeg"></div></div></section></div>
+  <p class="small muted" style="margin:0">사망률 = 그 나이대가 된 동물 중 그 나이대에 세상을 떠난 비율. 번식률 = 그 나이대가 된 암컷 중 그 나이대에 아기를 낳은 비율 (아기는 번식하지 않아요). 이번 시뮬레이션을 시작한 뒤부터 세요.</p>
   <details class="st-sec"><summary>표로 보기 (최근 기록 12개)</summary><div class="st-tablewrap"><table class="st-table" id="stTable"></table></div></details>
 </div></div>
 <div class="skipov" id="warnOv" hidden role="alertdialog" aria-modal="true" aria-labelledby="warnTitle"><div class="skipcard"><b id="warnTitle">⚠ 300마리 제한을 풀까요?</b><span>제한을 풀면 동물이 아주 빠르게 늘어나요 (테스트: 강아지 60마리로 시작해 5년 만에 약 5만 마리). 수명을 짧게 하거나 넘기는 해를 짧게 하면 덜 늘어나요. 그러면 계산이 아주 오래 걸리고, 끝난 뒤 3D 화면이 매우 느려지거나 브라우저 탭이 멈추고 꺼질 수 있어요. 진행 중 저장되지 않은 내용은 사라질 수 있어요.</span><div class="row2"><button class="btn" id="warnNo">취소 (제한 유지)</button><button class="btn danger" id="warnYes">그래도 풀기</button></div></div></div>
@@ -1991,7 +1995,7 @@ function newWorldState(startMin){
   return {t:startMin,day:1,tank:2000,tankCap:2000,bowl:0,bowlCap:300,food:0,foodCap:150,stock:3000,
     pump:{on:false,ml:0,dog:null},launcherBalls:3,launchQ:0,events:[],evId:1,lastAlertT:-99,
     voiceUntil:-1,voiceActive:false,stolen:0,alertShown:false,lowWaterWarned:false,emptyFoodWarned:false,
-    pad:{waste:[],cleaning:0,waitT:0,mode:$('#padMode')?$('#padMode').value:'3',noSheetWarned:false,dirtyWarned:false},floorMess:[],sheets:30,dirt:0,snacks:30,tv:{on:false,ch:'dog',offAt:-1},music:{on:false,genre:'classic',offAt:-1},money:100000,bill:{day:0,today:{},yest:{},stolen:0,incToday:0,incTotal:0},powerOut:false,deathStats:{baby:{},adult:{},old:{}},ai:null,hist:[],histEvery:60,histLast:-1e18,farmFood:0,tm:{user:null,speed:'mid',auto:true,minutes:0,start:0},
+    pad:{waste:[],cleaning:0,waitT:0,mode:$('#padMode')?$('#padMode').value:'3',noSheetWarned:false,dirtyWarned:false},floorMess:[],sheets:30,dirt:0,snacks:30,tv:{on:false,ch:'dog',offAt:-1},music:{on:false,genre:'classic',offAt:-1},lifeStats:{entered:{baby:0,adult:0,old:0},enteredF:{baby:0,adult:0,old:0},bredF:{adult:0,old:0},litters:{adult:0,old:0}},money:100000,bill:{day:0,today:{},yest:{},stolen:0,incToday:0,incTotal:0},powerOut:false,deathStats:{baby:{},adult:{},old:{}},ai:null,hist:[],histEvery:60,histLast:-1e18,farmFood:0,tm:{user:null,speed:'mid',auto:true,minutes:0,start:0},
     nextHourT:Math.ceil(startMin/60)*60+0.001,born:0,deaths:0,strayN:0,lastVisitDay:-1,ownerDead:false,autoDrop:null,breakLoop:false,fastNow:false,
     farm:{crop:'corn',growth:0.35,anim:0,harvests:0,foodMade:0,snackMade:0},breedOn:true,cardsDirty:true};
 }
@@ -2614,6 +2618,7 @@ function breedTick(){
 }
 function giveBirth(m){
   const P=m.pregnant;m.pregnant=null;m.lastBirth=world.t;
+  recBreed(m);
   const n=Math.max(1,litterSize(BREEDS[m.breed]));const born=$('#adoptOut').checked?Math.min(n,Math.max(0,MAX_PETS-dogs.length)):n;const kids=[];
   for(let i=0;i<born;i++){
     const br=Math.random()<0.5?m.breed:(P.dadBreed||m.breed),col=Math.random()<0.5?m.color:(P.dadColor||m.color);const dadA=dogs.find(x=>x.id===P.dad);
@@ -2630,7 +2635,7 @@ function giveBirth(m){
 function lifeStep(h){
   for(const d of dogs.slice()){
     if(d.dead)continue;
-    d.age+=h/YEAR_MIN;
+    d.age+=h/YEAR_MIN;trackGroup(d);
     if(d.age<1.25)applyGrowth(d);
     if(d.pregnant&&world.t>=d.pregnant.due)giveBirth(d);
     if(d.age>=d.lifespan){die(d,'노환');continue}
@@ -4005,7 +4010,7 @@ function skipStep(S){
   const t=Math.min(S.end,world.t+S.H),h=t-world.t;world.t=t;
   const alive=S.recs;
   for(const r of alive.slice()){
-    r.age+=h/YEAR_MIN;r.happy=clamp(r.happy+(skipHappyTarget(r)-r.happy)*(1-Math.exp(-h/240)));r.health=Math.max(r.health,80);
+    r.age+=h/YEAR_MIN;trackGroup(r);r.happy=clamp(r.happy+(skipHappyTarget(r)-r.happy)*(1-Math.exp(-h/240)));r.health=Math.max(r.health,80);
     r.hunger=30;r.thirst=30;
     if(r.pregnant&&world.t>=r.pregnant.due)skipBirth(S,r);
     if(r.age>=r.lifespan){recDeath(r,'노환');S.recs.splice(S.recs.indexOf(r),1);if(r.root)S.dead.push(r);S.deathN=(S.deathN||0)+1;if(NAMES.dup!=='same'||!S.recs.some(o=>o.name===r.name))S.used.delete(r.name);S.lastNames.push(`${r.name}(${Math.floor(r.age)}살)`);if(S.lastNames.length>6)S.lastNames.shift()}
@@ -4028,7 +4033,7 @@ function skipStep(S){
   recordHist(false,S.recs);
 }
 function skipBirth(S,m){
-  const P=m.pregnant;m.pregnant=null;m.lastBirth=world.t;
+  const P=m.pregnant;m.pregnant=null;m.lastBirth=world.t;recBreed(m);
   const n=Math.max(1,litterSize(BREEDS[m.breed]));let room=Math.max(0,Math.min(S.cap,safeLimit())-S.recs.length);
   // house full: the oldest animals past breeding age (females 10+, males 12+) go to a new family so the family line goes on
   if(room<n){const old=S.recs.filter(r=>r!==m&&r.id!==P.dad&&!r.pregnant&&r.age>=(r.sex==='f'?10:12)).sort((a,b)=>b.age-a.age);
@@ -4262,7 +4267,7 @@ function renderStats(){
   $('#stAgeLeg').innerHTML=ageParts.map(p=>`<div><span><i style="background:${p.col}"></i>${p.n}</span><b>${p.v}마리 · ${pups.length?Math.round(p.v/pups.length*100):0}%</b></div>`).join('')+(pups.length?`<div class="small muted">노령: 8살 이상이거나 자기 수명의 60%를 넘은 강아지</div>`:'<div class="small muted">강아지가 없어요</div>');
   const bars=[['행복도',avg('happy'),'#eb6834'],['체력',avg('stamina'),'#2a78d6'],['건강',avg('health'),'#1baf7a'],['배고픔',avg('hunger'),'#eda100'],['목마름',avg('thirst'),'#6250d6']];
   $('#stBars').innerHTML=bars.map(([l,v,c])=>`<div class="st-bar"><span>${l}</span><span class="tr"><i style="width:${clamp(v)}%;background:${c}"></i></span><b>${n?Math.round(v):'-'}</b></div>`).join('')+'<p class="small muted" style="margin:0">배고픔·목마름은 낮을수록 좋아요.</p>';
-  renderDeaths();
+  renderDeaths();renderRates();
   const last=H.slice(-12).reverse();
   $('#stTable').innerHTML='<thead><tr><th>시각</th><th>강아지</th><th>고양이</th><th>행복도</th><th>체력</th><th>건강</th></tr></thead><tbody>'+last.map(r=>`<tr><td>${fmtTFull(r[0])}</td><td>${r[1]}</td><td>${r[2]}</td><td>${Math.round(r[3])}</td><td>${Math.round(r[4])}</td><td>${Math.round(r[5])}</td></tr>`).join('')+'</tbody>';
 }
@@ -4473,7 +4478,7 @@ function autoFightCorpses(){
 /* ---------- death statistics & illness switch ---------- */
 const ILL={on:true};
 function recDeath(d,cause){
-  if(!world||!world.deathStats||d.species==='human'||d.stray)return;
+  if(!world||!world.deathStats||d.species==='human'||d.stray)return;trackGroup(d);
   const g=d.age<1?'baby':isOld(d)?'old':'adult',c=cause==='노환'||cause==='싸움'?cause:'병';world.deathStats[g][c]=(world.deathStats[g][c]||0)+1;
 }
 const D_CAUSE=[['노환','🕊 노환','#2a78d6'],['병','🦠 병','#eb6834'],['싸움','⚔ 싸움','#6250d6']];
@@ -4485,6 +4490,29 @@ function renderDeaths(){
   const ages=D_AGE.map(([k,n,sh,col])=>({n,sh,col,v:sum(D[k])}));drawPie($('#stDAge'),ages);$('#stDAgeLeg').innerHTML=pieLeg(ages,tot,'아직 떠난 동물이 없어요');
   const causes=D_CAUSE.map(([k,n,col])=>({n,sh:k,col,v:(D.baby[k]||0)+(D.adult[k]||0)+(D.old[k]||0)}));drawPie($('#stDCause'),causes);$('#stDCauseLeg').innerHTML=pieLeg(causes,tot,'아직 떠난 동물이 없어요');
   for(const [k] of D_AGE){const ps=D_CAUSE.map(([c,n,col])=>({n,sh:c,col,v:D[k][c]||0})),t=sum(D[k]);drawPie($('#stDC_'+k),ps);$('#stDC_'+k+'Leg').innerHTML=pieLeg(ps,t,'이 나이대에 떠난 동물이 없어요')}
+}
+
+/* ---------- rates by age group ---------- */
+const lifeGroup=d=>d.age<1?'baby':isOld(d)?'old':'adult';
+// counts each animal once per age group it reaches (animals present at the start count for their current group)
+function trackGroup(d){
+  if(!world||!world.lifeStats||d.stray||d.species==='human')return;const g=lifeGroup(d);if(d.lg===g)return;d.lg=g;
+  const L=world.lifeStats;L.entered[g]++;if(d.sex==='f'){L.enteredF[g]++;if(g!=='baby'&&!d.fertileSeen){d.fertileSeen=true;L.enteredFAny=(L.enteredFAny||0)+1}}
+}
+function recBreed(m){
+  if(!world||!world.lifeStats||m.stray)return;trackGroup(m);const g=lifeGroup(m);if(g==='baby')return;const L=world.lifeStats;
+  L.litters[g]=(L.litters[g]||0)+1;m.bredIn=m.bredIn||{};if(!m.bredIn[g]){m.bredIn[g]=true;L.bredF[g]++;if(!m.everBred){m.everBred=true;L.bredAny=(L.bredAny||0)+1}}
+}
+function renderRates(){
+  const L=world.lifeStats,D=world.deathStats||{baby:{},adult:{},old:{}},sum=o=>Object.values(o||{}).reduce((a,v)=>a+v,0);if(!L)return;
+  for(const [g] of D_AGE){
+    const ent=L.entered[g],dead=Math.min(ent,sum(D[g])),ps=[{n:'🕯 그 나이대에 사망',sh:'사망',col:'#d03b3b',v:dead},{n:'🌱 무사히 지남·살아 있음',sh:'생존',col:'#0ca30c',v:Math.max(0,ent-dead)}];
+    drawPie($('#stMR_'+g),ps,'사망');$('#stMR_'+g+'Leg').innerHTML=pieLeg(ps,ent,'아직 이 나이대가 된 동물이 없어요')+(ent?`<div class="small muted">이 나이대가 된 동물 ${ent}마리</div>`:'');
+  }
+  const brPie=(id,ent,bred,extra)=>{const ps=[{n:'💞 아기를 낳음',sh:'번식',col:'#c4497a',v:Math.min(ent,bred)},{n:'⚪ 낳지 않음',sh:'안 함',col:'#9aa3a8',v:Math.max(0,ent-bred)}];drawPie($(id),ps,'번식');$(id+'Leg').innerHTML=pieLeg(ps,ent,'아직 해당하는 암컷이 없어요')+(ent?`<div class="small muted">${extra}</div>`:'')};
+  brPie('#stBR_adult',L.enteredF.adult,L.bredF.adult,`어른이 된 암컷 ${L.enteredF.adult}마리 · 출산 ${L.litters.adult||0}번`);
+  brPie('#stBR_old',L.enteredF.old,L.bredF.old,`노령이 된 암컷 ${L.enteredF.old}마리 · 출산 ${L.litters.old||0}번`);
+  brPie('#stBR_all',L.enteredFAny||0,L.bredAny||0,`번식 나이(1살)가 된 암컷 ${L.enteredFAny||0}마리 중 한 번이라도 낳은 비율`);
 }
 function setIll(on){ILL.on=on;$$('[data-illon]').forEach(x=>x.checked=on);$$('[data-illnote]').forEach(n=>n.textContent=on?'건강이 0이 되면 병으로 세상을 떠나요.':'건강이 0이 되어도 1로 버텨요. 싸움으로 죽거나 노환은 그대로예요.')}
 

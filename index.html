@@ -136,6 +136,10 @@ input[type="range"]{width:100%;accent-color:var(--accent)}
 .bigtoggle:has(input:not(:checked)){border-color:var(--accent)}
 .st-group{font-size:18px;margin:4px 0 -4px}
 .st-sec.sm .st-pie canvas{width:120px;height:120px}
+.money-big{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.money-big b{font-size:28px;font-variant-numeric:tabular-nums;line-height:1.1}
+.moneychip{font-variant-numeric:tabular-nums;font-weight:700}
+.moneychip.out{background:var(--alert);color:#fff;border-color:var(--alert)}
 .st-three{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
 .st-chart.sm{height:170px}
 .st-now{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}
@@ -474,6 +478,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
   <span class="phase" id="phaseLbl">1단계 · 방 꾸미기</span>
   <button class="modechip" id="modeChip" hidden title="눌러서 관리 방식 바꾸기">모두 자동화</button>
   <span class="spacer"></span>
+  <div class="clock moneychip" id="moneyBox" hidden title="가계부">💰 <span id="moneyTxt">0원</span></div>
   <div class="clock" id="clockBox" hidden><span class="sun" id="sunDot"></span><span id="clockTxt">1일차 08:00</span></div>
   <div class="seg" id="speedSeg" role="group" aria-label="시간 배속" hidden></div>
   <button class="iconbtn" id="pauseBtn" aria-pressed="false" hidden>⏸ 일시정지</button>
@@ -556,6 +561,8 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
       <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="musicAutoPre" data-mirror="musicAuto" checked> 자동화일 때 음악 자동으로 틀기 (밤엔 자장가, 지치면 자장가, 우울하면 신나는 동요)</label>
         </div>
       <div class="stack">
+        <h3>💰 시작할 때 돈</h3>
+        <label class="f">가진 돈 (전기 요금으로 써요)<select id="startMoney"><option value="30000">30,000원 (빠듯함)</option><option value="100000" selected>100,000원</option><option value="300000">300,000원</option><option value="1000000">1,000,000원</option><option value="inf">무한 (전기 요금 걱정 없음)</option></select></label>
         <h3>생명 · 시간 넘기기 (미리 설정)</h3>
         <label class="bigtoggle"><input type="checkbox" data-illon checked><span><b>🦠 병으로 죽는 것 허용</b><small data-illnote>건강이 0이 되면 병으로 세상을 떠나요.</small></span></label>
         <div class="row2"><label class="f">수명 최소 (살)<input type="number" id="lifeMinPre" data-mirror="lifeMin" value="15" min="1" max="10000" step="0.5"></label><label class="f">수명 최대 (살)<input type="number" id="lifeMaxPre" data-mirror="lifeMax" value="20" min="1" max="10000" step="0.5"></label></div>
@@ -1016,6 +1023,27 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
       </section>
 
       <!-- farm -->
+      <!-- money -->
+      <section class="card panel home-only" id="moneyPanel">
+        <div class="panel-head"><h2>💰 가계부</h2><span class="tag" id="powerTag">⚡ 전기 정상</span></div>
+        <div class="money-big"><b id="moneyBig">100,000원</b><span id="moneyDelta" class="small muted"></span></div>
+        <div class="kv">
+          <span>오늘 전기 요금</span><b id="billToday">0원</b>
+          <span>어제 전기 요금</span><b id="billYest">0원</b>
+          <span>오늘 수출 수입</span><b id="incToday">0원</b>
+          <span>지금까지 수출</span><b id="incTotal">0원</b>
+          <span>강도에게 뺏긴 돈</span><b id="stolenTotal">0원</b>
+        </div>
+        <details><summary class="small">오늘 기기별 전기 요금</summary><div class="kv small" id="billList"></div></details>
+        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="autoExport" checked> 🚢 남는 수확물 자동 수출</label>
+        <div class="row2">
+          <label class="f">남겨 둘 농장 사료<select id="keepFood"><option value="500">500g</option><option value="1500" selected>1,500g</option><option value="3000">3,000g</option><option value="5000">5,000g (꽉 차면만)</option></select></label>
+          <label class="f">남겨 둘 간식<select id="keepSnack"><option value="5">5개</option><option value="20" selected>20개</option><option value="50">50개</option></select></label>
+        </div>
+        <div class="row2"><button class="btn" id="sellNow">🚢 지금 수출하기</button><button class="btn" id="addMoney">💵 용돈 +10,000원</button></div>
+        <p class="small muted">전기를 쓰는 기기(급수대 펌프·공 발사기·자동 배변판·TV·음악·런닝머신·홈캠·자동화 농장·조명·로봇청소기)는 돈이 들어요. 돈이 0원이 되면 정전돼서 모두 멈춰요. 농장 사료 1g은 4원, 간식 1개는 150원에 수출해요.</p>
+      </section>
+
       <section class="card panel home-only" id="farmPanel" hidden>
         <div class="panel-head"><h2>자동화 농장</h2><span class="tag" id="farmTag"></span></div>
         <div class="bowlbar wide"><span id="farmFill" style="width:0%"></span></div>
@@ -1028,14 +1056,14 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
           <span>만든 사료</span><b id="farmFood">0 g</b>
           <span>만든 간식</span><b id="farmSnack">0개</b>
         </div>
-        <p class="small">스프링클러가 물을 주고 로봇이 수확해요. 수확물은 농장 사료로 쌓여서 밥 줄 때 기본 사료보다 먼저 쓰여요. 작물을 바꾸면 처음부터 다시 심어요.</p>
+        <p class="small">스프링클러가 물을 주고 로봇이 수확해요. 수확물은 농장 사료로 쌓여서 밥 줄 때 기본 사료보다 먼저 쓰여요. 작물을 바꾸면 처음부터 다시 심어요. 방 꾸미기에서 농장을 여러 개 놓으면 모든 농장에 같은 작물을 심고, 수확량이 농장 수만큼 늘어나요 (농장마다 전기 요금도 들어요).</p>
       </section>
 
       <!-- intruder -->
       <section class="card panel home-only">
         <div class="panel-head"><h2>침입자 상황 만들기</h2></div>
         <div class="row2">
-          <label class="f">침입자<select id="intKind"><option value="human">도둑 (사람)</option><option value="cats">길고양이</option></select></label>
+          <label class="f">침입자<select id="intKind"><option value="human">강도 (사람 · 물건과 돈을 훔쳐요)</option><option value="cats">길고양이</option><option value="lion">🦁 사자</option></select></label>
           <label class="f">침입 경로<select id="intEntry"><option value="door">현관문</option><option value="window">창문</option></select></label>
         </div>
         <div class="row2" id="intHumanBox">
@@ -1046,6 +1074,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
           <label class="f">길고양이 수<select id="intCats"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option></select></label>
           <p class="small" style="align-self:end;margin:0">강아지들과 마주치면 바로 싸워요.</p>
         </div>
+        <p class="small" id="intLionBox" hidden style="margin:0">🦁 사자는 강아지와 고양이를 사냥해요. 무척 세서 여럿이 힘을 합쳐야 쫓아낼 수 있고, 지치면 도망가요.</p>
         <label class="f">예약 시각<input type="time" id="intTime" value="02:30"></label>
         <div class="row2"><button class="btn" id="intAdd">예약하기</button><button class="btn danger" id="intNow">지금 침입</button></div>
         <div class="evlist" id="evList"></div>
@@ -1174,7 +1203,7 @@ const FURN={
   door:{n:'현관문',wall:true,unique:true,len:1.0,c:'#8a5a3a'},
   window:{n:'창문',wall:true,unique:true,len:1.3,c:'#8fc8e6'},
   petdoor:{n:'마당 문',wall:true,unique:true,len:0.9,c:'#4f9a5c'},
-  farm:{n:'자동화 농장',w:2.4,d:1.6,h:0.4,c:'#6f9a3a',solid:true,device:true,unique:true,yard:true},
+  farm:{n:'자동화 농장',w:2.4,d:1.6,h:0.4,c:'#6f9a3a',solid:true,device:true,yard:true},
 };
 const DOOR_W=0.9,DOOR_H=0.85;
 const REQUIRED=['water','food','launcher','homecam','door'];
@@ -1191,6 +1220,7 @@ const BALL_TYPES={
 };
 // breeds: k = body scale, litter = [min,max] puppies per birth
 const BREEDS={
+  lion:{n:'사자',sp:'lion',sz:'맹수',k:2.3,c:'#c8913f',litter:[1,3]},
   maltese:{n:'말티즈',sp:'dog',sz:'소형',k:0.6,c:'#f4f1ea',litter:[2,5]},
   pomeranian:{n:'포메라니안',sp:'dog',sz:'소형',k:0.58,c:'#e0a050',litter:[2,5]},
   chihuahua:{n:'치와와',sp:'dog',sz:'소형',k:0.52,c:'#d9b48a',litter:[2,5]},
@@ -1837,7 +1867,7 @@ function buildFurniture(it){
       robot.position.set(-w/2+0.2,0.12,d/2-0.22);g.add(robot);
       // solar panel
       g.add(cyl(0.02,0.02,0.6,'#6b7378',w/2-0.15,0.3,d/2-0.15,6));const sol=box(0.5,0.02,0.34,'#1d3b6a',w/2-0.15,0.62,d/2-0.15,{metalness:0.4,roughness:0.3});sol.rotation.x=-0.5;g.add(sol);
-      dev.farmParts={plants,arm,water,robot,rled,w,d};break;}
+      (dev.farmList=dev.farmList||[]).push({plants,arm,water,robot,rled,w,d});dev.farmParts=dev.farmList[0];break;}
   }
   return g;
 }
@@ -1867,8 +1897,8 @@ let animalUid=1,corpses=[],fights=[];const hitPool=[];
 function makeAnimal(c,at){
   const Bd=BREEDS[c.breed]||BREEDS.golden;const root=new THREE.Group();const pose=new THREE.Group();root.add(pose);
   const col=c.color,dark=new THREE.Color(col).multiplyScalar(0.7).getStyle();
-  const parts=c.species==='cat'?buildCat(pose,col,dark):buildDog(pose,col,dark);
-  const label=textSprite(c.name,{size:0.26,bg:c.stray?'rgba(140,60,40,.85)':'rgba(12,20,22,.78)'});label.position.set(0,c.species==='cat'?0.85:1.05,0);root.add(label);
+  const parts=c.species==='cat'||c.species==='lion'?buildCat(pose,col,dark,c.species==='lion'):buildDog(pose,col,dark);
+  const label=textSprite(c.name,{size:0.26,bg:c.stray?'rgba(140,60,40,.85)':'rgba(12,20,22,.78)'});label.position.set(0,c.species==='cat'||c.species==='lion'?0.85:1.05,0);root.add(label);
   const emo=textSprite('',{bg:'#ffffff',fg:'#16242a',size:0.3});emo.position.set(0,c.species==='cat'?1.15:1.38,0);root.add(emo);
   scene.add(root);
   const spawn=at||findFree(rand(-W/2+0.8,W/2-0.8),rand(-D/2+0.8,D/2-0.8));
@@ -1881,7 +1911,7 @@ function makeAnimal(c,at){
   applyGrowth(d);return d;
 }
 function applyGrowth(d){const adult=d.species==='cat'?0.8:1;d.k=d.baseK*(0.45+0.55*Math.min(1,d.age/adult));d.root.scale.setScalar(d.k);d.r=(d.species==='cat'?0.2:0.24)*d.k}
-function buildCat(pose,col,dark){
+function buildCat(pose,col,dark,lion){
   pose.add(box(0.42,0.17,0.17,col,0,0.27,0));
   const head=new THREE.Group();head.position.set(0.26,0.4,0);pose.add(head);
   head.add(box(0.15,0.13,0.15,col,0,0,0));head.add(box(0.05,0.05,0.08,'#f2e8dc',0.08,-0.03,0));
@@ -1893,6 +1923,7 @@ function buildCat(pose,col,dark){
   const legs=[];
   for(const [lx,lz] of [[0.15,0.06],[0.15,-0.06],[-0.15,0.06],[-0.15,-0.06]]){const piv=new THREE.Group();piv.position.set(lx,0.19,lz);piv.add(box(0.05,0.19,0.05,col,0,-0.095,0));pose.add(piv);legs.push(piv)}
   const tail=new THREE.Group();tail.position.set(-0.21,0.32,0);const tm=box(0.3,0.035,0.035,dark,-0.1,0.11,0);tm.rotation.z=-1.05;tail.add(tm);pose.add(tail);
+  if(lion){const mane=box(0.1,0.24,0.27,'#7a4a1c',-0.04,0,0);head.add(mane);const tuft=box(0.07,0.07,0.07,'#5a3412',-0.27,0.37,0);tail.add(tuft)}
   return {head,legs,tail,tongue,earL,earR};
 }
 function buildDog(pose,col,dark){
@@ -1960,7 +1991,7 @@ function newWorldState(startMin){
   return {t:startMin,day:1,tank:2000,tankCap:2000,bowl:0,bowlCap:300,food:0,foodCap:150,stock:3000,
     pump:{on:false,ml:0,dog:null},launcherBalls:3,launchQ:0,events:[],evId:1,lastAlertT:-99,
     voiceUntil:-1,voiceActive:false,stolen:0,alertShown:false,lowWaterWarned:false,emptyFoodWarned:false,
-    pad:{waste:[],cleaning:0,waitT:0,mode:$('#padMode')?$('#padMode').value:'3',noSheetWarned:false,dirtyWarned:false},floorMess:[],sheets:30,dirt:0,snacks:30,tv:{on:false,ch:'dog',offAt:-1},music:{on:false,genre:'classic',offAt:-1},deathStats:{baby:{},adult:{},old:{}},ai:null,hist:[],histEvery:60,histLast:-1e18,farmFood:0,tm:{user:null,speed:'mid',auto:true,minutes:0,start:0},
+    pad:{waste:[],cleaning:0,waitT:0,mode:$('#padMode')?$('#padMode').value:'3',noSheetWarned:false,dirtyWarned:false},floorMess:[],sheets:30,dirt:0,snacks:30,tv:{on:false,ch:'dog',offAt:-1},music:{on:false,genre:'classic',offAt:-1},money:100000,bill:{day:0,today:{},yest:{},stolen:0,incToday:0,incTotal:0},powerOut:false,deathStats:{baby:{},adult:{},old:{}},ai:null,hist:[],histEvery:60,histLast:-1e18,farmFood:0,tm:{user:null,speed:'mid',auto:true,minutes:0,start:0},
     nextHourT:Math.ceil(startMin/60)*60+0.001,born:0,deaths:0,strayN:0,lastVisitDay:-1,ownerDead:false,autoDrop:null,breakLoop:false,fastNow:false,
     farm:{crop:'corn',growth:0.35,anim:0,harvests:0,foodMade:0,snackMade:0},breedOn:true,cardsDirty:true};
 }
@@ -2095,6 +2126,8 @@ function decide(d){
   const cat=d.species==='cat';
   if(intruderActive()){if(cat){scare(d,intruder.pos.x,intruder.pos.y)}else setState(d,'alert',99);return}
   if(d.stray&&world.t>d.leaveAt){setState(d,'leave',40);return}
+  if(d.lion&&d.stamina<=30){if(!d.fled){d.fled=true;log(`🦁 지친 ${d.name}${josa(d.name,'이','가')} 꼬리를 내리고 도망가요!`,'good',true);toast(`🦁 ${d.name}${josa(d.name,'이','가')} 도망가요!`);dogs.forEach(o=>{if(!o.lion&&!o.dead)o.happy=clamp(o.happy+8)})}setState(d,'leave',40);return}
+  if(d.lion){let t=null,bd=1e9;for(const o of dogs){if(o===d||o.dead||o.lion||o.stray)continue;const dd=dist(d,o);if(dd<bd){bd=dd;t=o}}if(t&&d.stamina>25){d.target={x:t.pos.x,z:t.pos.y};setState(d,'wander',3);return}}
   // grumpy animals pick fights
   if(d.happy<30&&!d.stray&&d.age>=0.4&&d.stamina>20&&d.fightCD<=world.t&&Math.random()<0.4){
     let t=null,bd=5;for(const o of dogs){if(o===d||o.dead)continue;const dd=dist(d,o);if(dd<bd){bd=dd;t=o}}
@@ -2111,7 +2144,7 @@ function decide(d){
     if(Math.random()<0.55){const p=outside?findYardSpot():findFree(rand(-W/2+0.6,W/2-0.6),rand(-D/2+0.6,D/2-0.6));d.target=p;setState(d,'wander',outside?30:15);return}
     setState(d,Math.random()<0.6?'sit':'idle',rand(4,9));return;
   }
-  if(dev.treadmill&&world.tm&&world.tm.auto&&!aiQuiet()&&!world.tm.user&&d.stamina>60&&d.age>=0.5&&Math.random()<0.08){setState(d,'toTM',25);return}
+  if(dev.treadmill&&world.tm&&world.tm.auto&&!aiQuiet()&&hasPower()&&!world.tm.user&&d.stamina>60&&d.age>=0.5&&Math.random()<0.08){setState(d,'toTM',25);return}
   const fb=freeBall(d);
   if(fb&&d.stamina>30){fb.chasedBy=d.id;d.ball=fb;setState(d,'chase',25);return}
   const r=Math.random();
@@ -2219,7 +2252,7 @@ function updateDog(d,dt){
       if(dd<0.25){T.user=d;T.start=world.t;setState(d,'onTM',rand(15,30));log(`🏃 ${d.name}${josa(d.name,'이','가')} 런닝머신에 올라갔어요`)}
       else if(d.think<=0)setState(d,'idle',1);break}
     case 'onTM':{
-      const T=world.tm,e=tmEnds();if(T.user!==d){setState(d,'idle',1);break}
+      const T=world.tm,e=tmEnds();if(T.user!==d||!hasPower()){setState(d,'idle',1);break}
       d.pos.set(e.mid.x,e.mid.z);d.heading=e.head;d.lift=0.135;
       const v={slow:1.0,mid:1.8,fast:2.7}[T.speed]*Math.sqrt(d.k);d.speed=v;moving=true;tongue=T.speed!=='slow';
       const k=v/1.8;d.stamina=clamp(d.stamina-dt*0.22*k);d.health=clamp(d.health+dt*0.035*k);d.happy=clamp(d.happy+dt*0.07);
@@ -2307,8 +2340,8 @@ function updateWater(dt){
   const wdev=dev.water;if(!wdev)return;
   const near=dogs.find(d=>(d.state==='toWater'||d.state==='drink')&&distToBox(d.pos.x,d.pos.y,wdev.box)<0.85+d.r);
   const P=world.pump;
-  if(near&&world.bowl<world.bowlCap*0.9&&world.tank>0){
-    const ml=Math.min(dt*80,world.tank,world.bowlCap-world.bowl);world.tank-=ml;world.bowl+=ml;
+  if(near&&world.bowl<world.bowlCap*0.9&&world.tank>0&&hasPower()){
+    const ml=Math.min(dt*80,world.tank,world.bowlCap-world.bowl);world.tank-=ml;world.bowl+=ml;pay('pump',ml*0.04);
     if(!P.on){P.on=true;P.ml=0;P.dog=near.name}P.ml+=ml;
   }else if(P.on){P.on=false;if(P.ml>5){log(`자동 급수대가 ${P.dog}에게 물 ${Math.round(P.ml)}ml를 줬어요`)}}
   const parts=dev.waterParts;parts.stream.visible=P.on;
@@ -2394,9 +2427,10 @@ function accident(d){
 const PAD_CLEAN=1; // minutes the roller takes to clean the pad (was 3)
 function startClean(auto){
   const P=world.pad;if(P.cleaning>0||!dev.potty)return;
+  if(!hasPower()){if(!auto)toast('⚡ 정전이라 자동 배변판이 멈췄어요',true);return}
   if(!P.waste.length){if(!auto)toast('배변판이 이미 깨끗해요');return}
   if(world.sheets<=0){if(!auto||!P.noSheetWarned){P.noSheetWarned=true;toast('배변 시트가 없어서 청소할 수 없어요. 시트를 채워 주세요',true);log('배변 시트가 떨어져서 배변판을 못 치웠어요','bad')}return}
-  world.sheets--;P.cleaning=PAD_CLEAN;P.cleanAuto=auto;blip(520,0.1,0.06);
+  world.sheets--;pay('potty',40);P.cleaning=PAD_CLEAN;P.cleanAuto=auto;blip(520,0.1,0.06);
 }
 function finishClean(){
   const P=world.pad;const poo=P.waste.filter(w=>w.kind==='poo').length,pee=P.waste.length-poo;
@@ -2445,10 +2479,11 @@ function muzzle(){const it=dev.launcher.it;return new THREE.Vector3(it.x,0.5,it.
 function squeak(){if(!soundOn||quiet)return;const a=ac();if(!a)return;const n=a.currentTime;const o=a.createOscillator(),g=a.createGain();o.type='square';o.frequency.setValueAtTime(1400,n);o.frequency.exponentialRampToValueAtTime(2300,n+0.06);o.frequency.exponentialRampToValueAtTime(1500,n+0.14);
   g.gain.setValueAtTime(0.0001,n);g.gain.exponentialRampToValueAtTime(0.06,n+0.02);g.gain.exponentialRampToValueAtTime(0.0001,n+0.16);o.connect(g);g.connect(a.destination);o.start(n);o.stop(n+0.18)}
 function throwBall(vel,auto){
+  if(!hasPower()){if(!auto)toast('⚡ 정전이라 공 발사기가 멈췄어요',true);return false}
   if(world.launcherBalls<=0){if(!auto)toast('발사기에 공이 없어요. 공을 넣거나 강아지가 물어 올 때까지 기다려 주세요',true);return false}
   const s=selType();let b=nextBall(!auto);
   if(!b){toast(`발사기에 ${BALL_TYPES[s].n}이 없어요. 다른 종류를 고르거나 새로 넣어 주세요`,true);return false}
-  world.launcherBalls--;b.state='fly';b.chasedBy=null;const m=muzzle();const dir=vel.clone().normalize();
+  world.launcherBalls--;pay('launcher',15);b.state='fly';b.chasedBy=null;const m=muzzle();const dir=vel.clone().normalize();
   if(s!=='mix'&&b.type!==s)vel=vel.clone();
   if(auto)vel=vel.clone().multiplyScalar(b.type==='frisbee'?0.75:1);
   b.pos.copy(m).addScaledVector(dir,0.32);b.vel.copy(vel);b.restT=0;b.spin=b.type==='frisbee'?18:0;
@@ -2540,7 +2575,8 @@ function updateIntruder(dt){
     if(I.fear>I.courage*3.5){I.state='flee';log('강아지들이 짖어서 침입자가 도망갔어요!','good');toast('강아지들이 침입자를 쫓아냈어요');dogs.forEach(d=>d.happy=clamp(d.happy+12))}
   }
   if(I.state==='sneak'){const dist=steer(I,I.tgt.x,I.tgt.z,0.9,dt);I.speed=0.9;if(dist<0.25){I.state='steal';I.stealT=0}}
-  else if(I.state==='steal'){I.speed=0;I.stealT+=dt;if(I.stealT>7){I.state='flee';world.stolen++;log(`침입자가 ${I.tgt.name}에서 물건을 훔쳐 갔어요`,'bad');toast('물건을 도둑맞았어요',true);dogs.forEach(d=>d.happy=clamp(d.happy-8))}}
+  else if(I.state==='steal'){I.speed=0;I.stealT+=dt;if(I.stealT>7){I.state='flee';world.stolen++;const take=isFinite(world.money)&&world.money>0?Math.min(world.money,Math.round(world.money*rand(0.1,0.3)+rand(3000,8000))):0;if(take){world.money-=take;world.bill.stolen+=take;checkPower()}
+    log(`강도가 ${I.tgt.name}에서 물건을 훔치고${take?` 돈 ${won(take)}을 빼 갔어요`:' 갔어요'}`,'bad',true);toast(take?`💸 강도가 ${won(take)}을 빼 갔어요!`:'물건을 도둑맞았어요',true,true);dogs.forEach(d=>d.happy=clamp(d.happy-8))}}
   else if(I.state==='flee'){const dist=steer(I,I.entry.x,I.entry.z,2.6,dt);I.speed=2.6;if(dist<0.25){I.state='gone';scene.remove(I.g);log('침입자가 집 밖으로 나갔어요');dogs.forEach(d=>{if(d.state==='alert')setState(d,'idle',2)})}}
   if(I.state==='gone'){intruder=null;return}
 }
@@ -2674,6 +2710,8 @@ function startFight(a,b,cause){
   recruit(f,4.5,1);fightCenter(f);onFightStart(f);return f;
 }
 function recruitTeam(f,o){
+  // a lion: every other animal nearby may join against it (dogs braver than cats)
+  const lionA=f.A.some(x=>x.lion),lionB=f.B.some(x=>x.lion);if(lionA||lionB){if(o.lion)return [lionA?'A':'B',1];if(o.stray)return [null,0];return [lionA?'B':'A',o.species==='cat'?0.3:0.65]}
   const aSp=specOf(f.A),bSp=specOf(f.B);
   if(aSp&&bSp&&aSp!==bSp&&aSp!=='human'&&bSp!=='human'){if(o.species===aSp)return ['A',o.species==='cat'?0.45:0.7];if(o.species===bSp)return ['B',o.species==='cat'?0.45:0.7];return [null,0]}
   if(f.cause==='owner'){if(o.happy<30)return ['A',0.85];if(o.happy>=65&&o.species==='dog'&&!o.stray)return ['B',0.55];return [null,0]}
@@ -2716,8 +2754,8 @@ function pickTarget(d,en,T){
   return nearestOf(d,en);
 }
 function applyHit(a,t){
-  const base=a.species==='human'?3.0:a.species==='cat'?1.7:2.0;
-  const dmg=base*rand(0.7,1.3)*Math.pow(Math.max(0.3,a.k)/Math.max(0.3,t.k),0.6)*(a.stamina<20?0.7:1)*(a.name==='콩이'?2.2:1)/(t.name==='콩이'?3:1);
+  const base=a.lion?4.5:a.species==='human'?3.0:a.species==='cat'?1.7:2.0;
+  const dmg=base*rand(0.7,1.3)*Math.pow(Math.max(0.3,a.k)/Math.max(0.3,t.k),0.6)*(a.stamina<20?0.7:1)*(a.name==='콩이'?2.2:1)/(t.name==='콩이'?3:1)/(t.lion?2.5:1);
   t.stamina-=dmg;t.health=Math.max(0,t.health-dmg*0.5);t.happy=clamp(t.happy-dmg*0.35);
   a.stamina-=0.6;a.happy=clamp(a.happy-0.25);return dmg;
 }
@@ -3022,22 +3060,29 @@ function publicEnemy(){
 
 /* ======================= FARM ======================= */
 function updateFarm(h){
-  if(!dev.farm)return;const F=world.farm,C=CROPS[F.crop];
+  if(!dev.farm||!hasPower())return;const F=world.farm,C=CROPS[F.crop];
   if(F.anim>0){F.anim-=h;if(F.anim<=0){F.anim=0;harvest()}return}
   F.growth=Math.min(1,F.growth+h/C.grow);
   if(F.growth>=1){if(world.fastNow)harvest();else F.anim=8}
 }
 function harvest(){
   const F=world.farm,C=CROPS[F.crop];
-  const food=Math.max(0,Math.min(C.food,STOCK_MAX-world.farmFood)),snack=Math.max(0,Math.min(C.snack,SNACK_MAX-world.snacks));
+  const N=farmCount(),gf=C.food*N,gs=C.snack*N;
+  const food=Math.max(0,Math.min(gf,STOCK_MAX-world.farmFood)),snack=Math.max(0,Math.min(gs,SNACK_MAX-world.snacks));
+  // whatever does not fit in storage is shipped out straight away (when export is on)
+  if($('#autoExport').checked&&(gf>food||gs>snack))earnExport(gf-food,gs-snack,'수확하자마자 못 넣은');
   world.farmFood+=food;world.snacks+=snack;F.foodMade+=food;F.snackMade+=snack;F.harvests++;F.growth=0;
-  log(`🌱 자동화 농장이 ${C.n}${josa(C.n,'을','를')} 수확했어요 → ${[C.food?`사료 +${food}g`:'',C.snack?`간식 +${snack}개`:''].filter(Boolean).join(', ')}`,'good');
+  log(`🌱 자동화 농장${N>1?` ${N}곳`:''}이 ${C.n}${josa(C.n,'을','를')} 수확했어요 → ${[C.food?`사료 +${food}g`:'',C.snack?`간식 +${snack}개`:''].filter(Boolean).join(', ')}`,'good');
+  autoExport();
 }
 function farmVisual(realDt){
-  const P=dev.farmParts;if(!P||!world)return;const F=world.farm,C=CROPS[F.crop];
+  if(!dev.farmList||!world)return;for(const P of dev.farmList)farmVisualOne(P,realDt);
+}
+function farmVisualOne(P,realDt){
+  const F=world.farm,C=CROPS[F.crop];
   const s=0.25+0.75*F.growth;
   for(const p of P.plants){p.g.scale.setScalar(F.anim>0?Math.max(0.2,s*(F.anim/8)):s);p.fruit.visible=F.growth>0.55||F.anim>0;p.fruit.material=mat(C.c);p.leaf.material=mat(C.leaf);p.stem.material=mat(C.leaf)}
-  if(!paused)P.arm.rotation.y+=realDt*3;
+  if(!paused&&hasPower())P.arm.rotation.y+=realDt*3;
   const watering=F.anim<=0&&F.growth<1&&(world.t%180)<45;P.water.visible=watering;if(watering)P.water.rotation.y+=realDt*2;
   if(F.anim>0){const k=1-F.anim/8;P.robot.position.x=-P.w/2+0.2+(P.w-0.4)*k;P.robot.position.z=P.d/2-0.22-(P.d-0.44)*((k*3)%1)}
   P.rled.material=F.anim>0?mat('#f0a43a',{emissive:'#f0a43a'}):mat('#2ad46a',{emissive:'#2ad46a'});
@@ -3051,7 +3096,7 @@ function fastAnimal(d,h){
   d.hunger=clamp(d.hunger+h*0.1*(sl?0.5:1)*(d.pregnant?1.3:1));d.thirst=clamp(d.thirst+h*0.16*(sl?0.4:1));
   d.pee=clamp(d.pee+h*0.06*(sl?0.4:1));d.poo=clamp(d.poo+h*0.03*(sl?0.4:1));
   d.stamina=clamp(d.stamina+(sl?h*0.35:-h*0.05)+(world.music.on?h*MUSIC[world.music.genre].sta*0.5:0));
-  if(d.thirst>55){const need=d.thirst*4.5;let got=Math.min(world.bowl,need);world.bowl-=got;if(got<need&&dev.water){const t=Math.min(world.tank,need-got);world.tank-=t;got+=t}
+  if(d.thirst>55){const need=d.thirst*4.5;let got=Math.min(world.bowl,need);world.bowl-=got;if(got<need&&dev.water&&hasPower()){const t=Math.min(world.tank,need-got);world.tank-=t;got+=t;pay('pump',t*0.04)}
     if(got>0){d.thirst=clamp(d.thirst-got*0.22);d.pee=clamp(d.pee+got*0.12)}}
   if(d.hunger>50&&world.food>0){const g=Math.min(world.food,d.hunger/0.75);world.food-=g;d.hunger=clamp(d.hunger-g*0.75);d.poo=clamp(d.poo+g*0.35)}
   if(d.pee>70||d.poo>75)doBusiness(d,!!dev.potty);
@@ -3894,7 +3939,7 @@ function syncUI(){
   const mood=world.dirt<=0?'좋음':world.dirt<3?'조금 신경 씀':world.dirt<7?'불쾌함':'매우 불쾌함';$('#dirtMood').textContent=mood;$('#dirtMood').style.color=world.dirt>=3?'var(--alert)':'';
   $('#ballAdd').disabled=balls.length>=MAX_BALLS;
   const watching=dogs.filter(d=>d.state==='watchTV').length;
-  musicLive();aiUI();
+  musicLive();aiUI();moneyUI();
   $('#tvTag').textContent=!tvs.length?'TV장 없음':world.tv.on?`${TV_CH[world.tv.ch]} · ${watching}마리 시청${world.tv.offAt>0?' · '+fmtClock(world.tv.offAt)+' 꺼짐':''}`:'꺼짐';
   for(const d of dogs){if(!d.card)continue;
     const st=d.card.querySelector('.st');st.textContent=world.fastNow?(d.state==='sleep'?'자는 중':'생활 중'):(STATE_KO[d.state]||d.state);st.classList.toggle('hot',!!d.fight);
@@ -3923,7 +3968,7 @@ function syncUI(){
   $('#tmPanel').hidden=!dev.treadmill;if(dev.treadmill){const u=world.tm.user;$('#tmTag').textContent=u?`${u.name} 달리는 중`:'비어 있음';$('#tmMin').textContent=Math.round(world.tm.minutes)+'분'}
   // farm
   $('#farmPanel').hidden=!dev.farm;
-  if(dev.farm){const F=world.farm,C=CROPS[F.crop];$('#farmTag').textContent=F.anim>0?'수확 중…':`${C.n} ${Math.floor(F.growth*100)}%`;$('#farmFill').style.width=(F.growth*100)+'%';
+  if(dev.farm){const F=world.farm,C=CROPS[F.crop];$('#farmTag').textContent=(farmCount()>1?`${farmCount()}곳 · `:'')+(!hasPower()?'⚡ 정전으로 멈춤':F.anim>0?'수확 중…':`${C.n} ${Math.floor(F.growth*100)}%`);$('#farmFill').style.width=(F.growth*100)+'%';
     $('#farmHarv').textContent=F.harvests+'회';$('#farmFood').textContent=Math.round(F.foodMade)+' g';$('#farmSnack').textContent=F.snackMade+'개';
     $('#farmNext').textContent=F.anim>0?'지금':`${Math.ceil((1-F.growth)*C.grow/60)}시간 뒤`}
   $('#fastChip').hidden=!world.fastNow;
@@ -3978,6 +4023,7 @@ function skipStep(S){
     }
   }
   if(careMode==='auto'&&aiFBLimit()!=null&&world.t>=(S.fbNext||0)){S.fbNext=world.t+90*1440;S.fb=(S.fb||0)+skipForceBreed(S)}
+  skipMoney(S,h);
   S.peak=Math.max(S.peak,S.recs.length);
   recordHist(false,S.recs);
 }
@@ -4008,7 +4054,7 @@ function skipChunk(){
 }
 function finishSkip(){
   const S=skipping;if(!S)return;
-  world.nextHourT=Math.ceil(world.t/60)*60+0.001;
+  world.nextHourT=Math.ceil(world.t/60)*60+0.001;checkPower();
   if(world.events.length){world.events=world.events.filter(e=>e.at>world.t);renderEvents()}
   if(world.tv.on&&world.tv.offAt>0&&world.tv.offAt<=world.t)setTV(false);
   if(world.music.on&&world.music.offAt>0&&world.music.offAt<=world.t)setMusic(false);
@@ -4025,7 +4071,7 @@ function finishSkip(){
   world.born+=S.born;world.deaths+=S.deathN||0;world.cardsDirty=true;
   const yrs=((world.t-S.t0)/YEAR_MIN),yTxt=yrs>=S.Y-0.01?`${S.Y}년`:`${yrs.toFixed(1)}년`;
   const oldest=dogs.slice().sort((a,b)=>b.age-a.age)[0];
-  const res=`${yTxt}이 지났어요 · 태어남 ${S.born}마리 · 세상을 떠남 ${S.deathN||0}마리${S.adopted?` · 아기 입양 ${S.adopted}마리`:''}${S.retired?` · 나이 든 동물 입양 ${S.retired}마리`:''}${S.fb?` · 자동화 강제 번식 ${S.fb}쌍`:''} · 결혼 ${S.wed}쌍 · 가장 많을 때 ${S.peak}마리 · ${S.maxGen}세대까지`+
+  const res=`${yTxt}이 지났어요 · 태어남 ${S.born}마리 · 세상을 떠남 ${S.deathN||0}마리${S.adopted?` · 아기 입양 ${S.adopted}마리`:''}${S.retired?` · 나이 든 동물 입양 ${S.retired}마리`:''}${S.fb?` · 자동화 강제 번식 ${S.fb}쌍`:''}${S.money?` · 돈 ${S.money>=0?'+':''}${won(S.money)} (지금 ${won(world.money)})`:''} · 결혼 ${S.wed}쌍 · 가장 많을 때 ${S.peak}마리 · ${S.maxGen}세대까지`+
     (dogs.length?` · 지금 ${dogs.length}마리 (최고령 ${oldest.name} ${fmtAge(oldest.age)})`:' · 모두 무지개다리를 건너 집이 비었어요');
   log('⏩ '+res,'good',true);toast('⏩ '+yTxt+'이 지났어요',false,true);
   $('#skipTitle').textContent=`⏩ ${yTxt} 넘기기 끝`;$('#skipBar').style.width='100%';$('#skipText').textContent=res;
@@ -4072,6 +4118,7 @@ function musicUI(){
   $('#musicNote').textContent=(on?'♪ ':'')+G.note+(soundOn?'':' (소리를 꺼도 효과는 그대로예요)');
 }
 function setMusic(on){
+  if(on&&!hasPower()){toast('⚡ 정전이라 음악을 틀 수 없어요',true);musicUI&&world&&musicUI();return}
   if(!world)return;world.music.on=on;const m=parseInt($('#musicTimer').value,10);world.music.offAt=on&&m>0?world.t+m:-1;
   clearInterval(musicIv);musicIv=0;
   if(on){musicStep=0;musicNext=0;musicIv=setInterval(musicSchedule,80);musicSchedule()}
@@ -4305,9 +4352,14 @@ function aiCare(){
   const A=world.ai;if(!A||careMode!=='auto'||world.arena||match)return;
   const live=dogs.filter(d=>!d.dead&&!d.stray);if(!live.length)return;
   // robot vacuum: accidents on the floor are cleaned right away
-  if(world.floorMess.length){const n=world.floorMess.length;world.floorMess.forEach(w=>scene.remove(w.mesh));world.floorMess=[];log(`🤖 로봇청소기가 바닥 실수 ${n}곳을 치웠어요`,'good')}
+  if(world.floorMess.length&&hasPower()){const n=world.floorMess.length;pay('vacuum',25);world.floorMess.forEach(w=>scene.remove(w.mesh));world.floorMess=[];log(`🤖 로봇청소기가 바닥 실수 ${n}곳을 치웠어요`,'good')}
   if(dev.potty&&world.pad.waste.length&&!world.pad.cleaning&&!dogs.some(d=>d.state==='doPotty'))startClean(true);
   const avg=aiNow(),day=Math.floor(world.t/1440);A.cd=A.cd||{};const ready=k=>world.t>=(A.cd[k]||0);
+  // money: sell surplus early and switch off extras when the balance gets low; back to normal once there is enough again
+  if(isFinite(world.money)){
+    if(world.money<8000&&!A.saving){A.saving=true;const v=autoExport(true);if(A.k.tv)aiApply('tv',0);if(A.k.music!=='off')aiApply('music','off');if(world.music.on)setMusic(false);if(world.tv.on)setTV(false);aiLog(`💸 돈이 ${won(world.money)}밖에 없어서 절약 모드: TV·음악을 끄고${v?` 수확물을 팔아 ${won(v)}을 벌었어요`:' 아껴 써요'}`,'bad')}
+    else if(A.saving&&world.money>30000){A.saving=false;aiApply('tv',3);aiApply('music','auto');aiLog(`💰 돈이 ${won(world.money)}으로 넉넉해져서 절약 모드를 풀었어요`,'good')}
+  }
   if($('#aiEmerg').checked){
     if(avg.sta<30&&ready('sta')){A.cd.sta=world.t+120;if(A.k.ball)aiApply('ball',false);if(A.k.tm)aiApply('tm',false);if(world.music.genre!=='lullaby'||!world.music.on){world.music.genre='lullaby';$('#musicGenre').value='lullaby';world.music.byAuto=true;if(!world.music.on)setMusic(true);musicUI()}aiLog(`🚨 평균 체력이 ${Math.round(avg.sta)}까지 떨어져서 공 발사기·런닝머신을 끄고 자장가를 틀었어요`,'bad')}
     if(avg.happy<45&&ready('happy')){A.cd.happy=world.t+120;if(!A.k.ball&&avg.sta>40)aiApply('ball',true);world.music.genre='happy';$('#musicGenre').value='happy';world.music.byAuto=true;if(!world.music.on)setMusic(true);musicUI();aiLog(`🚨 평균 행복도가 ${Math.round(avg.happy)}이라 신나는 동요를 틀고${A.k.ball?' 공 발사기를 켰어요':'어요'}`,'bad')}
@@ -4435,6 +4487,70 @@ function renderDeaths(){
   for(const [k] of D_AGE){const ps=D_CAUSE.map(([c,n,col])=>({n,sh:c,col,v:D[k][c]||0})),t=sum(D[k]);drawPie($('#stDC_'+k),ps);$('#stDC_'+k+'Leg').innerHTML=pieLeg(ps,t,'이 나이대에 떠난 동물이 없어요')}
 }
 function setIll(on){ILL.on=on;$$('[data-illon]').forEach(x=>x.checked=on);$$('[data-illnote]').forEach(n=>n.textContent=on?'건강이 0이 되면 병으로 세상을 떠나요.':'건강이 0이 되어도 1로 버텨요. 싸움으로 죽거나 노환은 그대로예요.')}
+
+/* ======================= MONEY & ELECTRICITY ======================= */
+const ELEC_N={pump:'💧 급수대 펌프',standby:'🔌 대기전력(급수대·홈캠)',launcher:'🎾 공 발사기',potty:'🚽 자동 배변판',tv:'📺 TV',music:'🎵 음악',treadmill:'🏃 런닝머신',farm:'🌱 자동화 농장',light:'💡 조명',vacuum:'🤖 로봇청소기',flood:'🏟 축구장 조명'};
+const won=v=>isFinite(v)?Math.round(v).toLocaleString()+'원':'무한';
+function hasPower(){return !world||world.money>0}
+function farmCount(){return dev.farmList?dev.farmList.length:(dev.farm?1:0)}
+function pay(cat,amt){
+  if(!world||!amt||!isFinite(world.money))return;const B=world.bill,day=Math.floor(world.t/1440);
+  if(B.day!==day){B.yest=B.today;B.today={};B.incToday=0;B.day=day}
+  B.today[cat]=(B.today[cat]||0)+amt;world.money=Math.max(0,world.money-amt);checkPower();
+}
+function earn(amt){if(!world||!isFinite(world.money))return;const B=world.bill,day=Math.floor(world.t/1440);if(B.day!==day){B.yest=B.today;B.today={};B.incToday=0;B.day=day}world.money+=amt;B.incToday+=amt;B.incTotal+=amt;checkPower()}
+function checkPower(){
+  const out=world.money<=0;if(out===world.powerOut)return;world.powerOut=out;
+  if(out){log('⚡ 돈이 다 떨어져서 정전됐어요! 급수대 펌프·공 발사기·배변판·TV·음악·런닝머신·농장이 멈춰요','bad',true);toast('⚡ 정전! 돈이 0원이에요. 수확물을 수출하거나 용돈을 넣어 주세요',true,true);if(world.tv.on)setTV(false);if(world.music.on)setMusic(false);if(world.tm.user)tmRelease(world.tm.user)}
+  else{log('💡 돈이 생겨서 전기가 다시 들어왔어요','good',true);toast('💡 전기가 다시 들어왔어요')}
+}
+// running costs per game minute
+function billStep(h){
+  if(!world||!isFinite(world.money)||world.money<=0)return;
+  let st=0;if(dev.water)st+=0.15;if(dev.homecam)st+=0.2;if(st)pay('standby',st*h);
+  if(world.tv.on)pay('tv',1*h*Math.max(1,tvs.length));if(world.music.on)pay('music',0.3*h);
+  if(world.tm.user)pay('treadmill',4*h);const n=farmCount();if(n)pay('farm',0.5*n*h);
+  const hr=hour();if((hr>=17.5&&hr<23)||(hr>=5.5&&hr<7))pay('light',0.4*h);
+  if(match&&match.flood&&(hr>=18||hr<6))pay('flood',2*h);
+}
+function earnExport(food,snack,why){
+  food=Math.max(0,Math.floor(food));snack=Math.max(0,Math.floor(snack));if(!food&&!snack)return 0;
+  const v=food*4+snack*150;earn(v);world.exported=(world.exported||0)+food;
+  log(`🚢 ${why?why+' ':'남는 '}수확물을 수출했어요: ${food?`사료 ${food.toLocaleString()}g`:''}${food&&snack?', ':''}${snack?`간식 ${snack}개`:''} → +${won(v)}`,'good');return v;
+}
+function autoExport(force){
+  if(!world||(!force&&!$('#autoExport').checked))return 0;
+  const kf=+$('#keepFood').value,ks=+$('#keepSnack').value,f=Math.max(0,world.farmFood-kf),sn=Math.max(0,world.snacks-ks);
+  if(!f&&!sn){if(force)toast('남겨 둘 양보다 많은 수확물이 없어요');return 0}
+  world.farmFood-=f;world.snacks-=sn;return earnExport(f,sn);
+}
+
+// time skip: electricity (standby, farm, lights) and farm export, worked out per step
+function skipMoney(S,h){
+  if(!isFinite(world.money))return;const n=farmCount(),before=world.money;
+  let cost=((dev.water?0.15:0)+(dev.homecam?0.2:0)+0.5*n+0.4*(7.5/24))*h+S.recs.length*0.06*h;
+  let inc=0;if(n&&$('#autoExport').checked){const C=CROPS[world.farm.crop],prod=n*C.food/C.grow,eat=S.recs.length*0.133;inc=Math.max(0,prod-eat)*h*4+n*C.snack/C.grow*h*150*0.5}
+  world.money=Math.max(0,world.money-cost+inc);S.money=(S.money||0)+(world.money-before);
+}
+function moneyUI(){
+  if(!world)return;const m=world.money,B=world.bill,sum=o=>Object.values(o||{}).reduce((a,v)=>a+v,0);
+  $('#moneyTxt').textContent=won(m);$('#moneyBox').classList.toggle('out',!!world.powerOut);$('#moneyBig').textContent=won(m);
+  $('#powerTag').textContent=!isFinite(m)?'♾ 요금 걱정 없음':world.powerOut?'⚡ 정전':m<5000?'⚠ 돈이 얼마 안 남았어요':'⚡ 전기 정상';
+  $('#billToday').textContent=won(sum(B.today));$('#billYest').textContent=won(sum(B.yest));$('#incToday').textContent=won(B.incToday);$('#incTotal').textContent=won(B.incTotal);$('#stolenTotal').textContent=won(B.stolen);
+  const net=B.incToday-sum(B.today);$('#moneyDelta').textContent=isFinite(m)?`오늘 ${net>=0?'+':''}${won(net)}`:'';
+  const rows=Object.entries(B.today).sort((a,b)=>b[1]-a[1]);$('#billList').innerHTML=rows.length?rows.map(([k,v])=>`<span>${ELEC_N[k]||k}</span><b>${won(v)}</b>`).join(''):'<span>아직 없어요</span><b></b>';
+}
+/* ---------- lion ---------- */
+function spawnLion(entry){
+  const src=entry==='window'&&dev.window?dev.window:dev.door;if(!src){toast('현관문이 없어요',true);return}
+  dropSpeed('사자가 들어와서','intruder');
+  const p=src.p,ax=Math.cos(p.a),az=Math.sin(p.a),s={x:p.x+ax*0.8,z:p.z+az*0.8};
+  const d=makeAnimal({species:'lion',breed:'lion',color:'#c8913f',sex:pick(['f','m']),age:rand(4,9),name:`사자${(world.lionN=(world.lionN||0)+1)}`,stray:true},s);
+  Object.assign(d,{lion:true,leaveAt:world.t+rand(40,90),entry:{x:s.x,z:s.z},hunger:0,thirst:0,pee:0,poo:0,happy:20,stamina:100,health:100,skills:Object.fromEntries(SKILL_KEYS.map(k=>[k,80]))});dogs.push(d);world.cardsDirty=true;
+  log(`🦁 ${src===dev.window?'창문':'현관문'}으로 사자가 들어왔어요! 강아지와 고양이를 노려요`,'bad',true);toast('🦁 사자가 들어왔어요! 모두 힘을 합쳐 쫓아내야 해요',true,true);
+  for(const o of dogs)if(o!==d&&!o.dead){o.happy=clamp(o.happy-10);if(o.species==='cat')scare(o,s.x,s.z);else if(o.state==='sleep')o.wake=rand(0.3,1)}
+  if(soundOn){blip(110,0.6,0.15);setTimeout(()=>blip(90,0.7,0.15),300)}
+}
 /* ======================= MAIN LOOP ======================= */
 let lastT=performance.now(),uiT=0;
 function frame(now){
@@ -4451,12 +4567,12 @@ function frame(now){
     for(let s=0;s<steps;s++){
       const before=world.t;world.t+=h;
       // scheduled events
-      for(const ev of world.events){if(!ev.done&&world.t>=ev.at){ev.done=true;if(ev.kind==='cats')spawnStrays(ev.entry,ev.n||2);else spawnIntruder(ev.entry,ev.courage,ev.goal);world.breakLoop=world.fastNow}}
+      for(const ev of world.events){if(!ev.done&&world.t>=ev.at){ev.done=true;if(ev.kind==='lion')spawnLion(ev.entry);else if(ev.kind==='cats')spawnStrays(ev.entry,ev.n||2);else spawnIntruder(ev.entry,ev.courage,ev.goal);world.breakLoop=world.fastNow}}
       if(world.events.some(e=>e.done)){world.events=world.events.filter(e=>!e.done);renderEvents()}
       if(Math.floor(before/1440)!==Math.floor(world.t/1440))log(`${Math.floor(world.t/1440)+1}일차 아침이 밝았어요`);
       while(world.t>=world.nextHourT){world.nextHourT+=60;hourTick();if(world.breakLoop)break}
       world.launcherBalls=balls.filter(b=>b.state==='in').length;
-      updatePotty(h);autoManager(h);updateFarm(h);
+      updatePotty(h);autoManager(h);updateFarm(h);billStep(h);
       if(world.tv.on&&world.tv.offAt>0&&world.t>=world.tv.offAt){setTV(false);log('꺼짐 예약 시간이 되어 TV가 꺼졌어요')}
       if(world.music.on&&world.music.offAt>0&&world.t>=world.music.offAt){setMusic(false);log('꺼짐 예약 시간이 되어 음악이 꺼졌어요')}
       if(world.fastNow){for(const d of dogs.slice())fastAnimal(d,h)}
@@ -4527,6 +4643,7 @@ $('#tmGo').onclick=()=>{if(!dev.treadmill){toast('방에 런닝머신이 없어�
   if(!c){toast('지금 운동할 수 있는 강아지가 없어요 (체력이 부족하거나 자는 중)');return}setState(c,'toTM',30);toast(`${c.name}${josa(c.name,'을','를')} 런닝머신으로 불렀어요`)};
 $('#tmStop').onclick=()=>{const u=world.tm.user;if(!u){toast('런닝머신이 비어 있어요');return}setState(u,'idle',3);log(`⏹ 런닝머신을 멈췄어요`)};
 function setTV(on){
+  if(on&&!hasPower()){toast('⚡ 정전이라 TV를 켤 수 없어요',true);return}
   if(on&&!tvs.length){toast('방에 TV장이 없어요. 방 꾸미기에서 TV장을 놓아 주세요',true);return}
   world.tv.on=on;const m=parseInt($('#tvTimer').value,10);world.tv.offAt=on&&m>0?world.t+m:-1;
   $('#tvBtn').textContent=on?'TV 끄기':'TV 켜기';$('#tvBtn').classList.toggle('primary',!on);
@@ -4543,6 +4660,9 @@ $$('[data-srange]').forEach(b=>b.onclick=()=>{statRange=+b.dataset.srange;$$('[d
   cv.addEventListener('pointerleave',()=>{cv._hx=null;tip.hidden=true;renderStats()});});
 window.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#statOv').hidden){$('#statOv').hidden=true;e.stopImmediatePropagation()}},true);
 $('#sbAISkip').onclick=skipAIMatch;
+$('#sellNow').onclick=()=>{if(world){const v=autoExport(true);if(v)toast(`🚢 수출해서 ${won(v)}을 벌었어요`)}};
+$('#addMoney').onclick=()=>{if(world&&isFinite(world.money)){earn(10000);world.bill.incToday-=10000;world.bill.incTotal-=10000;log('💵 용돈 10,000원을 넣었어요','good',true)}};
+$('#moneyBox').onclick=()=>{const p=$('#moneyPanel');if(p)p.scrollIntoView({behavior:'smooth',block:'center'})};
 $('#aiFB').addEventListener('change',()=>{aiFBNote();if(world&&world.ai){const l=aiFBLimit();aiLog(l!=null?(l?`고령화 위험(노령 ${l}% 이상) 때 강제 번식 도구를 쓸 수 있게 했어요`:'젊은 사회에도 항상 강제 번식 도구를 쓸 수 있게 했어요'):'강제 번식 도구를 쓰지 않게 했어요',l?'try':'')}});
 aiFBNote();
 $('#aiStyle').addEventListener('change',e=>{if(!world||!world.ai)return;const A=world.ai;A.style=e.target.value;A.trial=null;A.next=world.t+30;aiLog(`스타일을 ${AI_STYLE[A.style].n}(으)로 바꿨어요. 30분 뒤부터 이 기준으로 행동을 고쳐요`,'try')});
@@ -4603,8 +4723,8 @@ $('#ballCollect').onclick=()=>{
   let n=0;for(const b of balls){if(b.state==='free'||b.state==='fly'){if(b.chasedBy!==null){const d=dogs.find(x=>x.id===b.chasedBy);if(d&&d.state==='chase'){d.ball=null;setState(d,'idle',1)}}b.state='in';b.chasedBy=null;b.vel.set(0,0,0);world.launcherBalls++;n++}}
   if(n){log(`바닥에 있던 공 ${n}개를 발사기에 다시 채웠어요`,'good');syncUI()}else toast('바닥에 흩어진 공이 없어요');
 };
-$('#intKind').onchange=e=>{const c=e.target.value==='cats';$('#intCatsBox').hidden=!c;$('#intHumanBox').hidden=c};
-$('#intNow').onclick=()=>{ac();if($('#intKind').value==='cats')spawnStrays($('#intEntry').value,parseInt($('#intCats').value,10));else spawnIntruder($('#intEntry').value,parseInt($('#intCourage').value,10),$('#intGoal').value)};
+$('#intKind').onchange=e=>{const v=e.target.value;$('#intCatsBox').hidden=v!=='cats';$('#intHumanBox').hidden=v!=='human';$('#intLionBox').hidden=v!=='lion'};
+$('#intNow').onclick=()=>{ac();if($('#intKind').value==='lion')spawnLion($('#intEntry').value);else if($('#intKind').value==='cats')spawnStrays($('#intEntry').value,parseInt($('#intCats').value,10));else spawnIntruder($('#intEntry').value,parseInt($('#intCourage').value,10),$('#intGoal').value)};
 $('#intAdd').onclick=()=>{
   const [hh,mm]=($('#intTime').value||'02:30').split(':').map(Number);const target=hh*60+mm;const now=clockMin();
   let at=world.t-now+target;if(at<=world.t)at+=1440;
@@ -4706,7 +4826,7 @@ function startSim(){
   dogConf.forEach((d,i)=>{d.name=($('#dogName'+i).value||'').trim()||d.name;d.age=clamp(parseFloat($('#dogAge'+i).value)||0,0,14)});
   catConf.forEach((d,i)=>{d.name=($('#catName'+i).value||'').trim()||d.name;d.age=clamp(parseFloat($('#catAge'+i).value)||0,0,14)});
   $('#setup').hidden=true;$('#sim').hidden=false;
-  ['#clockBox','#speedSeg','#pauseBtn','#soundBtn','#backSetup','#modeChip','#escBtn','#statBtn'].forEach(s=>$(s).hidden=false);$('#phaseLbl').textContent='2단계 · 시뮬레이션';
+  ['#clockBox','#speedSeg','#pauseBtn','#soundBtn','#backSetup','#modeChip','#escBtn','#statBtn','#moneyBox'].forEach(s=>$(s).hidden=false);$('#phaseLbl').textContent='2단계 · 시뮬레이션';
   player.spect=null;player.ctrl=null;player.side=null;player.escape=null;player.bannerFight=null;
   $('#fightHud').hidden=true;$('#touchPad').hidden=true;$('#fightBanner').hidden=true;
   Object.assign(owner,{visiting:false,dead:false,state:'out',fight:null,g:null,stamina:100,health:100});
@@ -4717,6 +4837,7 @@ function startSim(){
   setTimeout(()=>{if(world)recordHist(true)},0);
   world.breedOn=$('#breedOn').checked;world.tm.speed=$('#tmSpeed').value;world.tm.auto=$('#tmAuto').checked;$('#farmCrop').value='corn';
   aiInit();
+  {const v=$('#startMoney').value;world.money=v==='inf'?Infinity:+v;world.powerOut=false;world.bill={day:Math.floor(world.t/1440),today:{},yest:{},stolen:0,incToday:0,incTotal:0}}
   followId=dogs[0]?dogs[0].id:1;
   buildDogCards();renderEvents();setCamMode('free');buildSpeedSeg();
   $('#camZoom').value=1;$('#camZoomV').textContent='x1.0';
@@ -4735,7 +4856,7 @@ $('#startBtn').onclick=startSim;
 $('#backSetup').onclick=()=>{
   const wasSoccer=world&&world.soccerOnly;if(match)cleanupMatch(true);
   running=false;if(viewRec)viewRec.stop();if(intruder)intruder=null;if(menuOpen)toggleMenu(false);if(tacOpen)toggleTac(false);
-  $('#sim').hidden=true;$('#setup').hidden=false;['#clockBox','#speedSeg','#pauseBtn','#soundBtn','#backSetup','#modeChip','#escBtn','#statBtn'].forEach(s=>$(s).hidden=true);$('#statOv').hidden=true;
+  $('#sim').hidden=true;$('#setup').hidden=false;['#clockBox','#speedSeg','#pauseBtn','#soundBtn','#backSetup','#modeChip','#escBtn','#statBtn','#moneyBox'].forEach(s=>$(s).hidden=true);$('#statOv').hidden=true;
   setAppMode(wasSoccer?'soccer':world&&world.arena?'arena':'home');
 };
 

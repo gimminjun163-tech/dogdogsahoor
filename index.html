@@ -444,6 +444,8 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
 .keepspd{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .newborn{border:1px dashed var(--line);border-radius:8px;padding:6px 8px;margin:6px 0;display:grid;gap:4px}
 .myhouses{list-style:none;margin:0 0 6px;padding:0;display:grid;gap:4px}.myhouses li{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;gap:8px;align-items:center;padding:5px 8px;border:1px solid var(--line);border-radius:8px;font-size:12px}.myhouses li.act{border-color:var(--accent)}.myhouses span{color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.pickn{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:4px 0}.pickn input{width:64px;font:inherit;padding:5px 6px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:inherit}.pickn span{font-size:12px;color:var(--muted)}
+.seg2{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0}.seg2 label{display:flex;gap:5px;align-items:center;padding:5px 10px;border:1px solid var(--line);border-radius:999px;font-size:12px;cursor:pointer}.seg2 label:has(input:checked){border-color:var(--accent);background:var(--surface-2);font-weight:700}
 .eqpow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:6px}
 .eqbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:4px 0}
 .eqlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:2px 8px;max-height:180px;overflow:auto;border:1px solid var(--line);border-radius:8px;padding:6px;font-size:12px}.eqlist label{display:flex;gap:5px;align-items:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.eqlist small{color:var(--muted)}
@@ -1224,8 +1226,10 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
           <label class="f">방어할 때 집 안에 남길 수비대<select id="warGuard"><option value="0" selected>없음 — 모두 야전에 나가 싸워요</option><option value="0.25">4분의 1</option><option value="0.5">절반</option></select></label>
           <h3>🏠 내 집 현황</h3>
           <ul class="myhouses" id="myHouseList"></ul>
-          <h3>🚚 내 집끼리 강아지 보내기</h3>
-          <div class="row2"><label class="f">보내는 집<select id="tfFrom"></select></label><label class="f">받는 집<select id="tfTo"></select></label></div>
+          <h3>🚚 보내기 — 개 이동 · 출격</h3>
+          <div class="seg2" role="radiogroup" aria-label="보내기 종류"><label><input type="radio" name="tfMode" value="move" checked> 🚚 개 이동 (내 집 → 내 집)</label><label><input type="radio" name="tfMode" value="attack"> 🚩 출격 (내 집 → 다른 집)</label></div>
+          <div class="row2"><label class="f">보내는 집<select id="tfFrom"></select></label><label class="f"><span id="tfToLbl">받는 집</span><select id="tfTo"></select></label></div>
+          <div class="pickn"><input type="number" id="tfN" min="1" value="3" inputmode="numeric" aria-label="보낼 마릿수"><span>마리</span><button class="chip" id="tfPickN">센 순서로 고르기</button><button class="btn primary" id="tfSendN">⚡ 한 번에 보내기</button></div>
           <div class="eqbar"><button class="chip" id="tfAll">모두 선택</button><button class="chip" id="tfClr">선택 해제</button><span class="small muted" id="tfInfo"></span></div>
           <div class="eqlist" id="tfList"></div>
           <button class="btn" id="tfGo">🚚 보내기</button>
@@ -5485,15 +5489,16 @@ function sendArmy(fromId,toId,units,kind,owner){
 function unitSummary(list){const c={};list.forEach(d=>{const k=d.weapon||'none';c[k]=(c[k]||0)+1});return Object.entries(c).map(([k,n])=>`${k==='none'?'🐕 맨몸':WEAPONS[k].n} ${n}`).join(' · ')}
 function fmtDur(m){m=Math.max(0,Math.round(m));return m>=60?`${Math.floor(m/60)}시간${m%60?` ${m%60}분`:''}`:`${m}분`}
 // player: attack an enemy house with chosen dogs from the house being viewed
-function launchAttack(targetId,ids){
-  const W=world.war,to=houseById(targetId),from=activeHouse();if(!to||to.owner==='me')return;
-  const pick_=dogs.filter(d=>ids.includes(d.id)&&!d.dead&&!d.stray&&!d.enemy&&!d.fight&&!d.away);if(!pick_.length){toast('보낼 강아지를 골라 주세요',true);return}
+function launchAttack(targetId,ids,fromId){
+  const W=world.war,to=houseById(targetId),from=fromId!=null?houseById(fromId):activeHouse();if(!to||to.owner==='me'||!from||from.owner!=='me')return;
+  const live=from.id===W.active;if(live&&(W.battle||fights.length)){toast('전투 중에는 이 집에서 출격할 수 없어요',true);return}
+  const pick_=live?dogs.filter(d=>ids.includes(d.id)&&!d.dead&&!d.stray&&!d.enemy&&!d.fight&&!d.away):from.dogs.filter(o=>ids.includes(o.id)&&o.ally==null);if(!pick_.length){toast('보낼 강아지를 골라 주세요',true);return}
   if(to.online&&!netCanSend(to,pick_.length))return;
   if(to.owner==='ai'&&to.pf){if(to.rel>=60)warLog(`💔 친구였던 ${to.name}${josa(to.name,'을','를')} 공격해서 사이가 깨졌어요`,'bad');to.rel=-100}
-  const data=pick_.map(toData);if(!canReach(data,to.terrain)){toast(`${to.name}은 ${TERRAIN[to.terrain].n}이라 ${TERRAIN[to.terrain].note}`,true,true);return}
+  const data=live?pick_.map(toData):pick_.slice();if(!canReach(data,to.terrain)){toast(`${to.name}은 ${TERRAIN[to.terrain].n}이라 ${TERRAIN[to.terrain].note}`,true,true);return}
   const seaOnly=data.filter(d=>WEAPONS[d.weapon]&&WEAPONS[d.weapon].kind==='sea');
   if(seaOnly.length&&!TERRAIN[to.terrain].sea)toast('⚠ 전투함·항공모함은 바다가 없는 곳에선 힘을 거의 못 써요',true);
-  pick_.forEach(d=>{removeQuiet(d)});dogs=dogs.filter(d=>!pick_.includes(d));world.cardsDirty=true;
+  if(live){pick_.forEach(d=>{boardLeave(d);removeQuiet(d)});dogs=dogs.filter(d=>!pick_.includes(d));world.cardsDirty=true}else from.dogs=from.dogs.filter(o=>!pick_.includes(o));
   const allies={};if(!to.online)for(const f of pledged(to)){const u=lendUnits(f,allyCount(f),to.terrain);if(u.length){allies[f.id]=u.length;data.push(...u)}}if(W.pledge)delete W.pledge[to.id];
   const a=sendArmy(from.id,to.id,data,'attack','me');if(Object.keys(allies).length){a.allies=allies;warLog(`🤝 연합군: ${Object.keys(allies).map(id=>`${houseById(+id).name} ${allies[id]}마리`).join(', ')}`,'good')}if(to.online)netLaunch(a,to,data);
   warSnack(`🚩 우리 군대 ${data.length}마리(${unitSummary(data)})가 ${to.name}(으)로 출발했어요 · 도착까지 ${fmtDur(a.eta-world.t)}`);
@@ -5561,6 +5566,7 @@ function buyDog(h,oid){
   const a=sendArmy(h.id,world.war.active,[o],'move','me');warLog(`🐕 ${h.name}에서 ${o.name}${josa(o.name,'을','를')} ${won(v)}에 데려와요`,'good');warSnack(`🐕 ${o.name}${josa(o.name,'이','가')} ${h.name}에서 출발했어요 · ${fmtDur(a.eta-world.t)} 뒤 도착`);renderMap();
 }
 function sellDogs(h,ids){
+  if(mapFrom!=null&&mapFrom!==world.war.active){toast('강아지 팔기는 지금 보고 있는 집의 강아지만 할 수 있어요. 출발 집을 지금 집으로 바꿔 주세요',true);return}
   const list=dogs.filter(d=>ids.includes(d.id)&&!d.dead&&!d.stray&&!d.enemy&&!d.fight);if(!list.length){toast('팔 강아지를 골라 주세요',true);return}
   let sum=0,n=0;for(const d of list){const o=toData(d),v=dogPrice(h,o,true);if(h.money<v||h.dogs.length>=h.cap+4)break;h.money-=v;sum+=v;n++;boardLeave(d);removeQuiet(d);dogs=dogs.filter(x=>x!==d);h.dogs.push(o)}
   if(!n){toast(`${h.name}${josa(h.name,'이','가')} 더 살 수 없대요 (돈이나 자리가 모자라요)`,true);return}
@@ -5698,16 +5704,26 @@ function transferUI(){
   const W=world.war;if(!W||!$('#tfFrom'))return;const H=W.houses.filter(h=>h.owner==='me');
   const coming=id=>W.armies.filter(a=>a.owner==='me'&&a.to===id).reduce((a,x)=>a+x.units.length,0);
   $('#myHouseList').innerHTML=H.map(h=>{const n=houseDogCount(h),c=houseCap(h),inc=coming(h.id);return `<li${h.id===W.active?' class="act"':''}><b>${h.id===W.active?'⭐ ':''}${esc(h.name)}</b><span>${TERRAIN[h.terrain].n}</span><span>🐕 ${n}/${c}${n>c?' 😾':''}${inc?` (+${inc} 오는 중)`:''}</span><span>⚔ ${Math.round(housePower(h)*10)}</span></li>`}).join('');
-  const opt=sel=>H.map(h=>`<option value="${h.id}">${esc(h.name)}${h.id===W.active?' (지금 집)':''}</option>`).join(''),f0=$('#tfFrom').value,t0=$('#tfTo').value;
-  $('#tfFrom').innerHTML=opt();$('#tfTo').innerHTML=opt();if(H.some(h=>String(h.id)===f0))$('#tfFrom').value=f0;else $('#tfFrom').value=String(W.active);
-  if(H.some(h=>String(h.id)===t0)&&t0!==$('#tfFrom').value)$('#tfTo').value=t0;else{const o=H.find(h=>String(h.id)!==$('#tfFrom').value);if(o)$('#tfTo').value=String(o.id)}
+  const atk=tfMode()==='attack',opt=L=>L.map(h=>`<option value="${h.id}">${esc(h.name)}${h.id===W.active?' (지금 집)':''}</option>`).join(''),f0=$('#tfFrom').value,t0=$('#tfTo').value;
+  $('#tfFrom').innerHTML=opt(H);if(H.some(h=>String(h.id)===f0))$('#tfFrom').value=f0;else $('#tfFrom').value=String(W.active);
+  const fromH=houseById(+$('#tfFrom').value),targets=atk?W.houses.filter(h=>h.owner!=='me'&&!h.banned).sort((a,b)=>Math.hypot(a.x-fromH.x,a.y-fromH.y)-Math.hypot(b.x-fromH.x,b.y-fromH.y)).slice(0,60):H.filter(h=>h.id!==fromH.id);
+  $('#tfToLbl').textContent=atk?'공격할 집 (가까운 순)':'받는 집';
+  $('#tfTo').innerHTML=atk?targets.map(h=>`<option value="${h.id}">${h.online?'🌐 ':''}${esc(h.name)} · ${TERRAIN[h.terrain].n} · ${h.dogs.length}마리 · ⚔${Math.round(armyPower(h.dogs,h.terrain)*11.5)} · ${fmtDur(marchMin(fromH,h,[]))}</option>`).join(''):opt(targets);
+  if(targets.some(h=>String(h.id)===t0))$('#tfTo').value=t0;
   const from=houseById(+$('#tfFrom').value),units=from?houseUnits(from):[];for(const id of [...TFSEL])if(!units.some(u=>u.id===id))TFSEL.delete(id);
+  const tl0=$('#tfList'),tlTop=tl0.dataset.from===$('#tfFrom').value?tl0.scrollTop:0;tl0.dataset.from=$('#tfFrom').value;
   $('#tfList').innerHTML=units.length?units.map(u=>`<label><input type="checkbox" data-tf="${u.id}"${TFSEL.has(u.id)?' checked':''}> ${esc(u.o.name)} <small>${u.o.weapon&&WEAPONS[u.o.weapon]?WEAPONS[u.o.weapon].n:'맨몸'} · ⚔${Math.round(unitPower(u.o,from.terrain)*10)}</small></label>`).join(''):'<span class="small muted">이 집에 강아지가 없어요</span>';
+  $('#tfList').scrollTop=tlTop;
   $('#tfList').querySelectorAll('[data-tf]').forEach(c=>c.onchange=()=>{const id=+c.dataset.tf;c.checked?TFSEL.add(id):TFSEL.delete(id);tfInfo()});tfInfo();
-  const one=H.length<2;$('#tfGo').disabled=one;$('#eqPow').disabled=one;$('#eqPowNote').textContent=one?'내 집이 2곳 이상이면 쓸 수 있어요. 다른 집을 정복해 보세요.':'모든 내 집의 전투력이 비슷해지도록, 가장 적게 옮기는 방법을 찾아 강아지들을 보내요 (행군 시간이 걸려요).';
+  const one=!atk&&H.length<2,none=!targets.length;$('#tfGo').disabled=one||none;$('#tfSendN').disabled=one||none||!units.length;$('#eqPow').disabled=one;$('#eqPowNote').textContent=one?'내 집이 2곳 이상이면 쓸 수 있어요. 다른 집을 정복해 보세요.':'모든 내 집의 전투력이 비슷해지도록, 가장 적게 옮기는 방법을 찾아 강아지들을 보내요 (행군 시간이 걸려요).';
 }
-function tfInfo(){const from=houseById(+$('#tfFrom').value),to=houseById(+$('#tfTo').value);if(!from||!to)return;const units=houseUnits(from).filter(u=>TFSEL.has(u.id));
-  $('#tfInfo').textContent=units.length?`${units.length}마리 · 전투력 ${Math.round(units.reduce((a,u)=>a+unitPower(u.o,to.terrain),0)*10)} · 행군 ${fmtDur(marchMin(from,to,units.map(u=>u.o)))}`:'';$('#tfGo').textContent=units.length?`🚚 ${units.length}마리 ${to.name}(으)로 보내기`:'🚚 보내기'}
+const tfMode=()=>(document.querySelector('input[name="tfMode"]:checked')||{value:'move'}).value;
+function tfInfo(){const from=houseById(+$('#tfFrom').value),to=houseById(+$('#tfTo').value),atk=tfMode()==='attack',ic=atk?'🚩':'🚚';if(!from||!to){$('#tfInfo').textContent='';$('#tfGo').textContent=atk?'🚩 출격':'🚚 보내기';return}const units=houseUnits(from).filter(u=>TFSEL.has(u.id));
+  $('#tfInfo').textContent=units.length?`${units.length}마리 · 전투력 ${Math.round(units.reduce((a,u)=>a+unitPower(u.o,to.terrain),0)*10)}${atk?` vs ${Math.round(armyPower(to.dogs,to.terrain)*11.5)}`:''} · 행군 ${fmtDur(marchMin(from,to,units.map(u=>u.o)))}`:'';
+  $('#tfGo').textContent=units.length?`${ic} ${units.length}마리 ${to.name}(으)로 ${atk?'출격':'보내기'}`:(atk?'🚩 출격':'🚚 보내기');$('#tfSendN').textContent=`⚡ ${clamp(Math.round(+$('#tfN').value)||1,1,999)}마리 한 번에 ${atk?'출격':'보내기'}`}
+function tfSend(ids){const f=+$('#tfFrom').value,t=+$('#tfTo').value;if(!ids.length){toast('보낼 강아지를 골라 주세요',true);return}
+  if(tfMode()==='attack')launchAttack(t,ids,f);else sendBetween(f,t,ids);TFSEL.clear();warUI();renderMap()}
+function tfTopN(){const from=houseById(+$('#tfFrom').value),to=houseById(+$('#tfTo').value);if(!from)return [];return topN(houseUnits(from),clamp(Math.round(+$('#tfN').value)||1,1,999),to?to.terrain:'plain')}
 const EQSEL=new Set();
 function eqCount(){const k=$('#eqW').value,n=EQSEL.size,W=world&&world.war;if(!W){return}const have=W.armory[k]||0,need=k==='none'?0:Math.max(0,n-have);
   $('#eqCount').textContent=n?`${n}마리 선택${k!=='none'?` · 창고 ${have}${need?` · ${need}개 더 필요 (${won(need*WEAPONS[k].cost)})`:''}`:''}`:'';$('#eqGo').textContent=n?`🎖 고른 ${n}마리 ${k==='none'?'무장 해제':'무장'}`:'🎖 고른 강아지 무장'}
@@ -5972,7 +5988,8 @@ function startWarFight(mine,foes,info){
   const f={id:fightUid++,A:[],B:[],t0:world.t,until:Infinity,death:true,cause:'war',war:info,deaths:[],fled:[],cx:mine[0].pos.x,cz:mine[0].pos.y,joinT:3,ended:false};
   fights.push(f);mine.forEach(d=>joinFight(f,d,'A'));foes.forEach(d=>joinFight(f,d,'B'));fightCenter(f);
   log(`⚔ 전쟁: ${info.title}`,'bad',true);dropSpeed('전쟁이 일어나서','fight',f);if(warKeep()&&speed>4)toast(`⏩ 배속 유지 중 (x${speed}) — 전쟁이 빠르게 진행돼요`);world.breakLoop=true;
-  warSnack(`⚔ ${info.title}`,[{t:'🎮 내 강아지 조종하기',f:()=>playSide('A')},{t:'👀 관전',f:()=>startSpectate(f)}],20);return f;
+  const W=world.war;if(W&&W.spectWar){setTimeout(()=>{if(!f.ended)startSpectate(f)},60);warSnack(`⚔ ${info.title} · 👀 관전 중`,[{t:'🎮 내 강아지 조종하기',f:()=>{W.spectWar=false;playSide('A')}}],10);return f}
+  warSnack(`⚔ ${info.title}`,[{t:'🎮 내 강아지 조종하기',f:()=>playSide('A')},{t:'👀 관전',f:()=>{if(W)W.spectWar=true;startSpectate(f)}}],20);return f;
 }
 // enemy army arrives at the house I'm looking at: real battle here
 function defend3D(army){
@@ -6032,7 +6049,7 @@ function fieldPhaseEnd(f,win,Bt){
 function warBattleEnd(f,win){
   const W=world.war,B=W.battle;if(!B)return;
   if(B.phase==='field'&&fieldPhaseEnd(f,win,B))return;
-  W.battle=null;
+  W.battle=null;W.spectWar=false;
   if(B.type==='defend'&&B.hold){leaveField();B.hold.forEach(d=>{d.root.visible=true;if(!dogs.includes(d))dogs.push(d)});for(const d of dogs){if(d.enemy||d.stray)continue;if(d.pos.x>FX0-FW){const p=spawnAt('free');d.pos.x=p.x;d.pos.y=p.z;resolve(d.pos,d.r)}}}
   else if(B.type==='attack')leaveField();
   if(B.type==='defend'){
@@ -6110,7 +6127,7 @@ function warStep(h){
       if(W.active===to.id){if(W.battle||match||world.arena||fights.length||skipping){a.eta=world.t+10;W.armies.push(a);continue}defend3D(a)}else abstractArrival(a); // the house I'm watching is always fought for for real; if busy, the enemy waits outside
     }else if(a.kind==='attack'&&a.owner==='me'){
       if(W.active!=null&&!W.battle&&!match&&!world.arena&&!skipping){W.pendingFight=a;
-        warSnack(`⚔ 우리 군대가 ${to.name}에 도착했어요! 어떻게 싸울까요?`,[{t:'🎮 직접 싸우기',f:()=>{if(W.pendingFight===a){W.pendingFight=null;attack3D(a)}}},{t:'⚡ 자동 전투',f:()=>{if(W.pendingFight===a){W.pendingFight=null;abstractArrival(a)}}}],15,()=>{if(W.pendingFight===a){W.pendingFight=null;abstractArrival(a)}})}
+        warSnack(`⚔ 우리 군대가 ${to.name}에 도착했어요! 어떻게 싸울까요?`,[{t:'🎮 직접 싸우기',f:()=>{if(W.pendingFight===a){W.pendingFight=null;W.spectWar=false;attack3D(a)}}},{t:'👀 관전',f:()=>{if(W.pendingFight===a){W.pendingFight=null;W.spectWar=true;attack3D(a)}}},{t:'⚡ 자동 전투',f:()=>{if(W.pendingFight===a){W.pendingFight=null;abstractArrival(a)}}}],15,()=>{if(W.pendingFight===a){W.pendingFight=null;abstractArrival(a)}})}
       else abstractArrival(a);
     }else if(a.kind==='move'&&a.owner==='me'&&to.owner==='me'&&W.active===to.id){a.units=returnAllies(a.units);a.units.forEach(o=>dogs.push(fromData(o,spawnAt('land'))));world.cardsDirty=true;warSnack(`🚚 ${a.units.length}마리가 ${to.name}에 도착했어요`)}
     else abstractArrival(a);
@@ -6182,6 +6199,9 @@ function renderMap(){
   if(svg.dataset.html!==s){svg.dataset.html=s;svg.innerHTML=s}
   renderMapSide();
 }
+let mapFrom=null,mapN=3;
+// strongest first for the target's terrain
+function topN(units,n,terrain){return units.slice().sort((a,b)=>unitPower(b.o,terrain)-unitPower(a.o,terrain)).slice(0,n).map(u=>u.id)}
 function renderMapSide(){
   const W=world.war,h=houseById(mapSel),el=$('#mapSide');if(!h){el.innerHTML='';return}
   const mine=h.owner==='me',act=h.id===W.active,cap=houseCap(h),n=houseDogCount(h);
@@ -6190,26 +6210,44 @@ function renderMapSide(){
   let html=`<h3 style="margin:0">${act?'⭐ ':''}${h.name}</h3><div class="kv small"><span>주인</span><b>${mine?'나':h.online?`🌐 ${h.nick}`:h.name.replace(' (점령)','')}</b><span>지형</span><b>${TERRAIN[h.terrain].n}</b><span>강아지</span><b>${n}마리 / 정원 ${cap}${n>cap?' 😾':''}</b><span>전투력</span><b>${pow}</b>${mine?'':`<span>돈</span><b>${won(h.money)}</b>`}</div>`+
     (h.online?`<p class="small" style="margin:0;color:#2f7fd0">🌐 온라인 플레이어의 집이에요.${h.banned?' <b style="color:var(--alert)">🚫 500마리 이상이라 사기 부대로 막혔어요.</b>':h.last?' 마지막 집이라 이겨도 빼앗을 수는 없고 돈 절반을 가져와요.':''}${h.n>h.dogs.length?` (전투엔 앞의 ${h.dogs.length}마리가 나와요)`:''}</p>`:'')+
     (TERRAIN[h.terrain].note?`<p class="small muted" style="margin:0">${TERRAIN[h.terrain].note}</p>`:'')+`<p class="small" style="margin:0">${unitSummary(units)||'강아지 없음'}</p>`;
-  const cur=activeHouse(),myDogs=dogs.filter(d=>!d.dead&&!d.stray&&!d.enemy&&!d.fight&&!d.away);
-  const pickList=()=>`<div class="row2"><button class="btn" id="mpAll">모두 선택</button><button class="btn" id="mpNone">선택 해제</button></div><div class="mappick">${myDogs.map(d=>`<label><input type="checkbox" data-mp="${d.id}"${mapPick.has(d.id)?' checked':''}> ${d.name} <small>${d.weapon?WEAPONS[d.weapon].n:'맨몸'} · ${fmtAge(d.age)}</small></label>`).join('')||'<span class="small muted">보낼 강아지가 없어요</span>'}</div>`;
-  if(!mine){const sel=myDogs.filter(d=>mapPick.has(d.id)).map(toData),mt=sel.length?marchMin(cur,h,sel):marchMin(cur,h,[]);
-    const al=h.online?[]:pledged(h),alP=al.reduce((a,f)=>a+armyPower(f.dogs.filter(o=>o.age>=1).sort((x,y)=>unitPower(y,h.terrain)-unitPower(x,h.terrain)).slice(0,allyCount(f)),h.terrain),0);
-    html+=`<h4>⚔ ${cur.name}에서 공격 보내기</h4>${pickList()}${h.online?'':allyHTML(h,cur)}<div class="small">고른 전투력 <b>${Math.round(armyPower(sel,h.terrain)*10)}</b>${al.length?` + 연합 <b>${Math.round(alP*10)}</b>`:''} vs 상대 <b>${Math.round(armyPower(h.dogs,h.terrain)*11.5)}</b>(수비 보너스) · 행군 ${fmtDur(mt)}${sel.length&&!canReach(sel,h.terrain)?' · <b style="color:var(--alert)">섬이라 배나 전투기가 필요해요</b>':''}</div>
-      <button class="btn primary" id="mapAttack"${sel.length?'':' disabled'}>🚩 공격 출발</button>`+(h.owner==='ai'?tradeHTML(h):'')}
-  else if(!act){html+=`<div class="row2"><button class="btn primary" id="mapGo">🏠 이 집으로 가기</button><button class="btn" id="mapBring"${h.dogs.length?'':' disabled'}>🚚 모두 ${cur.name}(으)로 데려오기</button></div>
-      <h4>🚚 ${cur.name}에서 이 집으로 옮기기</h4>${pickList()}<button class="btn" id="mapMove"${mapPick.size?'':' disabled'}>🚚 옮기기 (${fmtDur(marchMin(cur,h,[]))})</button>`+
-      (W.houses.filter(x=>x.owner==='me').length>2&&h.dogs.length?`<h4>🚚 이 집에서 다른 내 집으로</h4><div class="row2"><select id="mapSendTo">${W.houses.filter(x=>x.owner==='me'&&x.id!==h.id).map(x=>`<option value="${x.id}">${esc(x.name)}${x.id===W.active?' (지금 집)':''}</option>`).join('')}</select><button class="btn" id="mapSendAll">🚚 이 집 ${h.dogs.length}마리 모두 보내기</button></div>`:'')}
-  if(mine&&W.houses.filter(x=>x.owner==='me').length>1)html+=`<button class="btn" id="mapEqPow">⚖ 내 집 전투력 균등 배분</button>`;
-  else{const others=myHouses().filter(x=>x.id!==h.id);html+=`<p class="small">지금 보고 있는 집이에요.${n>cap?' <b style="color:var(--alert)">너무 좁아요! 다른 내 집으로 옮겨 주세요.</b>':''}</p>`+(others.length?`<p class="small muted">다른 내 집을 지도에서 누르면 옮기거나 그 집으로 갈 수 있어요.</p>`:'<p class="small muted">아직 다른 집이 없어요. 이웃 집을 정복해 보세요!</p>')}
-  const mv=W.armies.filter(a=>a.owner==='me');if(mv.length)html+=`<h4>🚩 내 군대</h4><ol class="ai-log">${mv.map(a=>`<li>${a.kind==='move'?'🚚':'🚩'} → ${houseById(a.to).name} · ${a.units.length}마리 · ${fmtDur(Math.ceil((a.eta-world.t)/10)*10)}${a.kind==='attack'?` <button class="chip" data-recall="${a.id}">↩ 되돌리기</button>`:''}</li>`).join('')}</ol>`;
+  // where the dogs leave from: any of my houses except this one (no need to go there first)
+  const srcs=myHouses().filter(x=>x.id!==h.id);if(!srcs.some(x=>x.id===mapFrom))mapFrom=(srcs.find(x=>x.id===W.active)||srcs[0]||{}).id??null;
+  const src=mapFrom!=null?houseById(mapFrom):null,su=src?houseUnits(src):[];for(const id of [...mapPick])if(!su.some(u=>u.id===id))mapPick.delete(id);
+  const selU=su.filter(u=>mapPick.has(u.id)),sel=selU.map(u=>u.o);
+  const srcSel=()=>`<label class="f">출발 집<select id="mapFrom">${srcs.map(x=>`<option value="${x.id}"${x.id===mapFrom?' selected':''}>${esc(x.name)}${x.id===W.active?' (지금 집)':''} · ${houseDogCount(x)}마리</option>`).join('')}</select></label>`;
+  const pickList=verb=>`<div class="pickn"><input type="number" id="mpN" min="1" max="${Math.max(1,su.length)}" value="${Math.min(mapN,Math.max(1,su.length))}" inputmode="numeric" aria-label="보낼 마릿수"><span>마리</span><button class="chip" id="mpPickN">센 순서로 고르기</button><button class="btn primary" id="mpSendN"${su.length?'':' disabled'}>⚡ 한 번에 ${verb}</button></div>
+    <div class="row2"><button class="btn" id="mpAll">모두 선택</button><button class="btn" id="mpNone">선택 해제</button></div><div class="mappick">${su.map(u=>`<label><input type="checkbox" data-mp="${u.id}"${mapPick.has(u.id)?' checked':''}> ${esc(u.o.name)} <small>${u.o.weapon&&WEAPONS[u.o.weapon]?WEAPONS[u.o.weapon].n:'맨몸'} · ${fmtAge(u.o.age)} · ⚔${Math.round(unitPower(u.o,h.terrain)*10)}</small></label>`).join('')||'<span class="small muted">보낼 강아지가 없어요</span>'}</div>`;
+  if(!mine){
+    if(!src)html+=`<p class="small muted">출격할 내 집이 없어요.</p>`;
+    else{const mt=marchMin(src,h,sel),al=h.online?[]:pledged(h),alP=al.reduce((a,f)=>a+armyPower(f.dogs.filter(o=>o.age>=1).sort((x,y)=>unitPower(y,h.terrain)-unitPower(x,h.terrain)).slice(0,allyCount(f)),h.terrain),0);
+      html+=`<h4>⚔ 출격 — 이 집 공격하기</h4>${srcSel()}${pickList('출격')}${h.online?'':allyHTML(h,src)}<div class="small" id="mapPowLine">고른 ${sel.length}마리 · 전투력 <b>${Math.round(armyPower(sel,h.terrain)*10)}</b>${al.length?` + 연합 <b>${Math.round(alP*10)}</b>`:''} vs 상대 <b>${Math.round(armyPower(h.dogs,h.terrain)*11.5)}</b>(수비 보너스) · 행군 ${fmtDur(mt)}${sel.length&&!canReach(sel,h.terrain)?' · <b style="color:var(--alert)">섬이라 배나 전투기가 필요해요</b>':''}</div>
+      <button class="btn primary" id="mapAttack"${sel.length?'':' disabled'}>🚩 고른 ${sel.length}마리 출격</button>`}
+    if(h.owner==='ai')html+=tradeHTML(h);
+  }else{
+    if(!act)html+=`<div class="row2"><button class="btn primary" id="mapGo">🏠 이 집으로 가기</button><button class="btn" id="mapBring"${h.dogs.length?'':' disabled'}>🚚 모두 ${activeHouse().name}(으)로 데려오기</button></div>`;
+    else html+=`<p class="small">지금 보고 있는 집이에요.${n>cap?' <b style="color:var(--alert)">너무 좁아요! 다른 내 집으로 옮겨 주세요.</b>':''}</p>`;
+    if(src)html+=`<h4>🚚 이 집으로 강아지 보내기</h4>${srcSel()}${pickList('보내기')}<div class="small" id="mapPowLine">고른 ${sel.length}마리 · 전투력 <b>${Math.round(armyPower(sel,h.terrain)*10)}</b> · 행군 ${fmtDur(marchMin(src,h,sel))}</div><button class="btn" id="mapMove"${sel.length?'':' disabled'}>🚚 고른 ${sel.length}마리 보내기</button>`;
+    else html+=`<p class="small muted">아직 다른 집이 없어요. 이웃 집을 정복해 보세요!</p>`;
+    if(srcs.length)html+=`<button class="btn" id="mapEqPow">⚖ 내 집 전투력 균등 배분</button>`;
+  }
+  const mv=W.armies.filter(a=>a.owner==='me');if(mv.length)html+=`<h4>🚩 내 군대</h4><ol class="ai-log">${mv.map(a=>`<li>${a.kind==='move'?'🚚':'🚩'} ${houseById(a.from).name} → ${houseById(a.to).name} · ${a.units.length}마리 · ${fmtDur(Math.ceil((a.eta-world.t)/10)*10)}${a.kind==='attack'?` <button class="chip" data-recall="${a.id}">↩ 되돌리기</button>`:''}</li>`).join('')}</ol>`;
   html+=`<h4>📜 전쟁 기록</h4><ol class="ai-log">${W.log.slice(0,8).map(l=>`<li class="${l.cls}"><time>${Math.floor(l.t/1440)+1}일 ${fmtClock(l.t)}</time>${l.text}</li>`).join('')||'<li class="muted">아직 없어요</li>'}</ol>`;
-  if(el.dataset.html===html)return;el.dataset.html=html;const keepTop=el.dataset.sel===String(h.id)?el.scrollTop:0;el.dataset.sel=h.id;el.innerHTML=html;el.scrollTop=keepTop;
+  if(el.dataset.html===html)return;el.dataset.html=html;
+  // keep both the panel's and the dog list's scroll position across the re-render
+  const same=el.dataset.sel===String(h.id)+'|'+mapFrom,keepTop=same?el.scrollTop:0,pk0=el.querySelector('.mappick'),pkTop=same&&pk0?pk0.scrollTop:0;
+  el.dataset.sel=String(h.id)+'|'+mapFrom;el.innerHTML=html;el.scrollTop=keepTop;const pk=el.querySelector('.mappick');if(pk)pk.scrollTop=pkTop;
   el.querySelectorAll('[data-mp]').forEach(c=>c.onchange=()=>{const id=+c.dataset.mp;c.checked?mapPick.add(id):mapPick.delete(id);renderMapSide()});
   const b=(id,f)=>{const x=el.querySelector(id);if(x)x.onclick=f};
-  b('#mpAll',()=>{myDogs.forEach(d=>mapPick.add(d.id));renderMapSide()});b('#mpNone',()=>{mapPick.clear();renderMapSide()});
-  b('#mapAttack',()=>{launchAttack(h.id,[...mapPick]);mapPick.clear();renderMap()});b('#mapGo',()=>{switchHouse(h.id);mapSel=h.id;renderMap()});
-  b('#mapBring',()=>bringDogs(h.id));b('#mapEqPow',()=>equalizePower());b('#mapSendAll',()=>{sendBetween(h.id,+$('#mapSendTo').value,h.dogs.map(o=>o.id));renderMap();warUI()});b('#mapSellDogs',()=>{sellDogs(h,[...mapPick]);mapPick.clear();renderMapSide()});
-  el.querySelectorAll('[data-ally]').forEach(x=>x.onclick=()=>{const f=houseById(+x.dataset.ally);if(f)togglePledge(h,f)});el.querySelectorAll('[data-gift]').forEach(x=>x.onclick=()=>giftHouse(h,+x.dataset.gift));el.querySelectorAll('[data-tb]').forEach(x=>x.onclick=()=>tradeGoods(h,x.dataset.tb,false));el.querySelectorAll('[data-ts]').forEach(x=>x.onclick=()=>tradeGoods(h,x.dataset.ts,true));el.querySelectorAll('[data-bd]').forEach(x=>x.onclick=()=>buyDog(h,+x.dataset.bd));el.querySelectorAll('[data-recall]').forEach(x=>x.onclick=()=>recallArmy(+x.dataset.recall));b('#mapMove',()=>{transferDogs(h.id,[...mapPick]);mapPick.clear();renderMap()});
+  const fs=el.querySelector('#mapFrom');if(fs)fs.onchange=()=>{mapFrom=+fs.value;mapPick.clear();renderMapSide()};
+  const ni=el.querySelector('#mpN');if(ni)ni.onchange=()=>{mapN=clamp(Math.round(+ni.value)||1,1,999)};
+  const nNow=()=>{mapN=clamp(Math.round(+(ni?ni.value:mapN))||1,1,999);return topN(su,mapN,h.terrain)};
+  b('#mpPickN',()=>{mapPick.clear();nNow().forEach(id=>mapPick.add(id));renderMapSide()});
+  b('#mpSendN',()=>{const ids=nNow();if(!ids.length)return;if(mine)sendBetween(src.id,h.id,ids);else launchAttack(h.id,ids,src.id);mapPick.clear();renderMap();warUI()});
+  b('#mpAll',()=>{su.forEach(u=>mapPick.add(u.id));renderMapSide()});b('#mpNone',()=>{mapPick.clear();renderMapSide()});
+  b('#mapAttack',()=>{launchAttack(h.id,[...mapPick],src.id);mapPick.clear();renderMap();warUI()});b('#mapGo',()=>{switchHouse(h.id);mapSel=h.id;renderMap()});
+  b('#mapMove',()=>{sendBetween(src.id,h.id,[...mapPick]);mapPick.clear();renderMap();warUI()});
+  b('#mapBring',()=>bringDogs(h.id));b('#mapEqPow',()=>equalizePower());b('#mapSellDogs',()=>{sellDogs(h,[...mapPick]);mapPick.clear();renderMapSide()});
+  el.querySelectorAll('[data-ally]').forEach(x=>x.onclick=()=>{const f=houseById(+x.dataset.ally);if(f)togglePledge(h,f)});el.querySelectorAll('[data-gift]').forEach(x=>x.onclick=()=>giftHouse(h,+x.dataset.gift));el.querySelectorAll('[data-tb]').forEach(x=>x.onclick=()=>tradeGoods(h,x.dataset.tb,false));el.querySelectorAll('[data-ts]').forEach(x=>x.onclick=()=>tradeGoods(h,x.dataset.ts,true));el.querySelectorAll('[data-bd]').forEach(x=>x.onclick=()=>buyDog(h,+x.dataset.bd));el.querySelectorAll('[data-recall]').forEach(x=>x.onclick=()=>recallArmy(+x.dataset.recall));
 }
 /* ---------- war panel ---------- */
 function warUI(){
@@ -6219,8 +6257,8 @@ function warUI(){
   $('#warShop').innerHTML=Object.entries(WEAPONS).map(([k,w])=>`<div class="shoprow"><span>${w.n}<small> 공격 ×${w.atk} · 방어 ×${w.def}</small></span><b>${won(w.cost)}</b><span class="small">창고 ${W.armory[k]||0}</span><button class="btn" data-buy="${k}">사기</button></div>`).join('');
   $('#warShop').querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=>buyWeapon(b.dataset.buy));
   const ds=dogs.filter(d=>!d.dead&&!d.stray&&!d.enemy&&!d.away);for(const id of [...EQSEL])if(!ds.some(d=>d.id===id))EQSEL.delete(id);
-  $('#eqList').innerHTML=ds.map(d=>`<label><input type="checkbox" data-eq="${d.id}"${EQSEL.has(d.id)?' checked':''}> ${esc(d.name)} <small>${d.weapon?WEAPONS[d.weapon].n:'맨몸'} · ${fmtAge(d.age)}${d.age<1?' (어려요)':''}</small></label>`).join('')||'<span class="small muted">강아지가 없어요</span>';
-  $('#eqList').querySelectorAll('[data-eq]').forEach(c=>c.onchange=()=>{const id=+c.dataset.eq;c.checked?EQSEL.add(id):EQSEL.delete(id);eqCount()});eqCount();
+  const eqTop=$('#eqList').scrollTop;$('#eqList').innerHTML=ds.map(d=>`<label><input type="checkbox" data-eq="${d.id}"${EQSEL.has(d.id)?' checked':''}> ${esc(d.name)} <small>${d.weapon?WEAPONS[d.weapon].n:'맨몸'} · ${fmtAge(d.age)}${d.age<1?' (어려요)':''}</small></label>`).join('')||'<span class="small muted">강아지가 없어요</span>';
+  $('#eqList').scrollTop=eqTop;$('#eqList').querySelectorAll('[data-eq]').forEach(c=>c.onchange=()=>{const id=+c.dataset.eq;c.checked?EQSEL.add(id):EQSEL.delete(id);eqCount()});eqCount();
   const keepW=$('#eqW').value;$('#eqW').innerHTML='<option value="none">무장 해제</option>'+Object.entries(WEAPONS).map(([k,w])=>`<option value="${k}">${w.n} (창고 ${W.armory[k]||0} · ${won(w.cost)})</option>`).join('');if(keepW)$('#eqW').value=keepW;
   nbUI();transferUI();$('#warArmies').dataset.sig='';warLite();
 }
@@ -6804,7 +6842,8 @@ $('#mapClose').onclick=()=>{$('#warMap').hidden=true};$('#warMap').addEventListe
 $('#eqGo').onclick=()=>equipMany([...EQSEL],$('#eqW').value,$('#eqBuy').checked);$('#eqAuto').onclick=autoArm;
 $('#tfFrom').onchange=()=>{TFSEL.clear();if($('#tfTo').value===$('#tfFrom').value){const o=world.war.houses.find(h=>h.owner==='me'&&String(h.id)!==$('#tfFrom').value);if(o)$('#tfTo').value=String(o.id)}transferUI()};$('#tfTo').onchange=tfInfo;
 $('#tfAll').onclick=()=>{const f=houseById(+$('#tfFrom').value);if(f)houseUnits(f).forEach(u=>TFSEL.add(u.id));transferUI()};$('#tfClr').onclick=()=>{TFSEL.clear();transferUI()};
-$('#tfGo').onclick=()=>{const a=sendBetween(+$('#tfFrom').value,+$('#tfTo').value,[...TFSEL]);if(a){TFSEL.clear();warUI();renderMap()}};$('#eqPow').onclick=equalizePower;['#nbOn','#nbW','#nbBuy'].forEach(q=>$(q).addEventListener('change',()=>{nbUI();try{localStorage.setItem('mh_nb',JSON.stringify({on:$('#nbOn').checked,w:$('#nbW').value,buy:$('#nbBuy').checked}))}catch(_){}}));
+$('#tfGo').onclick=()=>tfSend([...TFSEL]);$('#tfSendN').onclick=()=>tfSend(tfTopN());$('#tfPickN').onclick=()=>{TFSEL.clear();tfTopN().forEach(id=>TFSEL.add(id));transferUI()};$('#tfN').addEventListener('input',tfInfo);
+$$('input[name="tfMode"]').forEach(r=>r.onchange=()=>{TFSEL.clear();transferUI()});$('#eqPow').onclick=equalizePower;['#nbOn','#nbW','#nbBuy'].forEach(q=>$(q).addEventListener('change',()=>{nbUI();try{localStorage.setItem('mh_nb',JSON.stringify({on:$('#nbOn').checked,w:$('#nbW').value,buy:$('#nbBuy').checked}))}catch(_){}}));
 try{const v=JSON.parse(localStorage.getItem('mh_nb')||'null');if(v){$('#nbOn').checked=!!v.on;$('#nbBuy').checked=v.buy!==false;$('#nbW').dataset.init=v.w||''}}catch(_){}$('#eqW').onchange=eqCount;
 $('#eqAll').onclick=()=>{dogs.filter(d=>!d.dead&&!d.stray&&!d.enemy&&!d.away).forEach(d=>EQSEL.add(d.id));warUI()};$('#eqBare').onclick=()=>{EQSEL.clear();dogs.filter(d=>!d.dead&&!d.stray&&!d.enemy&&!d.away&&!d.weapon&&d.age>=1).forEach(d=>EQSEL.add(d.id));warUI()};$('#eqClr').onclick=()=>{EQSEL.clear();warUI()};
 $('#aiFB').addEventListener('change',()=>{aiFBNote();if(world&&world.ai){const l=aiFBLimit();aiLog(l!=null?(l?`고령화 위험(노령 ${l}% 이상) 때 강제 번식 도구를 쓸 수 있게 했어요`:'젊은 사회에도 항상 강제 번식 도구를 쓸 수 있게 했어요'):'강제 번식 도구를 쓰지 않게 했어요',l?'try':'')}});

@@ -578,8 +578,8 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
       <div class="stack">
         <h3>방 크기</h3>
         <div class="row2">
-          <label class="f">가로 (m)<input type="number" id="roomW" min="4" max="14" step="0.5" value="9"></label>
-          <label class="f">세로 (m)<input type="number" id="roomD" min="4" max="12" step="0.5" value="7"></label>
+          <label class="f">가로 (m)<input type="number" id="roomW" min="4" max="14" step="0.5" value="12"></label>
+          <label class="f">세로 (m)<input type="number" id="roomD" min="4" max="12" step="0.5" value="9"></label>
         </div>
         <div class="row2">
           <button class="btn" id="presetLiving">기본 거실</button>
@@ -1460,25 +1460,37 @@ const CROPS={
 
 let uid=1;
 function presetLiving(){
-  return {W:9,D:7,yard:{on:true,depth:14,wide:16,pitch:true},items:[
+  // a roomier living room (12×9 m) that comes with the care furniture; the yard holds the farm, agility course and fountain
+  return {W:12,D:9,yard:{on:true,depth:14,wide:16,pitch:true},items:[
     {id:uid++,type:'petdoor',wall:'e',t:0.9},
-    {id:uid++,type:'rug',x:-1,z:0.2,rot:0},
-    {id:uid++,type:'sofa',x:-1,z:2.85,rot:2},
-    {id:uid++,type:'tv',x:-1,z:-3.2,rot:0},
-    {id:uid++,type:'table',x:2.6,z:1.6,rot:0},
-    {id:uid++,type:'shelf',x:4.25,z:-1.2,rot:1},
-    {id:uid++,type:'plant',x:-4.1,z:-3.1,rot:0},
-    {id:uid++,type:'dogbed',x:-3.7,z:1.9,rot:0},
-    {id:uid++,type:'dogbed',x:3.4,z:-2.8,rot:0},
-    {id:uid++,type:'water',x:4.15,z:2.9,rot:1},
-    {id:uid++,type:'food',x:3.3,z:3.05,rot:0},
-    {id:uid++,type:'launcher',x:1.0,z:-1.6,rot:0},
-    {id:uid++,type:'potty',x:-4.1,z:-1.9,rot:1},
-    {id:uid++,type:'treadmill',x:-2.8,z:-1.6,rot:0},
+    {id:uid++,type:'rug',x:-1.5,z:0.3,rot:0},
+    {id:uid++,type:'sofa',x:-1.5,z:3.9,rot:2},
+    {id:uid++,type:'tv',x:-1.5,z:-4.2,rot:0},
+    {id:uid++,type:'table',x:3.0,z:2.2,rot:0},
+    {id:uid++,type:'shelf',x:5.75,z:-1.6,rot:1},
+    {id:uid++,type:'plant',x:-5.6,z:-4.1,rot:0},
+    {id:uid++,type:'dogbed',x:-5.3,z:2.3,rot:0},
+    {id:uid++,type:'dogbed',x:4.6,z:-3.8,rot:0},
+    {id:uid++,type:'water',x:5.7,z:3.9,rot:1},
+    {id:uid++,type:'food',x:4.8,z:4.1,rot:0},
+    {id:uid++,type:'launcher',x:1.0,z:-1.8,rot:0},
+    {id:uid++,type:'potty',x:-5.6,z:-2.4,rot:1},
+    {id:uid++,type:'treadmill',x:-3.4,z:-2.0,rot:0},
+    {id:uid++,type:'bath',x:2.2,z:-3.9,rot:0},
+    {id:uid++,type:'medic',x:4.2,z:-2.3,rot:0},
+    {id:uid++,type:'groom',x:0.0,z:-3.9,rot:0},
+    {id:uid++,type:'toybox',x:1.2,z:1.4,rot:0},
+    {id:uid++,type:'snackbar',x:3.9,z:4.1,rot:2},
+    {id:uid++,type:'kennel',x:-5.5,z:0.5,rot:3},
+    {id:uid++,type:'kennel',x:-3.8,z:3.95,rot:2},
+    {id:uid++,type:'aircon',x:-4.4,z:-4.2,rot:0},
+    {id:uid++,type:'purifier',x:5.6,z:2.4,rot:0},
     {id:uid++,type:'homecam',wall:'n',t:2.2},
     {id:uid++,type:'door',wall:'s',t:2.0},
     {id:uid++,type:'window',wall:'w',t:-0.6},
-    {id:uid++,type:'farm',x:6.6,z:-5.6,rot:0},
+    {id:uid++,type:'farm',x:8.2,z:-5.2,rot:0},
+    {id:uid++,type:'agility',x:8.4,z:-1.0,rot:1},
+    {id:uid++,type:'fountain',x:8.4,z:3.2,rot:0},
   ]};
 }
 function presetStudio(){
@@ -1490,6 +1502,11 @@ function presetStudio(){
     {id:uid++,type:'food',x:2.65,z:-0.7,rot:0},
     {id:uid++,type:'launcher',x:0,z:0.6,rot:0},
     {id:uid++,type:'potty',x:0.6,z:2.1,rot:0},
+    {id:uid++,type:'kennel',x:-2.4,z:1.8,rot:2},
+    {id:uid++,type:'toybox',x:-0.9,z:1.9,rot:0},
+    {id:uid++,type:'snackbar',x:2.7,z:0.3,rot:1},
+    {id:uid++,type:'groom',x:-0.75,z:-1.7,rot:0},
+    {id:uid++,type:'purifier',x:0.2,z:-2.2,rot:0},
     {id:uid++,type:'homecam',wall:'s',t:-1.8},
     {id:uid++,type:'door',wall:'s',t:1.3},
     {id:uid++,type:'window',wall:'w',t:1.0},

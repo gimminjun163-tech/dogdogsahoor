@@ -440,6 +440,9 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
 .bh-top{display:flex;gap:6px;align-items:center}.bh-top .small{margin-left:auto;opacity:.75;font-size:10px}.bh-top .chip{padding:2px 7px}
 .bh-tabs{display:flex;gap:4px;flex-wrap:wrap}.bh-tabs .chip{font-size:10px;padding:2px 6px}
 .bh-sc{display:flex;flex-wrap:wrap;gap:4px 8px}.bh-sc span{display:flex;gap:4px;align-items:center;padding:1px 5px;border-radius:999px}.bh-sc span.on{background:rgba(255,255,255,.16)}.bh-sc i{width:9px;height:9px;border-radius:50%;border:1px solid rgba(255,255,255,.6)}
+.newborn{border:1px dashed var(--line);border-radius:8px;padding:6px 8px;margin:6px 0;display:grid;gap:4px}
+.eqbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:4px 0}
+.eqlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:2px 8px;max-height:180px;overflow:auto;border:1px solid var(--line);border-radius:8px;padding:6px;font-size:12px}.eqlist label{display:flex;gap:5px;align-items:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.eqlist small{color:var(--muted)}
 .bh-last{min-height:2.6em;line-height:1.3;background:rgba(255,255,255,.08);border-radius:6px;padding:4px 6px}
 .bgrow{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:6px;align-items:center;padding:4px 0;border-bottom:1px dashed var(--line)}
 @media (max-width:600px){.bghud{width:150px;top:auto;bottom:10px}}
@@ -1056,6 +1059,32 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         <p class="small muted">3시간마다 평균 행복도·체력·건강을 스타일에 맞는 점수로 바꿔요. 가장 부족한 걸 돕는 행동을 하나 바꿔 보고, 3시간 뒤 어제 같은 시간대보다 점수가 오르면 👍 유지, 내려가면 👎 되돌려요. 잘 통한 행동은 기억해서 다음에 더 자주 골라요. '모두 자동화'일 때만 작동해요.</p>
       </section>
 
+      <!-- construction -->
+      <section class="card panel home-only">
+        <div class="panel-head"><h2>건설</h2><span class="tag">돈으로 짓기 · 시간이 걸려요</span></div>
+        <label class="f">지을 것<select id="buildType"></select></label>
+        <p class="small" id="buildInfo" style="margin:0"></p>
+        <div class="row2"><button class="btn primary" id="buildGo">🔨 빈자리에 바로 짓기</button><button class="btn" id="buildPick">📍 위치 골라서 짓기</button></div>
+        <p class="small muted" style="margin:0">📍를 누르고 3D 화면에서 바닥을 클릭하면 그 자리에 지어요. 공사 중에는 비계와 진행률이 보이고, 취소하면 절반을 돌려받아요.</p>
+        <ol class="ai-log" id="buildList"></ol>
+      </section>
+
+      <!-- care center -->
+      <section class="card panel home-only">
+        <div class="panel-head"><h2>케어 센터</h2><span class="tag">외출 · 기후 · 돌봄</span></div>
+        <p class="small muted" id="careSt"></p>
+        <div class="row2"><button class="btn" id="acBtn">❄ 냉난방기 켜기</button><button class="btn" id="purBtn">🌬 공기청정기 켜기</button></div>
+        <div class="row2"><label class="f">냉난방 모드<select id="acMode"><option value="cool">❄ 냉방</option><option value="heat">🔥 난방</option></select></label><button class="btn" id="petBtn">🤚 모두 쓰다듬기</button></div>
+        <h3>🏠 밖으로 보내기</h3>
+        <div class="row2"><label class="f">어디로<select id="outKind"><option value="walk">🚶 산책 (30~60분 · 무료 · 행복↑ 배변 해결)</option><option value="vet">🏥 동물병원 (2시간 · 20,000원 · 건강 100)</option><option value="salon">💇 애견 미용실 (1시간 · 15,000원 · 행복↑)</option><option value="school">🏫 훈련소 (3시간 · 30,000원 · 실력↑)</option></select></label>
+          <label class="f">몇 마리<select id="outN"><option value="1">1마리</option><option value="3" selected>3마리</option><option value="all">모두</option></select></label></div>
+        <button class="btn primary" id="outBtn">🏠 보내기</button>
+        <p class="small muted" style="margin:0">산책은 행복도 낮은 순, 병원은 건강 낮은 순, 훈련소는 실력 낮은 순으로 보내요.</p>
+        <ol class="ai-log" id="careAway"></ol>
+        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="acAuto" checked> 🤖 자동화일 때 냉난방기·공기청정기 알아서 켜고 끄기</label>
+        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="outAuto" checked> 🤖 자동화일 때 산책·병원 알아서 보내기</label>
+      </section>
+
       <!-- board games -->
       <section class="card panel home-only">
         <div class="panel-head"><h2>보드게임</h2><span class="tag" id="bgTag">쉬는 중</span></div>
@@ -1149,8 +1178,13 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
           <div class="small"><b id="warHouseName">우리 집</b> · <span id="warCap"></span></div>
           <h3>🛒 무기 상점</h3><div class="shop" id="warShop"></div>
           <h3>🎖 무장시키기</h3>
-          <div class="row2"><label class="f">강아지<select id="eqDog"></select></label><label class="f">무기<select id="eqW"></select></label></div>
-          <button class="btn" id="eqGo">🎖 무장시키기</button>
+          <div class="row2"><label class="f">무기<select id="eqW"></select></label><label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="eqBuy" checked> 창고에 없으면 자동으로 사기</label></div>
+          <div class="eqbar"><button class="chip" id="eqAll">모두 선택</button><button class="chip" id="eqBare">맨몸만</button><button class="chip" id="eqClr">선택 해제</button><span class="small muted" id="eqCount"></span></div>
+          <div class="eqlist" id="eqList"></div>
+          <div class="newborn"><label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="nbOn"> 👶 태어나면 자동으로 무기 주기</label>
+            <div class="row2"><label class="f">줄 무기<select id="nbW"></select></label><label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="nbBuy" checked> 창고에 없으면 사서 주기</label></div>
+            <p class="small muted" id="nbNote" style="margin:0"></p></div>
+          <div class="row2"><button class="btn primary" id="eqGo">🎖 고른 강아지 무장</button><button class="btn" id="eqAuto" title="창고에 있는 무기를 무장 안 한 강아지들에게 센 무기부터 나눠 줘요">📦 창고 무기 자동 배치</button></div>
           <h3>🚩 움직이는 군대</h3><ol class="ai-log" id="warArmies"></ol>
           <p class="small muted">지형마다 쓸 수 있는 무기가 달라요: 섬은 전투함·항공모함·전투기가 있어야 가고, 산에선 탱크가 약해지고, 바다가 없는 곳에선 배가 힘을 못 써요. 집이 정원보다 붐비면 강아지들이 불만이 생겨요. 전투 중엔 '내 강아지 조종하기'로 직접 싸울 수 있어요.</p>
         </div>
@@ -1347,6 +1381,16 @@ const FURN={
   window:{n:'창문',wall:true,unique:true,len:1.3,c:'#8fc8e6'},
   petdoor:{n:'마당 문',wall:true,unique:true,len:0.9,c:'#4f9a5c'},
   farm:{n:'자동화 농장',w:2.4,d:1.6,h:0.4,c:'#6f9a3a',solid:true,device:true,yard:true},
+  bath:{n:'🛁 자동 목욕기',w:1.0,d:0.7,h:0.45,c:'#e8f4f8',solid:false,unique:true,st:true},
+  medic:{n:'🩺 자동 치료기',w:1.1,d:0.7,h:0.5,c:'#f4f6f8',solid:false,unique:true,st:true},
+  groom:{n:'✂ 그루밍 테이블',w:0.9,d:0.6,h:0.55,c:'#c7d2da',solid:false,unique:true,st:true},
+  toybox:{n:'🧸 장난감 바구니',w:0.6,d:0.45,h:0.4,c:'#e9b44c',solid:true,st:true},
+  snackbar:{n:'🦴 자동 간식기',w:0.45,d:0.4,h:0.75,c:'#d9673a',solid:true,unique:true,st:true},
+  kennel:{n:'🏠 강아지 집',w:0.9,d:0.8,h:0.9,c:'#c46a3a',solid:false},
+  aircon:{n:'❄ 냉난방기',w:0.5,d:0.4,h:1.6,c:'#f2f4f6',solid:true,unique:true},
+  purifier:{n:'🌬 공기청정기',w:0.35,d:0.35,h:0.8,c:'#eef2f4',solid:true,unique:true},
+  agility:{n:'🚩 어질리티 코스',w:3.0,d:1.6,h:0.5,c:'#e8d24a',solid:false,yard:true,unique:true,st:true},
+  fountain:{n:'⛲ 마당 분수',w:0.9,d:0.9,h:0.7,c:'#9fb7c4',solid:true,yard:true,st:true},
 };
 const DOOR_W=0.9,DOOR_H=0.85;
 const REQUIRED=['water','food','launcher','homecam','door'];
@@ -1486,7 +1530,8 @@ const ed=$('#editor'),ex=ed.getContext('2d');
 let tool='move',drag=null;
 const TOOLDEF=[['move','이동 · 회전'],['del','삭제'],null,
   ['sofa'],['bed'],['table'],['shelf'],['tv'],['plant'],['dogbed'],['rug'],null,
-  ['water'],['food'],['launcher'],['potty'],['treadmill'],['homecam'],['door'],['window'],['petdoor'],['farm']];
+  ['water'],['food'],['launcher'],['potty'],['treadmill'],['homecam'],['door'],['window'],['petdoor'],['farm'],null,
+  ['bath'],['medic'],['groom'],['toybox'],['snackbar'],['kennel'],['aircon'],['purifier'],['agility'],['fountain']];
 function buildTools(){
   const box=$('#tools');box.innerHTML='';
   for(const t of TOOLDEF){
@@ -1499,7 +1544,7 @@ function buildTools(){
       const hint=$('#editorHint');
       if(tool==='move')hint.textContent='이동 도구: 가구를 끌어서 옮기고, 한 번 클릭하면 90° 회전합니다. 홈캠·현관문·창문은 벽에 붙습니다.';
       else if(tool==='del')hint.textContent='삭제 도구: 지울 가구를 클릭하세요.';
-      else if(FURN[tool].yard)hint.textContent='마당을 클릭해 자동화 농장을 놓으세요. 농장은 마당 안에만 들어가요.';
+      else if(FURN[tool].yard)hint.textContent=`마당을 클릭해 ${FURN[tool].n}을(를) 놓으세요. 마당 안에만 들어가요.`;
       else hint.textContent=`배치도를 클릭해 ${FURN[tool].n}을(를) ${FURN[tool].unique?'옮기세요 (하나만 둘 수 있어요)':'놓으세요'}.`;};
     box.appendChild(b);
   }
@@ -1604,7 +1649,7 @@ ed.addEventListener('pointerdown',e=>{
   if(tool==='move'){const it=hitItem(mx,mz);if(it){drag={it,sx:mx,sz:mz,ox:it.x,oz:it.z,moved:false};ed.setPointerCapture(e.pointerId)}return}
   if(tool==='del'){const it=hitItem(mx,mz);if(it){layout.items=layout.items.filter(x=>x!==it);edResize()}return}
   const f=FURN[tool];
-  if(f.yard){if(!yardRect()){$('#editorHint').textContent='자동화 농장은 마당이 있어야 놓을 수 있어요. 오른쪽에서 "마당 추가하기"를 켜 주세요.';return}}
+  if(f.yard){if(!yardRect()){$('#editorHint').textContent=`${f.n}은(는) 마당이 있어야 놓을 수 있어요.`+' 오른쪽에서 "마당 추가하기"를 켜 주세요.';return}}
   else if(Math.abs(mx)>layout.W/2+0.5||Math.abs(mz)>layout.D/2+0.5)return;
   let it=f.unique?layout.items.find(x=>x.type===tool):null;
   if(!it){it={id:uid++,type:tool,rot:0};layout.items.push(it)}
@@ -1821,6 +1866,9 @@ function buildWorld(){
     if(f.solid)solids.push(bx);
     if(f.device)dev[it.type]=Object.assign(dev[it.type]||{},{it,box:bx,group:g});
     if(it.type==='dogbed'){(dev.beds=dev.beds||[]).push({x:it.x,z:it.z,used:0})}
+    if(it.type==='kennel'){const r=it.rot||0,[fx,fz]=[[0,1],[-1,0],[0,-1],[1,0]][r];(dev.beds=dev.beds||[]).push({x:it.x-fx*0.08,z:it.z-fz*0.08,used:0,kennel:true});solids.push(...kennelWalls(it))}
+    if(f.st)((dev.st=dev.st||{})[it.type]=dev.st[it.type]||[]).push({type:it.type,it,x:it.x,z:it.z,users:0,box:bx,g});
+    if(it.type==='aircon'||it.type==='purifier')dev[it.type]={it,box:bx,group:g};
     if(it.type==='tv'||it.type==='shelf'){(dev.loot=dev.loot||[]).push({type:it.type,x:it.x,z:it.z,box:bx})}
   }
   if(yard)buildYard();
@@ -1986,6 +2034,51 @@ function buildFurniture(it){
       const scr=box(0.01,0.07,0.2,'#163b2a',w/2-0.175,0.81,0,{emissive:'#0b2a1c'});g.add(scr);
       const led=sph(0.015,'#2ad46a',w/2-0.17,0.76,0.12,{emissive:'#2ad46a'});g.add(led);
       dev.tmParts={tex,led,scr};break;}
+    case 'bath':{
+      g.add(box(w,0.08,d,'#d6e4ea',0,0.04,0));for(const sx of[-1,1]){g.add(box(0.06,0.4,d,c,sx*(w/2-0.03),0.24,0))}for(const sz of[-1,1])g.add(box(w,0.4,0.06,c,0,0.24,sz*(d/2-0.03)));
+      const wtr=box(w-0.14,0.02,d-0.14,'#8fd3f0',0,0.3,0,{transparent:true,opacity:0.75});wtr.castShadow=false;g.add(wtr);
+      g.add(cyl(0.02,0.02,0.5,'#b9c3c8',-w/2+0.06,0.55,-d/2+0.06,8));const sh=cyl(0.07,0.04,0.05,'#b9c3c8',-w/2+0.18,0.78,-d/2+0.06,10);g.add(sh);
+      const bub=[];for(let i=0;i<10;i++){const b=sph(0.035,'#ffffff',rand(-w/3,w/3),0.34,rand(-d/3,d/3),{transparent:true,opacity:0.85});b.castShadow=false;b.visible=false;g.add(b);bub.push(b)}
+      it._fx={bub,wtr};break;}
+    case 'medic':{
+      g.add(box(w,0.32,d,'#dfe6ea',0,0.16,0));g.add(box(w-0.06,0.05,d-0.06,'#9fd6c6',0,0.345,0));g.add(box(0.12,0.9,d,'#cfd8dc',-w/2+0.06,0.45,0));
+      const arm=box(0.6,0.06,0.12,'#cfd8dc',-w/2+0.36,0.86,0);g.add(arm);const lamp=box(0.22,0.03,0.22,'#b8f0ff',-w/2+0.5,0.82,0,{emissive:'#5fd0ff'});g.add(lamp);
+      g.add(box(0.14,0.14,0.02,'#ffffff',-w/2+0.06,0.75,d/2+0.01));g.add(box(0.1,0.03,0.025,'#d63c3c',-w/2+0.06,0.75,d/2+0.02));g.add(box(0.03,0.1,0.025,'#d63c3c',-w/2+0.06,0.75,d/2+0.02));
+      it._fx={lamp};break;}
+    case 'groom':{
+      g.add(box(w,0.04,d,'#5b6670',0,0.5,0));g.add(box(w-0.04,0.015,d-0.04,'#9aa6ae',0,0.525,0));for(const sx of[-1,1])for(const sz of[-1,1])g.add(box(0.04,0.5,0.04,'#6f7a84',sx*(w/2-0.05),0.25,sz*(d/2-0.05)));
+      g.add(box(0.04,0.7,0.04,'#6f7a84',-w/2+0.04,0.85,0));g.add(box(0.36,0.03,0.03,'#6f7a84',-w/2+0.2,1.2,0));
+      const br=new THREE.Group();br.add(box(0.14,0.03,0.05,'#8a5a3a',0,0,0));br.add(box(0.12,0.02,0.04,'#f2e6c8',0,-0.02,0));br.position.set(0,0.62,d/2-0.08);br.visible=false;g.add(br);it._fx={br};break;}
+    case 'toybox':{
+      g.add(box(w,0.32,d,c,0,0.16,0));g.add(box(w+0.03,0.04,d+0.03,'#c9902e',0,0.33,0));
+      [['#d84a4a',0.1],['#4a8ad8',-0.12],['#5fbf5a',0.02]].forEach(([cc,x],i)=>{const t=sph(0.07,cc,x,0.38+i*0.02,rand(-0.1,0.1));g.add(t)});const bone=box(0.2,0.04,0.05,'#f4ead2',0.05,0.42,0.06);bone.rotation.y=0.6;g.add(bone);break;}
+    case 'snackbar':{
+      g.add(box(w,0.12,d,'#7a4a2a',0,0.06,0));g.add(box(w-0.08,0.5,d-0.08,c,0,0.37,0));const jar=cyl(0.14,0.14,0.22,'#cfe8f5',0,0.73,0,16,{transparent:true,opacity:0.6});g.add(jar);
+      for(let i=0;i<6;i++)g.add(box(0.06,0.025,0.025,'#c9814a',rand(-0.07,0.07),0.66+i*0.025,rand(-0.07,0.07)));g.add(box(0.2,0.05,0.12,'#f2f2f2',0,0.15,d/2-0.02));
+      const led=sph(0.02,'#ffd166',w/2-0.04,0.5,d/2-0.04,{emissive:'#ffd166'});g.add(led);break;}
+    case 'kennel':{
+      g.add(box(w,0.06,d,'#8a5232',0,0.03,0));g.add(box(0.06,0.6,d,c,-w/2+0.03,0.36,0));g.add(box(0.06,0.6,d,c,w/2-0.03,0.36,0));g.add(box(w,0.6,0.06,c,0,0.36,-d/2+0.03));
+      g.add(box(0.24,0.6,0.06,c,-w/2+0.12,0.36,d/2-0.03));g.add(box(0.24,0.6,0.06,c,w/2-0.12,0.36,d/2-0.03));g.add(box(w,0.14,0.06,c,0,0.6,d/2-0.03));
+      const r1=box(0.6,0.05,d+0.12,'#7a3f2a',-0.2,0.78,0);r1.rotation.z=0.62;const r2=box(0.6,0.05,d+0.12,'#7a3f2a',0.2,0.78,0);r2.rotation.z=-0.62;g.add(r1,r2);
+      const cush=new THREE.Mesh(new THREE.TorusGeometry(0.24,0.07,8,20),mat('#e8b4a0'));cush.rotation.x=-Math.PI/2;cush.position.y=0.1;g.add(cush);
+      const plate=box(0.24,0.08,0.02,'#f2e2b0',0,0.66,d/2+0.01);g.add(plate);break;}
+    case 'aircon':{
+      g.add(box(w,f.h,d,c,0,f.h/2,0));g.add(box(w-0.08,0.5,0.02,'#c9d1d6',0,1.15,d/2+0.005));for(let i=0;i<6;i++)g.add(box(w-0.12,0.015,0.03,'#9aa6ae',0,0.95+i*0.07,d/2+0.01));
+      const led=sph(0.02,'#5fd0ff',w/2-0.07,1.45,d/2+0.01,{emissive:'#5fd0ff'});g.add(led);const scr=box(0.16,0.07,0.01,'#163b2a',0,1.45,d/2+0.01,{emissive:'#0b2a1c'});g.add(scr);
+      const air=[];for(let i=0;i<8;i++){const a=box(0.25,0.01,0.01,'#bfe9ff',rand(-0.15,0.15),1.1,d/2+0.2,{transparent:true,opacity:0.5});a.castShadow=false;a.visible=false;g.add(a);air.push(a)}it._fx={led,air};break;}
+    case 'purifier':{
+      g.add(cyl(w/2,w/2,f.h,c,0,f.h/2,0,18));for(let i=0;i<5;i++){const r=new THREE.Mesh(new THREE.TorusGeometry(w/2+0.002,0.006,4,24),mat('#c9d1d6'));r.rotation.x=Math.PI/2;r.position.y=0.15+i*0.1;g.add(r)}
+      g.add(cyl(w/2-0.04,w/2-0.04,0.02,'#9aa6ae',0,f.h+0.01,0,18));const led=sph(0.02,'#2ad46a',0,f.h-0.1,w/2,{emissive:'#2ad46a'});g.add(led);it._fx={led};break;}
+    case 'agility':{
+      const pl=box(w,0.01,d,'#d9c98f',0,0.005,0);pl.castShadow=false;g.add(pl);
+      for(let i=0;i<4;i++){const x=-w/2+0.3+i*0.42,col=i%2?'#e84a4a':'#f2f2f2';g.add(box(0.03,0.5,0.03,'#e8d24a',x,0.25,-d/2+0.25));g.add(box(0.03,0.5,0.03,'#e8d24a',x,0.25,-d/2+0.6));g.add(box(0.03,0.03,0.38,col,x,0.3,-d/2+0.42))}
+      const tun=new THREE.Mesh(new THREE.CylinderGeometry(0.22,0.22,1.1,16,1,true),mat('#3a7ad8',{side:THREE.DoubleSide}));tun.rotation.z=Math.PI/2;tun.position.set(w/2-0.7,0.22,d/2-0.35);g.add(tun);
+      for(let i=0;i<6;i++)g.add(cyl(0.02,0.02,0.6,i%2?'#e84a4a':'#f2f2f2',-w/2+0.4+i*0.3,0.3,d/2-0.35,6));
+      const ramp=box(0.9,0.04,0.3,'#c46a3a',w/2-0.6,0.22,-d/2+0.4);ramp.rotation.z=0.45;g.add(ramp);break;}
+    case 'fountain':{
+      g.add(cyl(w/2,w/2,0.25,'#b9c6cc',0,0.125,0,20));const pool=cyl(w/2-0.06,w/2-0.06,0.02,'#7fc8ef',0,0.24,0,20,{transparent:true,opacity:0.85});pool.castShadow=false;g.add(pool);
+      g.add(cyl(0.06,0.08,0.45,'#9fb0b8',0,0.45,0,10));g.add(cyl(0.18,0.1,0.06,'#b9c6cc',0,0.68,0,14));
+      const jets=[];for(let i=0;i<12;i++){const j=sph(0.022,'#cdefff',0,0.72,0,{transparent:true,opacity:0.8});j.castShadow=false;g.add(j);jets.push({m:j,a:i/12*6.283,t:Math.random()})}it._fx={jets};break;}
     case 'farm':{
       const base=box(w,0.1,d,'#5a3d22',0,0.05,0);base.castShadow=false;g.add(base);
       const soil=box(w-0.14,0.03,d-0.14,'#3f2a1a',0,0.115,0);soil.castShadow=false;g.add(soil);
@@ -2227,7 +2320,7 @@ function face(a,tx,tz,dt){const want=Math.atan2(tz-a.pos.y,tx-a.pos.x);let dh=wa
 
 /* ======================= DOG AI ======================= */
 const STATE_KO={idle:'쉬는 중',wander:'돌아다님',toWater:'물 마시러',drink:'물 마시는 중',toFood:'밥 먹으러',eat:'밥 먹는 중',waitFood:'밥 기다림',
-  toBed:'잠자리로',sleep:'자는 중',chase:'공 쫓는 중',carry:'공 가져가는 중',toLauncher:'놀고 싶어함',waitThrow:'공 기다림',toVoice:'목소리 쪽으로',listen:'귀 기울이는 중',alert:'침입자 경계!',sit:'앉아 있음',toPotty:'화장실 가는 중',doPotty:'볼일 보는 중',toTV:'TV 보러 가는 중',watchTV:'TV 보는 중',toBoard:'보드게임 하러 가는 중',playBoard:'🎲 보드게임 중',toTM:'런닝머신 가는 중',onTM:'🏃 런닝머신 운동 중',eatTreat:'간식 먹는 중',fight:'싸우는 중!',scared:'겁먹고 피함',leave:'나가는 중',soccer:'⚽ 축구 중'};
+  toBed:'잠자리로',sleep:'자는 중',chase:'공 쫓는 중',carry:'공 가져가는 중',toLauncher:'놀고 싶어함',waitThrow:'공 기다림',toVoice:'목소리 쪽으로',listen:'귀 기울이는 중',alert:'침입자 경계!',sit:'앉아 있음',toPotty:'화장실 가는 중',doPotty:'볼일 보는 중',toTV:'TV 보러 가는 중',watchTV:'TV 보는 중',toBoard:'보드게임 하러 가는 중',playBoard:'🎲 보드게임 중',toSt:'케어 받으러 가는 중',atSt:'케어 중',toTM:'런닝머신 가는 중',onTM:'🏃 런닝머신 운동 중',eatTreat:'간식 먹는 중',fight:'싸우는 중!',scared:'겁먹고 피함',leave:'나가는 중',soccer:'⚽ 축구 중'};
 function tmEnds(){const it=dev.treadmill.it,r=it.rot||0,dirs=[[1,0],[0,1],[-1,0],[0,-1]],[ax,az]=dirs[r];const half=FURN.treadmill.w/2;
   // dog faces the console end (+local x); it climbs on from the back end
   return {mid:{x:it.x-ax*0.08,z:it.z-az*0.08},back:{x:it.x-ax*(half+0.35),z:it.z-az*(half+0.35)},head:Math.atan2(az,ax)}}
@@ -2256,6 +2349,7 @@ function freeBall(d){
 function tmRelease(d){if(world&&world.tm&&world.tm.user===d){world.tm.user=null;d.lift=0}else if(d)d.lift=0}
 function setState(d,s,think){
   if(d.fight||d.dead)return;
+  if(d.st&&s!=='toSt'&&s!=='atSt')stationRelease(d);
   if(s!=='onTM')tmRelease(d);
   if(d.ball&&!['chase','carry','eatTreat'].includes(s)){const b=d.ball;b.chasedBy=null;if(b.state==='carried'){b.state='free';b.carrier=null;b.vel.set(0,0,0);b.pos.y=b.r}d.ball=null}d.state=s;d.think=think??rand(3,6);d.stuck={t:0,d:1e9};d.detour=null;d.actT=0}
 function decide(d){
@@ -2280,6 +2374,7 @@ function decide(d){
   if(d.pee>70||d.poo>75){if(dev.potty)setState(d,'toPotty',25);else accident(d);return}
   if(d.thirst>62){setState(d,'toWater',30);return}
   if(d.hunger>58){setState(d,'toFood',30);return}
+  if(d.health<45&&dev.st&&dev.st.medic&&!d.stray&&hasPower()){const S=dev.st.medic.find(x=>x.users<1);if(S){S.users++;d.st=S;setState(d,'toSt',40);return}}
   if(d.stamina<(cat?30:18)||(night&&d.stamina<95)){setState(d,'toBed',40);return}
   if(cat||d.stray){
     if(world.tv.on&&tvs.length&&!night&&Math.random()<0.12){setState(d,'toTV',30);return}
@@ -2288,6 +2383,7 @@ function decide(d){
     setState(d,Math.random()<0.6?'sit':'idle',rand(4,9));return;
   }
   if(dev.treadmill&&world.tm&&world.tm.auto&&!aiQuiet()&&hasPower()&&!world.tm.user&&d.stamina>60&&d.age>=0.5&&Math.random()<0.08){setState(d,'toTM',25);return}
+  {const S=stationFor(d);if(S){S.users++;d.st=S;setState(d,'toSt',30);return}}
   const fb=freeBall(d);
   if(fb&&d.stamina>30){fb.chasedBy=d.id;d.ball=fb;setState(d,'chase',25);return}
   const r=Math.random();
@@ -2299,6 +2395,7 @@ function decide(d){
 }
 function updateDog(d,dt){
   if(d.dead)return;
+  if(d.away){d.speed=0;if(world.t>=d.away.until)awayReturn(d);return}
   if(match&&d.sc){if(match.A.includes(d)||match.B.includes(d))soccerTick(d,dt);else{d.speed=0;d.anim={sit:true,emo:''}}return}
   if(world.arena&&!d.fight){ // fight-only mode: no daily life, just rest where they are
     d.think-=dt;
@@ -2314,7 +2411,7 @@ function updateDog(d,dt){
   d.pee=clamp(d.pee+dt*0.06*(sl?0.4:1));d.poo=clamp(d.poo+dt*0.03*(sl?0.4:1));
   if((d.pee>=99||d.poo>=99)&&d.state!=='doPotty'&&!d.fight)accident(d);
   if(world.dirt>0){d.happy=clamp(d.happy-dt*0.012*Math.min(40,world.dirt));if(world.dirt>9)d.health=clamp(d.health-dt*0.008)}
-  if(sl)d.stamina=clamp(d.stamina+dt*0.35);else if(!d.fight)d.stamina=clamp(d.stamina-dt*(running?0.5:d.speed>0.1?0.08:-0.06));
+  if(sl)d.stamina=clamp(d.stamina+dt*(d.target&&d.target.bed&&d.target.bed.kennel&&Math.hypot(d.target.bed.x-d.pos.x,d.target.bed.z-d.pos.y)<0.6?0.5:0.35)); // a proper dog house means deeper sleepelse if(!d.fight)d.stamina=clamp(d.stamina-dt*(running?0.5:d.speed>0.1?0.08:-0.06));
   d.happy=clamp(d.happy-dt*(0.035+(d.hunger>80?0.12:0)+(d.thirst>80?0.12:0)));
   if(d.hunger>92||d.thirst>92||d.stamina<3)d.health=clamp(d.health-dt*0.1);
   else if(d.hunger<70&&d.thirst<70&&d.stamina>15)d.health=clamp(d.health+dt*0.015);
@@ -2367,7 +2464,7 @@ function updateDog(d,dt){
       else if(d.think<=0){d.flags.askedFood=false;setState(d,'idle',5)}break}
     case 'toBed':{
       if(!d.target||!d.target.bed){const beds=(dev.beds||[]);let best=null,bd=1e9;for(const b of beds){const dd=Math.hypot(b.x-d.pos.x,b.z-d.pos.y)+b.used*1.5;if(dd<bd){bd=dd;best=b}}
-        if(best){best.used++;d.target={x:best.x+rand(-0.15,0.15),z:best.z+rand(-0.15,0.15),bed:best}}else{const p=findFree(rand(-W/2+0.5,W/2-0.5),rand(-D/2+0.5,D/2-0.5));d.target={x:p.x,z:p.z,bed:{used:0}}}}
+        if(best){best.used++;d.target={x:best.x+(best.kennel?0:rand(-0.15,0.15)),z:best.z+(best.kennel?0:rand(-0.15,0.15)),bed:best}}else{const p=findFree(rand(-W/2+0.5,W/2-0.5),rand(-D/2+0.5,D/2-0.5));d.target={x:p.x,z:p.z,bed:{used:0}}}}
       const dist=steer(d,d.target.x,d.target.z,walk,dt);moving=true;
       if(dist<0.2||d.think<=0){setState(d,'sleep',3);if(!d.flags.slept){d.flags.slept=true}}break}
     case 'sleep':lie=true;emo='Zzz';if(d.think<=0)decide(d);break;
@@ -2423,6 +2520,19 @@ function updateDog(d,dt){
     case 'leave':{
       const e=d.entry||{x:0,z:0};const dd=steer(d,e.x,e.z,walk*1.4,dt);moving=true;
       if(dd<0.3||d.think<=0){removeStray(d);return}break}
+    case 'toSt':{
+      const S=d.st;if(!S||!stationOk(S)){setState(d,'idle',1);break}const sp=stationSpot(S),dist=steer(d,sp.x,sp.z,walk*1.25,dt);moving=true;
+      if(dist<0.18||(d.actT>8&&dist<0.7)){const D=STDEF[S.type];if(D.start&&!D.start(d)){setState(d,'idle',1);break}setState(d,'atSt',rand(D.dur[0],D.dur[1]));d.st=S;d.stPh=Math.random()*6}
+      else if(d.think<=0)setState(d,'idle',1);break}
+    case 'atSt':{
+      const S=d.st;if(!S||!stationOk(S)){setState(d,'idle',1);break}const D=STDEF[S.type];
+      if(d.pee>90||d.poo>90||(S.type!=='medic'&&(d.thirst>92||d.hunger>92))||intruderActive()){setState(d,'idle',0.2);break}
+      if(D.run){const f=FURN[S.type],r=S.it.rot||0,a=world.t*1.6+d.stPh,ex=(r%2?f.d:f.w)/2-0.35,ez=(r%2?f.w:f.d)/2-0.3;const tx=S.x+Math.cos(a)*ex,tz=S.z+Math.sin(a)*ez;steer(d,tx,tz,run*0.85,dt);moving=true;tongue=true;
+        d.lift=Math.max(0,Math.sin(a*4))*0.12} // jumps over the hurdles as it laps the course
+      else if(D.lift!=null){d.pos.set(S.x,S.z);d.lift=D.lift;const r=S.it.rot||0;d.heading=[Math.PI/2,Math.PI,-Math.PI/2,0][r]+Math.PI;if(D.lie)lie=true;else if(D.sit)sit=true}
+      else{const sp=stationSpot(S);if(sp.face)face(d,sp.face.x,sp.face.z,dt);if(D.sit)sit=true}
+      D.use(d,dt);if(D.power&&D.per)pay(S.type,dt*D.per);emo=D.emo;
+      if(d.think<=0){D.done&&D.done(d);setState(d,'idle',rand(2,4))}break}
     case 'toBoard':{
       const G=boardOf(d);if(!G){setState(d,'idle',1);break}
       const st=G.seats[d.id],dist=steer(d,st.x,st.z,walk*1.3,dt);moving=true;
@@ -2781,8 +2891,9 @@ function giveBirth(m){
     const p=makeAnimal({species:m.species,breed:br,color:col,sex:Math.random()<0.5?'f':'m',age:0,name:newName(m.species),skills:mixSkills(m.skills,dadA?dadA.skills:P.dadSkills)},
       {x:clamp(m.pos.x+rand(-0.5,0.5),B.minx+0.3,B.maxx-0.3),z:clamp(m.pos.y+rand(-0.5,0.5),B.minz+0.3,B.maxz-0.3)});
     Object.assign(p,{mom:m.id,dad:P.dad,hunger:15,thirst:15,happy:92,health:100,stamina:80,pee:5,poo:5});
-    dogs.push(p);kids.push(p.name);
+    dogs.push(p);kids.push(p.name);(m._newKids=m._newKids||[]).push(p);
   }
+  armNewborns(m._newKids||[]);m._newKids=null;
   m.stamina=clamp(m.stamina-30);m.happy=clamp(m.happy+10);m.hunger=clamp(m.hunger+20);
   world.born+=born;world.cardsDirty=true;
   const msg=`🍼 ${m.name}${josa(m.name,'이','가')} ${m.species==='cat'?'새끼 고양이':'강아지'} ${n}마리를 낳았어요${born<n?` (집이 꽉 차서 ${n-born}마리는 새 가족에게 입양 보냈어요)`:''}`;
@@ -3259,7 +3370,8 @@ function farmVisualOne(P,realDt){
 
 /* ======================= FAST MODE ======================= */
 function fastAnimal(d,h){
-  if(d.fight||d.dead)return;tmRelease(d);
+  if(d.fight||d.dead)return;
+  if(d.away){if(world.t>=d.away.until)awayReturn(d);return}tmRelease(d);
   const sl=isNight()||d.stamina<25;
   if(sl)d.state='sleep';else if(d.state==='sleep'||!['sit','idle'].includes(d.state))d.state='idle';
   d.hunger=clamp(d.hunger+h*0.1*(sl?0.5:1)*(d.pregnant?1.3:1));d.thirst=clamp(d.thirst+h*0.16*(sl?0.4:1));
@@ -4109,7 +4221,7 @@ function buildFloodlights(P){
   scene.add(light,light.target,light2,light2.target);
   return {g,heads,beams,light,light2,bg0:scene.background?scene.background.clone():null,night:new THREE.Color('#0b1222')};
 }
-function startMatch(cfg){
+function startMatch(cfg){recallAway();
   if(match)cleanupMatch(true);
   const P=cfg.P,size=cfg.size;
   const pets=cfg.pets.slice().sort(()=>Math.random()-0.5).slice(0,(size+BENCH)*2);
@@ -4339,7 +4451,7 @@ function syncCards(){
   if(!CARDS.vis)return;
   if(CARDS.sort!=='none'&&CARDS.sort!=='name'){CARDS.sortT-=0.2;if(CARDS.sortT<=0){world.cardsDirty=true;return}}
   for(const d of dogs){if(!d.card)continue;const R=d.cardR,c=R.c;
-    const st=world.fastNow?(d.state==='sleep'?'자는 중':'생활 중'):(STATE_KO[d.state]||d.state);if(c.st!==st){c.st=st;R.st.textContent=st}
+    const st=d.away?`${OUTINGS[d.away.kind].lab} · ${fmtClock(d.away.until)} 귀가`:world.fastNow?(d.state==='sleep'?'자는 중':'생활 중'):(d.state==='atSt'&&d.st?STDEF[d.st.type].lab:STATE_KO[d.state]||d.state);if(c.st!==st){c.st=st;R.st.textContent=st}
     const hot=!!d.fight;if(c.hot!==hot){c.hot=hot;R.st.classList.toggle('hot',hot)}
     if(CARDS.rows){const v=[d.happy,d.health,d.stamina];for(let i=0;i<3;i++){const r=Math.round(v[i]);if(c['n'+i]!==r){c['n'+i]=r;R.nums[i].textContent=r;R.nums[i].style.color=barColor(r,false)}}continue}
     const Bd=BREEDS[d.breed],meta=`${d.sex==='f'?'♀':'♂'} ${Bd?Bd.n:''} · ${fmtAge(d.age)} · ⚽${ovr(d)}${d.stray?' · 침입 길고양이':''}${d.pregnant?` · 🤰 임신 ${Math.floor((world.t-d.pregnant.start)/1440)}일째`:''}`;
@@ -4387,7 +4499,7 @@ function syncUI(){
   const mood=world.dirt<=0?'좋음':world.dirt<3?'조금 신경 씀':world.dirt<7?'불쾌함':'매우 불쾌함';$('#dirtMood').textContent=mood;$('#dirtMood').style.color=world.dirt>=3?'var(--alert)':'';
   $('#ballAdd').disabled=balls.length>=MAX_BALLS;
   const watching=dogs.filter(d=>d.state==='watchTV').length;
-  musicLive();boardUI();aiUI();moneyUI();warLite();
+  musicLive();boardUI();careUI();buildUI();aiUI();moneyUI();warLite();
   $('#tvTag').textContent=!tvs.length?'TV장 없음':world.tv.on?`${TV_CH[world.tv.ch]} · ${watching}마리 시청${world.tv.offAt>0?' · '+fmtClock(world.tv.offAt)+' 꺼짐':''}`:'꺼짐';
   syncCards();
   $('#logTag').textContent=world.stolen?`도난 ${world.stolen}건`:'';
@@ -4505,8 +4617,9 @@ function finishSkip(){
   // newborns who are still alive become real animals now
   for(const r of S.recs)if(r.light){
     const p=makeAnimal({species:r.species,breed:r.breed,color:r.color,sex:r.sex,age:r.age,name:r.name,skills:r.skills,lifespan:r.lifespan});
-    Object.assign(p,{id:r.id,temper:r.temper,happy:r.happy,health:r.health,pregnant:r.pregnant,lastBirth:r.lastBirth,mom:r.mom,dad:r.dad,mate:r.mate,gen:r.gen});dogs.push(p);
+    Object.assign(p,{id:r.id,temper:r.temper,happy:r.happy,health:r.health,pregnant:r.pregnant,lastBirth:r.lastBirth,mom:r.mom,dad:r.dad,mate:r.mate,gen:r.gen});dogs.push(p);(S._kids=S._kids||[]).push(p);
   }
+  armNewborns(S._kids||[]);
   for(const d of dogs){if(d.age<1.25)applyGrowth(d);d.state='idle';d.target=null;d.hunger=Math.min(d.hunger,40);d.thirst=Math.min(d.thirst,40)}
   if(!dogs.some(d=>d.id===followId)&&dogs[0])followId=dogs[0].id;
   world.born+=S.born;world.deaths+=S.deathN||0;world.cardsDirty=true;
@@ -4791,7 +4904,7 @@ function aiTick(){
 // fast reactions between the 3-hour checks: floor accidents, emergencies, and (if allowed) a soccer match when the animals need fun
 function aiCare(){
   const A=world.ai;if(!A||careMode!=='auto'||world.arena||match)return;
-  const live=dogs.filter(d=>!d.dead&&!d.stray);if(!live.length)return;boardAuto(live);
+  const live=dogs.filter(d=>!d.dead&&!d.stray&&!d.away);if(!live.length)return;boardAuto(live);{const n=live.length,aH=live.reduce((a,d)=>a+d.happy,0)/n,aS=live.reduce((a,d)=>a+d.stamina,0)/n,aHe=live.reduce((a,d)=>a+d.health,0)/n;careAuto(live,aH,aS,aHe)}
   // robot vacuum: accidents on the floor are cleaned right away
   if(world.floorMess.length&&hasPower()){const n=world.floorMess.length;pay('vacuum',25);world.floorMess.forEach(w=>scene.remove(w.mesh));world.floorMess=[];log(`🤖 로봇청소기가 바닥 실수 ${n}곳을 치웠어요`,'good')}
   if(dev.potty&&world.pad.waste.length&&!world.pad.cleaning&&!dogs.some(d=>d.state==='doPotty'))startClean(true);
@@ -4953,7 +5066,7 @@ function renderRates(){
 function setIll(on){ILL.on=on;$$('[data-illon]').forEach(x=>x.checked=on);$$('[data-illnote]').forEach(n=>n.textContent=on?'건강이 0이 되면 병으로 세상을 떠나요.':'건강이 0이 되어도 1로 버텨요. 싸움으로 죽거나 노환은 그대로예요.')}
 
 /* ======================= MONEY & ELECTRICITY ======================= */
-const ELEC_N={pump:'💧 급수대 펌프',standby:'🔌 대기전력(급수대·홈캠)',launcher:'🎾 공 발사기',potty:'🚽 자동 배변판',tv:'📺 TV',music:'🎵 음악',treadmill:'🏃 런닝머신',farm:'🌱 자동화 농장',light:'💡 조명',vacuum:'🤖 로봇청소기',flood:'🏟 축구장 조명'};
+const ELEC_N={build:'🔨 건설',bath:'🛁 자동 목욕기',medic:'🩺 자동 치료기',groom:'✂ 그루밍 테이블',snackbar:'🦴 자동 간식기',aircon:'❄ 냉난방기',purifier:'🌬 공기청정기',walk:'🚶 산책',vet:'🏥 동물병원',salon:'💇 애견 미용실',school:'🏫 훈련소',trade:'🛒 교류',weapons:'🎖 무기',pump:'💧 급수대 펌프',standby:'🔌 대기전력(급수대·홈캠)',launcher:'🎾 공 발사기',potty:'🚽 자동 배변판',tv:'📺 TV',music:'🎵 음악',treadmill:'🏃 런닝머신',farm:'🌱 자동화 농장',light:'💡 조명',vacuum:'🤖 로봇청소기',flood:'🏟 축구장 조명'};
 const won=v=>isFinite(v)?Math.round(v).toLocaleString()+'원':'무한';
 function hasPower(){return !world||world.money>0}
 function farmCount(){return dev.farmList?dev.farmList.length:(dev.farm?1:0)}
@@ -5300,7 +5413,7 @@ function fmtDur(m){m=Math.max(0,Math.round(m));return m>=60?`${Math.floor(m/60)}
 // player: attack an enemy house with chosen dogs from the house being viewed
 function launchAttack(targetId,ids){
   const W=world.war,to=houseById(targetId),from=activeHouse();if(!to||to.owner==='me')return;
-  const pick_=dogs.filter(d=>ids.includes(d.id)&&!d.dead&&!d.stray&&!d.enemy&&!d.fight);if(!pick_.length){toast('보낼 강아지를 골라 주세요',true);return}
+  const pick_=dogs.filter(d=>ids.includes(d.id)&&!d.dead&&!d.stray&&!d.enemy&&!d.fight&&!d.away);if(!pick_.length){toast('보낼 강아지를 골라 주세요',true);return}
   if(to.online&&!netCanSend(to,pick_.length))return;
   if(to.owner==='ai'&&to.pf){if(to.rel>=60)warLog(`💔 친구였던 ${to.name}${josa(to.name,'을','를')} 공격해서 사이가 깨졌어요`,'bad');to.rel=-100}
   const data=pick_.map(toData);if(!canReach(data,to.terrain)){toast(`${to.name}은 ${TERRAIN[to.terrain].n}이라 ${TERRAIN[to.terrain].note}`,true,true);return}
@@ -5323,7 +5436,7 @@ function bringDogs(fromId){ // call every dog of another of my houses to the hou
   const data=from.dogs.splice(0);const a=sendArmy(from.id,to.id,data,'move','me');warSnack(`🚚 ${from.name}의 ${data.length}마리가 ${to.name}(으)로 와요 · ${fmtDur(a.eta-world.t)}`);renderMap();
 }
 /* ---------- switching houses ---------- */
-function switchHouse(id){endAllBoards(true);
+function switchHouse(id){endAllBoards(true);recallAway();
   const W=world.war,h=houseById(id);if(!h||h.owner!=='me'||id===W.active)return;
   if(W.battle||fights.length){toast('전투 중에는 집을 옮겨 갈 수 없어요',true);return}
   const cur=activeHouse();cur.dogs=dogs.filter(d=>!d.dead&&!d.stray&&!d.enemy).map(toData);
@@ -5457,6 +5570,41 @@ function allyDefenders(h){
 function buyWeapon(k){
   const W=WEAPONS[k];if(!isFinite(world.money)||world.money>=W.cost){if(isFinite(world.money)){world.money-=W.cost;world.bill.today.weapons=(world.bill.today.weapons||0)+W.cost;checkPower()}world.war.armory[k]=(world.war.armory[k]||0)+1;toast(`${W.n} 샀어요 (−${won(W.cost)})`);warUI()}
   else toast(`돈이 모자라요 (${W.n} ${won(W.cost)})`,true);
+}
+
+// newborns can be handed a weapon the moment they are born (from the armory, or bought if allowed)
+function nbWeapon(){const k=$('#nbW').value;if(k!=='best')return k;const A=world.war&&world.war.armory||{};return Object.keys(WEAPONS).filter(w=>A[w]>0).sort((a,b)=>WEAPONS[b].atk-WEAPONS[a].atk)[0]||'rifle'}
+function armNewborns(list){
+  if(!$('#nbOn').checked||!warOn()||!list.length)return;const W=world.war,A=W.armory;let n=0,bought=0,spent=0,lack=0;
+  for(const d of list){if(d.dead||d.weapon||d.stray)continue;const k=nbWeapon();if(!WEAPONS[k])continue;
+    if(!A[k]){const c=WEAPONS[k].cost;if($('#nbBuy').checked&&(!isFinite(world.money)||world.money>=c)){if(isFinite(world.money)){world.money-=c;world.bill.today.weapons=(world.bill.today.weapons||0)+c}A[k]=(A[k]||0)+1;bought++;spent+=c}else{lack++;continue}}
+    A[k]--;d.weapon=k;equipGear(d);n++}
+  if(spent)checkPower();
+  if(n)log(`👶🎖 갓 태어난 ${n}마리에게 무기를 줬어요${bought?` (${bought}개 구매 −${won(spent)})`:''}`,'',true);if(lack)log(`👶 무기가 모자라서 ${lack}마리는 맨몸이에요`,'bad');
+}
+function nbUI(){const W=world&&world.war;if(!W||!$('#nbW'))return;const keep=$('#nbW').value;$('#nbW').innerHTML='<option value="best">창고에서 가장 센 무기</option>'+Object.entries(WEAPONS).map(([k,w])=>`<option value="${k}">${w.n} (${won(w.cost)})</option>`).join('');$('#nbW').value=keep||$('#nbW').dataset.init||'rifle';
+  $('#nbNote').textContent=$('#nbOn').checked?`새로 태어나는 강아지가 ${(n=>n+josa(n,'을','를'))($('#nbW').value==='best'?'창고의 가장 센 무기':WEAPONS[$('#nbW').value].n)} 들고 태어나요${$('#nbBuy').checked?' · 없으면 자동으로 사요':' · 창고에 없으면 맨몸'}`:'꺼져 있어요'}
+const EQSEL=new Set();
+function eqCount(){const k=$('#eqW').value,n=EQSEL.size,W=world&&world.war;if(!W){return}const have=W.armory[k]||0,need=k==='none'?0:Math.max(0,n-have);
+  $('#eqCount').textContent=n?`${n}마리 선택${k!=='none'?` · 창고 ${have}${need?` · ${need}개 더 필요 (${won(need*WEAPONS[k].cost)})`:''}`:''}`:'';$('#eqGo').textContent=n?`🎖 고른 ${n}마리 ${k==='none'?'무장 해제':'무장'}`:'🎖 고른 강아지 무장'}
+// arms (or disarms) many dogs at once; buys what the armory lacks when allowed
+function equipMany(ids,k,autoBuy){
+  const W=world.war,A=W.armory,list=dogs.filter(d=>ids.includes(d.id)&&!d.dead&&!d.away);if(!list.length){toast('무장시킬 강아지를 골라 주세요',true);return}
+  let ok=0,bought=0,spent=0,lack=0;
+  for(const d of list){if(k!=='none'&&d.weapon===k)continue;
+    if(k==='none'){if(d.weapon){A[d.weapon]=(A[d.weapon]||0)+1;d.weapon=null;equipGear(d);ok++}continue}
+    if(!A[k]){const c=WEAPONS[k].cost;if(autoBuy&&(!isFinite(world.money)||world.money>=c)){if(isFinite(world.money)){world.money-=c;world.bill.today.weapons=(world.bill.today.weapons||0)+c}A[k]=(A[k]||0)+1;bought++;spent+=c}else{lack++;continue}}
+    if(d.weapon)A[d.weapon]=(A[d.weapon]||0)+1;A[k]--;d.weapon=k;equipGear(d);ok++}
+  if(spent)checkPower();
+  toast(k==='none'?`${ok}마리의 무장을 풀었어요`:`🎖 ${ok}마리에게 ${WEAPONS[k].n} 장착!${bought?` (${bought}개 구매 −${won(spent)})`:''}${lack?` · ${lack}마리는 무기가 모자라서 못 했어요`:''}`,!!lack&&!ok);
+  if(ok)warLog(k==='none'?`🎖 ${ok}마리 무장 해제`:`🎖 ${list.slice(0,4).map(d=>d.name).join(', ')}${list.length>4?` 외 ${list.length-4}마리`:''}에게 ${WEAPONS[k].n} 장착`,'');warUI();
+}
+// hands out every weapon in the armory: strongest weapons to the best unarmed adults
+function autoArm(){
+  const W=world.war,A=W.armory,stock=Object.keys(WEAPONS).filter(k=>A[k]>0).sort((a,b)=>WEAPONS[b].atk-WEAPONS[a].atk),free=dogs.filter(d=>!d.dead&&!d.stray&&!d.enemy&&!d.away&&!d.weapon&&d.age>=1).sort((a,b)=>ovr(b)-ovr(a));
+  if(!stock.length){toast('창고에 무기가 없어요. 먼저 사 주세요',true);return}if(!free.length){toast('무장 안 한 어른 강아지가 없어요',true);return}
+  let n=0;for(const k of stock)while(A[k]>0&&free.length){const d=free.shift();A[k]--;d.weapon=k;equipGear(d);n++}
+  toast(`📦 창고 무기 ${n}개를 나눠 줬어요`);warLog(`📦 창고 무기 ${n}개 자동 배치`,'');warUI();
 }
 function equip(id,k){
   const d=dogs.find(x=>x.id===id);if(!d)return;const A=world.war.armory;
@@ -5700,7 +5848,7 @@ function startWarFight(mine,foes,info){
 }
 // enemy army arrives at the house I'm looking at: real battle here
 function defend3D(army){
-  const W=world.war,h=houseById(army.to),att=houseById(army.from);
+  recallAway();const W=world.war,h=houseById(army.to),att=houseById(army.from);
   allyDefenders(h).forEach(o=>dogs.push(fromData(o,spawnAt('land'))));
   const ready=dogs.filter(d=>!d.dead&&!d.stray&&!d.enemy&&d.age>=1&&d.health>20&&!d.fight);
   if(!ready.length){abstractArrival(army);return}
@@ -5717,7 +5865,7 @@ function defend3D(army){
 }
 // my army arrives at an enemy house and I chose to fight it myself: the battle is staged here, my home dogs wait off-screen
 function attack3D(army){
-  const W=world.war,h=houseById(army.to);
+  recallAway();const W=world.war,h=houseById(army.to);
   const hold=dogs.slice();hold.forEach(d=>{d.root.visible=false});endAllBoards(true);dogs=[];
   const defN=Math.max(1,Math.round(h.dogs.length*rand(0.7,0.85))),defData=h.dogs.splice(0,defN); // the rest stay inside as the garrison
   const A=buildField(h.terrain,h.name);enterArea(A);
@@ -5914,7 +6062,7 @@ function renderMapSide(){
   let html=`<h3 style="margin:0">${act?'⭐ ':''}${h.name}</h3><div class="kv small"><span>주인</span><b>${mine?'나':h.online?`🌐 ${h.nick}`:h.name.replace(' (점령)','')}</b><span>지형</span><b>${TERRAIN[h.terrain].n}</b><span>강아지</span><b>${n}마리 / 정원 ${cap}${n>cap?' 😾':''}</b><span>전투력</span><b>${pow}</b>${mine?'':`<span>돈</span><b>${won(h.money)}</b>`}</div>`+
     (h.online?`<p class="small" style="margin:0;color:#2f7fd0">🌐 온라인 플레이어의 집이에요.${h.banned?' <b style="color:var(--alert)">🚫 500마리 이상이라 사기 부대로 막혔어요.</b>':h.last?' 마지막 집이라 이겨도 빼앗을 수는 없고 돈 절반을 가져와요.':''}${h.n>h.dogs.length?` (전투엔 앞의 ${h.dogs.length}마리가 나와요)`:''}</p>`:'')+
     (TERRAIN[h.terrain].note?`<p class="small muted" style="margin:0">${TERRAIN[h.terrain].note}</p>`:'')+`<p class="small" style="margin:0">${unitSummary(units)||'강아지 없음'}</p>`;
-  const cur=activeHouse(),myDogs=dogs.filter(d=>!d.dead&&!d.stray&&!d.enemy&&!d.fight);
+  const cur=activeHouse(),myDogs=dogs.filter(d=>!d.dead&&!d.stray&&!d.enemy&&!d.fight&&!d.away);
   const pickList=()=>`<div class="row2"><button class="btn" id="mpAll">모두 선택</button><button class="btn" id="mpNone">선택 해제</button></div><div class="mappick">${myDogs.map(d=>`<label><input type="checkbox" data-mp="${d.id}"${mapPick.has(d.id)?' checked':''}> ${d.name} <small>${d.weapon?WEAPONS[d.weapon].n:'맨몸'} · ${fmtAge(d.age)}</small></label>`).join('')||'<span class="small muted">보낼 강아지가 없어요</span>'}</div>`;
   if(!mine){const sel=myDogs.filter(d=>mapPick.has(d.id)).map(toData),mt=sel.length?marchMin(cur,h,sel):marchMin(cur,h,[]);
     const al=h.online?[]:pledged(h),alP=al.reduce((a,f)=>a+armyPower(f.dogs.filter(o=>o.age>=1).sort((x,y)=>unitPower(y,h.terrain)-unitPower(x,h.terrain)).slice(0,allyCount(f)),h.terrain),0);
@@ -5940,10 +6088,11 @@ function warUI(){
   $('#warCap').innerHTML=`${TERRAIN[h.terrain].n} · 강아지 ${n}마리 / 정원 ${cap}${n>cap?' <b style="color:var(--alert)">😾 좁아요!</b>':''} · 내 집 ${myHouses().length}곳`;
   $('#warShop').innerHTML=Object.entries(WEAPONS).map(([k,w])=>`<div class="shoprow"><span>${w.n}<small> 공격 ×${w.atk} · 방어 ×${w.def}</small></span><b>${won(w.cost)}</b><span class="small">창고 ${W.armory[k]||0}</span><button class="btn" data-buy="${k}">사기</button></div>`).join('');
   $('#warShop').querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=>buyWeapon(b.dataset.buy));
-  const ds=dogs.filter(d=>!d.dead&&!d.stray&&!d.enemy),sel=$('#eqDog'),keep=sel.value;
-  sel.innerHTML=ds.map(d=>`<option value="${d.id}">${d.name} (${d.weapon?WEAPONS[d.weapon].n:'맨몸'})</option>`).join('');if(keep&&ds.some(d=>String(d.id)===keep))sel.value=keep;
-  $('#eqW').innerHTML='<option value="none">무장 해제</option>'+Object.entries(WEAPONS).map(([k,w])=>`<option value="${k}">${w.n} (창고 ${W.armory[k]||0})</option>`).join('');
-  $('#warArmies').dataset.sig='';warLite();
+  const ds=dogs.filter(d=>!d.dead&&!d.stray&&!d.enemy&&!d.away);for(const id of [...EQSEL])if(!ds.some(d=>d.id===id))EQSEL.delete(id);
+  $('#eqList').innerHTML=ds.map(d=>`<label><input type="checkbox" data-eq="${d.id}"${EQSEL.has(d.id)?' checked':''}> ${esc(d.name)} <small>${d.weapon?WEAPONS[d.weapon].n:'맨몸'} · ${fmtAge(d.age)}${d.age<1?' (어려요)':''}</small></label>`).join('')||'<span class="small muted">강아지가 없어요</span>';
+  $('#eqList').querySelectorAll('[data-eq]').forEach(c=>c.onchange=()=>{const id=+c.dataset.eq;c.checked?EQSEL.add(id):EQSEL.delete(id);eqCount()});eqCount();
+  const keepW=$('#eqW').value;$('#eqW').innerHTML='<option value="none">무장 해제</option>'+Object.entries(WEAPONS).map(([k,w])=>`<option value="${k}">${w.n} (창고 ${W.armory[k]||0} · ${won(w.cost)})</option>`).join('');if(keepW)$('#eqW').value=keepW;
+  nbUI();$('#warArmies').dataset.sig='';warLite();
 }
 
 let mapT=0;
@@ -5956,6 +6105,164 @@ function warLite(){if(!warOn())return;const W=world.war,h=activeHouse();if(!h)re
   const sig=W.armies.map(a=>a.id).join(',');const html=W.armies.length?W.armies.map(a=>`<li>${a.owner==='me'?(a.kind==='move'?'🚚':'🚩'):'🚨'} ${houseById(a.from).name} → ${houseById(a.to).name} · ${a.units.length}마리 · <span data-eta="${a.id}">${fmtDur(a.eta-world.t)}</span> 남음${a.owner==='me'&&a.kind==='attack'?` <button class="chip" data-recall="${a.id}">↩ 되돌리기</button>`:''}</li>`).join(''):'<li class="muted">움직이는 군대가 없어요</li>';
   const ul=$('#warArmies');if(ul.dataset.sig!==sig){ul.dataset.sig=sig;ul.innerHTML=html;ul.querySelectorAll('[data-recall]').forEach(b=>b.onclick=()=>recallArmy(+b.dataset.recall))}else W.armies.forEach(a=>{const e=ul.querySelector(`[data-eta="${a.id}"]`);if(e)e.textContent=fmtDur(a.eta-world.t)})}
 
+
+/* ======================= CARE STATIONS (목욕기·치료기·그루밍·장난감·간식기·어질리티·분수) ======================= */
+// each station: when a dog wants it, how long it stays, what it does per minute, the electricity it uses
+const STDEF={
+  bath:{lab:'🛁 목욕 중',dur:[6,10],lift:0.06,sit:true,power:'bath',per:3,emo:'🫧',want:d=>world.t-(d.lastBath??-1e9)>1440*2&&d.health<95?0.25:world.t-(d.lastBath??-1e9)>1440*4?0.4:0,
+    use:(d,dt)=>{d.health=clamp(d.health+dt*0.25);d.happy=clamp(d.happy+dt*(d.happy>60?-0.05:0.2))},done:d=>{d.lastBath=world.t;d.happy=clamp(d.happy+6);log(`🛁 ${d.name}${josa(d.name,'이','가')} 목욕을 마쳤어요. 뽀송뽀송!`,'good')}},
+  medic:{lab:'🩺 치료 중',dur:[10,20],lift:0.35,lie:true,power:'medic',per:8,emo:'💊',want:d=>d.health<45?0.85:d.health<60?0.35:0,
+    use:(d,dt)=>{d.health=clamp(d.health+dt*1.6);d.stamina=clamp(d.stamina+dt*0.2)},done:d=>log(`🩺 ${d.name} 치료 끝 · 건강 ${Math.round(d.health)}`,'good')},
+  groom:{lab:'✂ 그루밍 중',dur:[5,9],lift:0.53,sit:true,power:'groom',per:2,emo:'✨',want:d=>d.happy<75&&world.t-(d.lastGroom??-1e9)>720?0.18:0,
+    use:(d,dt)=>{d.happy=clamp(d.happy+dt*0.9);d.health=clamp(d.health+dt*0.05)},done:d=>{d.lastGroom=world.t;log(`✂ ${d.name}${josa(d.name,'이','가')} 털 손질을 받았어요`)}},
+  toybox:{lab:'🧸 장난감 노는 중',dur:[6,14],front:0.45,sit:true,cap:2,emo:'🧸',want:d=>d.stamina>30&&d.happy<90?0.14:0,
+    use:(d,dt)=>{d.happy=clamp(d.happy+dt*0.7);d.stamina=clamp(d.stamina-dt*0.03);if(Math.random()<dt*0.3&&d.root)d.root.userData.barkPulse=0.6}},
+  snackbar:{lab:'🦴 간식 먹는 중',dur:[2,3],front:0.4,emo:'😋',power:'snackbar',per:1,want:d=>world.snacks>0&&(d.hunger>45||d.happy<50)&&world.t-(d.lastSnack??-1e9)>180?0.35:0,
+    start:d=>{if(world.snacks<=0)return false;world.snacks--;return true},use:(d,dt)=>{d.hunger=clamp(d.hunger-dt*5);d.happy=clamp(d.happy+dt*3)},done:d=>{d.lastSnack=world.t}},
+  agility:{lab:'🚩 어질리티 중',dur:[8,15],run:true,emo:'🏃',want:d=>d.stamina>55&&d.age>=0.5&&!isNight()?0.12:0,
+    use:(d,dt)=>{d.happy=clamp(d.happy+dt*1.0);d.health=clamp(d.health+dt*0.06);d.stamina=clamp(d.stamina-dt*0.22);d.thirst=clamp(d.thirst+dt*0.06)}},
+  fountain:{lab:'⛲ 분수에서 물 마시는 중',dur:[2,4],front:0.55,cap:3,emo:'💧',want:d=>d.thirst>40?0.5:d.happy<60&&!isNight()?0.06:0,
+    use:(d,dt)=>{d.thirst=clamp(d.thirst-dt*12);d.happy=clamp(d.happy+dt*0.6)}},
+};
+const STATION_ORDER=['medic','fountain','snackbar','bath','agility','groom','toybox'];
+function stationSpot(S){const D=STDEF[S.type],r=S.it.rot||0,[fx,fz]=[[0,1],[-1,0],[0,-1],[1,0]][r];if(!D.front)return {x:S.x,z:S.z};const f=FURN[S.type],half=(fx?f.w:f.d)/2;const k=S.users;return {x:S.x+fx*(half+D.front)+(fz?(k-0.5)*0.4:0),z:S.z+fz*(half+D.front)+(fx?(k-0.5)*0.4:0),face:{x:S.x,z:S.z}}}
+function stationOk(S){const D=STDEF[S.type];return !D.power||hasPower()}
+function stationFor(d){
+  if(!dev.st||d.stray||d.lion||d.enemy||d.age<0.3||aiQuiet())return null;const out=yard&&!inRoom(d.pos.x,d.pos.y);
+  for(const k of STATION_ORDER){const L=dev.st[k];if(!L||!L.length)continue;const D=STDEF[k],p=D.want(d);if(!p||Math.random()>p||!stationOk({type:k}))continue;
+    const S=L.filter(x=>x.users<(D.cap||1)).sort((a,b)=>Math.hypot(a.x-d.pos.x,a.z-d.pos.y)-Math.hypot(b.x-d.pos.x,b.z-d.pos.y))[0];if(S)return S}
+  return null;
+}
+function stationRelease(d){if(d.st){d.st.users=Math.max(0,d.st.users-1);d.st=null}}
+// station visuals (bubbles, lamp, water jets, cool air)
+function stationFx(rdt){
+  if(!dev.st&&!dev.aircon)return;const t=performance.now()/1000;
+  for(const k in (dev.st||{}))for(const S of dev.st[k]){const fx=S.it._fx;if(!fx)continue;const busy=S.users>0&&dogs.some(d=>d.st===S&&d.state==='atSt');
+    if(fx.bub)fx.bub.forEach((b,i)=>{b.visible=busy;if(busy){b.position.y=0.32+((t*0.6+i*0.13)%1)*0.25;b.scale.setScalar(0.7+((t+i)%1)*0.6)}});
+    if(fx.lamp)fx.lamp.material=busy?mat('#b8f0ff',{emissive:'#5fd0ff'}):mat('#dfe6ea');
+    if(fx.br){fx.br.visible=busy;if(busy){fx.br.position.x=Math.sin(t*6)*0.18;fx.br.position.y=0.66+Math.abs(Math.sin(t*6))*0.03}}
+    if(fx.jets)fx.jets.forEach(j=>{j.t=(j.t+rdt*0.8)%1;const r=0.05+j.t*0.32;j.m.position.set(Math.cos(j.a)*r,0.72+Math.sin(j.t*Math.PI)*0.28,Math.sin(j.a)*r)})}
+  if(dev.aircon){const fx=dev.aircon.it._fx,on=world&&world.ac&&world.ac.on&&hasPower();if(fx){fx.led.material=on?mat('#5fd0ff',{emissive:world.ac.mode==='heat'?'#ff9a5f':'#5fd0ff'}):mat('#9aa6ae');fx.air.forEach((a,i)=>{a.visible=on;if(on){const p=(t*0.7+i/8)%1;a.position.z=0.22+p*0.9;a.position.y=1.1-p*0.25+Math.sin(i)*0.05;a.material.opacity=0.5*(1-p)}})}}
+  if(dev.purifier){const fx=dev.purifier.it._fx,on=world&&world.pur&&hasPower();if(fx)fx.led.material=on?mat('#2ad46a',{emissive:'#2ad46a'}):mat('#9aa6ae')}
+}
+function kennelWalls(it){return []} // a dog kennel is walk-in (the opening faces forward), so it does not block movement
+/* ---------- climate: air conditioner/heater and air purifier ---------- */
+function climateStep(h){
+  if(!world)return;const A=world.ac=world.ac||{on:false,mode:'cool',auto:true},P=hasPower();
+  if(dev.aircon&&A.on&&P){pay('aircon',h*1.2);for(const d of dogs){if(d.dead||d.stray||d.away||(yard&&!inRoom(d.pos.x,d.pos.y)))continue;d.stamina=clamp(d.stamina+h*0.05);d.happy=clamp(d.happy+h*0.04)}}
+  if(dev.purifier&&world.pur&&P){pay('purifier',h*0.3);if(world.dirt>0)world.dirt=Math.max(0,world.dirt-h*0.004);for(const d of dogs)if(!d.dead&&!d.away&&!d.stray)d.health=clamp(d.health+h*0.006)}
+}
+/* ---------- going out: walks, vet, salon, training school ---------- */
+const OUTINGS={
+  walk:{n:'🚶 산책',lab:'산책 중',cost:0,min:[30,60],pick:'happy',back:d=>{d.happy=clamp(d.happy+25);d.health=clamp(d.health+3);d.stamina=clamp(d.stamina-18);d.hunger=clamp(d.hunger+15);d.thirst=clamp(d.thirst+18);d.pee=0;d.poo=Math.max(0,d.poo-50)}},
+  vet:{n:'🏥 동물병원',lab:'병원 진료 중',cost:20000,min:[120,120],pick:'health',back:d=>{d.health=100;d.happy=clamp(d.happy-5)}},
+  salon:{n:'💇 애견 미용실',lab:'미용실',cost:15000,min:[60,60],pick:'happy',back:d=>{d.happy=clamp(d.happy+20);d.lastBath=world.t;d.lastGroom=world.t}},
+  school:{n:'🏫 훈련소',lab:'훈련소',cost:30000,min:[180,180],pick:'ovr',back:d=>{const ks=SKILL_KEYS.slice().sort(()=>Math.random()-0.5).slice(0,2);ks.forEach(k=>d.skills[k]=Math.min(99,(d.skills[k]||50)+Math.round(rand(2,5))));d.stamina=clamp(d.stamina-15);d.trained=(d.trained||0)+1;return ks.map(k=>SKILL_N[k]||k).join('·')}},
+};
+const SKILL_N={spd:'속도',sta:'지구력',dri:'드리블',sho:'슈팅',pas:'패스',tac:'태클',gk:'골키퍼',rea:'반응'};
+function canGoOut(d){return !d.dead&&!d.stray&&!d.enemy&&!d.fight&&!d.away&&!d.lion&&!d.sc&&d.root.visible!==false&&d.age>=0.4}
+function sendOut(kind,n,byAI){
+  const O=OUTINGS[kind],c=dogs.filter(canGoOut);if(!c.length){if(!byAI)toast('지금 보낼 수 있는 동물이 없어요',true);return 0}
+  const key=O.pick==='ovr'?(d=>-ovr(d)):(d=>d[O.pick]);let list=c.sort((a,b)=>key(a)-key(b)).slice(0,n==='all'?c.length:+n);
+  if(kind==='vet')list=list.filter(d=>d.health<90);if(!list.length){if(!byAI)toast('병원에 갈 만큼 아픈 동물이 없어요',true);return 0}
+  const cost=O.cost*list.length;if(cost&&isFinite(world.money)&&world.money<cost){const k=Math.floor(world.money/O.cost);if(k<1){if(!byAI)toast(`돈이 모자라요 (${won(O.cost)} 필요)`,true);return 0}list=list.slice(0,k)}
+  for(const d of list){if(O.cost)pay(kind,O.cost);boardLeave(d);setState(d,'idle',1);const m=rand(O.min[0],O.min[1]);d.away={kind,until:world.t+m,since:world.t};d.root.visible=false;d.speed=0;if(followId===d.id&&camMode==='follow')setCamMode('free')}
+  log(`${O.n}: ${list.map(d=>d.name).join(', ')} 출발${O.cost?` (−${won(O.cost*list.length)})`:''}${byAI?' (🤖 자동)':''}`,'good',true);if(!byAI)toast(`${O.n} 보냈어요 · ${list.length}마리`);world.cardsDirty=true;careUI();return list.length;
+}
+function awayReturn(d,early){
+  const A=d.away;if(!A)return;const O=OUTINGS[A.kind];d.away=null;d.root.visible=true;const p=spawnAt('land');d.pos.x=p.x;d.pos.y=p.z;resolve(d.pos,d.r);
+  const done=early?Math.min(1,(world.t-A.since)/Math.max(1,A.until-A.since)):1;let extra='';if(done>0.5){const r=O.back(d);if(typeof r==='string')extra=` (${r} 실력 +)`}
+  setState(d,'idle',rand(1,3));log(`🏠 ${d.name}${josa(d.name,'이','가')} ${O.lab.replace(' 중','')}에서 돌아왔어요${extra}${early?' · 일찍 데려옴':''}`,'good');world.cardsDirty=true;careUI();
+}
+function recallAway(){for(const d of dogs)if(d.away)awayReturn(d,true)}
+function petAll(){
+  if(!world)return;const now=world.t;if(now<(world.petCD||0)){toast(`🤚 방금 쓰다듬었어요 · ${fmtDur(world.petCD-now)} 뒤에 다시`,true);return}
+  let n=0;for(const d of dogs){if(d.dead||d.stray||d.enemy||d.away||d.fight)continue;d.happy=clamp(d.happy+6);if(d.root)d.root.userData.barkPulse=1;n++}world.petCD=now+30;
+  log(`🤚 ${n}마리를 모두 쓰다듬어 줬어요 · 행복도 +6`,'good');toast('🤚 쓰다듬기! 모두 꼬리를 흔들어요');if(soundOn){blip(880,0.06,0.05);setTimeout(()=>blip(1100,0.06,0.05),80)}
+}
+function careUI(){
+  if(!world||!$('#careAway'))return;const away=dogs.filter(d=>d.away);
+  const html=away.length?away.map(d=>`<li>${OUTINGS[d.away.kind].n} · <b>${esc(d.name)}</b> · ${fmtClock(d.away.until)} 귀가 <button class="chip" data-callback="${d.id}">데려오기</button></li>`).join(''):'<li class="muted">밖에 나간 동물이 없어요</li>';
+  const ul=$('#careAway');if(ul.dataset.html!==html){ul.dataset.html=html;ul.innerHTML=html;ul.querySelectorAll('[data-callback]').forEach(b=>b.onclick=()=>{const d=dogs.find(x=>x.id===+b.dataset.callback);if(d)awayReturn(d,true)})}
+  const A=world.ac||{};$('#acBtn').textContent=!dev.aircon?'❄ 냉난방기 없음':A.on?'❄ 냉난방기 끄기':'❄ 냉난방기 켜기';$('#acBtn').disabled=!dev.aircon;$('#acBtn').classList.toggle('primary',!!A.on);
+  $('#purBtn').textContent=!dev.purifier?'🌬 공기청정기 없음':world.pur?'🌬 공기청정기 끄기':'🌬 공기청정기 켜기';$('#purBtn').disabled=!dev.purifier;$('#purBtn').classList.toggle('primary',!!world.pur);
+  const have=Object.keys(STDEF).filter(k=>dev.st&&dev.st[k]&&dev.st[k].length),users=dogs.filter(d=>d.state==='atSt'&&d.st);
+  $('#careSt').textContent=have.length?have.map(k=>`${FURN[k].n}${dev.st[k].length>1?' ×'+dev.st[k].length:''}${users.some(d=>d.st.type===k)?' (사용 중)':''}`).join(' · '):'방 꾸미기에서 목욕기·치료기·그루밍 테이블·장난감 바구니·간식기·강아지 집·냉난방기·공기청정기를 놓을 수 있어요 (마당: 어질리티·분수).';
+  const pc=(world.petCD||0)-world.t;$('#petBtn').textContent=pc>0?`🤚 쓰다듬기 (${fmtDur(pc)} 뒤)`:'🤚 모두 쓰다듬기';
+}
+// automation: uses the outings and climate controls when the numbers call for it
+function careAuto(live,aH,aS,aHe){
+  if(careMode!=='auto')return;const A=world.ac=world.ac||{on:false,mode:'cool',auto:true};
+  if(dev.aircon&&$('#acAuto').checked){const want=aS<62||aH<55;if(want&&!A.on&&hasPower()){A.on=true;log('🤖 지친 동물이 많아서 냉난방기를 켰어요','good')}else if(!want&&A.on&&aS>82&&aH>75){A.on=false;log('🤖 다들 편안해서 냉난방기를 껐어요')}}
+  if(dev.purifier&&!world.pur&&world.dirt>2&&$('#acAuto').checked){world.pur=true;log('🤖 집이 지저분해서 공기청정기를 켰어요')}
+  if(!$('#outAuto').checked||isNight())return;
+  const sick=live.filter(d=>d.health<35&&canGoOut(d));if(sick.length&&!dev.st?.medic&&(!isFinite(world.money)||world.money>60000))sendOut('vet',Math.min(2,sick.length),true);
+  if(aH<55&&world.t>(world.walkCD||0)&&live.filter(canGoOut).length>=2){world.walkCD=world.t+360;sendOut('walk',Math.max(1,Math.ceil(live.length/3)),true)}
+}
+
+/* ======================= CONSTRUCTION during the simulation ======================= */
+// price (won) and build time (game minutes) for each piece of furniture
+const BUILD={sofa:[60000,90],bed:[80000,120],table:[30000,45],shelf:[40000,60],tv:[120000,60],plant:[8000,15],dogbed:[15000,20],rug:[12000,15],
+  water:[50000,60],food:[10000,15],launcher:[45000,60],potty:[70000,90],treadmill:[90000,120],farm:[250000,360],
+  bath:[120000,150],medic:[300000,240],groom:[60000,60],toybox:[20000,20],snackbar:[50000,45],kennel:[40000,60],aircon:[150000,120],purifier:[60000,30],agility:[100000,180],fountain:[80000,120]};
+let buildPick=null;
+function buildable(k){const f=FURN[k];return f&&!f.wall&&BUILD[k]}
+function buildBlocked(k){const f=FURN[k];if(f.yard&&!yard)return '마당이 있어야 지을 수 있어요';if(f.unique&&(layout.items.some(x=>x.type===k)||(world.builds||[]).some(b=>b.type===k)))return '이미 있어요 (하나만 둘 수 있어요)';return ''}
+function spotFree(k,x,z,rot){
+  const f=FURN[k],odd=(rot||0)%2,w=odd?f.d:f.w,d=odd?f.w:f.d,bx={minx:x-w/2,maxx:x+w/2,minz:z-d/2,maxz:z+d/2};
+  if(f.yard){if(!yard||bx.minx<yard.minx+0.1||bx.maxx>yard.maxx-0.1||bx.minz<yard.minz+0.1||bx.maxz>yard.maxz-0.1)return false;if(yard.P){const P=yard.P.rect||null}}
+  else if(bx.minx<-W/2+0.05||bx.maxx>W/2-0.05||bx.minz<-D/2+0.05||bx.maxz>D/2-0.05)return false;
+  const hit=b=>b.minx<bx.maxx+0.1&&b.maxx>bx.minx-0.1&&b.minz<bx.maxz+0.1&&b.maxz>bx.minz-0.1;
+  if(solids.some(hit))return false;if(layout.items.some(it=>{if(FURN[it.type].wall)return false;const ft=foot(it);return hit({minx:it.x-ft.w/2,maxx:it.x+ft.w/2,minz:it.z-ft.d/2,maxz:it.z+ft.d/2})}))return false;
+  if((world.builds||[]).some(b=>hit(b.box)))return false;if(yard&&yard.P&&f.yard){const pr=pitchRect&&pitchRect();if(pr&&hit(pr))return false}
+  return bx;
+}
+function autoSpot(k){if(FURN[k].yard&&!yard)return null;const f=FURN[k];for(let i=0;i<300;i++){const rot=Math.random()<0.5?0:1,x=f.yard?rand(yard.minx+1,yard.maxx-1):rand(-W/2+0.6,W/2-0.6),z=f.yard?rand(yard.minz+1,yard.maxz-1):rand(-D/2+0.6,D/2-0.6),sx=Math.round(x*4)/4,sz=Math.round(z*4)/4;if(spotFree(k,sx,sz,rot))return {x:sx,z:sz,rot}}return null}
+function startBuild(k,at){
+  if(!world||!buildable(k))return;const why=buildBlocked(k);if(why){toast(`🔨 ${FURN[k].n}: ${why}`,true);return}
+  const [cost,mins]=BUILD[k];if(isFinite(world.money)&&world.money<cost){toast(`돈이 모자라요 (${won(cost)} 필요)`,true);return}
+  const p=at||autoSpot(k);if(!p){toast('놓을 빈자리가 없어요',true);return}const bx=spotFree(k,p.x,p.z,p.rot||0);if(!bx){toast('그 자리는 막혀 있어요. 다른 곳을 골라 주세요',true);return}
+  pay('build',cost);const B={id:uid++,type:k,x:p.x,z:p.z,rot:p.rot||0,start:world.t,end:world.t+mins,box:bx,cost};
+  const g=new THREE.Group();g.position.set(p.x,0,p.z);const w=bx.maxx-bx.minx,d=bx.maxz-bx.minz;
+  for(const sx of[-1,1])for(const sz of[-1,1])g.add(box(0.05,1.2,0.05,'#c9a24a',sx*w/2,0.6,sz*d/2));for(const y of[0.4,1.15]){g.add(box(w,0.04,0.04,'#c9a24a',0,y,-d/2));g.add(box(w,0.04,0.04,'#c9a24a',0,y,d/2));g.add(box(0.04,0.04,d,'#c9a24a',-w/2,y,0));g.add(box(0.04,0.04,d,'#c9a24a',w/2,y,0))}
+  const tape=box(w+0.1,0.06,0.02,'#f2c14e',0,0.6,d/2+0.03);g.add(tape);const cone=cyl(0,0.09,0.25,'#ff7a1a',w/2+0.2,0.125,d/2+0.2,10);g.add(cone);
+  const frame=box(w*0.96,0.02,d*0.96,FURN[k].c,0,0.02,0,{transparent:true,opacity:0.6});frame.castShadow=false;g.add(frame);B.frame=frame;B.h=Math.max(0.1,FURN[k].h||0.5);
+  const lbl=textSprite('🚧 0%',{size:0.32});lbl.position.set(0,1.55,0);g.add(lbl);B.lbl=lbl;B.g=g;scene.add(g);
+  (world.builds=world.builds||[]).push(B);log(`🔨 ${FURN[k].n} 공사를 시작했어요 (−${won(cost)} · ${fmtDur(mins)} 걸려요)`,'good',true);toast(`🔨 ${FURN[k].n} 공사 시작 · ${fmtDur(mins)} 뒤 완성`);buildUI();
+}
+function cancelBuild(id){const L=world.builds||[],B=L.find(b=>b.id===id);if(!B)return;scene.remove(B.g);world.builds=L.filter(b=>b!==B);const back=Math.round(B.cost*0.5/100)*100;earn(back);log(`🔨 ${FURN[B.type].n} 공사를 취소했어요 (+${won(back)} 돌려받음)`);buildUI()}
+// puts a finished piece into the running house: same registration buildWorld does for each item
+function addItemLive(it){
+  const f=FURN[it.type];layout.items.push(it);const g=buildFurniture(it),ft=foot(it);g.position.set(it.x,0,it.z);g.rotation.y=-(it.rot||0)*Math.PI/2;scene.add(g);
+  const bx={minx:it.x-ft.w/2,maxx:it.x+ft.w/2,minz:it.z-ft.d/2,maxz:it.z+ft.d/2,h:f.h,type:it.type,it};
+  if(f.solid){solids.push(bx);for(const d of dogs)if(!d.dead)resolve(d.pos,d.r)}
+  if(f.device)dev[it.type]=Object.assign(dev[it.type]||{},{it,box:bx,group:g});
+  if(it.type==='dogbed')(dev.beds=dev.beds||[]).push({x:it.x,z:it.z,used:0});
+  if(it.type==='kennel'){const r=it.rot||0,[fx,fz]=[[0,1],[-1,0],[0,-1],[1,0]][r];(dev.beds=dev.beds||[]).push({x:it.x-fx*0.08,z:it.z-fz*0.08,used:0,kennel:true})}
+  if(it.type==='tv'||it.type==='shelf')(dev.loot=dev.loot||[]).push({type:it.type,x:it.x,z:it.z,box:bx});
+  if(f.st)((dev.st=dev.st||{})[it.type]=dev.st[it.type]||[]).push({type:it.type,it,x:it.x,z:it.z,users:0,box:bx,g});
+  if(it.type==='aircon'||it.type==='purifier')dev[it.type]={it,box:bx,group:g};
+  if(it.type==='treadmill'&&!world.tm)world.tm={user:null,speed:'mid',auto:true,minutes:0};
+}
+function buildStep(h){
+  const L=world.builds;if(!L||!L.length)return;
+  for(const B of L.slice()){const p=clamp((world.t-B.start)/Math.max(1,B.end-B.start),0,1);B.frame.scale.y=1;B.frame.position.y=0.02;B.frame.scale.set(1,1+p*B.h*50,1);B.frame.position.y=p*B.h/2+0.01;
+    const pc=Math.floor(p*100);if(B.pc!==pc){B.pc=pc;setSprite(B.lbl,`🚧 ${pc}% · ${fmtDur(Math.max(0,B.end-world.t))}`)}
+    if(!world.fastNow&&soundOn&&speed<=4&&Math.random()<h*0.6)blip(rand(300,420),0.03,0.03);
+    if(p>=1){scene.remove(B.g);world.builds=world.builds.filter(x=>x!==B);addItemLive({id:B.id,type:B.type,x:B.x,z:B.z,rot:B.rot});
+      log(`🏗 ${FURN[B.type].n} 완성!`,'good',true);toast(`🏗 ${FURN[B.type].n} 완성!`,false,true);if(soundOn){blip(660,0.1,0.06);setTimeout(()=>blip(990,0.15,0.06),120)}buildUI();careUI()}}
+}
+function buildUI(){
+  if(!world||!$('#buildList'))return;const L=world.builds||[];
+  const html=L.length?L.map(B=>`<li>🚧 <b>${FURN[B.type].n}</b> · ${Math.floor(clamp((world.t-B.start)/Math.max(1,B.end-B.start),0,1)*100)}% · ${fmtClock(B.end)} 완성 <button class="chip" data-bcancel="${B.id}">취소 (반값 환불)</button></li>`).join(''):'<li class="muted">짓고 있는 것이 없어요</li>';
+  const ul=$('#buildList');if(ul.dataset.html!==html){ul.dataset.html=html;ul.innerHTML=html;ul.querySelectorAll('[data-bcancel]').forEach(b=>b.onclick=()=>cancelBuild(+b.dataset.bcancel))}
+  const k=$('#buildType').value,why=k?buildBlocked(k):'';$('#buildInfo').textContent=k?(why?`⛔ ${why}`:`${won(BUILD[k][0])} · 공사 ${fmtDur(BUILD[k][1])}${FURN[k].yard?' · 마당에 지어요':''}`):'';
+  $('#buildGo').disabled=$('#buildPick').disabled=!!why;$('#buildPick').textContent=buildPick?'❌ 위치 고르기 취소':'📍 위치 골라서 짓기';
+}
+function buildOptions(){$('#buildType').innerHTML=Object.keys(BUILD).filter(buildable).map(k=>`<option value="${k}">${FURN[k].n} — ${won(BUILD[k][0])} · ${fmtDur(BUILD[k][1])}</option>`).join('')}
+// click on the 3D floor to choose where to build
+function floorPoint(e){const cv=$('#mainCanvas'),r=cv.getBoundingClientRect(),v=new THREE.Vector2(((e.clientX-r.left)/r.width)*2-1,-((e.clientY-r.top)/r.height)*2+1),rc=new THREE.Raycaster();rc.setFromCamera(v,mainCam);
+  const pl=new THREE.Plane(new THREE.Vector3(0,1,0),0),pt=new THREE.Vector3();return rc.ray.intersectPlane(pl,pt)?pt:null}
 /* ======================= BOARD GAMES ======================= */
 const BOARD={yut:{n:'윷놀이',e:'🎋',max:4,col:'#e9d8a6'},ludo:{n:'주사위 말판',e:'🎲',max:4,col:'#f3f0e6'},memory:{n:'카드 짝맞추기',e:'🃏',max:4,col:'#3f7d5a'},omok:{n:'오목',e:'⚫',max:2,col:'#d9a85c'},chess:{n:'체스',e:'♟',max:2,col:'#ece3cf'}};
 function boardMesh(k,x,z){
@@ -5974,7 +6281,7 @@ function boardMesh(k,x,z){
 const BG_COL=['#d4473a','#2f7fd0','#2e9a6a','#f2c14e'],BG_MAX=6;let bgSeq=1,bgWatch=null;
 function bgList(){if(!world.bgs)world.bgs=[];return world.bgs}
 function boardOf(d){return bgList().find(G=>G.on&&G.seats[d.id])||null}
-function boardCan(d){return !d.dead&&!d.stray&&!d.enemy&&!d.fight&&!d.lion&&!d.sc&&d.root.visible!==false&&d.state!=='sleep'&&d.age>=0.3&&d.pee<80&&d.thirst<80&&d.hunger<85}
+function boardCan(d){return !d.away&&!d.dead&&!d.stray&&!d.enemy&&!d.fight&&!d.lion&&!d.sc&&d.root.visible!==false&&d.state!=='sleep'&&d.age>=0.3&&d.pee<80&&d.thirst<80&&d.hunger<85}
 function boardInit(G){
   const k=G.game,st={};
   if(k==='yut'||k==='ludo'){st.pos={};G.order.forEach(id=>st.pos[id]=0)}
@@ -6088,7 +6395,7 @@ function boardAuto(live){
 let lastT=performance.now(),uiT=0;
 function frame(now){
   requestAnimationFrame(frame);if(!running)return;
-  const realDt=Math.min(0.1,(now-lastT)/1000);lastT=now;musicFx(realDt);
+  const realDt=Math.min(0.1,(now-lastT)/1000);lastT=now;musicFx(realDt);stationFx(realDt);
   if(!$('#warMap').hidden){mapT-=realDt;if(mapT<=0){mapT=1;renderMap()}}
   if(NET.on){NET.pubT-=realDt;if(NET.pubT<=0){NET.pubT=20;netPublish()}}
   if(!$('#statOv').hidden){statT-=realDt;if(statT<=0||statQueued){statT=1;renderStats()}}
@@ -6107,7 +6414,7 @@ function frame(now){
       if(Math.floor(before/1440)!==Math.floor(world.t/1440))log(`${Math.floor(world.t/1440)+1}일차 아침이 밝았어요`);
       while(world.t>=world.nextHourT){world.nextHourT+=60;hourTick();if(world.breakLoop)break}
       world.launcherBalls=balls.filter(b=>b.state==='in').length;
-      updatePotty(h);autoManager(h);updateFarm(h);billStep(h);warStep(h);boardStep(h);
+      updatePotty(h);autoManager(h);updateFarm(h);billStep(h);warStep(h);boardStep(h);climateStep(h);buildStep(h);
       if(world.tv.on&&world.tv.offAt>0&&world.t>=world.tv.offAt){setTV(false);log('꺼짐 예약 시간이 되어 TV가 꺼졌어요')}
       if(world.music.on&&world.music.offAt>0&&world.t>=world.music.offAt){setMusic(false);log('꺼짐 예약 시간이 되어 음악이 꺼졌어요')}
       if(world.fastNow){for(const d of dogs.slice())fastAnimal(d,h)}
@@ -6202,6 +6509,16 @@ $$('[data-war]').forEach(c=>c.addEventListener('change',e=>{const on=e.target.ch
   if(world&&!world.arena){if(on&&!world.war)initWar($('[data-wardiff]').value,$('[data-warsize]').value,warCount());else if(world.war)world.war.on=on;if(on&&$('[data-online]').checked)netStart();if(!on&&NET.on)netStop();toast(on?'⚔ 강아지 집들끼리의 전쟁을 허용했어요':'🕊 집 전쟁을 멈췄어요',!on);warUI()}}));
 $$('[data-wardiff]').forEach(c=>c.addEventListener('change',e=>{$$('[data-wardiff]').forEach(x=>x.value=e.target.value);if(world&&world.war)world.war.diff=e.target.value}));
 $('#mapBtn').onclick=openMap;
+buildOptions();$('#buildType').onchange=()=>{buildPick=null;buildUI()};
+$('#buildGo').onclick=()=>{ac();if(world)startBuild($('#buildType').value)};
+$('#buildPick').onclick=()=>{if(!world)return;buildPick=buildPick?null:$('#buildType').value;$('#mainCanvas').style.cursor=buildPick?'crosshair':'';if(buildPick)toast(`📍 3D 화면에서 ${FURN[buildPick].n}을(를) 지을 바닥을 클릭하세요`);buildUI()};
+$('#mainCanvas').addEventListener('pointerdown',e=>{if(!buildPick||!world)return;e.stopPropagation();e.preventDefault();const pt=floorPoint(e);if(!pt)return;const k=buildPick,x=Math.round(pt.x*4)/4,z=Math.round(pt.z*4)/4;
+  let rot=0;if(!spotFree(k,x,z,0)){if(spotFree(k,x,z,1))rot=1;else{toast('그 자리는 막혀 있어요 (가구·벽과 겹치거나 범위 밖이에요)',true);return}}
+  buildPick=null;$('#mainCanvas').style.cursor='';startBuild(k,{x,z,rot})},true);
+$('#outBtn').onclick=()=>{ac();if(world)sendOut($('#outKind').value,$('#outN').value)};$('#petBtn').onclick=()=>{ac();petAll();careUI()};
+$('#acBtn').onclick=()=>{if(!world||!dev.aircon)return;const A=world.ac=world.ac||{on:false,mode:'cool'};if(!A.on&&!hasPower()){toast('⚡ 정전이라 켤 수 없어요',true);return}A.on=!A.on;A.mode=$('#acMode').value;log(A.on?`${A.mode==='heat'?'🔥 난방':'❄ 냉방'}을 켰어요 · 체력 회복과 행복도가 조금씩 올라요`:'❄ 냉난방기를 껐어요');careUI()};
+$('#acMode').onchange=e=>{if(world&&world.ac)world.ac.mode=e.target.value};
+$('#purBtn').onclick=()=>{if(!world||!dev.purifier)return;world.pur=!world.pur;log(world.pur?'🌬 공기청정기를 켰어요 · 집이 덜 지저분해지고 건강이 조금씩 좋아져요':'🌬 공기청정기를 껐어요');careUI()};
 {const redo=()=>{if(world)buildDogCards()};
  $('#cardMode').onchange=e=>{CARDS.mode=e.target.value;CARDS.page=0;try{localStorage.setItem('mh_cardMode',CARDS.mode)}catch(_){}redo()};
  $('#cardSort').onchange=e=>{CARDS.sort=e.target.value;CARDS.page=0;redo()};
@@ -6233,7 +6550,9 @@ $('#mapAll').onclick=()=>{const W=world.war;if(!W)return;Object.assign(W.view,{x
  svg.addEventListener('pointerup',()=>{drag=null;svg.classList.remove('dragging')});svg.addEventListener('pointercancel',()=>{drag=null;svg.classList.remove('dragging')});}
 $$('[data-warsize]').forEach(c=>c.addEventListener('change',e=>$$('[data-warsize]').forEach(x=>x.value=e.target.value)));$$('[data-warcount]').forEach(c=>c.addEventListener('change',e=>{const v=clamp(Math.round(+e.target.value)||40,5,200);$$('[data-warcount]').forEach(x=>x.value=v)}));$('#mapBtn2').onclick=()=>{if(!warOn()){toast('먼저 ⚔ 전쟁 허용을 켜 주세요',true);return}openMap()};
 $('#mapClose').onclick=()=>{$('#warMap').hidden=true};$('#warMap').addEventListener('click',e=>{if(e.target.id==='warMap')$('#warMap').hidden=true});
-$('#eqGo').onclick=()=>equip(+$('#eqDog').value,$('#eqW').value);
+$('#eqGo').onclick=()=>equipMany([...EQSEL],$('#eqW').value,$('#eqBuy').checked);$('#eqAuto').onclick=autoArm;['#nbOn','#nbW','#nbBuy'].forEach(q=>$(q).addEventListener('change',()=>{nbUI();try{localStorage.setItem('mh_nb',JSON.stringify({on:$('#nbOn').checked,w:$('#nbW').value,buy:$('#nbBuy').checked}))}catch(_){}}));
+try{const v=JSON.parse(localStorage.getItem('mh_nb')||'null');if(v){$('#nbOn').checked=!!v.on;$('#nbBuy').checked=v.buy!==false;$('#nbW').dataset.init=v.w||''}}catch(_){}$('#eqW').onchange=eqCount;
+$('#eqAll').onclick=()=>{dogs.filter(d=>!d.dead&&!d.stray&&!d.enemy&&!d.away).forEach(d=>EQSEL.add(d.id));warUI()};$('#eqBare').onclick=()=>{EQSEL.clear();dogs.filter(d=>!d.dead&&!d.stray&&!d.enemy&&!d.away&&!d.weapon&&d.age>=1).forEach(d=>EQSEL.add(d.id));warUI()};$('#eqClr').onclick=()=>{EQSEL.clear();warUI()};
 $('#aiFB').addEventListener('change',()=>{aiFBNote();if(world&&world.ai){const l=aiFBLimit();aiLog(l!=null?(l?`고령화 위험(노령 ${l}% 이상) 때 강제 번식 도구를 쓸 수 있게 했어요`:'젊은 사회에도 항상 강제 번식 도구를 쓸 수 있게 했어요'):'강제 번식 도구를 쓰지 않게 했어요',l?'try':'')}});
 aiFBNote();
 $('#aiStyle').addEventListener('change',e=>{if(!world||!world.ai)return;const A=world.ai;A.style=e.target.value;A.trial=null;A.next=world.t+30;aiLog(`스타일을 ${AI_STYLE[A.style].n}(으)로 바꿨어요. 30분 뒤부터 이 기준으로 행동을 고쳐요`,'try')});

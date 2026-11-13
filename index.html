@@ -1059,6 +1059,16 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         <p class="small muted">3시간마다 평균 행복도·체력·건강을 스타일에 맞는 점수로 바꿔요. 가장 부족한 걸 돕는 행동을 하나 바꿔 보고, 3시간 뒤 어제 같은 시간대보다 점수가 오르면 👍 유지, 내려가면 👎 되돌려요. 잘 통한 행동은 기억해서 다음에 더 자주 골라요. '모두 자동화'일 때만 작동해요.</p>
       </section>
 
+      <!-- dog market -->
+      <section class="card panel home-only">
+        <div class="panel-head"><h2>강아지 시장</h2><span class="tag">정가 · 바로 와요</span></div>
+        <div class="row2"><label class="f">품종<select id="mkBreed"></select></label><label class="f">나이<select id="mkAge"><option value="pup">아기 (+20%)</option><option value="adult" selected>어른</option><option value="old">노견 (−40%)</option></select></label></div>
+        <div class="row2"><label class="f">성별<select id="mkSex"><option value="any">아무나</option><option value="f">♀ 암컷</option><option value="m">♂ 수컷</option></select></label><label class="f">몇 마리<input type="number" id="mkN" min="1" max="20" value="1" inputmode="numeric"></label></div>
+        <label class="f">이름 (한 마리 살 때만 · 비우면 자동)<input id="mkName" maxlength="12" placeholder="예: 바둑이"></label>
+        <p class="small" id="mkPrice" style="margin:0"></p>
+        <button class="btn primary" id="mkGo">🐶 1마리 사기</button>
+      </section>
+
       <!-- construction -->
       <section class="card panel home-only">
         <div class="panel-head"><h2>건설</h2><span class="tag">돈으로 짓기 · 시간이 걸려요</span></div>
@@ -1185,6 +1195,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
             <div class="row2"><label class="f">줄 무기<select id="nbW"></select></label><label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="nbBuy" checked> 창고에 없으면 사서 주기</label></div>
             <p class="small muted" id="nbNote" style="margin:0"></p></div>
           <div class="row2"><button class="btn primary" id="eqGo">🎖 고른 강아지 무장</button><button class="btn" id="eqAuto" title="창고에 있는 무기를 무장 안 한 강아지들에게 센 무기부터 나눠 줘요">📦 창고 무기 자동 배치</button></div>
+          <label class="f">방어할 때 집 안에 남길 수비대<select id="warGuard"><option value="0" selected>없음 — 모두 야전에 나가 싸워요</option><option value="0.25">4분의 1</option><option value="0.5">절반</option></select></label>
           <h3>🚩 움직이는 군대</h3><ol class="ai-log" id="warArmies"></ol>
           <p class="small muted">지형마다 쓸 수 있는 무기가 달라요: 섬은 전투함·항공모함·전투기가 있어야 가고, 산에선 탱크가 약해지고, 바다가 없는 곳에선 배가 힘을 못 써요. 집이 정원보다 붐비면 강아지들이 불만이 생겨요. 전투 중엔 '내 강아지 조종하기'로 직접 싸울 수 있어요.</p>
         </div>
@@ -3033,7 +3044,7 @@ function applyHit(a,t){
   a.stamina-=0.6;a.happy=clamp(a.happy-0.25);return dmg;
 }
 function doAttack(a,t){
-  applyHit(a,t);
+  applyHit(a,t);a.lastAct=world.t;
   const ax=t.pos.x-a.pos.x,az=t.pos.y-a.pos.y,l=Math.hypot(ax,az)||1;t.pos.x+=ax/l*0.12;t.pos.y+=az/l*0.12;resolve(t.pos,t.r);
   if(a.root)a.root.userData.barkPulse=1;hitFx(t);
   if(a.species==='cat')hiss();else if(a.species==='human')blip(110,0.09,0.14);else bark(a.k);
@@ -3067,8 +3078,9 @@ function fightAI(d,dt){
     if(d.weapon==='fighter'){d.bank=(d.bank||0)*0.9}
     return mv;
   }
-  const T=tendFor(d),aggr=0.5+T.aggr/100*1.1,near=nearestOf(d,en),nd=dist(d,near);
-  if(!d.fleeing&&(d.stamina<T.flee||(d.health<12&&Math.random()<dt*0.05))){d.fleeing=true;d.fleeT=0;log(`🏃 ${d.name}${josa(d.name,'이','가')} 도망치기 시작했어요`)}
+  const T=tendFor(d),war=f.cause==='war',aggr=war?Math.max(1,0.5+T.aggr/100*1.1):0.5+T.aggr/100*1.1,near=nearestOf(d,en),nd=dist(d,near);
+  if(!war&&!d.fleeing&&(d.stamina<T.flee||(d.health<12&&Math.random()<dt*0.05))){d.fleeing=true;d.fleeT=0;log(`🏃 ${d.name}${josa(d.name,'이','가')} 도망치기 시작했어요`)}
+  if(d.fleeing&&war)d.fleeing=false;
   if(d.fleeing){
     if(d.species==='human'&&dev.door){const p=doorIn();if(steer(d,p.x,p.z,sp*1.15,dt)<0.35)escapeFight(d,'도망');return true}
     const ax=d.pos.x-near.pos.x,az=d.pos.y-near.pos.y,l=Math.hypot(ax,az)||1;
@@ -3081,7 +3093,7 @@ function fightAI(d,dt){
   if(isAir(t)){ // a dog on the ground can only snap at a plane when it swoops low and close
     if(td>reach+0.3){steer(d,t.pos.x,t.pos.y,sp*0.8,dt);return true}face(d,t.pos.x,t.pos.y,dt*3);d.speed=0;if(d.atkCD<=0){d.atkCD=baseCD(d);if(Math.random()<0.25)doAttack(d,t);else if(d.root)d.root.userData.barkPulse=1}return false}
   if(td>reach){
-    if(aggr<0.8&&Math.random()<dt*0.6){d.speed=0;face(d,t.pos.x,t.pos.y,dt);return false}
+    if(!war&&aggr<0.8&&Math.random()<dt*0.6){d.speed=0;face(d,t.pos.x,t.pos.y,dt);return false}
     steer(d,t.pos.x,t.pos.y,sp*(0.75+0.25*aggr),dt);return true;
   }
   face(d,t.pos.x,t.pos.y,dt*3);d.speed=0;
@@ -5066,7 +5078,7 @@ function renderRates(){
 function setIll(on){ILL.on=on;$$('[data-illon]').forEach(x=>x.checked=on);$$('[data-illnote]').forEach(n=>n.textContent=on?'건강이 0이 되면 병으로 세상을 떠나요.':'건강이 0이 되어도 1로 버텨요. 싸움으로 죽거나 노환은 그대로예요.')}
 
 /* ======================= MONEY & ELECTRICITY ======================= */
-const ELEC_N={build:'🔨 건설',bath:'🛁 자동 목욕기',medic:'🩺 자동 치료기',groom:'✂ 그루밍 테이블',snackbar:'🦴 자동 간식기',aircon:'❄ 냉난방기',purifier:'🌬 공기청정기',walk:'🚶 산책',vet:'🏥 동물병원',salon:'💇 애견 미용실',school:'🏫 훈련소',trade:'🛒 교류',weapons:'🎖 무기',pump:'💧 급수대 펌프',standby:'🔌 대기전력(급수대·홈캠)',launcher:'🎾 공 발사기',potty:'🚽 자동 배변판',tv:'📺 TV',music:'🎵 음악',treadmill:'🏃 런닝머신',farm:'🌱 자동화 농장',light:'💡 조명',vacuum:'🤖 로봇청소기',flood:'🏟 축구장 조명'};
+const ELEC_N={market:'🐶 강아지 시장',build:'🔨 건설',bath:'🛁 자동 목욕기',medic:'🩺 자동 치료기',groom:'✂ 그루밍 테이블',snackbar:'🦴 자동 간식기',aircon:'❄ 냉난방기',purifier:'🌬 공기청정기',walk:'🚶 산책',vet:'🏥 동물병원',salon:'💇 애견 미용실',school:'🏫 훈련소',trade:'🛒 교류',weapons:'🎖 무기',pump:'💧 급수대 펌프',standby:'🔌 대기전력(급수대·홈캠)',launcher:'🎾 공 발사기',potty:'🚽 자동 배변판',tv:'📺 TV',music:'🎵 음악',treadmill:'🏃 런닝머신',farm:'🌱 자동화 농장',light:'💡 조명',vacuum:'🤖 로봇청소기',flood:'🏟 축구장 조명'};
 const won=v=>isFinite(v)?Math.round(v).toLocaleString()+'원':'무한';
 function hasPower(){return !world||world.money>0}
 function farmCount(){return dev.farmList?dev.farmList.length:(dev.farm?1:0)}
@@ -5684,7 +5696,7 @@ function shotDamage(a,t,k,wk){
 }
 function fireWeapon(d,t,moving,missile){
   const Wp=WEAPONS[d.weapon],G=shotGeos(),type=missile?'rocket':Wp.proj,from=muzzleOf(d),td=dist(d,t);
-  const SS=world.shotStat=world.shotStat||{};SS['fire'+d.team]=(SS['fire'+d.team]||0)+1;
+  d.lastAct=world.t;const SS=world.shotStat=world.shotStat||{};SS['fire'+d.team]=(SS['fire'+d.team]||0)+1;
   let ch=(missile?0.8:Wp.acc)*(1-0.35*clamp(td/Wp.range,0,1))*(moving?0.6:1)*((t.speed||0)>1.5?0.8:1);if(isAir(t))ch*=missile?0.9:Wp.aa;
   const hit=Math.random()<ch,ty=bodyY(t),off=hit?0:rand(0.5,1.3)*(Math.random()<0.5?-1:1);
   const ax=t.pos.x-d.pos.x,az=t.pos.y-d.pos.y,l=Math.hypot(ax,az)||1,tx=t.pos.x-az/l*off+(hit?0:ax/l*rand(0,1.5)),tz=t.pos.y+ax/l*off+(hit?0:az/l*rand(0,1.5));
@@ -5728,10 +5740,14 @@ function rangedAI(d,t,td,dt,sp,aggr){
   if(td>Wp.range*0.9){steer(d,t.pos.x,t.pos.y,sp*(0.75+0.25*aggr),dt);return true}
   face(d,t.pos.x,t.pos.y,dt*(Wp.veh?1.6:4));
   let moving=false;
-  if(td<minR){if(Wp.veh&&d.weapon==='tank'&&td<d.r+t.r+0.45&&d.atkCD<=0){doAttack(d,t);d.atkCD=1.4} // too close for the main gun: run them over
-    else if(!Wp.veh){const ax=d.pos.x-t.pos.x,az=d.pos.y-t.pos.y,l=Math.hypot(ax,az)||1;steer(d,clamp(d.pos.x+ax/l*1.5,B.minx+0.4,B.maxx-0.4),clamp(d.pos.y+az/l*1.5,B.minz+0.4,B.maxz-0.4),sp*0.8,dt);return true}
-    else if(td<d.r+t.r+0.4&&d.atkCD<=0){doAttack(d,t);d.atkCD=1.6}
-    d.speed=0;return false}
+  if(td<minR){
+    if(!Wp.veh){const ax=d.pos.x-t.pos.x,az=d.pos.y-t.pos.y,l=Math.hypot(ax,az)||1;steer(d,clamp(d.pos.x+ax/l*1.5,B.minx+0.4,B.maxx-0.4),clamp(d.pos.y+az/l*1.5,B.minz+0.4,B.maxz-0.4),sp*0.8,dt);
+      if((d.mgCD=(d.mgCD||0)-dt)<=0&&Math.random()<0.5){d.mgCD=1.2;doAttack(d,t)} // a cornered gunner swings the weapon too
+      return true}
+    let mv=false;if(d.weapon==='tank'&&td>d.r+t.r+0.3){steer(d,t.pos.x,t.pos.y,sp,dt);mv=true}else face(d,t.pos.x,t.pos.y,dt*2); // tanks close in to ram
+    if(td<d.r+t.r+0.45&&d.atkCD<=0){doAttack(d,t);d.atkCD=1.4}
+    if((d.mgCD=(d.mgCD||0)-dt)<=0){d.mgCD=0.3;const k0=Wp.k,p0=Wp.proj,c0=Wp.splash;Wp.k=0.45;Wp.proj='bullet';Wp.splash=0;fireWeapon(d,t,mv);Wp.k=k0;Wp.proj=p0;Wp.splash=c0} // coaxial machine gun
+    if(!mv)d.speed=0;return mv}
   if(!Wp.veh&&melee&&td<1.7){const ax=d.pos.x-t.pos.x,az=d.pos.y-t.pos.y,l=Math.hypot(ax,az)||1,nx=d.pos.x+ax/l,nz=d.pos.y+az/l; // back away from a charging biter while firing
     if(nx>B.minx+0.4&&nx<B.maxx-0.4&&nz>B.minz+0.4&&nz<B.maxz-0.4){const h0=d.heading;steer(d,nx,nz,sp*0.55,dt);d.heading=h0;face(d,t.pos.x,t.pos.y,dt*6);moving=true}}
   if(!moving)d.speed=0;
@@ -5850,10 +5866,10 @@ function startWarFight(mine,foes,info){
 function defend3D(army){
   recallAway();const W=world.war,h=houseById(army.to),att=houseById(army.from);
   allyDefenders(h).forEach(o=>dogs.push(fromData(o,spawnAt('land'))));
-  const ready=dogs.filter(d=>!d.dead&&!d.stray&&!d.enemy&&d.age>=1&&d.health>20&&!d.fight);
+  const ready=dogs.filter(d=>!d.dead&&!d.stray&&!d.enemy&&!d.fight&&!d.away&&((d.age>=1&&d.health>20)||(d.weapon&&d.age>=0.3&&d.health>10)));
   if(!ready.length){abstractArrival(army);return}
   // the strongest and armed go out to meet them; about a quarter stays to guard the house
-  const ranked=ready.slice().sort((a,b)=>unitPower(toData(b),h.terrain)-unitPower(toData(a),h.terrain)),keep=ranked.length>=3?Math.max(1,Math.round(ranked.length*0.25)):0;
+  const gf=+($('#warGuard')?$('#warGuard').value:0),ranked=ready.slice().sort((a,b)=>unitPower(toData(b),h.terrain)-unitPower(toData(a),h.terrain)),keep=gf>0&&ranked.length>=3?Math.max(1,Math.round(ranked.length*gf)):0;
   const out=ranked.slice(0,ranked.length-keep),guard=ranked.slice(ranked.length-keep);
   const hold=dogs.filter(d=>!out.includes(d));hold.forEach(d=>{d.root.visible=false;if(d.state==='playBoard'||d.state==='toBoard')boardLeave(d)});endAllBoards(true);
   const A=buildField(h.terrain,h.name);enterArea(A);
@@ -6263,6 +6279,26 @@ function buildOptions(){$('#buildType').innerHTML=Object.keys(BUILD).filter(buil
 // click on the 3D floor to choose where to build
 function floorPoint(e){const cv=$('#mainCanvas'),r=cv.getBoundingClientRect(),v=new THREE.Vector2(((e.clientX-r.left)/r.width)*2-1,-((e.clientY-r.top)/r.height)*2+1),rc=new THREE.Raycaster();rc.setFromCamera(v,mainCam);
   const pl=new THREE.Plane(new THREE.Vector3(0,1,0),0),pt=new THREE.Vector3();return rc.ray.intersectPlane(pl,pt)?pt:null}
+
+/* ======================= DOG MARKET: fixed prices, the dog arrives at once ======================= */
+const MARKET_PRICE={'소형':40000,'중형':60000,'대형':90000,'초대형':120000,'고양이':50000};
+function marketPrice(br,age){const Bd=BREEDS[br];return Math.round((MARKET_PRICE[Bd.sz]||60000)*(age==='pup'?1.2:age==='old'?0.6:1))}
+function marketOptions(){$('#mkBreed').innerHTML=Object.entries(BREEDS).filter(([k,b])=>b.sp!=='lion').map(([k,b])=>`<option value="${k}">${b.sp==='cat'?'🐈':'🐕'} ${b.n} (${b.sz})</option>`).join('');marketUI()}
+function marketUI(){if(!$('#mkBreed'))return;const br=$('#mkBreed').value,age=$('#mkAge').value,n=+$('#mkN').value||1,v=marketPrice(br,age);
+  $('#mkPrice').innerHTML=`한 마리 <b>${won(v)}</b>${n>1?` · ${n}마리 <b>${won(v*n)}</b>`:''} <span class="muted">· 가격은 늘 같아요 · 사면 바로 와요</span>`;
+  $('#mkGo').textContent=`🐶 ${n}마리 사기`;}
+function buyMarket(){
+  if(!world||world.arena)return;const br=$('#mkBreed').value,Bd=BREEDS[br],age=$('#mkAge').value,sexSel=$('#mkSex').value,n=clamp(Math.round(+$('#mkN').value)||1,1,20),v=marketPrice(br,age);
+  let k=n;if(isFinite(world.money)){k=Math.min(n,Math.floor(world.money/v));if(k<1){toast(`돈이 모자라요 (${won(v)} 필요)`,true);return}}
+  const used=new Set(dogs.map(d=>d.name)),names=[];
+  for(let i=0;i<k;i++){const sex=sexSel==='any'?pick(['f','m']):sexSel,a=age==='pup'?rand(0.15,0.4):age==='old'?rand(8,11):rand(1.5,5),nm=($('#mkName').value.trim()&&n===1)?$('#mkName').value.trim().slice(0,12):newName(Bd.sp,used);used.add(nm);
+    const p=spawnAt('land'),d=makeAnimal({species:Bd.sp,breed:br,color:Bd.sp==='cat'?pick(CAT_COLORS):Bd.c,sex,age:a,name:nm,skills:genSkills(br),lifespan:rollLife()},p);
+    Object.assign(d,{hunger:20,thirst:20,happy:80,health:100,stamina:90,pee:10,poo:10,gen:1});resolve(d.pos,d.r);applyGrowth(d);dogs.push(d);names.push(nm);
+    if(warOn()&&$('#nbOn')&&$('#nbOn').checked)armNewborns([d])}
+  pay('market',v*k);world.cardsDirty=true;
+  log(`🐶 시장에서 ${Bd.n} ${k}마리를 데려왔어요: ${names.join(', ')} (−${won(v*k)})`,'good',true);toast(`🐶 ${names.join(', ')}${josa(names[names.length-1],'이','가')} 집에 왔어요!${k<n?` (돈이 모자라서 ${k}마리만)`:''}`,false,true);
+  if(soundOn){blip(700,0.08,0.06);setTimeout(()=>blip(940,0.1,0.06),100)}$('#mkName').value='';
+}
 /* ======================= BOARD GAMES ======================= */
 const BOARD={yut:{n:'윷놀이',e:'🎋',max:4,col:'#e9d8a6'},ludo:{n:'주사위 말판',e:'🎲',max:4,col:'#f3f0e6'},memory:{n:'카드 짝맞추기',e:'🃏',max:4,col:'#3f7d5a'},omok:{n:'오목',e:'⚫',max:2,col:'#d9a85c'},chess:{n:'체스',e:'♟',max:2,col:'#ece3cf'}};
 function boardMesh(k,x,z){
@@ -6509,6 +6545,7 @@ $$('[data-war]').forEach(c=>c.addEventListener('change',e=>{const on=e.target.ch
   if(world&&!world.arena){if(on&&!world.war)initWar($('[data-wardiff]').value,$('[data-warsize]').value,warCount());else if(world.war)world.war.on=on;if(on&&$('[data-online]').checked)netStart();if(!on&&NET.on)netStop();toast(on?'⚔ 강아지 집들끼리의 전쟁을 허용했어요':'🕊 집 전쟁을 멈췄어요',!on);warUI()}}));
 $$('[data-wardiff]').forEach(c=>c.addEventListener('change',e=>{$$('[data-wardiff]').forEach(x=>x.value=e.target.value);if(world&&world.war)world.war.diff=e.target.value}));
 $('#mapBtn').onclick=openMap;
+marketOptions();['#mkBreed','#mkAge','#mkN'].forEach(q=>$(q).addEventListener('input',marketUI));$('#mkGo').onclick=()=>{ac();buyMarket()};
 buildOptions();$('#buildType').onchange=()=>{buildPick=null;buildUI()};
 $('#buildGo').onclick=()=>{ac();if(world)startBuild($('#buildType').value)};
 $('#buildPick').onclick=()=>{if(!world)return;buildPick=buildPick?null:$('#buildType').value;$('#mainCanvas').style.cursor=buildPick?'crosshair':'';if(buildPick)toast(`📍 3D 화면에서 ${FURN[buildPick].n}을(를) 지을 바닥을 클릭하세요`);buildUI()};

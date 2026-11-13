@@ -444,6 +444,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
 .keepspd{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .newborn{border:1px dashed var(--line);border-radius:8px;padding:6px 8px;margin:6px 0;display:grid;gap:4px}
 .myhouses{list-style:none;margin:0 0 6px;padding:0;display:grid;gap:4px}.myhouses li{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;gap:8px;align-items:center;padding:5px 8px;border:1px solid var(--line);border-radius:8px;font-size:12px}.myhouses li.act{border-color:var(--accent)}.myhouses span{color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.wtchips{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin:4px 0}.wtchips .chip{font-size:11px;padding:3px 8px}.wtchips .chip.on{background:var(--accent);color:#fff;border-color:var(--accent)}.wtchips b{margin-left:2px}
 .pickn{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:4px 0}.pickn input{width:64px;font:inherit;padding:5px 6px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:inherit}.pickn span{font-size:12px;color:var(--muted)}
 .seg2{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0}.seg2 label{display:flex;gap:5px;align-items:center;padding:5px 10px;border:1px solid var(--line);border-radius:999px;font-size:12px;cursor:pointer}.seg2 label:has(input:checked){border-color:var(--accent);background:var(--surface-2);font-weight:700}
 .eqpow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:6px}
@@ -1218,6 +1219,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
           <h3>🎖 무장시키기</h3>
           <div class="row2"><label class="f">무기<select id="eqW"></select></label><label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="eqBuy" checked> 창고에 없으면 자동으로 사기</label></div>
           <div class="eqbar"><button class="chip" id="eqAll">모두 선택</button><button class="chip" id="eqBare">맨몸만</button><button class="chip" id="eqClr">선택 해제</button><span class="small muted" id="eqCount"></span></div>
+          <div id="eqTypes"></div>
           <div class="eqlist" id="eqList"></div>
           <div class="newborn"><label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="nbOn"> 👶 태어나면 자동으로 무기 주기</label>
             <div class="row2"><label class="f">줄 무기<select id="nbW"></select></label><label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="nbBuy" checked> 창고에 없으면 사서 주기</label></div>
@@ -1231,6 +1233,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
           <div class="row2"><label class="f">보내는 집<select id="tfFrom"></select></label><label class="f"><span id="tfToLbl">받는 집</span><select id="tfTo"></select></label></div>
           <div class="pickn"><input type="number" id="tfN" min="1" value="3" inputmode="numeric" aria-label="보낼 마릿수"><span>마리</span><button class="chip" id="tfPickN">센 순서로 고르기</button><button class="btn primary" id="tfSendN">⚡ 한 번에 보내기</button></div>
           <div class="eqbar"><button class="chip" id="tfAll">모두 선택</button><button class="chip" id="tfClr">선택 해제</button><span class="small muted" id="tfInfo"></span></div>
+          <div id="tfTypes"></div>
           <div class="eqlist" id="tfList"></div>
           <button class="btn" id="tfGo">🚚 보내기</button>
           <div class="eqpow"><button class="btn primary" id="eqPow">⚖ 전투력 균등 배분</button><label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="eqPowCap" checked> 집 정원 넘지 않게</label></div>
@@ -1453,7 +1456,7 @@ const FURN={
 const DOOR_W=0.9,DOOR_H=0.85;
 const REQUIRED=['water','food','launcher','homecam','door'];
 const DOG_COLORS=['#d9a35b','#f2ece0','#5a3d2b','#2b2b2e','#c46a3a','#9a9a9a','#e6cfa3','#7b5236'];
-const DOG_NAMES=['콩이','보리','초코','두부','망고','쿠키','해피','몽이'];
+const DOG_NAMES=['콩이','보리','초코','두부','망고','쿠키','해피','몽이','바둑이','누리','호두','감자'];
 const MAX_BALLS=8;
 // ball kinds: g=gravity scale, e=bounce, roll=ground friction keep-rate per s, joy=happiness on return
 const BALL_TYPES={
@@ -1777,7 +1780,7 @@ function petRow(c,i,pre){
 }
 function buildDogList(){
   const n=parseInt($('#dogCount').value,10),m=parseInt($('#catCount').value,10);
-  while(dogConf.length<n){const i=dogConf.length,br=DOG_BREED_ORDER[i%8];dogConf.push({species:'dog',name:DOG_NAMES[i],breed:br,color:BREEDS[br].c,sex:i%2?'m':'f',age:[3,2,4,1,5,2,3,1][i%8]})}
+  while(dogConf.length<n){const i=dogConf.length,br=DOG_BREED_ORDER[i%8];dogConf.push({species:'dog',name:DOG_NAMES[i]||('멍멍이'+(i+1)),breed:br,color:BREEDS[br].c,sex:i%2?'m':'f',age:[3,2,4,1,5,2,3,1][i%8]})}
   while(catConf.length<m){const i=catConf.length,br=['korshort','russianblue','persian'][i%3];catConf.push({species:'cat',name:CAT_NAMES[i],breed:br,color:CAT_COLORS[i%CAT_COLORS.length],sex:i%2?'m':'f',age:[2,3,1,4,2,5][i%6]})}
   dogConf.length=n;catConf.length=m;
   const box=$('#dogList');box.innerHTML='';
@@ -5713,7 +5716,7 @@ function transferUI(){
   const from=houseById(+$('#tfFrom').value),units=from?houseUnits(from):[];for(const id of [...TFSEL])if(!units.some(u=>u.id===id))TFSEL.delete(id);
   const tl0=$('#tfList'),tlTop=tl0.dataset.from===$('#tfFrom').value?tl0.scrollTop:0;tl0.dataset.from=$('#tfFrom').value;
   $('#tfList').innerHTML=units.length?units.map(u=>`<label><input type="checkbox" data-tf="${u.id}"${TFSEL.has(u.id)?' checked':''}> ${esc(u.o.name)} <small>${u.o.weapon&&WEAPONS[u.o.weapon]?WEAPONS[u.o.weapon].n:'맨몸'} · ⚔${Math.round(unitPower(u.o,from.terrain)*10)}</small></label>`).join(''):'<span class="small muted">이 집에 강아지가 없어요</span>';
-  $('#tfList').scrollTop=tlTop;
+  $('#tfList').scrollTop=tlTop;$('#tfTypes').innerHTML=typeChips(units,TFSEL);bindTypeChips($('#tfTypes'),units,TFSEL,transferUI);
   $('#tfList').querySelectorAll('[data-tf]').forEach(c=>c.onchange=()=>{const id=+c.dataset.tf;c.checked?TFSEL.add(id):TFSEL.delete(id);tfInfo()});tfInfo();
   const one=!atk&&H.length<2,none=!targets.length;$('#tfGo').disabled=one||none;$('#tfSendN').disabled=one||none||!units.length;$('#eqPow').disabled=one;$('#eqPowNote').textContent=one?'내 집이 2곳 이상이면 쓸 수 있어요. 다른 집을 정복해 보세요.':'모든 내 집의 전투력이 비슷해지도록, 가장 적게 옮기는 방법을 찾아 강아지들을 보내요 (행군 시간이 걸려요).';
 }
@@ -6199,6 +6202,16 @@ function renderMap(){
   if(svg.dataset.html!==s){svg.dataset.html=s;svg.innerHTML=s}
   renderMapSide();
 }
+
+// "병과 모두 선택": one chip per unit type present; a click selects every dog of that type (click again to drop them)
+function wtOf(o){return o.weapon&&WEAPONS[o.weapon]?o.weapon:'none'}
+function typeChips(units,sel){
+  const c={};for(const u of units){const k=wtOf(u.o||u);c[k]=(c[k]||0)+1}const ks=Object.keys(c);if(!ks.length)return '';
+  const order=['none',...Object.keys(WEAPONS)].filter(k=>c[k]);
+  return `<div class="wtchips" role="group" aria-label="병과 모두 선택"><span class="small muted">병과 모두 선택</span>${order.map(k=>{const ids=units.filter(u=>wtOf(u.o||u)===k).map(u=>u.id),all=ids.every(id=>sel.has(id));
+    return `<button class="chip${all?' on':''}" data-wt="${k}" aria-pressed="${all}">${k==='none'?'🐕 맨몸':WEAPONS[k].n} <b>${c[k]}</b></button>`}).join('')}</div>`;
+}
+function bindTypeChips(root,units,sel,after){root.querySelectorAll('[data-wt]').forEach(b=>b.onclick=()=>{const k=b.dataset.wt,ids=units.filter(u=>wtOf(u.o||u)===k).map(u=>u.id),all=ids.every(id=>sel.has(id));ids.forEach(id=>all?sel.delete(id):sel.add(id));after()})}
 let mapFrom=null,mapN=3;
 // strongest first for the target's terrain
 function topN(units,n,terrain){return units.slice().sort((a,b)=>unitPower(b.o,terrain)-unitPower(a.o,terrain)).slice(0,n).map(u=>u.id)}
@@ -6216,7 +6229,7 @@ function renderMapSide(){
   const selU=su.filter(u=>mapPick.has(u.id)),sel=selU.map(u=>u.o);
   const srcSel=()=>`<label class="f">출발 집<select id="mapFrom">${srcs.map(x=>`<option value="${x.id}"${x.id===mapFrom?' selected':''}>${esc(x.name)}${x.id===W.active?' (지금 집)':''} · ${houseDogCount(x)}마리</option>`).join('')}</select></label>`;
   const pickList=verb=>`<div class="pickn"><input type="number" id="mpN" min="1" max="${Math.max(1,su.length)}" value="${Math.min(mapN,Math.max(1,su.length))}" inputmode="numeric" aria-label="보낼 마릿수"><span>마리</span><button class="chip" id="mpPickN">센 순서로 고르기</button><button class="btn primary" id="mpSendN"${su.length?'':' disabled'}>⚡ 한 번에 ${verb}</button></div>
-    <div class="row2"><button class="btn" id="mpAll">모두 선택</button><button class="btn" id="mpNone">선택 해제</button></div><div class="mappick">${su.map(u=>`<label><input type="checkbox" data-mp="${u.id}"${mapPick.has(u.id)?' checked':''}> ${esc(u.o.name)} <small>${u.o.weapon&&WEAPONS[u.o.weapon]?WEAPONS[u.o.weapon].n:'맨몸'} · ${fmtAge(u.o.age)} · ⚔${Math.round(unitPower(u.o,h.terrain)*10)}</small></label>`).join('')||'<span class="small muted">보낼 강아지가 없어요</span>'}</div>`;
+    <div class="row2"><button class="btn" id="mpAll">모두 선택</button><button class="btn" id="mpNone">선택 해제</button></div>${typeChips(su,mapPick)}<div class="mappick">${su.map(u=>`<label><input type="checkbox" data-mp="${u.id}"${mapPick.has(u.id)?' checked':''}> ${esc(u.o.name)} <small>${u.o.weapon&&WEAPONS[u.o.weapon]?WEAPONS[u.o.weapon].n:'맨몸'} · ${fmtAge(u.o.age)} · ⚔${Math.round(unitPower(u.o,h.terrain)*10)}</small></label>`).join('')||'<span class="small muted">보낼 강아지가 없어요</span>'}</div>`;
   if(!mine){
     if(!src)html+=`<p class="small muted">출격할 내 집이 없어요.</p>`;
     else{const mt=marchMin(src,h,sel),al=h.online?[]:pledged(h),alP=al.reduce((a,f)=>a+armyPower(f.dogs.filter(o=>o.age>=1).sort((x,y)=>unitPower(y,h.terrain)-unitPower(x,h.terrain)).slice(0,allyCount(f)),h.terrain),0);
@@ -6243,6 +6256,7 @@ function renderMapSide(){
   const nNow=()=>{mapN=clamp(Math.round(+(ni?ni.value:mapN))||1,1,999);return topN(su,mapN,h.terrain)};
   b('#mpPickN',()=>{mapPick.clear();nNow().forEach(id=>mapPick.add(id));renderMapSide()});
   b('#mpSendN',()=>{const ids=nNow();if(!ids.length)return;if(mine)sendBetween(src.id,h.id,ids);else launchAttack(h.id,ids,src.id);mapPick.clear();renderMap();warUI()});
+  bindTypeChips(el,su,mapPick,renderMapSide);
   b('#mpAll',()=>{su.forEach(u=>mapPick.add(u.id));renderMapSide()});b('#mpNone',()=>{mapPick.clear();renderMapSide()});
   b('#mapAttack',()=>{launchAttack(h.id,[...mapPick],src.id);mapPick.clear();renderMap();warUI()});b('#mapGo',()=>{switchHouse(h.id);mapSel=h.id;renderMap()});
   b('#mapMove',()=>{sendBetween(src.id,h.id,[...mapPick]);mapPick.clear();renderMap();warUI()});
@@ -6258,7 +6272,7 @@ function warUI(){
   $('#warShop').querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=>buyWeapon(b.dataset.buy));
   const ds=dogs.filter(d=>!d.dead&&!d.stray&&!d.enemy&&!d.away);for(const id of [...EQSEL])if(!ds.some(d=>d.id===id))EQSEL.delete(id);
   const eqTop=$('#eqList').scrollTop;$('#eqList').innerHTML=ds.map(d=>`<label><input type="checkbox" data-eq="${d.id}"${EQSEL.has(d.id)?' checked':''}> ${esc(d.name)} <small>${d.weapon?WEAPONS[d.weapon].n:'맨몸'} · ${fmtAge(d.age)}${d.age<1?' (어려요)':''}</small></label>`).join('')||'<span class="small muted">강아지가 없어요</span>';
-  $('#eqList').scrollTop=eqTop;$('#eqList').querySelectorAll('[data-eq]').forEach(c=>c.onchange=()=>{const id=+c.dataset.eq;c.checked?EQSEL.add(id):EQSEL.delete(id);eqCount()});eqCount();
+  $('#eqList').scrollTop=eqTop;{const us=ds.map(d=>({id:d.id,o:d}));$('#eqTypes').innerHTML=typeChips(us,EQSEL);bindTypeChips($('#eqTypes'),us,EQSEL,warUI)}$('#eqList').querySelectorAll('[data-eq]').forEach(c=>c.onchange=()=>{const id=+c.dataset.eq;c.checked?EQSEL.add(id):EQSEL.delete(id);eqCount()});eqCount();
   const keepW=$('#eqW').value;$('#eqW').innerHTML='<option value="none">무장 해제</option>'+Object.entries(WEAPONS).map(([k,w])=>`<option value="${k}">${w.n} (창고 ${W.armory[k]||0} · ${won(w.cost)})</option>`).join('');if(keepW)$('#eqW').value=keepW;
   nbUI();transferUI();$('#warArmies').dataset.sig='';warLite();
 }

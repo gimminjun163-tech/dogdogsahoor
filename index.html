@@ -147,7 +147,8 @@ input[type="range"]{width:100%;accent-color:var(--accent)}
 .mapcard{background:var(--surface);color:var(--ink);border-radius:14px;padding:14px;width:min(1180px,100%);display:grid;gap:10px;box-shadow:0 18px 50px rgba(0,0,0,.35);margin:auto 0}
 .mapgrid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:12px;align-items:start}
 @media (max-width:860px){.mapgrid{grid-template-columns:1fr}}
-#mapSvg{width:100%;height:auto;border-radius:10px;border:1px solid var(--line);display:block;background:#a9cf7a}
+#mapSvg{width:100%;height:auto;border-radius:10px;border:1px solid var(--line);display:block;background:#3f7fb3;cursor:grab;touch-action:none;user-select:none}
+#mapSvg.dragging{cursor:grabbing}
 .mh{cursor:pointer}.mh:focus{outline:none}.mh:focus circle:nth-of-type(1){stroke:#16242a}
 .mh .glow{animation:mglow 1.6s ease-in-out infinite;opacity:.55}
 @keyframes mglow{50%{opacity:.15;transform:scale(1.15)}}
@@ -165,6 +166,10 @@ input[type="range"]{width:100%;accent-color:var(--accent)}
 .bigtoggle.net b{color:#2f7fd0}
 .netstat{margin:0;color:#2f7fd0}.netstat.bad{color:var(--alert,#c0392b)}
 .warbanner button{margin-left:10px;background:#fff;color:#c0392b;border:0;border-radius:999px;padding:4px 12px;font-weight:700;cursor:pointer}
+.relbar{height:8px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line);overflow:hidden}.relbar span{display:block;height:100%}
+.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.trade{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:4px 6px;align-items:center;font-size:12px}.trade.dogs{grid-template-columns:minmax(0,1fr) auto}.trade small{color:var(--muted)}.trade .chip{font-size:11px;padding:3px 7px;white-space:nowrap}.trade .chip:disabled{opacity:.4}
+#mapSide{max-height:min(76vh,720px);overflow:auto}
 .mapnav{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 #mapSvg.inf{cursor:grab;touch-action:none}
 .warbanner{position:fixed;left:50%;top:64px;transform:translateX(-50%);z-index:65;background:#d4473a;color:#fff;font-weight:700;border-radius:999px;padding:8px 16px;box-shadow:0 6px 18px rgba(0,0,0,.3);font-size:14px;max-width:calc(100% - 24px);text-align:center}
@@ -319,6 +324,19 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
 .recitem video{width:100%;border-radius:6px;background:#000;aspect-ratio:16/10}
 .recitem .meta{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);gap:6px}
 .dogs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+.dogs-grid.rows{grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:4px}
+.cardbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 8px;font-size:12px}
+.cardbar label{display:flex;gap:4px;align-items:center;color:var(--muted)}
+.cardbar select,.cardbar input{font:inherit;padding:4px 6px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:inherit}
+.cardbar input{width:110px}
+.cardbar .pager{display:flex;gap:6px;align-items:center;margin-left:auto;font-variant-numeric:tabular-nums}
+.dogrow{display:grid;grid-template-columns:12px minmax(0,1fr) auto repeat(3,34px);gap:6px;align-items:center;padding:5px 8px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:8px;font-size:12px;color:inherit;cursor:pointer}
+.dogrow[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.dogrow .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:700}
+.dogrow .st{font-size:10px;color:var(--muted);white-space:nowrap;max-width:90px;overflow:hidden;text-overflow:ellipsis}
+.dogrow .st.hot{color:var(--alert);font-weight:700}
+.dogrow b{text-align:right;font-variant-numeric:tabular-nums}
+.dogrow .dot{width:10px;height:10px;border-radius:50%;border:1px solid rgba(0,0,0,.25)}
 .dogcard{padding:10px 12px;display:grid;gap:6px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
 .dogcard[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
 .dogcard .top{display:flex;align-items:center;gap:8px}
@@ -597,7 +615,8 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         </div>
       <div class="stack">
         <label class="bigtoggle war"><input type="checkbox" data-war><span><b>⚔ 강아지 집들 끼리의 전쟁 허용</b><small>이웃 강아지 집들과 전쟁해요. 선제공격도 하고 침략도 받아요. 이기면 난이도에 따라 그 집과 돈을 가져요.</small></span></label>
-        <label class="f">지도 크기<select data-warsize><option value="10">기본 (집 10곳)</option><option value="inf">♾ 무한 (지도를 넓히면 새 집이 계속 생겨요)</option></select></label>
+        <label class="f">지도 크기<select data-warsize><option value="10">세계 지도 하나</option><option value="rep">♾ 무한 · 세계지도 반복 (같은 세계가 끝없이 이어져요)</option><option value="inf">♾ 무한 · 새 땅 (세계 밖에 새 땅이 생겨요)</option></select></label>
+        <label class="f">세계지도 하나에 들어갈 집 수 (5~200)<input type="number" data-warcount min="5" max="200" step="1" value="40" inputmode="numeric"></label>
         <label class="f">전쟁 난이도<select data-wardiff><option value="easy">쉬움 (이기면 늘 정복)</option><option value="normal" selected>보통</option><option value="hard">어려움 (크게 이겨야 정복)</option></select></label>
         <label class="bigtoggle net"><input type="checkbox" data-online><span><b>🌐 온라인 전쟁</b><small>다른 건 오프라인이고, 전쟁할 때만 온라인이 켜져요. 같은 페이지를 연 다른 플레이어의 집이 지도 아래 🌐 구역에 나타나고 서로 공격할 수 있어요. 500마리 이상 사기 부대는 막혀요.</small></span></label>
         <label class="f">온라인 이름<input data-nick maxlength="12" placeholder="다른 플레이어에게 보일 이름"></label>
@@ -680,7 +699,8 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
       </div>
       <div class="row2">
         <label class="f">전쟁 난이도<select id="woDiff"><option value="easy">쉬움</option><option value="normal" selected>보통</option><option value="hard">어려움</option></select></label>
-        <label class="f">지도 크기<select id="woSize"><option value="10">기본 (집 10곳)</option><option value="inf">♾ 무한 (지도를 넓히면 새 집이 계속 생겨요)</option></select></label>
+        <label class="f">지도 크기<select id="woSize"><option value="10">세계 지도 하나</option><option value="rep">♾ 무한 · 세계지도 반복 (같은 세계가 끝없이 이어져요)</option><option value="inf">♾ 무한 · 새 땅 (세계 밖에 새 땅이 생겨요)</option></select></label>
+        <label class="f">세계지도 하나에 들어갈 집 수 (5~200)<input type="number" id="woCount" min="5" max="200" step="1" value="40" inputmode="numeric"></label>
       </div>
       <div class="stack">
         <label class="bigtoggle net"><input type="checkbox" data-online><span><b>🌐 온라인 전쟁</b><small>다른 건 오프라인이고, 전쟁할 때만 온라인이 켜져요. 같은 페이지를 연 다른 플레이어의 집이 지도 아래 🌐 구역에 나타나고 서로 공격할 수 있어요. 500마리 이상 사기 부대는 막혀요.</small></span></label>
@@ -823,6 +843,13 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         <div class="ov ov-bl" id="toasts"></div>
       </div>
       <div class="rec-strip" id="recStrip"></div>
+      <div class="cardbar" id="cardBar">
+        <label>보기<select id="cardMode"><option value="auto">자동 (많으면 간단 표)</option><option value="card">카드</option><option value="row">간단 표</option></select></label>
+        <label>정렬<select id="cardSort"><option value="none">기본</option><option value="happy">행복도 낮은 순</option><option value="health">건강 낮은 순</option><option value="stamina">체력 낮은 순</option><option value="age">나이 많은 순</option><option value="name">이름순</option></select></label>
+        <input id="cardFind" placeholder="이름 찾기" aria-label="이름 찾기" maxlength="12">
+        <span class="pager"><button class="chip" id="cardPrev" aria-label="이전 쪽">◀</button><b id="cardPage">1 / 1</b><button class="chip" id="cardNext" aria-label="다음 쪽">▶</button></span>
+        <span class="small muted" id="cardCount"></span>
+      </div>
       <div class="dogs-grid" id="dogCards"></div>
     </div>
 
@@ -1103,7 +1130,8 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
       <section class="card panel home-only" id="warPanel">
         <div class="panel-head"><h2>⚔ 집 전쟁</h2><button class="btn primary" id="mapBtn2">🗺 전체 지도</button></div>
         <label class="bigtoggle war"><input type="checkbox" data-war><span><b>⚔ 강아지 집들 끼리의 전쟁 허용</b><small>이웃 강아지 집들과 전쟁해요. 선제공격도 하고 침략도 받아요. 이기면 난이도에 따라 그 집과 돈을 가져요.</small></span></label>
-        <label class="f">지도 크기<select data-warsize><option value="10">기본 (집 10곳)</option><option value="inf">♾ 무한 (지도를 넓히면 새 집이 계속 생겨요)</option></select></label>
+        <label class="f">지도 크기<select data-warsize><option value="10">세계 지도 하나</option><option value="rep">♾ 무한 · 세계지도 반복 (같은 세계가 끝없이 이어져요)</option><option value="inf">♾ 무한 · 새 땅 (세계 밖에 새 땅이 생겨요)</option></select></label>
+        <label class="f">세계지도 하나에 들어갈 집 수 (5~200)<input type="number" data-warcount min="5" max="200" step="1" value="40" inputmode="numeric"></label>
         <label class="f">전쟁 난이도<select data-wardiff><option value="easy">쉬움 (이기면 늘 정복)</option><option value="normal" selected>보통</option><option value="hard">어려움 (크게 이겨야 정복)</option></select></label>
         <label class="bigtoggle net"><input type="checkbox" data-online><span><b>🌐 온라인 전쟁</b><small>다른 건 오프라인이고, 전쟁할 때만 온라인이 켜져요. 같은 페이지를 연 다른 플레이어의 집이 지도 아래 🌐 구역에 나타나고 서로 공격할 수 있어요. 500마리 이상 사기 부대는 막혀요.</small></span></label>
         <label class="f">온라인 이름<input data-nick maxlength="12" placeholder="다른 플레이어에게 보일 이름"></label>
@@ -1271,7 +1299,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
   <details class="st-sec"><summary>표로 보기 (최근 기록 12개)</summary><div class="st-tablewrap"><table class="st-table" id="stTable"></table></div></details>
 </div></div>
 <div class="skipov mapov" id="warMap" hidden role="dialog" aria-modal="true" aria-labelledby="mapTitle"><div class="mapcard">
-  <div class="st-head"><h2 id="mapTitle">🗺 전체 지도</h2><span class="small muted">빛나는 집 = 내 집 · ⭐ = 지금 보는 집 · 집을 눌러 보세요</span><span class="mapnav" id="mapNav" hidden><button class="chip" data-pan="-1,0">◀</button><button class="chip" data-pan="0,-1">▲</button><button class="chip" data-pan="0,1">▼</button><button class="chip" data-pan="1,0">▶</button><button class="chip" id="mapHome">⭐ 지금 집으로</button><span class="small muted">끌어서 이동 · 집 <b id="mapCount">10</b>곳</span></span><button class="iconbtn" id="mapClose" aria-label="지도 닫기">✕ 닫기</button></div>
+  <div class="st-head"><h2 id="mapTitle">🗺 전체 지도</h2><span class="small muted">빛나는 집 = 내 집 · ⭐ = 지금 보는 집 · 집을 눌러 보세요</span><span class="mapnav" id="mapNav"><button class="chip" data-pan="-1,0">◀</button><button class="chip" data-pan="0,-1">▲</button><button class="chip" data-pan="0,1">▼</button><button class="chip" data-pan="1,0">▶</button><button class="chip" id="mapZin" aria-label="확대">＋</button><button class="chip" id="mapZout" aria-label="축소">－</button><button class="chip" id="mapHome">⭐ 지금 집으로</button><button class="chip" id="mapAll">🌍 전체</button><span class="small muted">끌어서 이동 · 휠 / Ctrl+휠 / 두 손가락 / + − 키로 확대·축소 · 집 <b id="mapCount">10</b>곳</span></span><button class="iconbtn" id="mapClose" aria-label="지도 닫기">✕ 닫기</button></div>
   <div class="mapgrid"><svg id="mapSvg" viewBox="0 0 1000 600" role="img" aria-label="강아지 집 지도"></svg><aside class="mapside" id="mapSide"></aside></div>
 </div></div>
 <div class="warsnack" id="warSnack" hidden role="status" aria-live="polite"></div>
@@ -4246,20 +4274,52 @@ function wallVisibility(cam){
 }
 
 /* ======================= UI SYNC ======================= */
-function markFollowCards(){$$('.dogcard').forEach(c=>c.setAttribute('aria-pressed',String(camMode==='follow'&&c.dataset.id===String(followId))))}
+function markFollowCards(){$$('#dogCards [data-id]').forEach(c=>c.setAttribute('aria-pressed',String(camMode==='follow'&&c.dataset.id===String(followId))))}
+// cards are paged: only the animals on the current page have DOM, so 300+ animals cost the same as 24
+const CARDS={page:0,mode:'auto',sort:'none',find:'',vis:true,sortT:0};
+function cardList(){
+  let l=dogs.slice();const q=CARDS.find.trim();if(q)l=l.filter(d=>String(d.name).includes(q));
+  const k=CARDS.sort;if(k==='name')l.sort((a,b)=>String(a.name).localeCompare(String(b.name),'ko'));else if(k==='age')l.sort((a,b)=>b.age-a.age);else if(k!=='none')l.sort((a,b)=>a[k]-b[k]);
+  return l;
+}
 function buildDogCards(){
-  const box=$('#dogCards');box.innerHTML='';world.cardsDirty=false;refreshBreed();
+  const box=$('#dogCards');box.innerHTML='';world.cardsDirty=false;refreshBreed();for(const d of dogs)d.card=null;
+  $('#cardBar').hidden=dogs.length<=12&&!CARDS.find;
   if(!dogs.length){box.innerHTML='<p class="small">살아 있는 동물이 없어요. 방 다시 꾸미기에서 새로 시작할 수 있어요.</p>';return}
-  dogs.forEach(d=>{
-    const b=document.createElement('button');b.className='dogcard'+(d.stray?' stray':'');b.dataset.id=d.id;
-    b.innerHTML=`<div class="top"><span class="dot${d.species==='cat'?' cat':''}" style="background:${d.color}"></span><span class="nm"></span><span class="st"></span></div>
+  const list=cardList(),rows=CARDS.mode==='row'||(CARDS.mode==='auto'&&list.length>30),per=rows?60:24,pages=Math.max(1,Math.ceil(list.length/per));
+  CARDS.page=clamp(CARDS.page,0,pages-1);CARDS.rows=rows;CARDS.sortT=3;box.classList.toggle('rows',rows);
+  $('#cardPage').textContent=`${CARDS.page+1} / ${pages}`;$('#cardPrev').disabled=CARDS.page<=0;$('#cardNext').disabled=CARDS.page>=pages-1;
+  $('#cardCount').textContent=`${list.length}마리${CARDS.find?` (전체 ${dogs.length})`:''}${rows?' · 숫자는 행복 · 건강 · 체력':''}`;
+  if(!list.length){box.innerHTML='<p class="small">찾는 이름의 동물이 없어요.</p>';return}
+  const frag=document.createDocumentFragment();
+  list.slice(CARDS.page*per,(CARDS.page+1)*per).forEach(d=>{
+    const b=document.createElement('button');b.dataset.id=d.id;
+    if(rows){b.className='dogrow';b.innerHTML=`<span class="dot" style="background:${d.color}"></span><span class="nm"></span><span class="st"></span><b></b><b></b><b></b>`;
+      const bs=b.querySelectorAll('b');d.cardR={st:b.querySelector('.st'),nums:[bs[0],bs[1],bs[2]],c:{}}}
+    else{b.className='dogcard'+(d.stray?' stray':'');
+      b.innerHTML=`<div class="top"><span class="dot${d.species==='cat'?' cat':''}" style="background:${d.color}"></span><span class="nm"></span><span class="st"></span></div>
       <div class="meta2"></div>
       <div class="bars">${['배고픔','목마름','배변','행복도','건강','체력'].map(l=>`<div class="bar"><span>${l}</span><span class="t"><span></span></span><b>0</b></div>`).join('')}</div>`;
+      d.cardR={st:b.querySelector('.st'),meta:b.querySelector('.meta2'),fills:[...b.querySelectorAll('.bar .t span')],nums:[...b.querySelectorAll('.bar b')],c:{}}}
     b.querySelector('.nm').textContent=d.name;
     b.onclick=()=>{if(player.spect)stopSpectate();followId=d.id;setCamMode('follow');markFollowCards()};
-    box.appendChild(b);d.card=b;
+    frag.appendChild(b);d.card=b;
   });
-  markFollowCards();
+  box.appendChild(frag);markFollowCards();
+}
+// writes to the DOM only when the shown value actually changed
+function syncCards(){
+  if(!CARDS.vis)return;
+  if(CARDS.sort!=='none'&&CARDS.sort!=='name'){CARDS.sortT-=0.2;if(CARDS.sortT<=0){world.cardsDirty=true;return}}
+  for(const d of dogs){if(!d.card)continue;const R=d.cardR,c=R.c;
+    const st=world.fastNow?(d.state==='sleep'?'자는 중':'생활 중'):(STATE_KO[d.state]||d.state);if(c.st!==st){c.st=st;R.st.textContent=st}
+    const hot=!!d.fight;if(c.hot!==hot){c.hot=hot;R.st.classList.toggle('hot',hot)}
+    if(CARDS.rows){const v=[d.happy,d.health,d.stamina];for(let i=0;i<3;i++){const r=Math.round(v[i]);if(c['n'+i]!==r){c['n'+i]=r;R.nums[i].textContent=r;R.nums[i].style.color=barColor(r,false)}}continue}
+    const Bd=BREEDS[d.breed],meta=`${d.sex==='f'?'♀':'♂'} ${Bd?Bd.n:''} · ${fmtAge(d.age)} · ⚽${ovr(d)}${d.stray?' · 침입 길고양이':''}${d.pregnant?` · 🤰 임신 ${Math.floor((world.t-d.pregnant.start)/1440)}일째`:''}`;
+    if(c.meta!==meta){c.meta=meta;R.meta.textContent=meta;d.card.title=`능력치 · ${skillLine(d)}`}
+    const vals=[d.hunger,d.thirst,Math.max(d.pee,d.poo),d.happy,d.health,d.stamina];
+    for(let i=0;i<6;i++){const r=Math.round(vals[i]);if(c['n'+i]===r)continue;c['n'+i]=r;R.fills[i].style.width=r+'%';R.fills[i].style.background=barColor(r,i<3);R.nums[i].textContent=r}
+  }
 }
 function barColor(v,bad){const x=bad?100-v:v;return x>60?'var(--good)':x>30?'var(--warn)':'var(--alert)'}
 function fighterRow(x,f){
@@ -4302,14 +4362,7 @@ function syncUI(){
   const watching=dogs.filter(d=>d.state==='watchTV').length;
   musicLive();boardUI();aiUI();moneyUI();warLite();
   $('#tvTag').textContent=!tvs.length?'TV장 없음':world.tv.on?`${TV_CH[world.tv.ch]} · ${watching}마리 시청${world.tv.offAt>0?' · '+fmtClock(world.tv.offAt)+' 꺼짐':''}`:'꺼짐';
-  for(const d of dogs){if(!d.card)continue;
-    const st=d.card.querySelector('.st');st.textContent=world.fastNow?(d.state==='sleep'?'자는 중':'생활 중'):(STATE_KO[d.state]||d.state);st.classList.toggle('hot',!!d.fight);
-    const Bd=BREEDS[d.breed];
-    d.card.title=`능력치 · ${skillLine(d)}`;
-    d.card.querySelector('.meta2').textContent=`${d.sex==='f'?'♀':'♂'} ${Bd?Bd.n:''} · ${fmtAge(d.age)} · ⚽${ovr(d)}${d.stray?' · 침입 길고양이':''}${d.pregnant?` · 🤰 임신 ${Math.floor((world.t-d.pregnant.start)/1440)}일째`:''}`;
-    const vals=[[d.hunger,true],[d.thirst,true],[Math.max(d.pee,d.poo),true],[d.happy,false],[d.health,false],[d.stamina,false]];
-    d.card.querySelectorAll('.bar').forEach((el,i)=>{const [v,bad]=vals[i];const s=el.querySelector('.t span');s.style.width=v+'%';s.style.background=barColor(v,bad);el.querySelector('b').textContent=Math.round(v)});
-  }
+  syncCards();
   $('#logTag').textContent=world.stolen?`도난 ${world.stolen}건`:'';
   // life panel
   const nd=dogs.filter(d=>d.species==='dog').length,nc=dogs.filter(d=>d.species==='cat'&&!d.stray).length,ns=dogs.filter(d=>d.stray).length;
@@ -5105,22 +5158,47 @@ function netApply(e,nick){
   else if(e.res==='retreat'){warSnack(`🏳 🌐 ${nick}님의 군대가 후퇴했어요!${kTxt}`,null,10);warLog(`🏳 🌐 ${nick}님 후퇴`,'good')}
   netPublish(true);renderMap();warUI();
 }
+const WORLD_N=40,WORLD_REG=[[822.2,190.3,160,'plain','화북 평원'],[836.1,213.9,240,'river','양쯔강 하류'],[815.3,236.1,180,'coast','주장강 삼각주'],[788.9,215.3,130,'river','쓰촨 분지'],[802.5,204.7,90,'mountain','황토 고원'],[850.0,175.0,100,'plain','만주 평원'],[888.1,200.8,125,'island','일본 열도'],[851.4,190.3,26,'mountain','한반도 북부'],[836.1,233.3,23,'island','타이완섬'],[713.9,220.6,330,'plain','힌두스탄 평원'],[736.1,228.9,230,'river','갠지스강'],[702.5,246.9,200,'coast','인도 서해안'],[718.1,263.9,260,'plain','데칸 고원'],[745.6,237.2,150,'river','벵골 삼각주'],[751.1,233.9,170,'river','방글라데시 삼각주'],[702.8,212.5,240,'river','인더스강'],[797.2,318.1,150,'island','자와섬'],[780.6,297.2,60,'island','수마트라섬'],[836.1,259.4,115,'island','필리핀 제도'],[794.4,255.6,100,'coast','베트남 해안'],[779.2,261.1,72,'river','짜오프라야강'],[766.7,247.2,55,'river','이라와디강'],[783.3,290.3,34,'coast','말레이 반도'],[642.8,200.8,89,'mountain','이란 고원'],[591.4,189.2,85,'mountain','아나톨리아 고원'],[623.3,207.5,45,'river','메소포타미아'],[629.7,231.4,60,'plain','아라비아 사막'],[692.2,204.2,42,'mountain','힌두쿠시'],[683.3,186.1,80,'plain','중앙아시아 초원'],[586.7,216.7,110,'river','나일강 하류'],[509.4,281.9,225,'coast','기니만 해안'],[522.2,269.4,110,'plain','사헬 초원'],[607.5,275.0,125,'mountain','에티오피아 고원'],[542.5,311.9,105,'river','콩고강'],[602.2,303.6,120,'plain','동아프리카 초원'],[577.8,372.8,62,'plain','남아프리카 고원'],[478.9,206.7,100,'coast','마그레브 해안'],[590.3,256.7,48,'river','나일강 상류'],[497.2,280.6,80,'coast','서아프리카 해안'],[597.2,341.7,70,'river','잠베지강'],[527.8,158.3,84,'plain','북독일 평원'],[506.4,164.2,68,'plain','파리 분지'],[495.8,154.2,68,'island','브리튼섬'],[534.7,183.3,59,'coast','이탈리아 반도'],[489.7,187.8,58,'mountain','이베리아 고원'],[558.3,155.0,60,'plain','폴란드 평원'],[584.7,159.7,45,'plain','동유럽 평원'],[604.4,145.0,110,'plain','러시아 평원'],[550.0,133.3,28,'coast','스칸디나비아'],[572.2,176.4,50,'river','도나우강'],[730.6,147.2,30,'plain','서시베리아 평원'],[294.4,186.9,115,'coast','미국 동해안'],[256.7,183.6,70,'plain','오대호 연안'],[233.3,211.1,80,'plain','북미 대평원'],[171.7,205.6,70,'coast','미국 서해안'],[266.7,206.4,60,'plain','미국 남동부'],[279.4,178.6,40,'plain','캐나다 동부'],[224.7,246.1,130,'mountain','멕시코 고원'],[248.6,259.4,50,'mountain','중앙아메리카'],[288.9,244.4,45,'island','카리브 제도'],[370.6,365.3,130,'coast','브라질 남동부'],[393.1,325.0,58,'coast','브라질 북동부'],[333.3,308.3,30,'river','아마존강'],[337.8,396.1,60,'river','라플라타강'],[294.2,286.9,52,'mountain','북안데스'],[286.1,333.3,54,'mountain','중앙안데스'],[303.6,392.8,20,'mountain','남안데스'],[314.2,270.8,28,'coast','베네수엘라 해안'],[919.4,394.2,26,'coast','호주 동해안'],[986.1,408.3,5,'island','뉴질랜드'],[908.3,316.7,10,'island','뉴기니섬']];
 /* ---------- infinite map ---------- */
 const CHW=1000,CHH=600;
+// n houses for one world map at offset (ox,oy), spread by population: a region's chance is its population
+function worldSpots(n,ox,oy,spots){
+  spots=spots||[];const total=WORLD_REG.reduce((a,r)=>a+r[2],0),gap=Math.min(11,70/Math.sqrt(n)),jx=9+n/25,jy=7+n/32;
+  for(let tries=0;spots.length<n&&tries<n*120;tries++){let r=Math.random()*total,g=WORLD_REG[0];for(const q of WORLD_REG){r-=q[2];if(r<=0){g=q;break}}
+    const x=ox+g[0]+rand(-jx,jx),y=oy+g[1]+rand(-jy,jy);if(spots.some(p=>Math.hypot(p[0]-x,p[1]-y)<gap))continue;spots.push([x,y,g[3],g[4]])}
+  return spots;
+}
+function chunkHouse(x,y,t,place,cx,cy,names,i){
+  const W=world.war,D=WAR_DIFF[W.diff],far=Math.hypot(cx,cy);
+  const h={id:W.hid++,name:`${names[i%names.length]}${Math.ceil(rand(2,99))}네 집`,owner:'ai',terrain:t,place,x,y,dogs:[],money:Math.round(rand(30000,400000)*D.ai*(1+far*0.15)),cap:Math.round(rand(8,18)),color:pick(['#d4473a','#2f7fd0','#7b52c9','#2e9a6a','#c96a1e','#c23d7a','#3c8f9e','#8a6d1f'])};
+  const k=Math.round(rand(3,9)*D.ai*(1+far*0.12));for(let j=0;j<k;j++)h.dogs.push(randDogData(1));aiArm(h,0.5);tradeInit(h);W.houses.push(h);
+}
+const TOWN_A=['새','큰','먼','푸른','붉은','흰','깊은','높은','너른','고요한'],TOWN_B=['들','골','뫼','내','숲','섬','벌','나루','언덕','바위'];
 function ensureChunks(){
   const W=world.war;if(!W.inf)return;const v=W.view;
-  for(let cx=Math.floor((v.x-200)/CHW);cx<=Math.floor((v.x+CHW+200)/CHW);cx++)for(let cy=Math.floor((v.y-200)/CHH);cy<=Math.floor((v.y+CHH+200)/CHH);cy++){
-    const key=cx+','+cy;if(W.chunks[key])continue;W.chunks[key]=1;
-    const n=Math.round(rand(3,5)),names=AI_OWNERS.slice().sort(()=>Math.random()-0.5),D=WAR_DIFF[W.diff];
-    for(let i=0;i<n;i++){const r=Math.random(),t=r<0.35?'plain':r<0.55?'mountain':r<0.7?'river':r<0.85?'coast':'island';
-      const x=cx*CHW+rand(80,CHW-80),y=cy*CHH+rand(70,CHH-70);if(W.houses.some(h=>Math.hypot(h.x-x,h.y-y)<120))continue;
-      const h={id:W.hid++,name:`${names[i%names.length]}${Math.random()<0.5?'':Math.ceil(rand(2,9))}네 집`,owner:'ai',terrain:t,x,y,dogs:[],money:Math.round(rand(30000,400000)*D.ai*(1+Math.hypot(cx,cy)*0.15)),cap:Math.round(rand(8,18)),color:pick(['#d4473a','#2f7fd0','#7b52c9','#2e9a6a','#c96a1e','#c23d7a','#3c8f9e','#8a6d1f'])};
-      const k=Math.round(rand(3,9)*D.ai*(1+Math.hypot(cx,cy)*0.12));for(let j=0;j<k;j++)h.dogs.push(randDogData(1));aiArm(h,0.5);W.houses.push(h);
-      W.zones.push({x,y,r:rand(70,110),t});
-    }
+  const vw=1000/(v.k||1),vhh=600/(v.k||1);for(let cx=Math.floor((v.x-200)/CHW);cx<=Math.floor((v.x+vw+200)/CHW);cx++)for(let cy=Math.floor((v.y-200)/CHH);cy<=Math.floor((v.y+vhh+200)/CHH);cy++){
+    const key=cx+','+cy;if(W.chunks[key])continue;W.chunks[key]=1;const names=AI_OWNERS.slice().sort(()=>Math.random()-0.5);
+    if(W.rep){worldSpots(W.n,cx*CHW,cy*CHH).forEach(([x,y,t,place],i)=>chunkHouse(x,y,t,place,cx,cy,names,i));continue} // another copy of the world, same population pattern
+    // new land: a few towns with their own populations; houses gather around the big ones
+    const towns=[];for(let i=0;i<Math.round(rand(4,7));i++){const r=Math.random(),t=r<0.35?'plain':r<0.55?'mountain':r<0.7?'river':r<0.85?'coast':'island',pop=Math.round(Math.pow(rand(0.2,1),3)*300+5);
+      const x=cx*CHW+rand(110,CHW-110),y=cy*CHH+rand(100,CHH-100);if(towns.some(q=>Math.hypot(q.x-x,q.y-y)<170))continue;const z={x,y,r:45+Math.sqrt(pop)*4.2,t,pop,name:pick(TOWN_A)+pick(TOWN_B)+' 마을'};towns.push(z);W.zones.push(z)}
+    const n=Math.max(2,Math.round(W.n/3)),tot=towns.reduce((a,z)=>a+z.pop,0),gap=Math.min(22,150/Math.sqrt(n)),made=[];
+    for(let tries=0;made.length<n&&tries<n*80;tries++){let r=Math.random()*tot,z=towns[0];for(const q of towns){r-=q.pop;if(r<=0){z=q;break}}
+      const a=rand(0,6.283),d=Math.sqrt(Math.random())*z.r*0.85,x=z.x+Math.cos(a)*d,y=z.y+Math.sin(a)*d*(z.t==='coast'?0.5:1)-(z.t==='coast'?z.r*0.2:0);
+      if(z.t==='island'&&d>z.r*0.5)continue;if(made.some(p=>Math.hypot(p[0]-x,p[1]-y)<gap))continue;made.push([x,y]);chunkHouse(x,y,z.t,z.name,cx,cy,names,made.length)}
   }
 }
-function panMap(dx,dy){const W=world.war;if(!W.inf)return;W.view.x+=dx;W.view.y+=dy;ensureChunks();renderMap()}
+const LAND_D='M311.8 449.6L319.3 451.9L318.1 453.3L314 452.5L310.7 454.5L302.8 452.9L296.4 449.9L292.6 446.8L302.5 450.2L304.8 447L309.4 446.2L311.8 449.6ZM337.4 441.9L339.6 443.2L335 445L331.4 445.3L330 444L333.3 442.4L337.4 441.9ZM695.2 438.1L691 438.3L691.5 435.1L695.9 436.3L695.2 438.1ZM903.9 413.3L906.6 414.3L911.9 413.5L910.9 420L905.7 421L902 414.3L903.9 413.3ZM980.6 413.7L983.2 413.7L984 416L979.7 420.5L980.8 421.8L976.3 422.9L973.9 427.5L970.4 429.6L963 428.4L964 425.3L967.5 422.6L973.7 419.5L980 412.5L980.6 413.7ZM985 400.4L987 403.4L992.9 405.4L995.9 404.7L994.4 408.8L992.2 408.7L988.9 414.7L985.1 414.7L986.7 412.4L982.8 409.7L984.9 407.8L985.3 403.8L984.2 401.5L979.5 395.9L984.2 398L985 400.4ZM964.2 361.6L959.6 360.2L955.6 355.8L958.4 356.8L964.2 361.6ZM995.5 348.2L996 350.4L992.7 350.5L995.5 348.2ZM0 346L0 346.7L0 345.5L0 344.6L0 346ZM639 337.7L640.2 342.3L637.3 349.9L630.8 369.3L626.1 371.1L622.3 369.4L620.1 361.3L623.3 355.8L622.1 348.4L623.5 345L628.6 343.8L632.5 340.5L635.7 336.4L636.7 333.4L639 337.7ZM898.8 338.2L899.8 340.4L901.6 339.4L903.8 341.6L904.5 346.6L906.6 352.7L913.5 356.6L915.8 362.1L918.7 362.2L919.2 365.2L924.6 370.2L925.3 375.7L926.6 378.1L924.7 387.9L921.4 391.8L916.9 401.2L916.7 404L912 405L906.4 408.4L902.4 406.7L898.9 407.8L890.7 405.6L887.7 400.4L883.7 398.9L883.9 395.5L880.1 397.9L883 393.4L882.8 391.4L878.8 394.7L877.7 396.9L872.5 391.2L873 390.6L864.8 387.5L859.8 387.8L853.1 389.7L850.4 389.5L845.1 391.6L843.5 394.1L833 394.4L827.8 397.4L824 397.3L819.5 395L821.7 389.5L819.6 381.8L817.1 378.1L815.1 371.2L817.3 371.6L815 367.7L817.1 360.4L818.5 360.6L824.2 357.5L826.2 357.6L835.7 354.7L839.6 350.5L841.7 345.6L842.9 348L843.9 344.8L849.1 339.5L853 338.4L856.6 341.3L860.1 341.6L859.5 340.1L862.8 334.8L868.3 333.7L867.7 330.9L875.8 334L879.1 332.9L880.4 334.3L876.2 340.9L886.8 348.3L891.3 348.2L893.6 341.8L893.6 334.5L895.9 329.6L898.7 335.7L898.8 338.2ZM835.3 328.4L830.5 326.5L833.1 326L835.3 328.4ZM949.1 326.7L946.6 324.8L947 323.1L949.1 326.7ZM845.7 328.2L843.3 328.8L844.4 325.8L847.5 324L852.7 323L852.7 324.1L847.5 326.1L845.7 328.2ZM827.5 322.5L830.9 324.2L824.3 325.1L827.5 322.5ZM841.4 322.5L841 324L833.1 324.5L841.4 322.5ZM801.7 318.8L807.1 319.1L807.7 318L812.8 319.3L813.8 321.1L818 321.6L821.4 323.3L818.2 324.3L815.2 323.2L809.8 323.1L804 321.5L800.8 321.6L792.7 319L794.6 316.4L798 316.5L801.7 318.8ZM933 318.9L929.8 316.4L929.2 314.3L933 318.9ZM922.2 315.2L917.3 317.5L912 316L912.2 315.1L918.9 315.2L923.2 312L922.2 315.2ZM862.4 308.6L861.1 309.6L855.3 309.4L855.9 307.9L862.4 308.6ZM925.4 312.5L918.5 307.6L922.9 309L925.4 312.5ZM872.6 303.2L873.4 307.7L876.3 309.4L878.6 306.4L884.2 304.7L901.6 310.7L905.5 315.2L910.1 316.9L908.2 318.7L913.1 325.3L918.9 328.6L910.9 328.1L905.7 322.4L902.1 321.2L898 322.9L896.2 325.9L891.8 325.3L889.3 323L882.3 323.4L885.2 320.3L883.1 315L875.5 312.4L871.3 309.8L869.4 311.4L866.6 307.8L871.4 306.2L867.3 306.1L862.6 302.6L867.7 301L872.6 303.2ZM847.9 296.1L845.7 298.8L833.8 299.3L833.4 301.4L835.9 303.9L837.4 302.7L842.6 301.7L837.5 305.3L840.1 308.9L842.1 314.8L839.5 314.7L835.8 310L836 307.3L834.2 308.1L834.5 315.4L831.6 314.9L831.9 309.7L829.9 307.8L833.4 298.4L835.8 296.4L838 297.2L844.7 297.5L847.9 296.1ZM857.5 296.9L855.9 299L855.8 302.5L853.9 297.2L855.4 294L857.5 296.9ZM793.9 316.3L790.9 316.3L785 311.7L781.7 307.8L778.2 301.8L775.7 299.5L773.9 294.9L764.9 286.2L764.7 284.8L770.8 285.4L779.6 294.2L782.4 294.2L788.4 299.7L787.3 302L789.9 303L791.4 306.5L794.7 308.5L793.9 316.3ZM827.4 294.9L830.5 297.5L827.3 297.8L826.4 302.2L823.8 304.1L822.6 311.1L819.1 311.4L814.6 308.7L811.3 309.7L810.3 308.3L806.2 308.2L805.7 304.4L803 301.3L803 296.3L804.6 294.4L808.8 294.9L809.4 292.5L813.9 291.4L817.2 287.4L825.4 280.8L826.9 283.4L831.1 285L829 286.2L825.9 291L827.4 294.9ZM851 276.6L850.5 282.6L849.5 279.7L848.3 284.5L845.1 282.9L845.1 279.6L843.4 278.2L839.1 280.8L839.8 277.7L843 275.9L844 277.1L850.6 274.2L851 276.6ZM725.6 282.8L723.2 283.4L721.4 277.2L722.6 272.7L724.6 274.3L727.2 279.1L725.6 282.8ZM330.7 271.9L328.4 272.2L328.7 270.1L330.7 271.9ZM844.4 271.4L841.7 274.9L839.9 273L841.5 269.8L844.7 268.8L844.4 271.4ZM829.2 274.1L825.5 276.8L830.5 271.2L832.5 270.7L829.2 274.1ZM838.6 267L842 267.8L838.9 271L838.6 267ZM848.6 266.2L849.4 269.3L847.3 268.6L846.7 271.9L845.2 265.1L848.6 266.2ZM837.6 263.7L836.8 266.1L834.2 262.6L837.6 263.7ZM837 248.6L840.3 252.5L837.9 255.7L838.1 260.2L844.3 261.7L844.7 265.2L841.5 262.4L835.1 261.5L833.5 258.4L835.3 248.6L837 248.6ZM317.8 249.4L313.4 250.1L313.6 248.6L317.8 249.4ZM286.4 250.4L282.4 249.4L286.4 248.9L286.4 250.4ZM298.4 244.8L303.3 244.8L310.2 248.3L300.8 249.9L293.4 248.2L299.1 248.1L298.4 244.8ZM806.5 248.1L804.1 249.5L801.8 248.6L803.1 244.9L807.7 244.2L806.5 248.1ZM67.9 247L67.3 243.8L70 245.8L67.9 247ZM278.7 236.8L282.4 237.5L287.4 241.1L294 243.7L289.9 244.8L284 244.8L285.9 243.3L283 242.4L281.3 240L272.7 238.4L270.1 237L266.5 239.1L266 237.3L271.5 235.6L278.7 236.8ZM284.6 234L282.2 231.7L283.6 230.1L284.6 234ZM836.6 236.7L835.4 239L833.6 234.6L837.5 229.7L838.8 230.6L836.6 236.7ZM874 205.1L869.5 209.2L867.7 208.4L869.2 205.4L874 205.1ZM596 200.9L591.6 204L589.6 202.5L596 200.9ZM565.8 200.8L567.4 201.8L573 201.9L568.7 203L565.8 200.8ZM543.1 193.8L541.9 198.3L534.5 195.5L534.9 194.1L543.1 193.8ZM525.6 185.5L527.2 187.5L526.9 191.2L523.4 191.2L522.7 186.2L525.6 185.5ZM891.6 196.8L889.6 202.4L886 203.7L881.2 203.9L877.2 207L875.2 203.9L863.8 205.9L866.7 207.9L864.8 212.6L861.7 212.7L862.4 210.2L859.5 207.5L868.4 201.6L873.9 200.7L876.9 201.3L879.8 196.4L881.6 197.7L887.3 193.8L889 190.4L889.7 185.6L892.7 185.1L894.1 191.2L891.6 194L891.6 196.8ZM526.6 182.9L525.6 185.1L523.7 182.6L526.1 180.5L526.6 182.9ZM899.7 177.3L903.7 176.7L904.3 179.8L900.2 180.6L897.7 183.3L893.4 181.4L891.8 184.5L888.8 184.5L889.8 179.6L892.7 179.5L894.4 173.5L899.7 177.3ZM323.2 170.7L327.7 171L325.4 172.3L323.2 170.7ZM328.3 163.6L320.8 161.5L325.4 161.9L328.3 163.6ZM156.9 165.3L151 164.4L147.1 161.6L144.3 161.1L143.5 159L150.7 160.3L156.9 165.3ZM344.1 159.2L344.9 162.3L351.5 163.2L353.8 168L352.6 170.4L349.5 170L349.3 167.4L335.4 167.8L335.5 165.2L337.8 163.5L342.4 157.5L346.1 156.7L344.1 159.2ZM131.4 149.9L134 149.7L133.2 152.8L130.4 151.6L131.4 149.9ZM899 159L901.8 164L897.7 163L896 167.1L898.7 169.9L894.7 172.3L894.2 164.3L894.9 158.5L893.3 155.7L893.6 151.9L896.1 150.7L897.9 153.5L899 159ZM481.1 154.8L476.2 156.5L472.3 156.1L474.5 153.2L473.1 150.3L479 146.9L484.3 148.5L483.2 152.4L481.1 154.8ZM535.2 145.5L533.6 147.8L530.3 145.1L534.4 144.1L535.2 145.5ZM75 141.3L72.2 142.4L70.4 140.4L74.4 139L77.4 140L75 141.3ZM491.7 137.1L488.7 140.1L494.6 139.8L491.3 144.5L494.2 144.7L496.9 148.3L498.8 148.7L501.3 153L504.7 153.5L502.9 156.1L504 157.5L501.5 159L497.8 159L490 160.5L484 160.7L488 157.7L485.4 155.6L488.3 154.7L487.3 151.4L491.4 151.7L489.9 148.3L486.5 147.8L486 145L484.5 146.4L482.9 142.3L486.1 137.1L491.7 137.1ZM40.1 133.6L34.9 132.7L39.8 132.5L40.1 133.6ZM272.5 125.8L269.3 127.3L266.7 126.5L268.8 125.2L272.5 125.8ZM23 122.8L31.4 124.2L29.1 125.1L22.8 123.9L23 122.8ZM263.4 117.6L273.2 121L273.5 122.3L277.5 123L275 123.9L269.1 121.9L262.4 124.9L260.1 122.1L261.4 117.4L263.4 117.6ZM459.7 115.4L459.1 117.2L462.2 119.1L458.6 121.2L448.2 123.6L436.8 122.3L439.5 121.1L433.5 119.7L438.3 118.4L432.4 117.7L434.3 115.9L438.5 115.5L442.8 117.4L447.1 115.9L450.6 116.7L455.1 115.2L459.7 115.4ZM289.3 113.5L286.1 113.6L286.6 110.7L291.4 111.1L289.3 113.5ZM1000 108.4L1000 113.7L1000 114.1L1000 116.7L1000 118.2L1000 120.9L1000 121.4L1000 119.7L1000 118.5L1000 118.4L1000 116.4L1000 117L1000 119.5L996.4 120.7L992.8 120.5L998.2 125L997.9 126.9L992.7 126.3L982.4 128.7L974.2 132.4L973.1 133.7L969.2 131.7L961.9 133.9L954.3 133.7L950 138.2L953.3 140L952.9 144L950.4 144.1L950.3 147.6L945.5 149L944.5 152.2L940.4 152.9L939.5 155.7L935.5 158.3L934.5 156.4L931.8 146.2L933.1 142.3L935.6 139.4L939.9 138.7L949.6 132.4L954.6 130.2L956.9 126.2L953.5 126.5L951.8 128.8L944.8 131.8L942.5 128.4L935.3 129.4L928.4 134L930.7 135.7L920.2 136.7L920.4 134.7L916.1 134.3L912.6 135.7L904.1 135.2L895 136L875.3 148L879.7 148.3L883.8 150.7L888.6 149.5L892.6 152.5L892.7 154.9L890.5 157.7L889.1 165.4L883.9 171.4L874.6 179.5L870.9 181.1L867.4 179.8L860.2 184.4L860.3 186.4L854.3 189.6L859.6 197.8L858.6 202.5L851.3 204.5L851.6 200.9L850.3 198L852.4 197.5L850.5 195.1L846.4 194.1L848.3 190.6L845.2 189.1L836.3 192L839.4 187.7L837.9 186.3L832.3 189.2L830.6 191L826.5 192.4L832.5 196.8L835.6 194.8L839.9 196L840.3 197.4L836.4 198.2L831 203L834 204.6L838.6 212L836.8 214.8L839.1 217.1L838 221.6L836.5 221.8L829.6 231.8L821.9 236.7L816.1 237.4L814.6 238.7L807.7 240.6L805.2 243.7L805.2 240.6L801.4 239.7L796.4 242.5L793.5 247.1L798.2 253.6L802.4 257.6L803.7 262.7L803.3 267.6L797.8 271.2L792.1 276.1L791.9 272.4L787.5 270.5L785 266.1L780.1 264.9L780.5 262.7L778 262.8L777.8 265.8L775.4 272.3L777.4 274.4L779.1 279.4L782.3 281.3L787.2 286.5L787.5 292.2L789.5 296.4L787.6 296.6L781.6 292.3L778.3 285.2L778.6 283.2L776.4 279.6L772.6 276.8L774.3 268.2L771.1 255.3L769.9 253L764.9 256.3L761.6 255.5L762 249.4L755.8 241.1L753.9 236.8L751.4 236.7L750.8 239.3L741.6 240.3L740.3 244L736.3 245.9L728.3 252.7L728.3 254L723.1 255.8L722.3 258L723 263.9L721.8 266.5L721.8 271.2L715.4 277.9L712.8 275.3L710.4 268.6L708 264.6L706.8 259.4L704.3 255.6L702.3 246.6L701.7 240.7L695.7 242L692.1 238.6L693.5 237.6L687.3 233.5L684.4 229.4L670.8 230.3L659.4 228.5L656.9 224.6L652 226.4L648.6 225.5L643.1 222.6L639.2 216.3L633.3 216.7L635.6 223.1L639.3 225.9L641 229.2L643.3 228.3L643.9 233.3L650 233L656.6 226.7L656.7 230.8L659.5 233.7L663.1 234.5L666.1 238L662.5 243.3L661.2 243.1L660.5 247L657.2 248.4L653.5 252.1L645.5 254.5L644.9 256.7L637.7 259.1L635.2 261.1L626.7 263.1L625 264.7L620.8 264.9L619.1 258.9L618.5 253.4L613.7 245.9L608.7 240.9L608.5 237.3L606.9 234.2L604.1 232.5L603.4 230.3L597.6 222L596.2 222.1L597.1 218.5L594.2 223.2L590.9 220.3L594.7 227.4L599.1 233.5L598.7 235.8L602.4 238.9L604.1 248.3L606.7 250L609.1 255.8L614.4 259.7L620.3 265.6L618.7 267.4L622.5 271L629.6 270L642 266.6L641.8 270.4L637.4 281.1L635 285.2L629.3 292.1L619.8 299.2L615.5 304.7L611.8 307.1L608.9 313L607.8 318L609.6 319L608.9 323.6L612.4 329.9L613.3 340.8L609.6 346.4L603.9 348.9L596.6 355L596.4 356.9L598.8 361.4L598.9 365.9L597.3 368L591.7 370.4L590.2 378.6L583.5 386.5L578.4 391L571.6 394.3L562.7 394.1L554.5 396.7L550.7 394.1L549.8 390.6L550.6 388L545.4 379.4L542.3 375.3L540 366.3L539.6 361.4L537.1 358L535 352.9L532.8 350.2L532.3 346.3L535.4 336.5L537.9 333.4L538 329.8L535.8 325.5L536.8 323.8L533.1 314L526.1 306L524.4 303.1L526.4 297.2L527.2 291.5L523.6 286.7L516.4 288.2L512 282.6L502.9 283.5L494.5 286.9L488.9 285.6L483.8 286.1L479.1 287.9L475 286.6L464 278.3L463.2 275.3L458.8 269.8L453.9 266.2L453.6 262.2L451 259.1L454.3 255.2L455.1 249.7L454.8 244.2L452.6 241.7L452.9 239.2L455.6 234.1L458.1 231.9L459.9 227.1L464.9 222.1L467.5 221.8L473.4 216.9L472.7 213.4L476 207.7L480.8 205.2L483.5 200.7L487.2 201.9L494 202.3L504.1 198.3L517.4 196.9L523.4 197.4L526.4 196.2L529.4 198.9L530 203.2L528.2 204.6L530.9 207.5L542.3 210.4L543.6 212.8L553 215.9L555.7 213.9L555.1 211.8L557.9 209.1L563.6 209.3L564.5 210.6L573.6 212.3L580.3 214.3L583.6 212.6L588 212.7L593.8 214L595.2 213.3L600 203.8L600.4 200.5L596.4 197.8L594.5 199.4L590.3 199.7L585.1 198.1L582.5 199.6L576.8 198.2L573.1 193.9L574.5 191.7L572.7 190.4L575.8 187.7L580.1 187.6L581.2 185.5L586.5 185.9L593.1 183.3L597.7 183.2L606.5 186.3L612.1 186.1L615.4 184.6L615.1 181.5L601.9 174.3L606.2 171.6L604.6 170.5L608.7 168.7L599.5 170.4L597.3 173.2L601.5 173.7L594.1 176.8L593.2 174.9L590.1 174.1L593.3 172.6L585.4 170.6L580.1 175.2L579.3 178.6L576.9 181.7L580 186L576.7 186.1L573.2 188.5L572.4 186.6L565.9 187L567.8 188.5L564.8 189L563.4 187.6L563.8 191.7L566.7 193.8L563.3 196.4L564.3 198.8L560.2 197.7L558.7 193.6L553.9 188.2L554.3 184.1L552.4 182.6L544.5 179.1L541.4 174.8L536.5 173L534.2 173.9L535 177.5L539 181.2L544.1 184.6L551 187.9L550.8 189.4L546.9 187.7L547.7 190.5L544.7 194.5L544.7 191.8L542.8 188.8L537.9 185.6L535.8 185.4L529.2 180.7L528.3 178L524.7 176.8L518.1 180.2L512.7 179.4L508.6 180.3L508.4 183.6L505.8 185.5L502.3 186.1L499.2 190.8L500.3 192.4L498.1 195.4L494 198.1L487.9 198.1L485.1 200.1L481.9 197.4L475.3 197.6L475.4 193.7L473.5 192.4L475.6 186.8L475 181.7L473.9 180.5L477.8 178.5L487.9 179.4L494.7 179.4L496.2 177.7L496.7 172.2L491.8 167.9L487.5 166.8L487.2 164.8L490.8 164.2L495.5 164.9L494.6 161.7L497.3 162.9L503.7 160.8L504.6 158.5L510.6 156.6L513.1 152.5L524.4 149.9L522.6 145.8L523.7 141.4L529.4 139.6L528.8 142.8L530.3 143.2L526.8 145.9L527.6 148.3L530.4 150L534.8 148.7L539.2 150.7L549 147.6L554.6 148.8L559.1 146.7L558.6 142.3L562.6 139.6L567 141.6L567.9 137.8L564.8 135.6L571.8 134.4L577.7 134.8L580.9 133.3L578 131.9L572.9 132.2L563.5 133.8L559.2 131.3L559.8 128.6L558.5 126.1L562.3 122.7L570.5 119.1L566.4 116.6L561.6 117.4L558.9 119.4L559.4 121.1L549.6 125.7L547.6 129.6L552.2 133.1L549.6 136.2L546.7 136.9L544.1 144.2L540.7 143.9L539.2 146.1L536 146.2L535.1 143.6L530.6 136.5L528.8 134.8L523.3 138L519.6 138.7L515.7 137.3L513.9 127.9L516.4 126.1L523.8 123.7L529.2 120.9L541 111.6L553.3 106.1L559.4 104.8L564 105L568.2 102.7L578.2 102.3L586.9 104.3L583.3 105L586.4 106.8L589.3 105.8L593.8 107.5L601.4 108.2L611.9 111.3L614.2 114.5L606.6 116.7L594.2 114.6L592.2 114.9L596.7 116.9L597.1 121.1L602.8 122.6L601.4 120.1L603.3 119L610 120.8L612.3 120.1L610.5 118.1L616.9 115.3L622.1 116.5L623.7 114.6L621.4 112.9L622.7 111.2L620.7 109.5L628.5 110.4L630.1 112L626.5 112.3L628.7 114.8L633 114.2L633.7 112.4L649.2 108.7L648.6 110.6L659.2 109.8L663.3 108.7L666.5 110.3L669.7 108.5L666.7 106.9L668.2 106L676.4 106.8L690.3 110.9L692.2 109.4L686.8 105.8L685.3 102.7L690.4 100.2L694.3 97.1L701.6 97.8L702.2 99.4L699.6 101.6L702.2 104.5L701.6 108.3L704.6 110L703.4 111.8L698 115.8L701.2 116.2L705.3 114.5L708.5 111.8L706.9 110.2L708.2 108.4L704.4 106.6L706.7 103.8L703.1 101.5L710.2 99.2L709.1 101.8L712.1 102.4L710.8 100.4L715.5 99.3L721.3 99.1L726.4 100.7L723.9 98.4L723.6 95.4L728.5 94.9L741.2 94.6L738.9 93.2L742.1 91.3L750.7 89.9L758.1 89.5L759 88.8L766.3 88.5L768.5 89.1L774.8 87.6L779.9 87.7L783.3 85.3L789.9 84.2L794.6 85.1L790.8 85.8L800.4 86.9L808.5 86.9L817 89.3L816.3 90.8L803.9 93.9L811.4 95L813.9 94.5L815.4 96.3L821 95.1L829.9 95.6L830.6 96.9L842.2 97.3L842.4 95.2L852.7 95.7L857.2 97.1L856.8 100.1L860.3 102.2L864.7 103.4L867.4 100.5L871.8 101.7L876.6 101L881.9 101.8L888.5 101.4L886.5 98.8L890.2 97.6L915.3 99.4L917.6 101.1L924.9 103.2L936.1 102.7L941.7 103.1L944 104.3L943.6 106.3L947.1 107.1L955.7 106.5L966.2 106.7L971 109.2L974.5 108.3L972.2 106.5L973.5 105.3L982.3 106.1L988.1 105.9L996.1 107.2L1000 108.4ZM636.4 185.3L637.8 187.3L635.7 192.2L636.7 195.6L641.2 197.6L645.2 198.1L649.5 197.3L649.7 191.8L646.4 188.8L647 186.5L652 186.2L649.2 183L647 183.7L645.8 181.1L642.6 180.2L639.7 176.1L642.4 176.3L642.5 174.3L647.3 174.3L647.3 169.9L642.2 169.3L636.4 171.1L632.4 173.2L629.7 176.1L632.2 178.7L631.9 180.6L636.4 185.3ZM234.3 108L232.6 109L226.6 108.5L222.8 107.2L227.2 105.2L234.3 108ZM1000 101.3L1000 103.2L996.5 102.5L1000 101.3ZM0 101.3L6.7 102L0 103.2L0 101.3ZM248.5 107L248.5 109.8L252.2 107.6L255.5 109.4L254.7 111.5L257.4 113.3L262.3 108.9L262.4 105.9L270.5 106.5L274.2 107.9L272.3 110.7L273.9 113.6L268.5 115.5L261.8 115.1L257.4 120.1L254.2 121.9L250.2 122.1L247.9 125.1L244.6 125.5L238.2 130.8L237 136.3L241.1 136.7L243.6 141.4L247.5 140.9L252.7 142.1L257.4 144.4L263.9 146.4L271.5 146.8L271 149.2L273.9 155.1L278 157.8L281.7 154L280.2 149.6L278.3 148.1L282.7 146.8L287.4 143L285.3 138.7L281.9 136.7L285.2 133.7L283 126.9L285 126.2L292.6 127.3L294.9 126.5L301.7 130.2L306.7 130.4L307.5 136.2L312.1 138.3L316.1 136.8L320.6 132.4L329.5 141.8L328.3 143.5L334.5 146.7L340.7 148.3L341.8 150.6L345.1 152L345.3 155.1L341.3 157.2L336.7 158.2L333.2 160.4L328.5 160.9L322.6 160.3L315.6 160.5L309.7 163.7L302.5 169.9L304.8 169.5L309.3 165.8L315.1 163.5L319.3 163.2L321.7 164.6L319.1 166.5L320.9 171.6L324.5 172.9L329.1 172.5L331.9 169.4L333.9 172.4L330.4 174.3L324.3 175.9L318.4 179L316.3 178.8L316.2 176.5L321 174.2L313.5 174.6L314 175.5L305.2 178.7L303.3 180.9L305.7 184.3L297.6 185.5L300.2 186.3L294.5 187.1L294 189.7L289.7 194.6L287.4 192.5L289.6 201.2L287.9 203.3L281.8 205.9L274.1 212.7L273.6 214.6L277.6 225.3L276.7 230L274.5 230L269.8 222.5L270.4 220.7L267.5 216.8L263.6 217.7L260 215.6L251.1 216.2L251.6 219L247.6 219L245.5 217.6L241 217.3L237 218.1L231.7 221.4L229.5 223.9L230.2 228.1L228.6 232.6L228.1 237.7L230 242.7L233.6 247.7L237.7 249.6L246.1 247.6L247.9 246.4L249.2 241.7L254 240.3L258.2 240.2L254.6 254.1L253 255.9L265.6 256L269 258.3L267.1 268.4L268.3 271.1L273.8 275.6L279 273.3L286.6 276L289.8 273.8L290.3 270.5L293.9 268.6L296.1 268.8L300.7 265.5L302.4 266.4L300.1 268.3L300.8 274.8L302.7 272.6L301.7 269.5L308.7 268.2L310.6 270.7L316 270.4L319.8 272L321.3 270.4L328.1 270.2L326.7 272.4L331 273.9L331.5 276.2L335.8 277.8L341.3 283.4L347.1 283.3L353.1 285L357.5 288.3L361.3 297.1L360 300.2L364.9 300.7L365 303.4L367.2 301.6L375.3 304.3L376.2 307.5L379.4 306.6L384.8 308.1L388.9 308L396.6 313.4L402.1 315.2L403.5 320.4L402.4 325L397.1 330.7L391.8 338.3L392 343.5L389.6 354.4L386.7 358.1L386.3 360.9L383.4 363.8L376 364.9L370.9 366.9L365.3 371.9L364.2 379.7L362.3 381.2L359.2 386.1L354.8 389.6L350.5 395.5L347.4 397.1L337.5 395.6L341 398L342.3 402.5L339.6 406.1L335.5 407.6L326.8 407.9L327.4 413L322.9 414.4L319.1 414.1L319.5 416.8L323.7 418.2L318.9 420.8L317.9 425.1L315.3 425.1L312.3 428.6L317.7 431.2L316.7 433.7L313.4 435.3L311.6 438.5L308 440.9L310.7 445.4L307.1 445.3L303.2 446.9L302.8 449.5L298.5 448.7L291.8 445.2L290.3 439.9L290 435.2L291.2 432.5L294.1 430.4L289.9 429.6L292.5 427.1L293.5 422.5L296.6 423.5L298 417.7L296.1 417L295.3 420.5L293.5 420.1L295.3 411L296.6 409.1L295.6 403.2L296.8 403.1L301.6 390.1L300.9 385.9L301.4 380.2L303 376.8L305.3 359.4L304.5 351L301.5 348.2L296 345.4L288.9 340.7L285.8 334L278.4 320L274.3 317L273.9 313.2L278.4 307.4L275.1 306.2L277.5 297.9L281 296.2L282.1 292.7L285.8 289.3L284.8 281.4L282.8 276.9L280.2 275L276.4 277.5L277.8 279L269.5 277.2L267.7 274.9L261.7 271.8L261.9 269.2L256.5 264.1L246.6 261.3L240.7 256.6L237 255L231.8 256.5L219.9 252.3L216.9 250.2L212.5 249.2L208.4 246.3L206.3 243.2L207.6 240.5L205.5 236.7L198.9 230.1L196 228.3L196.4 226.5L193.4 224.5L188.3 219.6L185.7 213.4L181.2 211.7L181.5 216.2L186.2 221L190 225.9L192.5 231L196.1 235.1L193.6 234.9L188.4 231.3L188.1 227.7L182 224.6L182.9 220.7L179.1 217.9L174.2 208.2L170.8 205.5L165.6 204.3L156.3 191.8L154.5 188L155 183.3L154.1 181.2L155.8 173.5L154 165.6L158 166.6L159.5 169.2L158.4 163.9L151 160L146 158.8L144.9 154.6L141.3 153.5L140.8 151.2L137.4 147.8L133.4 145.8L132.6 143.4L129.1 141.2L127.6 138.5L120.5 138.3L111.5 134.6L104 133.1L100.1 133.3L91.4 130.9L88.3 131.5L88.8 133.4L78.6 135.7L79.4 131.3L72.2 135.1L74.2 136.5L71.6 138.5L65.8 140.5L59.9 144.5L54.8 145.4L47 148.1L41.8 148.4L50.5 144.7L54 144.4L61.9 140.1L63.8 136.3L58.2 137.7L54.6 135.9L50.1 137L50.4 134.3L45 133.9L40.7 131.9L38.6 129.2L42.9 124.6L47 124.8L53.4 122.9L51.3 121.1L53.4 120L41.8 121L37.7 120.3L33 117.6L43.1 115.1L45 116.4L50.9 116.3L40.6 111L36.8 110.1L38.3 108.7L43.3 108.6L46.8 107.3L50.3 104.6L65.1 101.8L77 103.9L84.1 104.1L97.4 105.6L101.1 105.1L113.6 107L120.8 108.6L126.6 106.6L130.8 106.9L139.5 105L141.4 106.2L144.1 104.2L150.7 107L154.4 105.1L154.8 107.2L159.2 106L183.6 110L179.7 111.4L184.7 112L194.6 111.2L197.6 112.8L200.6 111.4L197.7 110.2L205.1 108.9L210.2 111.1L213.3 110.8L218.2 112.1L226.5 111.7L226.2 110L237 110.9L238.2 108.1L232 105.3L232.2 102.2L235.5 100.2L242 101.9L245.8 105L243.3 106.4L248.5 107ZM182.9 96.9L181.5 98.2L187.7 97.3L191.5 98.7L194.7 97.3L197.2 98.2L199.5 101L200.9 99.8L198.9 97L201.3 96.6L207.2 98.1L209.8 102.8L219.5 105.5L219.2 106.7L214.6 106.9L215.5 109L205.7 107.8L197.2 108.9L185.2 109.6L183.7 108.3L177.5 107.9L174.1 105.7L187.7 104.5L182.4 103.9L172.5 104.1L171 103L177.5 101.9L168.3 101.2L172.6 98L180 96.4L182.9 96.9ZM209.7 96.1L207.3 97.9L202.9 95.9L209.7 96.1ZM287.9 96.9L288.2 97.7L279.2 97.9L275.3 96.3L276.8 95.1L283.2 95.4L287.9 96.9ZM259.6 96.8L261.7 98.5L264.3 96.3L271.3 95.1L276.1 98L275.7 99.8L283.8 97.9L293.8 100.6L294.2 101.9L299.3 101.2L302.2 103L308.9 104.1L314 107.8L308.9 109.1L319.8 111.5L323.8 114.1L328.2 114.3L327.3 116.2L322.5 119.4L314.7 115.6L311.1 115.9L310.7 117.5L318.6 121.2L320.4 123.9L319.4 125.9L308.9 122.9L316.2 128L308.7 126.9L299.3 123.9L300.3 123.1L292.1 120.3L292.2 121.1L284.1 121.6L281.8 120.6L283.6 118.6L294.6 118.2L294.6 115.8L298.2 113.1L296.4 110.9L286.5 108.6L288.3 107.9L280.7 105.1L274.2 106.3L264 105.7L253.7 104.4L251.4 103.4L254.3 102.2L250.3 102.2L249.4 99.3L254.4 95.7L261.6 95L259.6 96.8ZM221.2 94.9L229.5 95.1L227.6 97.2L231.8 98.4L231.3 100.9L226.8 102L215.3 98.6L215.3 97.7L221 98L217.9 96.2L221.2 94.9ZM898.9 96.6L888.5 96.2L894.6 94.8L898.9 96.6ZM241.1 97.9L238.1 99.9L235 99.8L233.2 97.4L234.7 94.8L237.5 94.1L248.6 94.8L244.4 97.3L241.1 97.9ZM165.4 101.7L158.1 103.1L156.6 101.8L150.2 100.4L155.7 95.3L153 93.6L162.4 93.2L173.5 93.9L179.1 95.9L168.8 98.6L165.4 101.7ZM918.7 91.4L915.5 92.5L905.9 91.2L906.5 90.3L918.7 91.4ZM240 91.7L238.5 92.8L231.1 91.9L236.5 89.9L240 91.7ZM903 90.1L900.8 92.2L890.6 92.1L886 92.7L880.5 90.9L882 89L893 88.6L903 90.1ZM226.4 86.9L228.5 88.2L227.3 91.7L219.8 91.5L219.8 89.9L215.3 90.1L215.1 88L226.4 86.9ZM199.4 88.3L200.5 89.3L205.9 89L204.7 91.7L195.3 92.1L188.3 93.3L183.7 92.4L189.5 91.2L176.9 91.5L173 91L179.4 87.6L187.3 88.5L192.2 90.1L197 90.4L193.1 87.7L195.6 86.7L199.4 88.3ZM659.8 103.6L649.1 103.4L648.4 102.2L643.3 101.5L642.9 100L645.7 97.8L651.2 95.5L648.6 95.1L655.3 92.7L654.5 91.4L669.9 88.2L679.2 87.7L689.3 86.3L689.4 88.2L671.1 90.9L662.4 93.6L653.9 99L654.5 101.3L659.8 103.6ZM237 85.8L240.1 86.7L245.5 86.7L247.3 88.7L252.3 90L260.1 90.3L264.5 89.7L274.6 89.7L278.2 91.9L272.4 93.2L268.8 92.9L255.1 93.4L243.3 92.1L242 89.2L239.2 88L230.2 86.8L231.3 85.7L237 85.8ZM177.2 84.3L176.8 86.5L166.9 88.7L158.7 88.6L169.2 84.7L177.2 84.3ZM239.3 84.7L232.9 84.6L237.7 83.8L239.3 84.7ZM193.9 84.2L188.7 85L184.6 84.1L186.9 83.2L194.9 83.3L193.9 84.2ZM568.7 83.7L562.5 84.9L557.6 84.2L557.8 82.6L563.6 82.1L568.7 83.7ZM195.4 81.7L187.4 82.2L190.3 81L195.4 81.7ZM233.8 83.2L227.4 83.1L226 80.9L234.6 82.2L233.8 83.2ZM222.1 82.4L223.1 83.6L214 82.4L207.8 82.3L210.5 81.5L207 79.7L219.9 81.1L222.1 82.4ZM791.9 82.5L776.2 83.6L781.3 79.9L785.7 79.8L792.7 81.4L791.9 82.5ZM550.7 78.6L559.8 80.7L552.9 81.8L548.9 84.3L547.6 86.6L544.2 86.8L538.2 85.1L540.7 84.1L536.6 83.3L531.2 80.9L529 78.7L536.6 77.7L538.1 78.7L547.2 77.6L550.7 78.6ZM570.7 76.6L576.1 77.6L572 79.1L564 79.4L555.8 79L548.2 76.9L556.8 76.1L560.9 76.8L563.7 76L570.7 76.6ZM642 76.3L632.2 77.8L630.8 76.2L624.6 76.1L639 75.2L642 76.3ZM777.6 80.9L771.5 81.2L759.2 79.4L757.1 77.4L753.3 76.8L760.5 74.9L766.5 74.3L771.9 75.7L778.3 78.4L777.6 80.9ZM258.3 78.7L261.6 79.6L252.7 82.5L242 82.4L239 81.2L241.3 79.5L236.2 79.5L231.4 77.3L236.8 74.4L243.3 74.3L246.9 75.8L256.1 76.9L258.3 78.7ZM309.7 69.1L323.1 69.7L328.1 71.2L312.1 73.6L318.1 73.6L307 76.1L302.3 78.3L294.8 79.4L286.4 79.7L290.6 81.9L283.6 83.6L278.8 86.2L283.6 86.7L276.2 88.4L269 87.6L260.8 88.1L251.4 87.6L251.1 86.2L256.2 85.6L254.8 83.6L264 84.6L260.2 82.8L255.7 82.3L262.8 80.6L263.6 79.6L258.5 77.1L268.3 77.5L272.6 76.5L256.7 76.3L251.8 75.4L245.6 72.5L258.4 71.4L262.5 70.4L268.9 71.3L271.1 69.8L279.7 69.1L289.7 69.3L297.7 68.8L309.7 69.1ZM424.7 68L442.1 70.2L437 71.3L411.4 71.7L412.8 72.2L422.6 71.9L431 72.8L436.4 72L438.7 73L435.6 74.6L442.7 73.5L456.2 72.5L464.5 73L466.1 74.2L450.7 77.4L445.3 81.2L445.4 84.3L448.7 86.2L439.8 87.1L444.9 88.6L445.6 91L442.6 91.2L446.2 93.6L440 93.8L442.3 95.9L434.5 96.4L438.1 99.5L432.6 98.3L438.5 101.5L439.6 103.7L434.6 104.2L429 101.6L430 103.5L426.8 104.9L437.9 105.2L422.9 109.8L411.7 110.8L405 114.8L399 116.7L389.4 118.2L387 119.9L385.6 123.7L381.1 125.9L382.2 128.1L379.5 133.1L375.6 133.2L371.5 131L365.9 130.9L356.6 123.3L354.8 119L350.9 116.4L350.1 113.4L352.8 110.1L357 109.1L358.7 105.8L351.5 107.5L348.1 106.6L349 103.3L357.3 104L350 101.3L344.9 101L348 98.4L337.3 90.2L329.8 88.6L309.7 88.7L301.7 86.1L314.5 85.1L302.7 84.3L296.4 83.2L296.8 82.1L317.5 79.5L318.5 78.5L311 77.5L313.5 76.3L323.1 74.4L327.1 74.1L326 72.9L341.1 71.7L349.6 71.7L352.7 72.5L360 71L376.3 73.2L369.7 71.7L370.1 70.5L379.4 68.8L389.2 68.9L392.7 67.9L402.5 67.7L424.7 68Z';
+function mapVH(){const W=world.war,onl=W.houses.filter(h=>h.online);return W.inf||!(onl.length||NET.on)?600:Math.max(600,Math.max(...onl.map(h=>h.y),668)+80)}
+// keeps the view inside the world (plus a margin) unless the map is infinite, then applies it
+function applyView(){
+  const W=world.war,v=W.view,vh=mapVH();v.k=clamp(v.k||1,W.inf?0.5:1,12);const w=1000/v.k,h=vh/v.k;
+  if(!W.inf){v.x=clamp(v.x,Math.min(0,1000-w)-60,Math.max(0,1000-w)+60);v.y=clamp(v.y,Math.min(0,vh-h)-60,Math.max(0,vh-h)+60)}
+  $('#mapSvg').setAttribute('viewBox',`${v.x} ${v.y} ${w} ${h}`);return {w,h,vh};
+}
+function panMap(dx,dy){const W=world.war,k=W.view.k||1;W.view.x+=dx/k;W.view.y+=dy/k;renderMap()}
+function zoomMap(f,px,py){const W=world.war,v=W.view,k0=v.k||1,vh=mapVH(),k1=clamp(k0*f,W.inf?0.5:1,12);px=px??0.5;py=py??0.5;
+  v.x+=1000*px*(1/k0-1/k1);v.y+=vh*py*(1/k0-1/k1);v.k=k1;renderMap()}
 /* ---------- retreat & recall ---------- */
 function warBannerShow(t){const b=$('#warBanner');b.hidden=false;b.innerHTML=`<span>${t}</span><button id="retreatBtn" title="싸움을 그만두고 물러나요">🏳 후퇴</button>`;$('#retreatBtn').onclick=retreatWar}
 function retreatWar(){
@@ -5140,7 +5218,7 @@ function recallArmy(id){
 }
 /* ---------- war-only mode ---------- */
 function startWarOnly(){
-  const n=+$('#woDogs').value;$$('[data-war]').forEach(x=>x.checked=true);$$('[data-wardiff]').forEach(x=>x.value=$('#woDiff').value);$$('[data-warsize]').forEach(x=>x.value=$('#woSize').value);
+  const n=+$('#woDogs').value;$$('[data-war]').forEach(x=>x.checked=true);$$('[data-wardiff]').forEach(x=>x.value=$('#woDiff').value);$$('[data-warsize]').forEach(x=>x.value=$('#woSize').value);$$('[data-warcount]').forEach(x=>x.value=clamp(Math.round(+$('#woCount').value)||40,5,200));
   $('#startMoney').value=$('#woMoney').value;$('#modeAuto').checked=true;$('#dogCount').value=String(n);$('#dogCount').dispatchEvent(new Event('change'));
   setAppMode('home');startSim();if(!world||!world.war)return;
   world.war.only=true;const pack=$('#woPack').value,ws=pack==='none'?[]:pack==='rifle'?['rifle']:['rifle','rifle','mg','bazooka','tank'];
@@ -5148,17 +5226,19 @@ function startWarOnly(){
   warLog(`⚔ 전쟁만 하기 시작! 강아지 ${dogs.length}마리${ws.length?' · 무기 지급':''}`,'bad');warUI();setTimeout(openMap,400);
 }
 /* ---------- setup ---------- */
-function initWar(diff,size){
-  const W={on:true,diff,houses:[],armies:[],armory:{},active:0,aiT:0,crowdT:0,battle:null,log:[],seq:1,inf:size==='inf',chunks:{'0,0':1},zones:[],view:{x:0,y:0},hid:10};
-  const spots=[[300,300,'plain'],[470,170,'plain'],[440,440,'plain'],[640,120,'river'],[600,330,'river'],[780,90,'mountain'],[880,240,'mountain'],[820,470,'plain'],[190,140,'coast'],[90,420,'island']];
-  const names=AI_OWNERS.slice().sort(()=>Math.random()-0.5);
-  spots.forEach(([x,y,t],i)=>{
+function warCount(){return clamp(Math.round(+$('[data-warcount]').value)||40,5,200)}
+function initWar(diff,size,count){
+  const W={on:true,diff,houses:[],armies:[],armory:{},active:0,aiT:0,crowdT:0,battle:null,log:[],seq:1,inf:size==='inf'||size==='rep',rep:size==='rep',n:clamp(Math.round(count)||40,5,200),chunks:{'0,0':1},zones:[],view:{x:0,y:0,k:1},hid:10};
+  // houses are spread by population: each region's chance is its population (millions), so crowded regions get several houses
+  const names=AI_OWNERS.slice().sort(()=>Math.random()-0.5),spots=worldSpots(W.n,0,0,[[852.8,196.4,'plain','한반도']]);
+  spots.forEach(([x,y,t,place],i)=>{
     const me=i===0,n=me?0:Math.round(rand(3,9)*WAR_DIFF[diff].ai);
-    const h={id:i,name:me?'우리 집':`${names[i]}네 집`,owner:me?'me':'ai',terrain:t,x:x+rand(-20,20),y:y+rand(-20,20),dogs:[],money:me?0:Math.round(rand(30000,300000)*WAR_DIFF[diff].ai),cap:Math.round(rand(8,18)),color:me?'#f2c14e':pick(['#d4473a','#2f7fd0','#7b52c9','#2e9a6a','#c96a1e','#c23d7a','#3c8f9e'])};
+    const h={id:i,name:me?'우리 집':`${names[i%names.length]}${i>=names.length?Math.floor(i/names.length)+1:''}네 집`,owner:me?'me':'ai',terrain:t,place,x,y,dogs:[],money:me?0:Math.round(rand(30000,300000)*WAR_DIFF[diff].ai),cap:Math.round(rand(8,18)),color:me?'#f2c14e':pick(['#d4473a','#2f7fd0','#7b52c9','#2e9a6a','#c96a1e','#c23d7a','#3c8f9e'])};
     for(let k=0;k<n;k++){const o=randDogData(1);h.dogs.push(o)}
-    if(!me)aiArm(h,0.5);W.houses.push(h);
+    if(!me){aiArm(h,0.5);tradeInit(h)}W.houses.push(h);
   });
-  world.war=W;warLog(W.inf?'⚔ 집 전쟁이 시작됐어요. ♾ 무한 지도 — 지도를 끌어서 넓히면 새 집들이 나타나요':'⚔ 집 전쟁이 시작됐어요. 주변에 강아지 집이 9곳 있어요','bad');
+  W.hid=spots.length;W.base=spots.length;W.view={k:4,x:spots[0][0]-125,y:spots[0][1]-75}; // the map opens on the Korean peninsula
+  world.war=W;warLog(W.rep?`⚔ 집 전쟁이 시작됐어요. ♾ 세계지도 반복 — 지도를 끌면 같은 세계가 끝없이 이어지고, 세계마다 집이 ${W.n}곳씩 있어요`:W.inf?`⚔ 집 전쟁이 시작됐어요. ♾ 무한 지도 — 세계 지도(집 ${W.n}곳) 밖으로 끌어서 넓히면 새 땅과 마을이 나타나요`:`⚔ 집 전쟁이 시작됐어요. 세계 지도에 강아지 집이 ${W.houses.length-1}곳 있어요 (인구가 많은 지역일수록 집이 많아요)`,'bad');
 }
 function aiArm(h,frac){ // AI spends some money on weapons for its dogs (cheap ones first, boats for island houses)
   const pickW=()=>{const pool=['rifle','rifle','mg','bazooka','tank','fighter'].concat(TERRAIN[h.terrain].sea?['warship','carrier']:[]);return pick(pool)};
@@ -5193,6 +5273,7 @@ function launchAttack(targetId,ids){
   const W=world.war,to=houseById(targetId),from=activeHouse();if(!to||to.owner==='me')return;
   const pick_=dogs.filter(d=>ids.includes(d.id)&&!d.dead&&!d.stray&&!d.enemy&&!d.fight);if(!pick_.length){toast('보낼 강아지를 골라 주세요',true);return}
   if(to.online&&!netCanSend(to,pick_.length))return;
+  if(to.owner==='ai'&&to.pf){if(to.rel>=60)warLog(`💔 친구였던 ${to.name}${josa(to.name,'을','를')} 공격해서 사이가 깨졌어요`,'bad');to.rel=-100}
   const data=pick_.map(toData);if(!canReach(data,to.terrain)){toast(`${to.name}은 ${TERRAIN[to.terrain].n}이라 ${TERRAIN[to.terrain].note}`,true,true);return}
   const seaOnly=data.filter(d=>WEAPONS[d.weapon]&&WEAPONS[d.weapon].kind==='sea');
   if(seaOnly.length&&!TERRAIN[to.terrain].sea)toast('⚠ 전투함·항공모함은 바다가 없는 곳에선 힘을 거의 못 써요',true);
@@ -5221,6 +5302,73 @@ function switchHouse(id){if(world.bg&&world.bg.on)endBoard(true);
   if(dogs[0])followId=dogs[0].id;
   warSnack(`🏠 ${h.name}(으)로 왔어요 · ${dogs.length}마리 (정원 ${houseCap(h)})`);log(`🏠 ${h.name}(으)로 화면을 옮겼어요`,'',true);
   $('#warHouseName').textContent=h.name;renderMap();warUI();
+}
+
+/* ---------- gifts, friendship and trade between houses ---------- */
+const GOODS={food:{n:'🍚 사료 1kg',base:3000},snack:{n:'🦴 간식 10개',base:2000},sheet:{n:'🧻 배변 시트 10장',base:1500}};
+const MOODS={calm:{n:'😌 평온해요',m:{}},harvest:{n:'🌾 풍년이라 먹을 게 남아요',m:{food:0.55,snack:0.7}},famine:{n:'🥀 흉년이라 먹을 게 귀해요',m:{food:1.8,snack:1.5}},
+  arming:{n:'⚔ 전쟁 준비 중 (무기가 비싸고 강아지는 안 팔아요)',m:{weapon:1.45},noDogs:true},poor:{n:'💸 돈이 급해요 (뭐든 싸게 팔아요)',m:{food:0.8,snack:0.8,sheet:0.8,weapon:0.8,dog:0.6}},
+  rich:{n:'💰 장사가 잘돼요 (비싸게 사 줘요)',m:{},buy:1.35},pups:{n:'🐶 강아지가 많이 태어났어요',m:{dog:0.65}},dirty:{n:'🧹 대청소 중 (시트가 귀해요)',m:{sheet:1.7}}};
+function tradeInit(h){h.rel=0;h.pf={food:rand(0.75,1.3),snack:rand(0.75,1.3),sheet:rand(0.75,1.3),weapon:rand(0.85,1.2),dog:rand(0.7,1.4)};
+  const t=h.terrain;if(t==='river'||t==='plain')h.pf.food*=0.85;if(t==='mountain'){h.pf.food*=1.25;h.pf.weapon*=0.9}if(t==='island'){h.pf.sheet*=1.25;h.pf.snack*=1.15}if(t==='coast')h.pf.weapon*=0.92;
+  h.ph=rand(0,6.28);h.mood={k:'calm',until:0}}
+function tradeMood(h){if(!h.pf)tradeInit(h);if(world.t>=h.mood.until){const old=h.mood.k;h.mood={k:Math.random()<0.4?'calm':pick(Object.keys(MOODS)),until:world.t+rand(1,3)*1440};return old!==h.mood.k}return false}
+// same thing, different price: house taste x current situation x slow drift over days x friendship discount
+function tradePrice(h,g,sell){
+  if(!h.pf)tradeInit(h);const M=MOODS[h.mood.k]||MOODS.calm,cat=WEAPONS[g]?'weapon':g,base=WEAPONS[g]?WEAPONS[g].cost:GOODS[g].base;
+  let v=base*h.pf[cat]*(M.m[cat]||1)*(1+0.15*Math.sin(world.t/1440*0.9+h.ph+base%7));
+  const disc=1-clamp(h.rel,-40,100)/100*0.2;v*=sell?Math.min(0.7*(M.buy||1)*(1+Math.max(0,h.rel)/400),0.9*disc):disc; // a house never buys back for more than it sells
+  return Math.max(100,(sell?Math.floor:Math.round)(v/100)*100);
+}
+function dogPrice(h,o,sell){if(!h.pf)tradeInit(h);const M=MOODS[h.mood.k]||MOODS.calm,sk=o.skills?Object.values(o.skills).reduce((a,b)=>a+b,0)/Math.max(1,Object.keys(o.skills).length):50;
+  const age=o.age<1?0.8:o.age<7?1:o.age<10?0.6:0.35;let v=40000*(0.4+sk/60)*age*h.pf.dog*(M.m.dog||1)+(o.weapon&&WEAPONS[o.weapon]?WEAPONS[o.weapon].cost*0.6:0);
+  const disc=1-clamp(h.rel,-40,100)/100*0.2;v*=sell?Math.min(0.65*(M.buy||1),0.85*disc):disc;return Math.max(1000,(sell?Math.floor:Math.round)(v/1000)*1000)}
+const relName=r=>r>=60?'🤝 친구 (우리를 공격하지 않아요)':r>=20?'🙂 우호':r>-30?'😐 보통':'😠 적대';
+function canAfford(v){if(!isFinite(world.money)||world.money>=v)return true;toast(`돈이 모자라요 (${won(v)} 필요)`,true);return false}
+function spend(v){if(isFinite(world.money)){world.money-=v;world.bill.today.trade=(world.bill.today.trade||0)+v;checkPower()}}
+function giftHouse(h,amt){
+  if(!canAfford(amt))return;spend(amt);h.money+=amt;const was=h.rel,gain=amt/2500*(h.mood.k==='poor'?1.6:1);h.rel=clamp(h.rel+gain,-100,100);
+  warLog(`🎁 ${h.name}에 ${won(amt)} 선물 (친밀도 ${Math.round(was)} → ${Math.round(h.rel)})`,'good');if(was<60&&h.rel>=60)warSnack(`🤝 ${h.name}${josa(h.name,'과','와')} 친구가 됐어요! 이제 우리를 공격하지 않고, 물건도 싸게 팔아요`,null,10);renderMap();
+}
+function tradeGoods(h,g,sell){
+  const v=tradePrice(h,g,sell),W=world.war,wp=!!WEAPONS[g];
+  if(sell){const have=wp?(W.armory[g]||0):g==='food'?Math.floor(world.stock/1000):g==='snack'?Math.floor(world.snacks/10):Math.floor(world.sheets/10);
+    if(have<1){toast('팔 물건이 없어요',true);return}if(h.money<v){toast(`${h.name}에 돈이 모자라요`,true);return}
+    if(wp)W.armory[g]--;else if(g==='food')world.stock-=1000;else if(g==='snack')world.snacks-=10;else world.sheets-=10;h.money-=v;earnWar(v);h.rel=clamp(h.rel+0.5,-100,100);toast(`${wp?WEAPONS[g].n:GOODS[g].n} 팔았어요 (+${won(v)})`)}
+  else{if(!canAfford(v))return;spend(v);h.money+=v;if(wp)W.armory[g]=(W.armory[g]||0)+1;else if(g==='food')world.stock+=1000;else if(g==='snack')world.snacks+=10;else world.sheets+=10;h.rel=clamp(h.rel+0.5,-100,100);toast(`${wp?WEAPONS[g].n:GOODS[g].n} 샀어요 (−${won(v)})`)}
+  renderMap();warUI();
+}
+function buyDog(h,oid){
+  const o=h.dogs.find(x=>x.id===oid);if(!o)return;if(MOODS[h.mood.k].noDogs||h.dogs.length<=2){toast('지금은 강아지를 팔지 않아요',true);return}
+  const v=dogPrice(h,o,false);if(!canAfford(v))return;spend(v);h.money+=v;h.dogs=h.dogs.filter(x=>x!==o);h.rel=clamp(h.rel+2,-100,100);
+  const a=sendArmy(h.id,world.war.active,[o],'move','me');warLog(`🐕 ${h.name}에서 ${o.name}${josa(o.name,'을','를')} ${won(v)}에 데려와요`,'good');warSnack(`🐕 ${o.name}${josa(o.name,'이','가')} ${h.name}에서 출발했어요 · ${fmtDur(a.eta-world.t)} 뒤 도착`);renderMap();
+}
+function sellDogs(h,ids){
+  const list=dogs.filter(d=>ids.includes(d.id)&&!d.dead&&!d.stray&&!d.enemy&&!d.fight);if(!list.length){toast('팔 강아지를 골라 주세요',true);return}
+  let sum=0,n=0;for(const d of list){const o=toData(d),v=dogPrice(h,o,true);if(h.money<v||h.dogs.length>=h.cap+4)break;h.money-=v;sum+=v;n++;if(world.bg&&world.bg.on)boardLeave(d);removeQuiet(d);dogs=dogs.filter(x=>x!==d);h.dogs.push(o)}
+  if(!n){toast(`${h.name}${josa(h.name,'이','가')} 더 살 수 없대요 (돈이나 자리가 모자라요)`,true);return}
+  earnWar(sum);h.rel=clamp(h.rel+n,-100,100);world.cardsDirty=true;warLog(`🐕 ${h.name}에 강아지 ${n}마리를 ${won(sum)}에 보냈어요`,'');renderMap();warUI();
+}
+// friends send presents now and then; friendship slowly fades without contact
+function tradeHour(h){
+  if(tradeMood(h)&&h.rel>=20&&mapSel===h.id)renderMap();
+  if(h.rel>0)h.rel=Math.max(0,h.rel-0.04);else if(h.rel<0)h.rel=Math.min(0,h.rel+0.08);
+  if(h.rel>=60&&Math.random()<0.006){const kind=pick(['food','snack','money']);
+    if(kind==='food')world.stock+=2000;else if(kind==='snack')world.snacks+=20;else{const v=Math.min(20000,Math.round(h.money*0.05/1000)*1000);if(v<=0)return;h.money-=v;earnWar(v)}
+    warSnack(`🎁 친구 ${h.name}${josa(h.name,'이','가')} ${kind==='food'?'사료 2kg':kind==='snack'?'간식 20개':'용돈'}${josa(kind==='food'?'램':kind==='snack'?'개':'돈','을','를')} 선물로 보냈어요`,null,8);warLog(`🎁 ${h.name}의 선물 도착`,'good')}
+}
+function tradeHTML(h){
+  if(!h.pf)tradeInit(h);tradeMood(h);const W=world.war,M=MOODS[h.mood.k],r=Math.round(h.rel);
+  let t=`<h4>🤝 사이: ${relName(h.rel)}</h4><div class="relbar"><span style="width:${(r+100)/2}%;background:${r>=60?'var(--good)':r>=0?'var(--accent)':'var(--alert)'}"></span></div><p class="small" style="margin:0">친밀도 ${r} / 100 · 60 이상이면 친구 · 요즘 사정: <b>${M.n}</b></p>
+    <div class="row3"><button class="btn" data-gift="10000">🎁 ${won(10000)}</button><button class="btn" data-gift="50000">🎁 ${won(50000)}</button><button class="btn" data-gift="200000">🎁 ${won(200000)}</button></div>
+    <h4>🛒 교류 <small class="muted">값은 집마다, 날마다 달라요</small></h4><div class="trade">`;
+  const have={food:Math.floor(world.stock/1000),snack:Math.floor(world.snacks/10),sheet:Math.floor(world.sheets/10)};
+  for(const g of Object.keys(GOODS))t+=`<span>${GOODS[g].n}<small> 내 것 ${have[g]}</small></span><button class="chip" data-tb="${g}">사기 ${won(tradePrice(h,g))}</button><button class="chip" data-ts="${g}"${have[g]?'':' disabled'}>팔기 ${won(tradePrice(h,g,true))}</button>`;
+  for(const g of Object.keys(WEAPONS))t+=`<span>${WEAPONS[g].n}<small> 창고 ${W.armory[g]||0}</small></span><button class="chip" data-tb="${g}">사기 ${won(tradePrice(h,g))}</button><button class="chip" data-ts="${g}"${W.armory[g]?'':' disabled'}>팔기 ${won(tradePrice(h,g,true))}</button>`;
+  t+=`</div><h4>🐕 강아지 데려오기</h4>`;
+  if(M.noDogs||h.dogs.length<=2)t+=`<p class="small muted" style="margin:0">지금은 강아지를 팔지 않아요.</p>`;
+  else t+=`<div class="trade dogs">${h.dogs.slice().sort((a,b)=>dogPrice(h,a)-dogPrice(h,b)).slice(0,6).map(o=>`<span>${esc(o.name)}<small> ${BREEDS[o.breed]?BREEDS[o.breed].n:''} · ${fmtAge(o.age)}${o.weapon?' · '+WEAPONS[o.weapon].n:''}</small></span><button class="chip" data-bd="${o.id}">${won(dogPrice(h,o))}</button>`).join('')}</div>`;
+  return t+`<button class="btn" id="mapSellDogs"${mapPick.size?'':' disabled'}>🐕 위에서 고른 ${mapPick.size}마리 이 집에 팔기</button>`;
 }
 /* ---------- weapons ---------- */
 function buyWeapon(k){
@@ -5377,13 +5525,14 @@ function warHour(){
     if(h.id===W.active||h.online)continue;const cap=houseCap(h),over=Math.max(0,h.dogs.length-cap)/cap;
     for(const o of h.dogs){o.age+=1/8760;o.happy=clamp((o.happy||70)+(over?-1.5*Math.min(2,over*2):0.3));o.stamina=clamp((o.stamina||70)+3);o.health=clamp((o.health||80)+0.5)}
     h.dogs=h.dogs.filter(o=>{if(o.age>=o.lifespan){if(h.owner==='me')recDeath(o,'노환');return false}return true});
-    if(h.owner!=='ai')continue;
+    if(h.owner!=='ai')continue;tradeHour(h);
     h.money+=D.inc/24;if(Math.random()<0.04)aiArm(h,0.6);
     if(h.dogs.length<cap&&Math.random()<0.008)for(let i=0;i<Math.ceil(rand(1,3));i++)h.dogs.push(randDogData(0.1));
     // declare war now and then
     if(h.dogs.length>=3&&Math.random()<D.atk/24&&!W.armies.some(a=>a.from===h.id&&a.kind==='attack')){
       const cands=W.houses.filter(x=>x.id!==h.id&&!x.online&&x.color!==h.color&&Math.hypot(x.x-h.x,x.y-h.y)<900);const mine=cands.filter(x=>x.owner==='me');
-      let tgt=Math.random()<D.me&&mine.length?pick(mine):cands.sort((a,b)=>Math.hypot(a.x-h.x,a.y-h.y)-Math.hypot(b.x-h.x,b.y-h.y))[0];if(!tgt)continue;
+      const rel=h.rel||0,fr=rel>=60,meP=D.me*(rel>0?1-rel/60:1+Math.min(1,-rel/50));if(fr)for(const m of mine)cands.splice(cands.indexOf(m),1);
+      let tgt=!fr&&Math.random()<meP&&mine.length?pick(mine):cands.sort((a,b)=>Math.hypot(a.x-h.x,a.y-h.y)-Math.hypot(b.x-h.x,b.y-h.y))[0];if(!tgt)continue;
       let army=h.dogs.filter(o=>o.age>=1).sort((a,b)=>unitPower(b,tgt.terrain)-unitPower(a,tgt.terrain)).slice(0,Math.max(2,Math.round(h.dogs.length*rand(0.5,0.8))));
       if(TERRAIN[tgt.terrain].needBoat&&!canReach(army,tgt.terrain)){const c=WEAPONS.warship.cost;if(h.money>=c){h.money-=c;army[0].weapon='warship'}else continue}
       if(tgt.terrain==='mountain')army.forEach(o=>{if(o.weapon==='tank'&&h.money>WEAPONS.fighter.cost&&Math.random()<0.4){h.money-=WEAPONS.fighter.cost;o.weapon='fighter'}});
@@ -5408,24 +5557,27 @@ let mapSel=null,mapPick=new Set();
 function openMap(){if(!warOn())return;$('#warMap').hidden=false;mapSel=mapSel??world.war.active;renderMap()}
 function renderMap(){
   if(!warOn()||$('#warMap').hidden)return;const W=world.war,svg=$('#mapSvg');
-  ensureChunks();const vx=W.view.x,vy=W.view.y;$('#mapNav').hidden=!W.inf;svg.classList.toggle('inf',!!W.inf);$('#mapCount').textContent=W.houses.length;
-  let s=`<rect x="${vx-50}" y="${vy-50}" width="1100" height="900" fill="#a9cf7a"/>`+W.zones.map(z=>`<circle cx="${z.x}" cy="${z.y}" r="${z.r}" fill="${z.t==='island'?'#4f8fc0':TERRAIN[z.t].col}" opacity=".9"/>`+(z.t==='island'?`<circle cx="${z.x}" cy="${z.y}" r="${z.r*0.55}" fill="#f0d68a"/>`:z.t==='river'?`<path d="M${z.x-z.r} ${z.y-z.r*0.6} Q${z.x} ${z.y+z.r*0.3} ${z.x+z.r} ${z.y-z.r*0.2}" stroke="#5aa0d8" stroke-width="10" fill="none"/>`:z.t==='coast'?`<path d="M${z.x-z.r} ${z.y+z.r*0.2} Q${z.x} ${z.y+z.r*0.9} ${z.x+z.r} ${z.y+z.r*0.3} L${z.x+z.r} ${z.y+z.r} L${z.x-z.r} ${z.y+z.r} Z" fill="#4f8fc0"/>`:'')).join('')+
-    `<path d="M0 0 H150 Q130 160 170 260 Q140 380 200 600 H0 Z" fill="#4f8fc0"/>`+
-    `<ellipse cx="90" cy="420" rx="60" ry="45" fill="#f0d68a"/><ellipse cx="60" cy="140" rx="28" ry="20" fill="#f0d68a" opacity=".7"/>`+
-    `<path d="M150 0 Q130 160 170 260 Q140 380 200 600 L240 600 Q180 380 210 260 Q170 160 190 0 Z" fill="#cfe3a5"/>`+
-    `<path d="M700 0 L1000 0 L1000 380 Q900 330 820 300 Q760 220 700 0 Z" fill="#b39a72"/>`+
-    `<path d="M610 0 Q560 120 620 230 Q680 330 590 420 Q540 520 600 600" stroke="#5aa0d8" stroke-width="16" fill="none" opacity=".9"/>`;
+  ensureChunks();const V=applyView(),vx=W.view.x,vy=W.view.y;svg.classList.toggle('inf',!!W.inf);$('#mapCount').textContent=W.houses.length;
+  const sc=Math.round(0.62/Math.pow(W.view.k||1,0.72)*1000)/1000,lab=(W.view.k||1)>=1.8||W.houses.length<=14;
+  const zone=z=>`<circle cx="${z.x}" cy="${z.y}" r="${z.r}" fill="${z.t==='island'?'#4f8fc0':TERRAIN[z.t].col}" opacity=".9"/>`+(z.t==='island'?`<circle cx="${z.x}" cy="${z.y}" r="${z.r*0.55}" fill="#f0d68a"/>`:z.t==='river'?`<path d="M${z.x-z.r} ${z.y-z.r*0.6} Q${z.x} ${z.y+z.r*0.3} ${z.x+z.r} ${z.y-z.r*0.2}" stroke="#5aa0d8" stroke-width="10" fill="none"/>`:z.t==='coast'?`<path d="M${z.x-z.r} ${z.y+z.r*0.2} Q${z.x} ${z.y+z.r*0.9} ${z.x+z.r} ${z.y+z.r*0.3} L${z.x+z.r} ${z.y+z.r} L${z.x-z.r} ${z.y+z.r} Z" fill="#4f8fc0"/>`:'');
+  // outside the real world: generated land (infinite map) or open sea; inside: the real continents
+  let s=`<rect x="${Math.floor(vx/500)*500-500}" y="${Math.floor(vy/500)*500-500}" width="${Math.ceil(V.w/500)*500+1500}" height="${Math.ceil(V.h/500)*500+1500}" fill="${W.inf&&!W.rep?'#a9cf7a':'#3f7fb3'}"/>`+W.zones.map(z=>zone(z)+(z.name&&lab?`<text x="${z.x}" y="${z.y-z.r-4}" text-anchor="middle" font-size="${Math.max(5,12*sc*1.4)}" font-weight="700" fill="#3d5a22">${z.name} · 인구 ${z.pop}만</text>`:'')).join('')+
+    `<defs><g id="wtile"><rect width="1000" height="600" fill="#4f8fc0"/><path d="${LAND_D}" fill="#a9cf7a" stroke="#7fae55" stroke-width=".6" stroke-linejoin="round"/><rect y="555" width="1000" height="45" fill="#eef4f7" opacity=".85"/></g></defs>`+
+    (()=>{if(!W.rep)return `<use href="#wtile"/>`+(W.inf?`<rect width="1000" height="600" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="10 8"/>`:'');let t='';
+      for(let cx=Math.floor(vx/1000);cx<=Math.floor((vx+V.w)/1000);cx++)for(let cy=Math.floor(vy/600);cy<=Math.floor((vy+V.h)/600);cy++)t+=`<use href="#wtile" x="${cx*1000}" y="${cy*600}"/>`+(cx||cy?`<text x="${cx*1000+12}" y="${cy*600+22}" font-size="13" font-weight="700" fill="#fff" opacity=".8">🌍 세계 (${cx}, ${cy})</text>`:'');return t})()+
+    W.houses.filter(h=>(h.id<(W.base||10)||W.rep)&&!h.online).map(h=>{const t=h.terrain;return t==='mountain'?`<path transform="translate(${h.x},${h.y}) scale(${sc})" d="M-30 12 l14 -26 l9 14 l10 -22 l16 34 Z" fill="#b39a72" stroke="#8a744f" stroke-width="1"/>`:t==='river'?`<path transform="translate(${h.x},${h.y}) scale(${sc})" d="M-34 -14 q18 16 34 6 t36 10" stroke="#5aa0d8" stroke-width="5" fill="none" stroke-linecap="round"/>`:''}).join('')+
+    (W.inf&&!W.rep?`<text x="500" y="-14" text-anchor="middle" font-size="13" font-weight="700" fill="#3d5a22">▲ 세계 지도 밖 — 새로 그려지는 땅 ▲</text>`:'');
   for(const a of W.armies){const f=houseById(a.from),t=houseById(a.to),k=clamp((world.t-a.start)/Math.max(1,a.eta-a.start),0,1),x=f.x+(t.x-f.x)*k,y=f.y+(t.y-f.y)*k;
-    const col=a.owner==='me'?'#f2c14e':'#d4473a';s+=`<line x1="${f.x}" y1="${f.y}" x2="${t.x}" y2="${t.y}" stroke="${col}" stroke-width="3" stroke-dasharray="8 6" opacity=".8"/>`+
-      `<g transform="translate(${x},${y})"><circle r="15" fill="${col}" stroke="#fff" stroke-width="2"/><text text-anchor="middle" dy="5" font-size="15">${a.kind==='move'?'🚚':a.units.some(u=>u.weapon==='fighter')?'✈':a.units.some(u=>u.weapon==='tank')?'🛡':'🐕'}</text>`+
+    const col=a.owner==='me'?'#f2c14e':'#d4473a';s+=`<line x1="${f.x}" y1="${f.y}" x2="${t.x}" y2="${t.y}" stroke="${col}" stroke-width="${3*sc}" stroke-dasharray="${8*sc} ${6*sc}" opacity=".8"/>`+
+      `<g transform="translate(${x},${y}) scale(${sc})"><circle r="15" fill="${col}" stroke="#fff" stroke-width="2"/><text text-anchor="middle" dy="5" font-size="15">${a.kind==='move'?'🚚':a.units.some(u=>u.weapon==='fighter')?'✈':a.units.some(u=>u.weapon==='tank')?'🛡':'🐕'}</text>`+
       `<text y="-21" text-anchor="middle" font-size="12" font-weight="700" fill="#16242a" stroke="#fff" stroke-width="3" paint-order="stroke">${a.units.length}마리 · ${fmtDur(a.eta-world.t)}</text></g>`}
   const onl=W.houses.filter(h=>h.online);if(onl.length||NET.on){const y0=622,y1=Math.max(...onl.map(h=>h.y),668)+70;s+=`<rect x="0" y="${y0}" width="1000" height="${y1-y0}" rx="14" fill="#d6e6f7" stroke="#2f7fd0" stroke-dasharray="6 5"/><text x="14" y="${y0+20}" font-size="14" font-weight="700" fill="#1d4f86">🌐 온라인 플레이어 ${NET.on?`· 접속 ${NET.peers.size}명`:'· 꺼짐'}</text>`+(onl.length?'':`<text x="500" y="${y0+52}" text-anchor="middle" font-size="13" fill="#1d4f86">같은 페이지를 연 다른 플레이어가 온라인 전쟁을 켜면 여기에 집이 나타나요</text>`)}
   for(const h of W.houses){const mine=h.owner==='me',act=h.id===W.active,sel=h.id===mapSel,n=h.online?(h.n||h.dogs.length):houseDogCount(h);
-    s+=`<g class="mh${mine?' mine':''}${sel?' sel':''}" data-house="${h.id}" transform="translate(${h.x},${h.y})" tabindex="0" role="button" aria-label="${h.name}">`+
-      (mine?`<circle r="34" class="glow" fill="#ffe27a"/>`:'')+`<circle r="24" fill="${h.color}" stroke="${sel?'#16242a':'#fff'}" stroke-width="${sel?4:3}"/><text text-anchor="middle" dy="8" font-size="22">${act?'⭐':h.online?(h.banned?'🚫':'🌐'):'🏠'}</text>`+
-      `<text y="42" text-anchor="middle" font-size="13" font-weight="700" fill="#16242a" stroke="#fff" stroke-width="3.5" paint-order="stroke">${h.name}</text>`+
-      `<text y="58" text-anchor="middle" font-size="11" fill="#16242a" stroke="#fff" stroke-width="3" paint-order="stroke">${TERRAIN[h.terrain].n} · ${n}마리</text></g>`}
-  const vh=W.inf||!(onl.length||NET.on)?600:Math.max(600,Math.max(...onl.map(h=>h.y),668)+80);svg.setAttribute('viewBox',`${vx} ${vy} 1000 ${vh}`);if(svg.dataset.html!==s){svg.dataset.html=s;svg.innerHTML=s}
+    s+=`<g class="mh${mine?' mine':''}${sel?' sel':''}" data-house="${h.id}" transform="translate(${h.x},${h.y}) scale(${h.online?1:sc})" tabindex="0" role="button" aria-label="${h.name}">`+
+      (mine?`<circle r="34" class="glow" fill="#ffe27a"/>`:'')+`<circle r="24" fill="${h.color}" stroke="${sel?'#16242a':'#fff'}" stroke-width="${sel?4:3}"/><text text-anchor="middle" dy="8" font-size="22">${act?'⭐':h.online?(h.banned?'🚫':'🌐'):h.owner==='ai'&&(h.rel||0)>=60?'🤝':'🏠'}</text>`+
+      (lab||mine||sel||h.online?`<text y="42" text-anchor="middle" font-size="13" font-weight="700" fill="#16242a" stroke="#fff" stroke-width="3.5" paint-order="stroke">${h.name}</text>`+
+      `<text y="58" text-anchor="middle" font-size="11" fill="#16242a" stroke="#fff" stroke-width="3" paint-order="stroke">${TERRAIN[h.terrain].n}${h.place?' '+h.place:''} · ${n}마리</text>`:'')+'</g>'}
+  if(svg.dataset.html!==s){svg.dataset.html=s;svg.innerHTML=s}
   renderMapSide();
 }
 function renderMapSide(){
@@ -5440,18 +5592,19 @@ function renderMapSide(){
   const pickList=()=>`<div class="row2"><button class="btn" id="mpAll">모두 선택</button><button class="btn" id="mpNone">선택 해제</button></div><div class="mappick">${myDogs.map(d=>`<label><input type="checkbox" data-mp="${d.id}"${mapPick.has(d.id)?' checked':''}> ${d.name} <small>${d.weapon?WEAPONS[d.weapon].n:'맨몸'} · ${fmtAge(d.age)}</small></label>`).join('')||'<span class="small muted">보낼 강아지가 없어요</span>'}</div>`;
   if(!mine){const sel=myDogs.filter(d=>mapPick.has(d.id)).map(toData),mt=sel.length?marchMin(cur,h,sel):marchMin(cur,h,[]);
     html+=`<h4>⚔ ${cur.name}에서 공격 보내기</h4>${pickList()}<div class="small">고른 전투력 <b>${Math.round(armyPower(sel,h.terrain)*10)}</b> vs 상대 <b>${Math.round(armyPower(h.dogs,h.terrain)*11.5)}</b>(수비 보너스) · 행군 ${fmtDur(mt)}${sel.length&&!canReach(sel,h.terrain)?' · <b style="color:var(--alert)">섬이라 배나 전투기가 필요해요</b>':''}</div>
-      <button class="btn primary" id="mapAttack"${sel.length?'':' disabled'}>🚩 공격 출발</button>`}
+      <button class="btn primary" id="mapAttack"${sel.length?'':' disabled'}>🚩 공격 출발</button>`+(h.owner==='ai'?tradeHTML(h):'')}
   else if(!act){html+=`<div class="row2"><button class="btn primary" id="mapGo">🏠 이 집으로 가기</button><button class="btn" id="mapBring"${h.dogs.length?'':' disabled'}>🚚 모두 ${cur.name}(으)로 데려오기</button></div>
       <h4>🚚 ${cur.name}에서 이 집으로 옮기기</h4>${pickList()}<button class="btn" id="mapMove"${mapPick.size?'':' disabled'}>🚚 옮기기 (${fmtDur(marchMin(cur,h,[]))})</button>`}
   else{const others=myHouses().filter(x=>x.id!==h.id);html+=`<p class="small">지금 보고 있는 집이에요.${n>cap?' <b style="color:var(--alert)">너무 좁아요! 다른 내 집으로 옮겨 주세요.</b>':''}</p>`+(others.length?`<p class="small muted">다른 내 집을 지도에서 누르면 옮기거나 그 집으로 갈 수 있어요.</p>`:'<p class="small muted">아직 다른 집이 없어요. 이웃 집을 정복해 보세요!</p>')}
   const mv=W.armies.filter(a=>a.owner==='me');if(mv.length)html+=`<h4>🚩 내 군대</h4><ol class="ai-log">${mv.map(a=>`<li>${a.kind==='move'?'🚚':'🚩'} → ${houseById(a.to).name} · ${a.units.length}마리 · ${fmtDur(Math.ceil((a.eta-world.t)/10)*10)}${a.kind==='attack'?` <button class="chip" data-recall="${a.id}">↩ 되돌리기</button>`:''}</li>`).join('')}</ol>`;
   html+=`<h4>📜 전쟁 기록</h4><ol class="ai-log">${W.log.slice(0,8).map(l=>`<li class="${l.cls}"><time>${Math.floor(l.t/1440)+1}일 ${fmtClock(l.t)}</time>${l.text}</li>`).join('')||'<li class="muted">아직 없어요</li>'}</ol>`;
-  if(el.dataset.html===html)return;el.dataset.html=html;el.innerHTML=html;
+  if(el.dataset.html===html)return;el.dataset.html=html;const keepTop=el.dataset.sel===String(h.id)?el.scrollTop:0;el.dataset.sel=h.id;el.innerHTML=html;el.scrollTop=keepTop;
   el.querySelectorAll('[data-mp]').forEach(c=>c.onchange=()=>{const id=+c.dataset.mp;c.checked?mapPick.add(id):mapPick.delete(id);renderMapSide()});
   const b=(id,f)=>{const x=el.querySelector(id);if(x)x.onclick=f};
   b('#mpAll',()=>{myDogs.forEach(d=>mapPick.add(d.id));renderMapSide()});b('#mpNone',()=>{mapPick.clear();renderMapSide()});
   b('#mapAttack',()=>{launchAttack(h.id,[...mapPick]);mapPick.clear();renderMap()});b('#mapGo',()=>{switchHouse(h.id);mapSel=h.id;renderMap()});
-  b('#mapBring',()=>bringDogs(h.id));el.querySelectorAll('[data-recall]').forEach(x=>x.onclick=()=>recallArmy(+x.dataset.recall));b('#mapMove',()=>{transferDogs(h.id,[...mapPick]);mapPick.clear();renderMap()});
+  b('#mapBring',()=>bringDogs(h.id));b('#mapSellDogs',()=>{sellDogs(h,[...mapPick]);mapPick.clear();renderMapSide()});
+  el.querySelectorAll('[data-gift]').forEach(x=>x.onclick=()=>giftHouse(h,+x.dataset.gift));el.querySelectorAll('[data-tb]').forEach(x=>x.onclick=()=>tradeGoods(h,x.dataset.tb,false));el.querySelectorAll('[data-ts]').forEach(x=>x.onclick=()=>tradeGoods(h,x.dataset.ts,true));el.querySelectorAll('[data-bd]').forEach(x=>x.onclick=()=>buyDog(h,+x.dataset.bd));el.querySelectorAll('[data-recall]').forEach(x=>x.onclick=()=>recallArmy(+x.dataset.recall));b('#mapMove',()=>{transferDogs(h.id,[...mapPick]);mapPick.clear();renderMap()});
 }
 /* ---------- war panel ---------- */
 function warUI(){
@@ -5647,9 +5800,16 @@ $('#sellNow').onclick=()=>{if(world){const v=autoExport(true);if(v)toast(`🚢 �
 $('#addMoney').onclick=()=>{if(world&&isFinite(world.money)){earn(10000);world.bill.incToday-=10000;world.bill.incTotal-=10000;log('💵 용돈 10,000원을 넣었어요','good',true)}};
 $('#moneyBox').onclick=()=>{const p=$('#moneyPanel');if(p)p.scrollIntoView({behavior:'smooth',block:'center'})};
 $$('[data-war]').forEach(c=>c.addEventListener('change',e=>{const on=e.target.checked;$$('[data-war]').forEach(x=>x.checked=on);
-  if(world&&!world.arena){if(on&&!world.war)initWar($('[data-wardiff]').value,$('[data-warsize]').value);else if(world.war)world.war.on=on;if(on&&$('[data-online]').checked)netStart();if(!on&&NET.on)netStop();toast(on?'⚔ 강아지 집들끼리의 전쟁을 허용했어요':'🕊 집 전쟁을 멈췄어요',!on);warUI()}}));
+  if(world&&!world.arena){if(on&&!world.war)initWar($('[data-wardiff]').value,$('[data-warsize]').value,warCount());else if(world.war)world.war.on=on;if(on&&$('[data-online]').checked)netStart();if(!on&&NET.on)netStop();toast(on?'⚔ 강아지 집들끼리의 전쟁을 허용했어요':'🕊 집 전쟁을 멈췄어요',!on);warUI()}}));
 $$('[data-wardiff]').forEach(c=>c.addEventListener('change',e=>{$$('[data-wardiff]').forEach(x=>x.value=e.target.value);if(world&&world.war)world.war.diff=e.target.value}));
 $('#mapBtn').onclick=openMap;
+{const redo=()=>{if(world)buildDogCards()};
+ $('#cardMode').onchange=e=>{CARDS.mode=e.target.value;CARDS.page=0;try{localStorage.setItem('mh_cardMode',CARDS.mode)}catch(_){}redo()};
+ $('#cardSort').onchange=e=>{CARDS.sort=e.target.value;CARDS.page=0;redo()};
+ $('#cardFind').oninput=e=>{CARDS.find=e.target.value;CARDS.page=0;redo()};
+ $('#cardPrev').onclick=()=>{CARDS.page--;redo()};$('#cardNext').onclick=()=>{CARDS.page++;redo()};
+ try{const m=localStorage.getItem('mh_cardMode');if(['auto','card','row'].includes(m)){CARDS.mode=m;$('#cardMode').value=m}}catch(_){}
+ if('IntersectionObserver' in window)new IntersectionObserver(es=>{CARDS.vis=es[es.length-1].isIntersecting},{rootMargin:'200px'}).observe($('#dogCards'));}
 $('#bgBtn').onclick=()=>{ac();if(world&&world.bg&&world.bg.on)endBoard();else startBoard($('#bgGame').value,+$('#bgLen').value)};
 $$('[data-online]').forEach(c=>c.addEventListener('change',e=>{const on=e.target.checked;$$('[data-online]').forEach(x=>x.checked=on);
   if(world&&warOn()){on?netStart():netStop()}else netStatus(on?'전쟁이 시작되면 온라인이 켜져요':'꺼짐')}));
@@ -5657,14 +5817,22 @@ $$('[data-online]').forEach(c=>c.addEventListener('change',e=>{const on=e.target
 $$('[data-nick]').forEach(c=>c.addEventListener('change',e=>{const v=e.target.value.trim().slice(0,12);$$('[data-nick]').forEach(x=>x.value=v);try{localStorage.setItem('mungNick',v)}catch(_){}
   if(v)NET.nick=v;if(NET.on){NET.room.presence({war:true,nick:NET.nick}).catch(()=>{});netPublish(true)}}));
 $$('[data-pan]').forEach(b=>b.onclick=()=>{const [x,y]=b.dataset.pan.split(',').map(Number);panMap(x*400,y*260)});
-$('#mapHome').onclick=()=>{const W=world.war,h=activeHouse();if(!W||!h)return;W.view.x=h.x-500;W.view.y=h.y-300;ensureChunks();renderMap()};
+$('#mapHome').onclick=()=>{const W=world.war,h=activeHouse();if(!W||!h)return;const k=W.view.k||1;W.view.x=h.x-500/k;W.view.y=h.y-300/k;renderMap()};
+$('#mapAll').onclick=()=>{const W=world.war;if(!W)return;Object.assign(W.view,{x:0,y:0,k:1});renderMap()};$('#mapZin').onclick=()=>zoomMap(1.4);$('#mapZout').onclick=()=>zoomMap(1/1.4);
 {let drag=null;const svg=$('#mapSvg');
  let downH=null,moved=0;const selH=id=>{mapSel=id;mapPick.clear();renderMap()};
  svg.addEventListener('click',()=>{if(downH!=null&&moved<6)selH(downH);downH=null});svg.addEventListener('keydown',e=>{const g=e.target.closest&&e.target.closest('[data-house]');if(g&&e.key==='Enter')selH(+g.dataset.house)});
- svg.addEventListener('pointerdown',e=>{const g=e.target.closest('[data-house]');downH=g?+g.dataset.house:null;moved=0;if(!warOn()||!world.war.inf||g)return;drag={x:e.clientX,y:e.clientY,vx:world.war.view.x,vy:world.war.view.y};svg.setPointerCapture(e.pointerId)});
- svg.addEventListener('pointermove',e=>{if(!drag)return;const r=svg.getBoundingClientRect(),k=1000/r.width;moved=Math.hypot(e.clientX-drag.x,e.clientY-drag.y);world.war.view.x=drag.vx-(e.clientX-drag.x)*k;world.war.view.y=drag.vy-(e.clientY-drag.y)*k;renderMap()});
- svg.addEventListener('pointerup',()=>{drag=null});svg.addEventListener('pointercancel',()=>{drag=null});}
-$$('[data-warsize]').forEach(c=>c.addEventListener('change',e=>$$('[data-warsize]').forEach(x=>x.value=e.target.value)));$('#mapBtn2').onclick=()=>{if(!warOn()){toast('먼저 ⚔ 전쟁 허용을 켜 주세요',true);return}openMap()};
+ svg.addEventListener('pointerdown',e=>{const g=e.target.closest('[data-house]');downH=g?+g.dataset.house:null;moved=0;if(!warOn()||g)return;svg.classList.add('dragging');drag={x:e.clientX,y:e.clientY,vx:world.war.view.x,vy:world.war.view.y};svg.setPointerCapture(e.pointerId)});
+ svg.addEventListener('pointermove',e=>{if(!drag)return;const r=svg.getBoundingClientRect(),k=1000/(world.war.view.k||1)/r.width;moved=Math.hypot(e.clientX-drag.x,e.clientY-drag.y);world.war.view.x=drag.vx-(e.clientX-drag.x)*k;world.war.view.y=drag.vy-(e.clientY-drag.y)*k;if(world.war.inf)renderMap();else applyView()});
+ // two-finger pinch on touch screens
+ const pts=new Map();let pinch=0;
+ svg.addEventListener('pointerdown',e=>{pts.set(e.pointerId,[e.clientX,e.clientY]);if(pts.size===2){drag=null;downH=null;const [a,b]=[...pts.values()];pinch=Math.hypot(a[0]-b[0],a[1]-b[1])}},true);
+ svg.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;pts.set(e.pointerId,[e.clientX,e.clientY]);if(pts.size===2&&pinch&&warOn()){const [a,b]=[...pts.values()],d=Math.hypot(a[0]-b[0],a[1]-b[1]),r=svg.getBoundingClientRect();if(Math.abs(d-pinch)>4){zoomMap(d/pinch,((a[0]+b[0])/2-r.left)/r.width,((a[1]+b[1])/2-r.top)/r.height);pinch=d}}},true);
+ const up=e=>{pts.delete(e.pointerId);if(pts.size<2)pinch=0};svg.addEventListener('pointerup',up,true);svg.addEventListener('pointercancel',up,true);
+ addEventListener('keydown',e=>{if(!warOn()||$('#warMap').hidden||/INPUT|SELECT|TEXTAREA/.test((e.target.tagName||'')))return;const k=e.key;if(k==='+'||k==='=')zoomMap(1.3);else if(k==='-'||k==='_')zoomMap(1/1.3);else if(k==='ArrowLeft')panMap(-200,0);else if(k==='ArrowRight')panMap(200,0);else if(k==='ArrowUp')panMap(0,-140);else if(k==='ArrowDown')panMap(0,140);else return;e.preventDefault()});
+ svg.addEventListener('wheel',e=>{if(!warOn())return;e.preventDefault();const r=svg.getBoundingClientRect();zoomMap(e.ctrlKey||e.metaKey?Math.exp(-e.deltaY*0.012):(e.deltaY<0?1.2:1/1.2),(e.clientX-r.left)/r.width,(e.clientY-r.top)/r.height)},{passive:false});
+ svg.addEventListener('pointerup',()=>{drag=null;svg.classList.remove('dragging')});svg.addEventListener('pointercancel',()=>{drag=null;svg.classList.remove('dragging')});}
+$$('[data-warsize]').forEach(c=>c.addEventListener('change',e=>$$('[data-warsize]').forEach(x=>x.value=e.target.value)));$$('[data-warcount]').forEach(c=>c.addEventListener('change',e=>{const v=clamp(Math.round(+e.target.value)||40,5,200);$$('[data-warcount]').forEach(x=>x.value=v)}));$('#mapBtn2').onclick=()=>{if(!warOn()){toast('먼저 ⚔ 전쟁 허용을 켜 주세요',true);return}openMap()};
 $('#mapClose').onclick=()=>{$('#warMap').hidden=true};$('#warMap').addEventListener('click',e=>{if(e.target.id==='warMap')$('#warMap').hidden=true});
 $('#eqGo').onclick=()=>equip(+$('#eqDog').value,$('#eqW').value);
 $('#aiFB').addEventListener('change',()=>{aiFBNote();if(world&&world.ai){const l=aiFBLimit();aiLog(l!=null?(l?`고령화 위험(노령 ${l}% 이상) 때 강제 번식 도구를 쓸 수 있게 했어요`:'젊은 사회에도 항상 강제 번식 도구를 쓸 수 있게 했어요'):'강제 번식 도구를 쓰지 않게 했어요',l?'try':'')}});
@@ -5842,7 +6010,7 @@ function startSim(){
   world.breedOn=$('#breedOn').checked;world.tm.speed=$('#tmSpeed').value;world.tm.auto=$('#tmAuto').checked;$('#farmCrop').value='corn';
   aiInit();
   if(NET.on)netStop(true);NET.idOf={};NET.taken=new Set();
-  world.war=null;if($('[data-war]').checked)initWar($('[data-wardiff]').value,$('[data-warsize]').value);setTimeout(warUI,0);if(world.war&&$('[data-online]').checked)setTimeout(netStart,300);
+  world.war=null;if($('[data-war]').checked)initWar($('[data-wardiff]').value,$('[data-warsize]').value,warCount());setTimeout(warUI,0);if(world.war&&$('[data-online]').checked)setTimeout(netStart,300);
   {const v=$('#startMoney').value;world.money=v==='inf'?Infinity:+v;world.powerOut=false;world.bill={day:Math.floor(world.t/1440),today:{},yest:{},stolen:0,incToday:0,incTotal:0}}
   followId=dogs[0]?dogs[0].id:1;
   buildDogCards();renderEvents();setCamMode('free');buildSpeedSeg();

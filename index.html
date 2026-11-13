@@ -3256,9 +3256,10 @@ function keeperCatch(scorer){
   const M=match,P=M.P,def=scorer==='A'?'B':'A';let gk=M[def].find(q=>q.sc.slot&&q.sc.slot.role==='GK');
   if(!gk){ // no keeper (1:1): the defender closest to their own goal throws themselves in front of it
     const og=toW(P,dirOf(def)*-1*P.len/2,0);gk=M[def].filter(q=>!q.dead).sort((x,y)=>Math.hypot(x.pos.x-og.x,x.pos.y-og.z)-Math.hypot(y.pos.x-og.x,y.pos.y-og.z))[0];if(!gk)return false}
-  const b=M.ball,ga=dirOf(def)*-1*(P.len/2-0.45),w=toW(P,ga,clamp(fromW(P,b.pos.x,b.pos.z).c,-P.goalW/2,P.goalW/2));
-  if(Math.hypot(gk.pos.x-w.x,gk.pos.y-w.z)>1.8)return false; // too far away: it goes in
-  startDive(gk,w,b.pos.y,'save',0,0.12);resolveSave(gk,true);return true;
+  const b=M.ball,ga=dirOf(def)*-1*(P.len/2-0.45),w=toW(P,ga,clamp(fromW(P,b.pos.x,b.pos.z).c,-P.goalW/2,P.goalW/2)),isGK=gk.sc.slot&&gk.sc.slot.role==='GK';
+  const R=isGK?gkReach(gk):{r:0.35+0.2*gk.k,h:gk.species==='human'?1.4*gk.k:0.6*gk.k};
+  if(Math.hypot(gk.pos.x-w.x,gk.pos.y-w.z)>R.r+0.4||b.pos.y>R.h)return false; // not close enough: it goes in
+  startDive(gk,w,b.pos.y,'save',0,0.12);resolveSave(gk,true,!isGK);return true;
 }
 
 
@@ -3382,6 +3383,9 @@ function takeSetPiece(act,pw){
 /* ---------- goalkeeper saves: read the shot, react, dive, then catch / parry / tip over ---------- */
 function goalKeeperOf(t){const M=match;return M[t].find(q=>!q.dead&&q.sc.slot&&q.sc.slot.role==='GK')}
 // a shot heading for goal: where/when/how high it crosses the line, and what the keeper does about it
+// keeper physics: how far the arms reach, how fast it can dive, how high it can get
+function gkReach(gk){const g=effSkill(gk,'gk');return {r:0.55+0.3*gk.k+0.2*g/100,v:(gk.species==='human'?6.5:5.5)*(0.75+0.5*g/100)*Math.sqrt(gk.k),h:(gk.species==='human'?1.75*gk.k+0.35:0.8*gk.k+0.35)}}
+// a shot heading for goal: find the first point on the ball's path the keeper can physically get to in time
 function gkWatch(){
   const M=match,P=M.P,b=M.ball;if(M.carrier||b.planned)return;
   for(const t of['A','B']){
@@ -3391,14 +3395,27 @@ function gkWatch(){
     const c=bw.c+vc*tt,y=Math.max(b.r,b.pos.y+b.vel.y*tt+0.5*G*tt*tt);
     if(Math.abs(c)>P.goalW/2+0.35||y>P.goalH+0.4)continue; // going wide/over: just watch it
     b.planned=true;
-    const leak=b.sure||Math.random()<0.07*paceK()*volK(),gkS=effSkill(gk,'gk'),rea=effSkill(gk,'rea');
-    const react=clamp(0.26-0.16*rea/100+rand(-0.03,0.04),0.06,0.32);
-    let target=toW(P,ownA+dir*0.35,clamp(c,-P.goalW/2+0.05,P.goalW/2-0.05)),outcome='save';
-    const gw=fromW(P,gk.pos.x,gk.pos.y),lateral=Math.abs(c-gw.c),reachMax=1.2+0.9*gkS/100+0.35*gk.k;
-    if(leak||lateral>reachMax||tt<react+0.04){outcome='beaten';const sh=rand(0.35,0.75)*Math.sign(c-gw.c||1);target=toW(P,ownA+dir*0.4,clamp(c-sh,-P.goalW/2,P.goalW/2))}
-    if(lateral<0.35&&y<0.6&&outcome==='save'){startDive(gk,target,y,'save',react*0.6,0.16,true);continue} // straight at the keeper: just step and gather
-    startDive(gk,target,y,outcome,react,clamp(tt-react,0.14,0.5));
+    const R=gkReach(gk),rea=effSkill(gk,'rea'),react=clamp(0.26-0.16*rea/100+rand(-0.03,0.04),0.06,0.32);
+    let best=null;
+    for(let i=1;i<=14;i++){const sT=tt*i/14,pa=bw.a+va*sT,pc=bw.c+vc*sT,py=Math.max(b.r,b.pos.y+b.vel.y*sT+0.5*G*sT*sT),w=toW(P,pa,pc);
+      const dG=Math.hypot(w.x-gk.pos.x,w.z-gk.pos.y),can=R.r+R.v*Math.max(0,sT-react);if(py<=R.h&&dG<=can){best={s:sT,w,py,dG};break}}
+    const leak=b.sure||Math.random()<0.07*paceK()*volK();
+    const cross=toW(P,ownA+dir*0.3,clamp(c,-P.goalW/2,P.goalW/2)),dx=cross.x-gk.pos.x,dz=cross.z-gk.pos.y,dC=Math.hypot(dx,dz)||0.001;
+    if(best&&!leak){
+      const k=Math.max(0,(best.dG-R.r*0.25)/best.dG),to={x:gk.pos.x+(best.w.x-gk.pos.x)*k,z:gk.pos.y+(best.w.z-gk.pos.y)*k};
+      if(best.dG<R.r+0.15&&best.py<0.6){startDive(gk,to,best.py,'save',react*0.6,0.16,true);continue} // straight at the keeper: just gather it
+      startDive(gk,to,best.py,'save',react,clamp(best.s-react,0.12,0.55));continue;
+    }
+    // can't get there (or the shot is simply too good): dive as far as possible and come up short
+    const far=Math.min(dC,R.v*Math.max(0.05,tt-react)*0.9),short=best?Math.max(0,far-(R.r+rand(0.15,0.45))):far;
+    startDive(gk,{x:gk.pos.x+dx/dC*short,z:gk.pos.y+dz/dC*short},y,'beaten',react,clamp(tt-react,0.12,0.5));
   }
+}
+// does the ball pass within the keeper's reach during this step? (segment test, so a fast ball can't skip through)
+function saveTouch(p,D){
+  const b=match.ball,R=gkReach(p),x0=b.prevX??b.pos.x,z0=b.prevZ??b.pos.z,x1=b.pos.x,z1=b.pos.z,vx=x1-x0,vz=z1-z0,L2=vx*vx+vz*vz;
+  const u=L2>0?clamp(((p.pos.x-x0)*vx+(p.pos.y-z0)*vz)/L2,0,1):1,cx=x0+vx*u,cz=z0+vz*u;
+  return Math.hypot(p.pos.x-cx,p.pos.y-cz)<=R.r&&b.pos.y<=R.h+(D.lift||0);
 }
 function startDive(p,to,h,outcome,react,dur,block){
   const M=match,P=M.P,dx=to.x-p.pos.x,dz=to.z-p.pos.y,L=Math.hypot(dx,dz)||0.001;
@@ -3414,8 +3431,6 @@ function gkDiveStep(dt){
       const k=Math.min(1,D.t/D.dur),e=1-Math.pow(1-k,2.2);
       p.pos.x=D.from.x+(D.to.x-D.from.x)*e;p.pos.y=D.from.z+(D.to.z-D.from.z)*e;p.speed=Math.hypot(D.to.x-D.from.x,D.to.z-D.from.z)/D.dur;
       if(!D.block){const hi=clamp(D.h-0.2,0,0.9);D.lift=Math.sin(Math.PI*Math.min(1,k*1.15))*(0.12+hi*0.7)*(p.species==='human'?1:0.8);D.roll=D.side*(hi>0.45?1.05:1.4)*Math.min(1,k*1.6)}
-      if(D.outcome==='save'&&!D.done&&M.ball&&!M.carrier){const b=M.ball,hx=(p.pos.x+(D.to.x-p.pos.x)*0.3),hz=(p.pos.y+(D.to.z-p.pos.y)*0.3);
-        if(Math.hypot(b.pos.x-hx,b.pos.z-hz)<0.45+0.25*p.k+0.15*effSkill(p,'gk')/100&&b.pos.y<1.5+D.lift)resolveSave(p,false)}
       if(k>=1){D.phase=D.block?'up':'down';D.t=0;if(!D.block){D.lift=0}}
     }
     else if(D.phase==='down'){p.speed=0;D.lift=0;if(D.t>=(D.outcome==='beaten'?0.7:0.45)){D.phase='up';D.t=0}}
@@ -3424,7 +3439,7 @@ function gkDiveStep(dt){
 }
 function saveSound(catchIt){if(!soundOn||quiet)return;blip(catchIt?180:240,0.08,0.12);setTimeout(()=>blip(catchIt?140:420,0.06,0.06),60)}
 // the ball reaches the keeper's hands
-function resolveSave(gk,atLine){
+function resolveSave(gk,atLine,noCatch){
   const M=match,P=M.P,b=M.ball,D=gk.sc.dive;if(D)D.done=true;
   const t=gk.sc.team,dir=dirOf(t),spd=Math.hypot(b.vel.x,b.vel.z),gks=effSkill(gk,'gk'),lat=D?Math.hypot(D.to.x-D.from.x,D.to.z-D.from.z):0;
   const high=b.pos.y>Math.min(P.goalH*0.75,0.95);
@@ -3434,12 +3449,13 @@ function resolveSave(gk,atLine){
   if(high&&lat>0.4){kind='tip';const vA=-dir*1.4,vC=rand(-0.8,0.8);if(P.lx)b.vel.set(vA,3.8,vC);else b.vel.set(vC,3.8,vA);b.pos.y=Math.max(b.pos.y,P.goalH*0.8)} // over the bar and out
   else{
     const catchP=clamp(0.3+0.55*gks/100-(spd-8)*0.04-lat*0.18+(D&&D.block?0.35:0),0.08,0.95);
-    if(Math.random()<catchP){kind='catch';b.vel.set(0,0,0);M.carrier=gk}
+    if(!noCatch&&Math.random()<catchP){kind='catch';b.vel.set(0,0,0);M.carrier=gk}
     else{kind='parry';const bw=fromW(P,b.pos.x,b.pos.z),awayC=Math.sign(bw.c||rand(-1,1)),va=dir*rand(2,3.5),vc=awayC*rand(2.5,4.5);
       if(P.lx)b.vel.set(va,1.1,vc);else b.vel.set(vc,1.1,va);gk.sc.cd=0.5}
   }
   if(gk.root)gk.root.userData.barkPulse=1;saveSound(kind==='catch');
-  const nm=gk.name;log(kind==='catch'?`🧤 ${nm}${D&&!D.block?' 몸을 날려':''} 공을 잡아냈어요!`:kind==='parry'?`🧤 ${nm}${josa(nm,'이','가')} 몸을 날려 쳐냈어요!`:`🧤 ${nm}${josa(nm,'이','가')} 손끝으로 크로스바 위로 넘겼어요!`,'good',true);
+  const nm=gk.name;if(noCatch){log(`🛡 ${nm}${josa(nm,'이','가')} 골라인 앞에서 몸으로 막아냈어요!`,'good',true);M.saveFlash={t:1.2,txt:'🛡 걷어내기!'};return}
+  log(kind==='catch'?`🧤 ${nm}${D&&!D.block?' 몸을 날려':''} 공을 잡아냈어요!`:kind==='parry'?`🧤 ${nm}${josa(nm,'이','가')} 몸을 날려 쳐냈어요!`:`🧤 ${nm}${josa(nm,'이','가')} 손끝으로 크로스바 위로 넘겼어요!`,'good',true);
   M.saveFlash={t:1.2,txt:kind==='catch'?'🧤 캐치!':kind==='parry'?'🧤 선방!':'🧤 슈퍼 세이브!'};
 }
 // visual: roll the body sideways, lift it off the ground, stretch the arms toward the ball
@@ -3476,11 +3492,14 @@ function shoot(p,pw){
   const M=match,P=M.P,dir=dirOf(p.sc.team),gw=P.goalW,sho=effSkill(p,'sho'),side=pick([-1,1]),pow=(8+6*sho/100+p.k*1.2)*shotPowMul(pw);
   const r=Math.random(),conv=clamp(convChance(p)*shotConvMul(pw),0.002,0.6);p.sc.shots=(p.sc.shots||0)+1;M.shots=(M.shots||0)+1;
   const overP=pw===undefined?0.5:clamp(0.25+(pw-0.6)*1.6,0.1,0.92); // blasting it sends it over the bar
-  if(pw!==undefined&&pw<0.3&&r>=conv){const gk=oppKeeper(p),gc=gk?fromW(P,gk.pos.x,gk.pos.y).c:0;const t=toW(P,dir*(P.len/2+0.4),clamp(gc+rand(-0.5,0.5),-gw*0.45,gw*0.45));kickBall(p,t.x,t.z,pow,rand(0.1,0.5),0.04);M.ball.save=true;return} // soft shot: easy for the keeper
+  if(pw!==undefined&&pw<0.3&&r>=conv&&oppKeeper(p)){const gk=oppKeeper(p),gc=gk?fromW(P,gk.pos.x,gk.pos.y).c:0;const t=toW(P,dir*(P.len/2+0.4),clamp(gc+rand(-0.5,0.5),-gw*0.45,gw*0.45));kickBall(p,t.x,t.z,pow,rand(0.1,0.5),0.04);M.ball.save=true;return} // soft shot: easy for the keeper
   if(r<conv){const t=toW(P,dir*(P.len/2+0.4),side*rand(gw*0.26,gw*0.42));kickBall(p,t.x,t.z,pow+1.5,rand(0.2,1.1),0.02);M.ball.sure=true}
-  else if(r<conv+(1-conv)*0.55){ // off target: wide or over the bar
-    if(Math.random()>=overP){const t=toW(P,dir*(P.len/2+0.4),side*(gw/2+rand(0.3,1.3)));kickBall(p,t.x,t.z,pow,rand(0.3,1.5),0.02)}
-    else{const t=toW(P,dir*(P.len/2+0.4),rand(-gw*0.3,gw*0.3));kickBall(p,t.x,t.z,pow,rand(4.2,5.5)*(pw===undefined?1:0.8+0.4*pw),0.02)}}
+  else if(r<conv+(1-conv)*0.55||!oppKeeper(p)){ // off target: wide or over the bar (with no keeper, a shot that isn't a clean goal goes off target)
+    // aim at a point ON the goal line outside the post (aiming behind the line could still cross inside the posts from an angle)
+    if(Math.random()>=overP){const t=toW(P,dir*P.len/2,side*(gw/2+rand(0.45,1.4)));kickBall(p,t.x,t.z,pow,rand(0.3,1.2),0)}
+    else{ // over the bar: loft worked out so the ball is above the crossbar when it reaches the line
+      const t=toW(P,dir*P.len/2,rand(-gw*0.3,gw*0.3)),d=Math.hypot(t.x-p.pos.x,t.z-p.pos.y),tt=Math.max(0.15,d/pow),g=Math.abs(G);
+      kickBall(p,t.x,t.z,pow,(P.goalH+rand(0.35,0.9)+0.5*g*tt*tt)/tt,0)}}
   else{ // on target, straight at the keeper
     const gk=oppKeeper(p),gc=gk?fromW(P,gk.pos.x,gk.pos.y).c:0;const t=toW(P,dir*(P.len/2+0.4),clamp(gc+rand(-0.35,0.35),-gw*0.45,gw*0.45));kickBall(p,t.x,t.z,pow-1,rand(0.2,0.9),0.02);M.ball.save=true}
 }
@@ -3539,7 +3558,7 @@ function gkAI(p,dt,sp){
   const ownA=-dir*P.len/2,dBall=Math.hypot(bw.a-ownA,bw.c);
   if(!M.carrier&&dBall<3.2&&b.vel.length()<6){moveTo(p,b.pos.x,b.pos.z,sp,dt);return}
   let c=clamp(bw.c*0.55,-P.goalW/2+0.2,P.goalW/2-0.2),out=0.5;
-  const cr=M.carrier;if(cr&&cr.sc.team!==t){const cw=fromW(P,cr.pos.x,cr.pos.y),dd=Math.hypot(cw.a-ownA,cw.c);if(dd<8){out=0.5+clamp((8-dd)*0.22,0,1.4)*(0.6+0.4*effSkill(p,'gk')/100);c=clamp(cw.c*(out/Math.max(dd,1))*1.1+c*0.3,-P.goalW/2,P.goalW/2)}}
+  const cr=M.carrier;if(cr&&cr.sc.team!==t){const cw=fromW(P,cr.pos.x,cr.pos.y),dd=Math.hypot(cw.a-ownA,cw.c);if(dd<8){out=0.5+clamp((8-dd)*0.15,0,0.8)*(0.6+0.4*effSkill(p,'gk')/100);c=clamp(cw.c*(out/Math.max(dd,1))*1.1+c*0.3,-P.goalW/2,P.goalW/2)}}
   // read a shot coming in: slide to where it will cross the line
   const va=P.lx?b.vel.x:b.vel.z,vc=P.lx?b.vel.z:b.vel.x;
   if(!M.carrier&&va*dir<-3){const tt=(ownA-bw.a)/va;if(tt>0&&tt<1.5)c=clamp(bw.c+vc*tt,-P.goalW/2,P.goalW/2)}
@@ -3550,6 +3569,13 @@ function soccerAI(p,dt){
   const M=match,P=M.P,t=p.sc.team,T=M.tac[t],sp=soccerSpeed(p),ps=persOf(p),dir=dirOf(t);
   if(M.carrier===p){carrierAI(p,dt,sp);return}
   if(p.sc.slot&&p.sc.slot.role==='GK'){gkAI(p,dt,sp);return}
+  // no keeper on this team (1:1): when the opponent brings the ball into our half, the player nearest our goal drops back and guards it
+  if(M.carrier&&M.carrier.sc.team!==t&&!M[t].some(q=>q.sc.slot&&q.sc.slot.role==='GK')){
+    const ownA=-dir*P.len/2,cw=fromW(P,M.carrier.pos.x,M.carrier.pos.y),og=toW(P,ownA,0);
+    const keeper=M[t].filter(q=>!q.dead).sort((x,y)=>Math.hypot(x.pos.x-og.x,x.pos.y-og.z)-Math.hypot(y.pos.x-og.x,y.pos.y-og.z))[0];
+    if(keeper===p&&cw.a*dir<P.len*0.1){const dG=Math.hypot(cw.a-ownA,cw.c),k=clamp(Math.min(2.2,dG*0.45)/Math.max(dG,0.01),0,1);
+      const w=toW(P,ownA+(cw.a-ownA)*k,cw.c*k);if(dist(p,M.carrier)<1.2)tryTackle(p,dt,false);moveTo(p,w.x,w.z,sp*1.05,dt);return}
+  }
   const myPoss=!!(M.carrier&&M.carrier.sc.team===t),role=p.sc.slot.role;
   // a running move already in progress (run in behind, offer for a pass, overlap)
   if(p.sc.move){const m=p.sc.move;m.t-=dt;if(m.poss!==myPoss)p.sc.move=null;else{const d=moveTo(p,m.x,m.z,sp*m.k,dt);if(m.t<=0||d<0.3)p.sc.move=null;return}}
@@ -3671,7 +3697,7 @@ function ballBounds(){
   return goal;
 }
 function ballStep(dt){
-  const M=match,b=M.ball;
+  const M=match,b=M.ball;b.prevX=b.pos.x;b.prevZ=b.pos.z;
   gkDiveStep(dt);if(M.phase==='play')gkWatch();
   if(M.carrier){const c=M.carrier,hx=Math.cos(c.heading),hz=Math.sin(c.heading),off=c.r+b.r+0.04;
     b.pos.set(c.pos.x+hx*off,b.r,c.pos.y+hz*off);b.vel.set(hx*c.speed,0,hz*c.speed);}
@@ -3680,12 +3706,13 @@ function ballStep(dt){
     if(b.pos.y<b.r){b.pos.y=b.r;if(b.vel.y<-1.2)b.vel.y*=-0.45;else b.vel.y=0}
     const f=Math.exp((b.pos.y<=b.r+0.01?-1.1:-0.15)*dt);b.vel.x*=f;b.vel.z*=f;
   }
+  if(!M.carrier)for(const q of allPlayers()){const D=q.sc.dive;if(D&&D.outcome==='save'&&!D.done&&D.phase!=='up'&&saveTouch(q,D)){resolveSave(q,false);break}}
   const g=ballBounds();
   if(M.outEvent){const e=M.outEvent;M.outEvent=null;onOut(e);return}
   b.mesh.position.copy(b.pos);b.mesh.rotation.x+=b.vel.z*dt/b.r;b.mesh.rotation.z-=b.vel.x*dt/b.r;
   if(g){
     const gk=goalKeeperOf(g==='A'?'B':'A'),D=gk&&gk.sc.dive;
-    if(D&&D.outcome==='save'&&!D.done){resolveSave(gk,true);return}
+    if(D&&D.outcome==='save'&&!D.done&&Math.hypot(gk.pos.x-b.pos.x,gk.pos.y-b.pos.z)<=gkReach(gk).r+0.35){resolveSave(gk,true);return}
     if(!b.sure&&!b.planned&&Math.random()>0.07*paceK()*volK()&&keeperCatch(g))return;onGoal(g)}
 }
 function possessionStep(dt){
@@ -3796,7 +3823,8 @@ function pkSetup(){
   const k=pkKicker(t),g=pkKeeper(o);K.k=k;K.g=g;K.aim=null;K.dive=null;K.def=false;
   const b=M.ball,bs=toW(P,spot,0);b.vel.set(0,0,0);b.pos.set(bs.x,b.r,bs.z);
   if(k){const w=toW(P,spot-1.4,0);k.pos.set(w.x,w.z);k.heading=Math.atan2(bs.z-w.z,bs.x-w.x)}
-  if(g){const w=toW(P,hl-0.3,0);g.pos.set(w.x,w.z);g.heading=Math.atan2(bs.z-w.z,bs.x-w.x)}
+  if(g){const w=toW(P,hl-0.3,0);g.pos.set(w.x,w.z);g.heading=Math.atan2(bs.z-w.z,bs.x-w.x);g.sc.dive=null;if(g.root)g.root.rotation.x=0}
+  K.dived=false;
   K.step='setup';K.t=pkUserSide(t)||pkUserSide(o)?6:1.4;
   const who=k?`${TEAM_KO[t]} ${kitNo(k)} ${k.name}`:'';
   $('#pkNow').textContent=`${who} 키커 · 골키퍼 ${g?g.name:''}`;
@@ -3828,7 +3856,7 @@ function pkUpdate(dt){
     return;
   }
   if(K.step==='fly'){
-    if(g&&!g.sc.dive&&K.t<1.32){const w=toW(P,hl-0.3,K.sideG*P.goalW*0.38);if(K.sideG)startDive(g,w,K.res==='save'?0.4:0.6,K.res==='save'?'pk':'beaten',0,0.32);else g.speed=0}
+    if(g&&!K.dived&&!g.sc.dive&&K.t<1.32){K.dived=true;const w=toW(P,hl-0.3,K.sideG*P.goalW*0.38);if(K.sideG)startDive(g,w,K.res==='save'?0.4:0.6,K.res==='save'?'pk':'beaten',0,0.32);else g.speed=0}
     const ba=fromW(P,b.pos.x,b.pos.z);
     if(K.res==='save'&&!K.def&&ba.a>hl-0.9){K.def=true;if(g&&g.sc.dive)g.sc.dive.done=true;saveSound(false);if(P.lx){b.vel.x*=-0.35;b.vel.z=rand(-3,3)}else{b.vel.z*=-0.35;b.vel.x=rand(-3,3)}b.vel.y=1.5;if(g&&g.root)g.root.userData.barkPulse=1}
     ballStep(dt);
@@ -5407,6 +5435,8 @@ window.addEventListener('keydown',e=>{
   if(!running)return;
   if(e.key==='Escape'){e.preventDefault();if(tacOpen){toggleTac(false);return}toggleMenu();return}
   if(menuOpen)return;
+  // during a match Space must never "press" whatever button was clicked last (e.g. the pause or speed buttons)
+  if(e.key===' '&&match&&e.target.matches('button,[role=button]')){e.preventDefault();e.target.blur()}
   if(e.target.matches('input,select,textarea'))return;
   const k=e.key.toLowerCase();
   if(match&&match.phase==='pk'&&match.pk&&match.pk.user){if(k==='1'||k==='arrowleft'){pkChoose(-1);e.preventDefault();return}if(k==='2'||k==='arrowup'){pkChoose(0);e.preventDefault();return}if(k==='3'||k==='arrowright'){pkChoose(1);e.preventDefault();return}}
@@ -5427,10 +5457,13 @@ window.addEventListener('keydown',e=>{
     return;
   }
   const map={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down'};if(map[e.key]){camKeys[map[e.key]]=true;$('#camTrack').checked=false;e.preventDefault()}
-  if(e.key===' '){$('#pauseBtn').click();e.preventDefault()}
+  if(e.key===' '){e.preventDefault();
+    // in a match Space is the kick button, not pause: if my team has no selected player right now, pick the one nearest the ball
+    if(match){if(match.ctrlTeam&&match.ctrlMode==='team'&&!match.ctrl){switchCtrl(true);if(match.ctrl&&!e.repeat)chargeStart('shoot')}return}
+    $('#pauseBtn').click()}
 });
 window.addEventListener('keyup',e=>{
-  const k=e.key.toLowerCase();if(MOVE_KEYS[k])player.keys[MOVE_KEYS[k]]=false;if(k==='shift')player.keys.sprint=false;if(match&&match.ctrl&&k===' ')e.preventDefault();if(k===' ')chargeEnd('shoot');if(k==='j'||k==='k')chargeEnd('pass');
+  const k=e.key.toLowerCase();if(MOVE_KEYS[k])player.keys[MOVE_KEYS[k]]=false;if(k==='shift')player.keys.sprint=false;if(match&&k===' ')e.preventDefault();if(k===' ')chargeEnd('shoot');if(k==='j'||k==='k')chargeEnd('pass');
   if(player.ctrl&&k===' ')e.preventDefault();
   const map={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down'};if(map[e.key])camKeys[map[e.key]]=false});
 

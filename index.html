@@ -440,6 +440,8 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
 .bh-top{display:flex;gap:6px;align-items:center}.bh-top .small{margin-left:auto;opacity:.75;font-size:10px}.bh-top .chip{padding:2px 7px}
 .bh-tabs{display:flex;gap:4px;flex-wrap:wrap}.bh-tabs .chip{font-size:10px;padding:2px 6px}
 .bh-sc{display:flex;flex-wrap:wrap;gap:4px 8px}.bh-sc span{display:flex;gap:4px;align-items:center;padding:1px 5px;border-radius:999px}.bh-sc span.on{background:rgba(255,255,255,.16)}.bh-sc i{width:9px;height:9px;border-radius:50%;border:1px solid rgba(255,255,255,.6)}
+.savecard{width:min(560px,100%)}.saveslots{display:grid;gap:6px}.saveslot{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;gap:6px;align-items:center;padding:6px 8px;border:1px solid var(--line);border-radius:10px}.saveslot span{display:grid;gap:2px}.saveslot small{color:var(--muted);font-size:11px}
+.keepspd{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .newborn{border:1px dashed var(--line);border-radius:8px;padding:6px 8px;margin:6px 0;display:grid;gap:4px}
 .eqbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:4px 0}
 .eqlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:2px 8px;max-height:180px;overflow:auto;border:1px solid var(--line);border-radius:8px;padding:6px;font-size:12px}.eqlist label{display:flex;gap:5px;align-items:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.eqlist small{color:var(--muted)}
@@ -547,6 +549,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
   <button class="iconbtn" id="soundBtn" aria-pressed="true" hidden>🔊 소리</button>
   <button class="iconbtn" id="escBtn" hidden>⚙ 설정 (Esc)</button>
   <button class="iconbtn" id="statBtn" hidden>📊 통계</button>
+  <button class="iconbtn" id="saveBtn" hidden>💾 저장</button>
   <button class="iconbtn warmapbtn" id="mapBtn" hidden>🗺 전체 지도</button>
   <button class="iconbtn" id="backSetup" hidden>방 다시 꾸미기</button>
   <label class="themesel">🎨<span class="sr-only">테마</span><select id="themeSel" aria-label="테마">
@@ -628,6 +631,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         <label class="bigtoggle war"><input type="checkbox" data-war><span><b>⚔ 강아지 집들 끼리의 전쟁 허용</b><small>이웃 강아지 집들과 전쟁해요. 선제공격도 하고 침략도 받아요. 이기면 난이도에 따라 그 집과 돈을 가져요.</small></span></label>
         <label class="f">지도 크기<select data-warsize><option value="10">세계 지도 하나</option><option value="rep">♾ 무한 · 세계지도 반복 (같은 세계가 끝없이 이어져요)</option><option value="inf">♾ 무한 · 새 땅 (세계 밖에 새 땅이 생겨요)</option></select></label>
         <label class="f">세계지도 하나에 들어갈 집 수 (5~200)<input type="number" data-warcount min="5" max="200" step="1" value="40" inputmode="numeric"></label>
+        <label class="small keepspd"><input type="checkbox" data-warkeep> ⏩ 전쟁 중에도 배속 유지 <small class="muted">(끄면 전쟁이 일어날 때 x1로 느려져요)</small></label>
         <label class="f">전쟁 난이도<select data-wardiff><option value="easy">쉬움 (이기면 늘 정복)</option><option value="normal" selected>보통</option><option value="hard">어려움 (크게 이겨야 정복)</option></select></label>
         <label class="bigtoggle net"><input type="checkbox" data-online><span><b>🌐 온라인 전쟁</b><small>다른 건 오프라인이고, 전쟁할 때만 온라인이 켜져요. 같은 페이지를 연 다른 플레이어의 집이 지도 아래 🌐 구역에 나타나고 서로 공격할 수 있어요. 500마리 이상 사기 부대는 막혀요.</small></span></label>
         <label class="f">온라인 이름<input data-nick maxlength="12" placeholder="다른 플레이어에게 보일 이름"></label>
@@ -652,6 +656,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
       <div class="stack">
         <p class="err" id="setupErr"></p>
         <button class="btn primary" id="startBtn">시뮬레이션 시작</button>
+        <button class="btn" id="contBtn">📂 저장한 게임 이어하기</button>
         <p class="small">필수 기기: 자동 급수대, 밥그릇, 공 발사기, 홈캠, 현관문</p>
       </div>
     </aside>
@@ -712,6 +717,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         <label class="f">전쟁 난이도<select id="woDiff"><option value="easy">쉬움</option><option value="normal" selected>보통</option><option value="hard">어려움</option></select></label>
         <label class="f">지도 크기<select id="woSize"><option value="10">세계 지도 하나</option><option value="rep">♾ 무한 · 세계지도 반복 (같은 세계가 끝없이 이어져요)</option><option value="inf">♾ 무한 · 새 땅 (세계 밖에 새 땅이 생겨요)</option></select></label>
         <label class="f">세계지도 하나에 들어갈 집 수 (5~200)<input type="number" id="woCount" min="5" max="200" step="1" value="40" inputmode="numeric"></label>
+        <label class="small keepspd"><input type="checkbox" data-warkeep> ⏩ 전쟁 중에도 배속 유지 <small class="muted">(끄면 전쟁이 일어날 때 x1로 느려져요)</small></label>
       </div>
       <div class="stack">
         <label class="bigtoggle net"><input type="checkbox" data-online><span><b>🌐 온라인 전쟁</b><small>다른 건 오프라인이고, 전쟁할 때만 온라인이 켜져요. 같은 페이지를 연 다른 플레이어의 집이 지도 아래 🌐 구역에 나타나고 서로 공격할 수 있어요. 500마리 이상 사기 부대는 막혀요.</small></span></label>
@@ -1180,6 +1186,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         <label class="bigtoggle war"><input type="checkbox" data-war><span><b>⚔ 강아지 집들 끼리의 전쟁 허용</b><small>이웃 강아지 집들과 전쟁해요. 선제공격도 하고 침략도 받아요. 이기면 난이도에 따라 그 집과 돈을 가져요.</small></span></label>
         <label class="f">지도 크기<select data-warsize><option value="10">세계 지도 하나</option><option value="rep">♾ 무한 · 세계지도 반복 (같은 세계가 끝없이 이어져요)</option><option value="inf">♾ 무한 · 새 땅 (세계 밖에 새 땅이 생겨요)</option></select></label>
         <label class="f">세계지도 하나에 들어갈 집 수 (5~200)<input type="number" data-warcount min="5" max="200" step="1" value="40" inputmode="numeric"></label>
+        <label class="small keepspd"><input type="checkbox" data-warkeep> ⏩ 전쟁 중에도 배속 유지 <small class="muted">(끄면 전쟁이 일어날 때 x1로 느려져요)</small></label>
         <label class="f">전쟁 난이도<select data-wardiff><option value="easy">쉬움 (이기면 늘 정복)</option><option value="normal" selected>보통</option><option value="hard">어려움 (크게 이겨야 정복)</option></select></label>
         <label class="bigtoggle net"><input type="checkbox" data-online><span><b>🌐 온라인 전쟁</b><small>다른 건 오프라인이고, 전쟁할 때만 온라인이 켜져요. 같은 페이지를 연 다른 플레이어의 집이 지도 아래 🌐 구역에 나타나고 서로 공격할 수 있어요. 500마리 이상 사기 부대는 막혀요.</small></span></label>
         <label class="f">온라인 이름<input data-nick maxlength="12" placeholder="다른 플레이어에게 보일 이름"></label>
@@ -1359,6 +1366,14 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
 <div class="warsnack" id="warSnack" hidden role="status" aria-live="polite"></div>
 <div class="warbanner" id="warBanner" hidden aria-live="polite"></div>
 <div class="skipov" id="warnOv" hidden role="alertdialog" aria-modal="true" aria-labelledby="warnTitle"><div class="skipcard"><b id="warnTitle">⚠ 300마리 제한을 풀까요?</b><span>제한을 풀면 동물이 아주 빠르게 늘어나요 (테스트: 강아지 60마리로 시작해 5년 만에 약 5만 마리). 수명을 짧게 하거나 넘기는 해를 짧게 하면 덜 늘어나요. 그러면 계산이 아주 오래 걸리고, 끝난 뒤 3D 화면이 매우 느려지거나 브라우저 탭이 멈추고 꺼질 수 있어요. 진행 중 저장되지 않은 내용은 사라질 수 있어요.</span><div class="row2"><button class="btn" id="warnNo">취소 (제한 유지)</button><button class="btn danger" id="warnYes">그래도 풀기</button></div></div></div>
+<div class="skipov" id="saveOv" hidden role="dialog" aria-modal="true" aria-labelledby="saveTitle"><div class="skipcard savecard">
+  <div class="st-head"><b id="saveTitle">💾 진행도 저장</b><button class="iconbtn" id="saveClose" aria-label="닫기">✕ 닫기</button></div>
+  <p class="small muted" id="saveWhy" style="margin:0"></p>
+  <div id="saveSlots" class="saveslots"></div>
+  <div class="row2"><button class="btn" id="saveExport">📤 파일로 내보내기</button><label class="btn" for="saveFile" style="text-align:center;cursor:pointer">📥 파일 불러오기<input type="file" id="saveFile" accept=".json,application/json" hidden></label></div>
+  <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="autoSave" checked> 🔁 자동 저장 (2분마다 · 자동 칸)</label>
+  <p class="small muted" style="margin:0">저장 칸은 이 브라우저에만 남아요. 다른 기기에서 이어 하거나 확실히 보관하려면 파일로 내보내세요.</p>
+</div></div>
 <div class="skipov" id="skipOv" hidden role="dialog" aria-modal="true" aria-labelledby="skipTitle"><div class="skipcard"><b id="skipTitle">⏩ 시간 넘기는 중</b><div class="esc-bar"><span id="skipBar"></span></div><span id="skipText"></span><div id="skipRes" class="small"></div><div class="row2"><button class="btn" id="skipStop">멈추기</button><button class="btn primary" id="skipClose" hidden>확인</button></div></div></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
@@ -3238,7 +3253,7 @@ function startSpectate(f){
   camMode='fight';$$('#camModes .chip').forEach(b=>b.setAttribute('aria-pressed','false'));
   controls.enabled=true;controls.maxPolarAngle=Math.PI*0.47;
   const c=fightCenter(f);controls.target.set(c.x,0.4,c.z);mainCam.position.set(c.x+3.2,3.0,c.z+3.4);mainCam.fov=50;mainCam.updateProjectionMatrix();controls.update();
-  dropSpeed('싸움을 관전하려고','fight');
+  dropSpeed('싸움을 관전하려고','fight',f);
   $('#fightHud').hidden=false;$('#fhResult').hidden=true;$('#fhTitle').textContent=f.death?'⚔ 싸움 · 죽을 때까지':'⚔ 싸움';
 }
 function stopSpectate(){
@@ -3274,7 +3289,9 @@ function updateEscape(realDt){
   e.left-=realDt;if(e.left<=0){player.escape=null;escapeFight(e.who,'ESCAPE')}
 }
 function setSpeed(s){speed=s;$$('#speedSeg button').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.s===String(s))))}
-function dropSpeed(reason,by){if(speed<=4)return;if(!world.autoDrop)world.autoDrop={prev:speed,by};setSpeed(1);toast(`${reason} x1로 바꿨어요`,false,true)}
+function warKeep(){const c=$('[data-warkeep]');return !!(c&&c.checked)}
+function dropSpeed(reason,by,f){if(speed<=4)return;if(f&&f.cause==='war'&&warKeep())return; // the player asked to keep the speed during wars
+if(!world.autoDrop)world.autoDrop={prev:speed,by};setSpeed(1);toast(`${reason} x1로 바꿨어요`,false,true)}
 function restoreSpeed(){const a=world.autoDrop;if(!a||a.by!=='fight')return;world.autoDrop=null;setSpeed(a.prev);toast(`다시 x${a.prev}로 돌아왔어요`,false,true)}
 
 /* ======================= OWNER VISIT ======================= */
@@ -5859,7 +5876,7 @@ function startWarFight(mine,foes,info){
   $('#warMap').hidden=true;
   const f={id:fightUid++,A:[],B:[],t0:world.t,until:Infinity,death:true,cause:'war',war:info,deaths:[],fled:[],cx:mine[0].pos.x,cz:mine[0].pos.y,joinT:3,ended:false};
   fights.push(f);mine.forEach(d=>joinFight(f,d,'A'));foes.forEach(d=>joinFight(f,d,'B'));fightCenter(f);
-  log(`⚔ 전쟁: ${info.title}`,'bad',true);dropSpeed('전쟁이 일어나서','fight');world.breakLoop=true;
+  log(`⚔ 전쟁: ${info.title}`,'bad',true);dropSpeed('전쟁이 일어나서','fight',f);if(warKeep()&&speed>4)toast(`⏩ 배속 유지 중 (x${speed}) — 전쟁이 빠르게 진행돼요`);world.breakLoop=true;
   warSnack(`⚔ ${info.title}`,[{t:'🎮 내 강아지 조종하기',f:()=>playSide('A')},{t:'👀 관전',f:()=>startSpectate(f)}],20);return f;
 }
 // enemy army arrives at the house I'm looking at: real battle here
@@ -6299,6 +6316,91 @@ function buyMarket(){
   log(`🐶 시장에서 ${Bd.n} ${k}마리를 데려왔어요: ${names.join(', ')} (−${won(v*k)})`,'good',true);toast(`🐶 ${names.join(', ')}${josa(names[names.length-1],'이','가')} 집에 왔어요!${k<n?` (돈이 모자라서 ${k}마리만)`:''}`,false,true);
   if(soundOn){blip(700,0.08,0.06);setTimeout(()=>blip(940,0.1,0.06),100)}$('#mkName').value='';
 }
+
+/* ======================= SAVE / LOAD ======================= */
+const SAVE_V=1,SAVE_SLOTS=['auto','1','2','3'];
+const ANIMAL_SKIP=new Set(['root','pose','legs','head','tail','tongue','earL','earR','emo','lbl','gear','gearHelm','gearHead','gearT','gearMz','gearW','gearLift','card','cardR','fight','ball','st','target','ftgt','way','detour','stuck','team','anim','sc','pos','fleeing','fleeT','recoil','alt','bank','vs','pHead','turn','_newKids']);
+// keeps only plain data (numbers, strings, plain objects/arrays): drops 3D objects and live references
+function plainData(v,depth){
+  if(v===null||typeof v==='number'||typeof v==='string'||typeof v==='boolean')return v;if(typeof v!=='object'||depth>8)return undefined;
+  if(Array.isArray(v)){const a=[];for(const x of v){const y=plainData(x,depth+1);if(y!==undefined)a.push(y)}return a}
+  const pr=Object.getPrototypeOf(v);if(pr!==Object.prototype&&pr!==null)return undefined;if(v.root&&v.pos)return undefined; // a live animal reached through a reference
+  const o={};for(const k in v){if(k[0]==='_')continue;const y=plainData(v[k],depth+1);if(y!==undefined)o[k]=y}return o;
+}
+function animalData(d){const o={};for(const k in d){if(ANIMAL_SKIP.has(k))continue;const y=plainData(d[k],1);if(y!==undefined)o[k]=y}o.pos={x:d.pos.x,y:d.pos.y};return o}
+const saveRep=(k,v)=>typeof v==='number'&&!isFinite(v)?{__n:String(v)}:v,saveRev=(k,v)=>v&&typeof v==='object'&&typeof v.__n==='string'&&Object.keys(v).length===1?Number(v.__n):v;
+function saveBlocked(){if(!world)return '시뮬레이션이 시작되지 않았어요';if(world.arena)return '싸움장·축구만 하기 모드는 저장할 수 없어요';if(match)return '축구 경기 중에는 저장할 수 없어요';if(skipping)return '시간을 넘기는 중이에요';
+  if(fights.length||(world.war&&world.war.battle))return '싸움·전쟁 중에는 저장할 수 없어요. 끝나고 저장해 주세요';return ''}
+function makeSave(){
+  const w={};for(const k in world){if(['builds','bgs','floorMess','fastNow','breakLoop','autoDrop','shotStat'].includes(k))continue;const y=plainData(world[k],1);if(y!==undefined)w[k]=y}
+  w.pad=Object.assign({},w.pad||{},{waste:[],cleaning:0});w.tm=Object.assign({},w.tm||{},{user:null});
+  if(w.war){w.war.battle=null;w.war.pendingFight=null}
+  w.builds=(world.builds||[]).map(b=>({type:b.type,x:b.x,z:b.z,rot:b.rot,start:b.start,end:b.end,cost:b.cost,box:plainData(b.box,1)}));
+  const L=plainData(layout,1);
+  return {v:SAVE_V,app:'멍하우스 홈케어',at:Date.now(),careMode,layout:L,world:w,dogs:dogs.filter(d=>!d.dead&&!d.enemy&&!d.lion&&!(d.stray&&!d.away)).map(animalData),
+    meta:{t:world.t,n:dogs.filter(d=>!d.dead&&!d.stray&&!d.enemy).length,money:isFinite(world.money)?world.money:'무한',war:!!world.war,houses:world.war?world.war.houses.filter(h=>h.owner==='me').length:0}};
+}
+function saveSummary(m){if(!m)return '비어 있음';return `${fmtDate(m.t)} · 동물 ${m.n}마리 · ${m.money==='무한'?'돈 무한':won(m.money)}${m.war?` · 내 집 ${m.houses}곳`:''}`}
+function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function lsSet(k,v){try{localStorage.setItem(k,v);return true}catch(e){return e&&e.name==='QuotaExceededError'?'full':false}}
+function saveTo(slot,quiet){
+  const why=saveBlocked();if(why){if(!quiet)toast(`💾 ${why}`,true);return false}
+  const S=makeSave(),txt=JSON.stringify(S,saveRep),r=lsSet('mh_save_'+slot,txt);
+  if(r!==true){if(!quiet)toast(r==='full'?'💾 저장 공간이 꽉 찼어요. 📤 파일로 내보내기를 써 주세요':'💾 이 브라우저에서는 저장 칸을 쓸 수 없어요. 📤 파일로 내보내기를 써 주세요',true);return false}
+  lsSet('mh_meta_'+slot,JSON.stringify({at:S.at,meta:S.meta},saveRep));if(!quiet){toast(`💾 ${slot==='auto'?'자동 칸':slot+'번 칸'}에 저장했어요 · ${saveSummary(S.meta)}`);log(`💾 진행도를 ${slot==='auto'?'자동 칸':slot+'번 칸'}에 저장했어요`,'good')}renderSaves();return true;
+}
+async function exportSave(){
+  const why=saveBlocked();if(why){toast(`💾 ${why}`,true);return}
+  const txt=JSON.stringify(makeSave(),saveRep),name=`멍하우스_저장_${Math.floor(world.t/1440)+1}일차.json`,blob=new Blob([txt],{type:'application/json'});
+  if(downloadsApi){try{await downloadsApi.save({filename:name,data:blob});toast('📤 저장 파일을 내보냈어요');return}catch(err){if(err&&err.code==='declined')return}}
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);toast('📤 저장 파일을 내보냈어요');
+}
+function loadFromSlot(slot){const txt=lsGet('mh_save_'+slot);if(!txt){toast('그 칸은 비어 있어요',true);return}loadSave(txt)}
+function loadSave(txt){
+  let S;try{S=JSON.parse(txt,saveRev)}catch(e){toast('저장 파일을 읽을 수 없어요',true);return}
+  if(!S||S.app!=='멍하우스 홈케어'||!S.world||!S.layout||!Array.isArray(S.dogs)){toast('멍하우스 저장 파일이 아니에요',true);return}
+  if(match)cleanupMatch(true);if(NET.on)netStop(true);NET.idOf={};NET.taken=new Set();bgWatch=null;$('#bgHud').hidden=true;
+  layout=S.layout;arenaConf=null;$('#sim').classList.remove('arena','soccer');$('#arenaRes').hidden=true;
+  $('#setup').hidden=true;$('#sim').hidden=false;$('#saveOv').hidden=true;
+  ['#clockBox','#speedSeg','#pauseBtn','#soundBtn','#backSetup','#modeChip','#escBtn','#statBtn','#moneyBox','#saveBtn'].forEach(q=>$(q).hidden=false);$('#phaseLbl').textContent='2단계 · 시뮬레이션';
+  player.spect=null;player.ctrl=null;player.side=null;player.escape=null;player.bannerFight=null;$('#fightHud').hidden=true;$('#touchPad').hidden=true;$('#fightBanner').hidden=true;
+  Object.assign(owner,{visiting:false,dead:false,state:'out',fight:null,g:null,stamina:100,health:100});
+  const saveDog=dogConf,saveCat=catConf;dogConf=[];catConf=[];initRenderers();buildWorld();dogConf=saveDog;catConf=saveCat;resizeAll();
+  for(const d of dogs)removeQuiet(d);dogs=[];
+  world=Object.assign(newWorldState(S.world.t),S.world,{builds:[],bgs:[],floorMess:[],autoDrop:null,breakLoop:false,fastNow:false});world.pad=Object.assign(newWorldState(0).pad,S.world.pad||{},{waste:[],cleaning:0});
+  world.tm=Object.assign({user:null,speed:'mid',auto:true,minutes:0,start:0},S.world.tm||{},{user:null});if(world.war){world.war.battle=null;world.war.pendingFight=null}
+  let maxId=0;
+  for(const o of S.dogs){const at={x:o.pos?o.pos.x:0,z:o.pos?o.pos.y:0},d=makeAnimal({species:o.species,breed:o.breed,color:o.color,sex:o.sex,age:o.age,name:o.name,skills:o.skills,lifespan:o.lifespan,stray:o.stray},at);
+    for(const k in o){if(k==='pos'||ANIMAL_SKIP.has(k))continue;d[k]=o[k]}d.pos.set(at.x,at.y!==undefined?at.y:at.z);resolve(d.pos,d.r);d.state=d.state==='sleep'?'sleep':'idle';d.think=rand(0.5,2);d.fight=null;d.st=null;d.target=null;
+    applyGrowth(d);equipGear(d);if(d.away)d.root.visible=false;dogs.push(d);maxId=Math.max(maxId,+d.id||0)}
+  animalUid=Math.max(animalUid,maxId+1);
+  for(const b of S.world.builds||[]){const left=Math.max(1,b.end-b.start);world.builds=world.builds||[];restoreBuild(b)}
+  $('#log').innerHTML='';speed=1;clearInterval(musicIv);musicIv=0;const mOn=world.music.on;world.music.on=false;if(mOn)setMusic(true);else musicUI();
+  const tOn=world.tv&&world.tv.on;if(world.tv){world.tv.on=false;if(tOn&&tvs.length)setTV(true)}
+  followId=dogs[0]?dogs[0].id:1;world.cardsDirty=true;buildDogCards();renderEvents();setCamMode('free');buildSpeedSeg();
+  if(!world.ai)aiInit();if(S.careMode)applyMode(S.careMode,false);setTimeout(()=>{warUI();careUI();buildUI();boardUI()},0);
+  log(`📂 저장한 게임을 불러왔어요 · ${saveSummary(S.meta)}`,'good');toast('📂 이어서 시작해요!',false,true);
+  running=true;lastT=performance.now();ac();
+}
+function restoreBuild(b){ // re-creates a construction site from the save (already paid for)
+  const save=world.money;world.money=Infinity;const B0=(world.builds||[]).length;startBuild(b.type,{x:b.x,z:b.z,rot:b.rot});world.money=save;
+  const B=world.builds[world.builds.length-1];if(B&&world.builds.length>B0){B.start=b.start;B.end=b.end;B.cost=b.cost}
+  if(world.bill&&world.bill.today&&world.bill.today.build)world.bill.today.build-=0; // paying was skipped above (money was set to infinite)
+}
+function renderSaves(){
+  const el=$('#saveSlots');if(!el)return;const can=!saveBlocked(),why=saveBlocked();
+  $('#saveWhy').textContent=world&&!world.arena?(why?`⚠ ${why}`:'저장 칸을 골라 저장하거나, 저장한 게임을 불러오세요.'):'불러올 저장을 골라 주세요. 지금 하던 게임은 사라져요.';
+  el.innerHTML=SAVE_SLOTS.map(sl=>{let m=null;try{m=JSON.parse(lsGet('mh_meta_'+sl)||'null',saveRev)}catch(e){}const has=!!lsGet('mh_save_'+sl);
+    return `<div class="saveslot"><span><b>${sl==='auto'?'🔁 자동':sl+'번'}</b><small>${has&&m?`${saveSummary(m.meta)}<br>${new Date(m.at).toLocaleString('ko-KR')}`:'비어 있음'}</small></span>`+
+      (sl!=='auto'?`<button class="chip" data-save="${sl}"${can?'':' disabled'}>저장</button>`:'<span></span>')+`<button class="chip" data-load="${sl}"${has?'':' disabled'}>불러오기</button><button class="chip" data-del="${sl}"${has?'':' disabled'}>삭제</button></div>`}).join('');
+  el.querySelectorAll('[data-save]').forEach(b=>b.onclick=()=>{const sl=b.dataset.save;if(lsGet('mh_save_'+sl)&&!b.dataset.sure){b.dataset.sure=1;b.textContent='덮어쓸까요?';return}saveTo(sl)});
+  el.querySelectorAll('[data-load]').forEach(b=>b.onclick=()=>{if(world&&!world.arena&&!b.dataset.sure){b.dataset.sure=1;b.textContent='지금 게임 버리고 불러오기';return}loadFromSlot(b.dataset.load)});
+  el.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{if(!b.dataset.sure){b.dataset.sure=1;b.textContent='정말 지울까요?';return}try{localStorage.removeItem('mh_save_'+b.dataset.del);localStorage.removeItem('mh_meta_'+b.dataset.del)}catch(e){}renderSaves()});
+  $('#saveExport').disabled=!can;
+}
+function openSaves(){$('#saveOv').hidden=false;renderSaves()}
+let autoSaveT=120;
+function autoSaveTick(rdt){if(!world||world.arena||!$('#autoSave').checked)return;autoSaveT-=rdt;if(autoSaveT>0)return;if(saveBlocked()){autoSaveT=15;return}autoSaveT=120;saveTo('auto',true)}
 /* ======================= BOARD GAMES ======================= */
 const BOARD={yut:{n:'윷놀이',e:'🎋',max:4,col:'#e9d8a6'},ludo:{n:'주사위 말판',e:'🎲',max:4,col:'#f3f0e6'},memory:{n:'카드 짝맞추기',e:'🃏',max:4,col:'#3f7d5a'},omok:{n:'오목',e:'⚫',max:2,col:'#d9a85c'},chess:{n:'체스',e:'♟',max:2,col:'#ece3cf'}};
 function boardMesh(k,x,z){
@@ -6431,7 +6533,7 @@ function boardAuto(live){
 let lastT=performance.now(),uiT=0;
 function frame(now){
   requestAnimationFrame(frame);if(!running)return;
-  const realDt=Math.min(0.1,(now-lastT)/1000);lastT=now;musicFx(realDt);stationFx(realDt);
+  const realDt=Math.min(0.1,(now-lastT)/1000);lastT=now;musicFx(realDt);stationFx(realDt);if(!paused)autoSaveTick(realDt);
   if(!$('#warMap').hidden){mapT-=realDt;if(mapT<=0){mapT=1;renderMap()}}
   if(NET.on){NET.pubT-=realDt;if(NET.pubT<=0){NET.pubT=20;netPublish()}}
   if(!$('#statOv').hidden){statT-=realDt;if(statT<=0||statQueued){statT=1;renderStats()}}
@@ -6585,6 +6687,9 @@ $('#mapAll').onclick=()=>{const W=world.war;if(!W)return;Object.assign(W.view,{x
  addEventListener('keydown',e=>{if(!warOn()||$('#warMap').hidden||/INPUT|SELECT|TEXTAREA/.test((e.target.tagName||'')))return;const k=e.key;if(k==='+'||k==='=')zoomMap(1.3);else if(k==='-'||k==='_')zoomMap(1/1.3);else if(k==='ArrowLeft')panMap(-200,0);else if(k==='ArrowRight')panMap(200,0);else if(k==='ArrowUp')panMap(0,-140);else if(k==='ArrowDown')panMap(0,140);else return;e.preventDefault()});
  svg.addEventListener('wheel',e=>{if(!warOn())return;e.preventDefault();const r=svg.getBoundingClientRect();zoomMap(e.ctrlKey||e.metaKey?Math.exp(-e.deltaY*0.012):(e.deltaY<0?1.2:1/1.2),(e.clientX-r.left)/r.width,(e.clientY-r.top)/r.height)},{passive:false});
  svg.addEventListener('pointerup',()=>{drag=null;svg.classList.remove('dragging')});svg.addEventListener('pointercancel',()=>{drag=null;svg.classList.remove('dragging')});}
+$$('[data-warkeep]').forEach(c=>c.addEventListener('change',e=>{$$('[data-warkeep]').forEach(x=>x.checked=e.target.checked);try{localStorage.setItem('mh_warkeep',e.target.checked?'1':'0')}catch(_){}
+  if(e.target.checked&&world&&world.autoDrop&&fights.some(f=>f.cause==='war')){const a=world.autoDrop;world.autoDrop=null;setSpeed(a.prev);toast(`⏩ 다시 x${a.prev}로 돌아왔어요`)}}));
+try{if(localStorage.getItem('mh_warkeep')==='1')$$('[data-warkeep]').forEach(x=>x.checked=true)}catch(_){}
 $$('[data-warsize]').forEach(c=>c.addEventListener('change',e=>$$('[data-warsize]').forEach(x=>x.value=e.target.value)));$$('[data-warcount]').forEach(c=>c.addEventListener('change',e=>{const v=clamp(Math.round(+e.target.value)||40,5,200);$$('[data-warcount]').forEach(x=>x.value=v)}));$('#mapBtn2').onclick=()=>{if(!warOn()){toast('먼저 ⚔ 전쟁 허용을 켜 주세요',true);return}openMap()};
 $('#mapClose').onclick=()=>{$('#warMap').hidden=true};$('#warMap').addEventListener('click',e=>{if(e.target.id==='warMap')$('#warMap').hidden=true});
 $('#eqGo').onclick=()=>equipMany([...EQSEL],$('#eqW').value,$('#eqBuy').checked);$('#eqAuto').onclick=autoArm;['#nbOn','#nbW','#nbBuy'].forEach(q=>$(q).addEventListener('change',()=>{nbUI();try{localStorage.setItem('mh_nb',JSON.stringify({on:$('#nbOn').checked,w:$('#nbW').value,buy:$('#nbBuy').checked}))}catch(_){}}));
@@ -6753,7 +6858,7 @@ function startSim(){
   dogConf.forEach((d,i)=>{d.name=($('#dogName'+i).value||'').trim()||d.name;d.age=clamp(parseFloat($('#dogAge'+i).value)||0,0,14)});
   catConf.forEach((d,i)=>{d.name=($('#catName'+i).value||'').trim()||d.name;d.age=clamp(parseFloat($('#catAge'+i).value)||0,0,14)});
   $('#setup').hidden=true;$('#sim').hidden=false;
-  ['#clockBox','#speedSeg','#pauseBtn','#soundBtn','#backSetup','#modeChip','#escBtn','#statBtn','#moneyBox'].forEach(s=>$(s).hidden=false);$('#phaseLbl').textContent='2단계 · 시뮬레이션';
+  ['#clockBox','#speedSeg','#pauseBtn','#soundBtn','#backSetup','#modeChip','#escBtn','#statBtn','#moneyBox','#saveBtn'].forEach(s=>$(s).hidden=false);$('#phaseLbl').textContent='2단계 · 시뮬레이션';autoSaveT=120;
   player.spect=null;player.ctrl=null;player.side=null;player.escape=null;player.bannerFight=null;
   $('#fightHud').hidden=true;$('#touchPad').hidden=true;$('#fightBanner').hidden=true;
   Object.assign(owner,{visiting:false,dead:false,state:'out',fight:null,g:null,stamina:100,health:100});
@@ -6783,10 +6888,13 @@ function startSim(){
   running=true;lastT=performance.now();
 }
 $('#startBtn').onclick=startSim;
+$('#saveBtn').onclick=openSaves;$('#contBtn').onclick=openSaves;$('#saveClose').onclick=()=>{$('#saveOv').hidden=true};$('#saveExport').onclick=exportSave;
+$('#saveFile').onchange=e=>{const f=e.target.files&&e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>loadSave(String(r.result));r.readAsText(f);e.target.value=''};
+try{if(lsGet('mh_autosave')==='0')$('#autoSave').checked=false}catch(_){}$('#autoSave').onchange=e=>lsSet('mh_autosave',e.target.checked?'1':'0');
 $('#backSetup').onclick=()=>{
   const wasSoccer=world&&world.soccerOnly;if(match)cleanupMatch(true);
   running=false;if(viewRec)viewRec.stop();if(intruder)intruder=null;if(menuOpen)toggleMenu(false);if(tacOpen)toggleTac(false);
-  $('#sim').hidden=true;$('#setup').hidden=false;['#clockBox','#speedSeg','#pauseBtn','#soundBtn','#backSetup','#modeChip','#escBtn','#statBtn','#moneyBox','#mapBtn'].forEach(s=>$(s).hidden=true);['#warMap','#warSnack','#warBanner'].forEach(s=>$(s).hidden=true);$('#statOv').hidden=true;if(NET.on)netStop(true);
+  $('#sim').hidden=true;$('#setup').hidden=false;['#clockBox','#speedSeg','#pauseBtn','#soundBtn','#backSetup','#modeChip','#escBtn','#statBtn','#moneyBox','#mapBtn','#saveBtn'].forEach(s=>$(s).hidden=true);['#warMap','#warSnack','#warBanner'].forEach(s=>$(s).hidden=true);$('#statOv').hidden=true;if(NET.on)netStop(true);
   setAppMode(wasSoccer?'soccer':world&&world.arena?'arena':'home');
 };
 

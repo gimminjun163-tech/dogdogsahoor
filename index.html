@@ -445,6 +445,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
 .keepspd{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .newborn{border:1px dashed var(--line);border-radius:8px;padding:6px 8px;margin:6px 0;display:grid;gap:4px}
 .myhouses{list-style:none;margin:0 0 6px;padding:0;display:grid;gap:4px}.myhouses li{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;gap:8px;align-items:center;padding:5px 8px;border:1px solid var(--line);border-radius:8px;font-size:12px}.myhouses li.act{border-color:var(--accent)}.myhouses span{color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.sktable summary{cursor:pointer;font-size:12px;font-weight:700;margin:4px 0}.sktable ul{list-style:none;margin:0;padding:0;display:grid;gap:3px;font-size:12px}.sktable .sk{display:inline-block;padding:1px 7px;margin:1px 2px;border-radius:999px;background:var(--surface-2);font-size:11px}
 .wtchips{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin:4px 0}.wtchips .chip{font-size:11px;padding:3px 8px}.wtchips .chip.on{background:var(--accent);color:#fff;border-color:var(--accent)}.wtchips b{margin-left:2px}
 .pickn{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:4px 0}.pickn input{width:64px;font:inherit;padding:5px 6px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:inherit}.pickn span{font-size:12px;color:var(--muted)}
 .seg2{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0}.seg2 label{display:flex;gap:5px;align-items:center;padding:5px 10px;border:1px solid var(--line);border-radius:999px;font-size:12px;cursor:pointer}.seg2 label:has(input:checked){border-color:var(--accent);background:var(--surface-2);font-weight:700}
@@ -731,7 +732,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
   <div class="soccer-grid" id="warSetup" hidden>
     <section class="card panel">
       <h2>⚔ 전쟁만 하기</h2>
-      <a href="https://war-ruddy.vercel.app/">이 기능의 원본(근본)으로 한 내 사이틉니다 마니 방문좀요. pvp 할때 'nigger' 같은 욕설을 닉네임으로 쓰기 금지</a>
+      <a href="https://war-ruddy.vercel.app/">이 기능의 원본(근본)으로 한 내 사이틉니다 마니 방문좀요. pvp 할때 인종차별 욕설(n-word 등)을 닉네임으로 쓰기 금지</a>
       <p class="small">강아지 집들끼리 전쟁하는 데 집중하는 모드예요. 관리는 모두 자동화로 하고, 처음부터 전쟁이 켜져 있고 지도가 열려요. 무기를 사서 강아지를 무장시키고, 이웃 집을 정복해 보세요.</p>
       <div class="row2">
         <label class="f">내 강아지 수<select id="woDogs"><option>3</option><option selected>6</option><option>8</option><option>10</option><option>12</option></select></label>
@@ -1226,6 +1227,8 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
           <div class="newborn"><label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="nbOn"> 👶 태어나면 자동으로 무기 주기</label>
             <div class="row2"><label class="f">줄 무기<select id="nbW"></select></label><label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="nbBuy" checked> 창고에 없으면 사서 주기</label></div>
             <p class="small muted" id="nbNote" style="margin:0"></p></div>
+          <div class="row2"><button class="btn" id="trainGo">🎯 고른 강아지 군사훈련 보내기</button><span class="small muted" id="trainInfo"></span></div>
+          <details class="sktable"><summary>🔓 숙련도로 해금되는 기술 보기</summary><p class="small muted" style="margin:4px 0">군사 훈련장에서 지금 든 무기로 훈련하면 그 무기의 숙련도(0~100)가 올라요. 숙련도가 높을수록 주는 피해 최대 +60%, 받는 피해 최대 −33%, 더 빨리·더 정확하게 쏴요.</p><ul id="skTable"></ul></details>
           <div class="row2"><button class="btn primary" id="eqGo">🎖 고른 강아지 무장</button><button class="btn" id="eqAuto" title="창고에 있는 무기를 무장 안 한 강아지들에게 센 무기부터 나눠 줘요">📦 창고 무기 자동 배치</button></div>
           <label class="f">방어할 때 집 안에 남길 수비대<select id="warGuard"><option value="0" selected>없음 — 모두 야전에 나가 싸워요</option><option value="0.25">4분의 1</option><option value="0.5">절반</option></select></label>
           <h3>🏠 내 집 현황</h3>
@@ -1444,6 +1447,7 @@ const FURN={
   window:{n:'창문',wall:true,unique:true,len:1.3,c:'#8fc8e6'},
   petdoor:{n:'마당 문',wall:true,unique:true,len:0.9,c:'#4f9a5c'},
   farm:{n:'자동화 농장',w:2.4,d:1.6,h:0.4,c:'#6f9a3a',solid:true,device:true,yard:true},
+  train:{n:'🎯 군사 훈련장',w:1.6,d:0.9,h:0.9,c:'#6f7d4a',solid:true,st:true},
   bath:{n:'🛁 자동 목욕기',w:1.0,d:0.7,h:0.45,c:'#e8f4f8',solid:false,unique:true,st:true},
   medic:{n:'🩺 자동 치료기',w:1.1,d:0.7,h:0.5,c:'#f4f6f8',solid:false,unique:true,st:true},
   groom:{n:'✂ 그루밍 테이블',w:0.9,d:0.6,h:0.55,c:'#c7d2da',solid:false,unique:true,st:true},
@@ -1522,6 +1526,7 @@ function presetLiving(){
     {id:uid++,type:'kennel',x:-3.8,z:3.95,rot:2},
     {id:uid++,type:'aircon',x:-4.4,z:-4.2,rot:0},
     {id:uid++,type:'purifier',x:5.6,z:2.4,rot:0},
+    {id:uid++,type:'train',x:3.6,z:-0.4,rot:0},
     {id:uid++,type:'homecam',wall:'n',t:2.2},
     {id:uid++,type:'door',wall:'s',t:2.0},
     {id:uid++,type:'window',wall:'w',t:-0.6},
@@ -1544,6 +1549,7 @@ function presetStudio(){
     {id:uid++,type:'snackbar',x:2.7,z:0.3,rot:1},
     {id:uid++,type:'groom',x:-0.75,z:-1.7,rot:0},
     {id:uid++,type:'purifier',x:0.2,z:-2.2,rot:0},
+    {id:uid++,type:'train',x:1.4,z:-1.0,rot:0},
     {id:uid++,type:'homecam',wall:'s',t:-1.8},
     {id:uid++,type:'door',wall:'s',t:1.3},
     {id:uid++,type:'window',wall:'w',t:1.0},
@@ -1611,7 +1617,7 @@ let tool='move',drag=null;
 const TOOLDEF=[['move','이동 · 회전'],['del','삭제'],null,
   ['sofa'],['bed'],['table'],['shelf'],['tv'],['plant'],['dogbed'],['rug'],null,
   ['water'],['food'],['launcher'],['potty'],['treadmill'],['homecam'],['door'],['window'],['petdoor'],['farm'],null,
-  ['bath'],['medic'],['groom'],['toybox'],['snackbar'],['kennel'],['aircon'],['purifier'],['agility'],['fountain']];
+  ['train'],['bath'],['medic'],['groom'],['toybox'],['snackbar'],['kennel'],['aircon'],['purifier'],['agility'],['fountain']];
 function buildTools(){
   const box=$('#tools');box.innerHTML='';
   for(const t of TOOLDEF){
@@ -2114,6 +2120,14 @@ function buildFurniture(it){
       const scr=box(0.01,0.07,0.2,'#163b2a',w/2-0.175,0.81,0,{emissive:'#0b2a1c'});g.add(scr);
       const led=sph(0.015,'#2ad46a',w/2-0.17,0.76,0.12,{emissive:'#2ad46a'});g.add(led);
       dev.tmParts={tex,led,scr};break;}
+    case 'train':{
+      const mat0=box(w,0.03,d,'#8a7a55',0,0.015,0);mat0.castShadow=false;g.add(mat0);
+      for(let i=0;i<5;i++){const b=box(0.3,0.16,0.18,'#b9a77a',-w/2+0.2+i*0.3,0.11,d/2-0.12);g.add(b)} // sandbag firing line
+      const tg=[];for(const x of[-0.45,0.05,0.55]){const st=box(0.04,0.55,0.04,'#5a4a32',x,0.3,-d/2+0.12);g.add(st);const T=new THREE.Group();T.position.set(x,0.68,-d/2+0.12);
+        [['#f2f2f2',0.16],['#d63c3c',0.12],['#f2f2f2',0.08],['#d63c3c',0.04]].forEach(([c0,r],k)=>{const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,0.02,18),mat(c0));m.rotation.x=Math.PI/2;m.position.z=0.012*k;T.add(m)});g.add(T);tg.push(T)}
+      const dm=new THREE.Group();dm.position.set(w/2-0.18,0,-0.05);dm.add(box(0.06,0.5,0.06,'#6b4a2b',0,0.25,0));dm.add(box(0.22,0.3,0.12,'#c9a36b',0,0.6,0));dm.add(box(0.14,0.14,0.14,'#c9a36b',0,0.83,0));g.add(dm);
+      const flag=box(0.2,0.12,0.01,'#d63c3c',-w/2+0.12,0.95,-d/2+0.05);g.add(box(0.02,0.95,0.02,'#5a4a32',-w/2+0.02,0.48,-d/2+0.05));g.add(flag);
+      it._fx={tg,dm};break;}
     case 'bath':{
       g.add(box(w,0.08,d,'#d6e4ea',0,0.04,0));for(const sx of[-1,1]){g.add(box(0.06,0.4,d,c,sx*(w/2-0.03),0.24,0))}for(const sz of[-1,1])g.add(box(w,0.4,0.06,c,0,0.24,sz*(d/2-0.03)));
       const wtr=box(w-0.14,0.02,d-0.14,'#8fd3f0',0,0.3,0,{transparent:true,opacity:0.75});wtr.castShadow=false;g.add(wtr);
@@ -2681,7 +2695,7 @@ function animateDog(d,realDt){
   // head: bark pulse, nod with the stride, look into the turn
   const bp=d.root.userData.barkPulse||0;d.head.rotation.z=0.25*bp+(an.sit?-0.3:0)+(run&&!veh?Math.sin(ph+0.9)*0.07:spd>0.05&&!veh?Math.sin(ph*2)*0.025:0);d.head.rotation.y=clamp(-d.turn*0.12,-0.4,0.4);d.root.userData.barkPulse=Math.max(0,bp-realDt*5);
   const ear=an.emo==='?'||an.emo==='♥'?0.5:run&&!veh?-0.25+Math.sin(ph)*0.1:0;d.earL.rotation.x=ear;d.earR.rotation.x=-ear;
-  setSprite(d.emo,an.emo||'');
+  setSprite(d.emo,d.skEmo&&d.skEmo.until>performance.now()?d.skEmo.e:an.emo||'');
 }
 const speedVisual=()=>Math.min(speed,4)*(paused?0:1);
 
@@ -3094,7 +3108,7 @@ function onFightStart(f){
   if(FIGHT.view!=='skip')dropSpeed('싸움이 일어나서','fight');
   if(FIGHT.view==='watch')startSpectate(f);else if(FIGHT.view==='ask')showBanner(f);
 }
-function fighterSpeed(d){return (d.species==='cat'?3.3*Math.sqrt(d.k):d.species==='human'?2.1:2.6*Math.sqrt(d.k))*(WEAPONS[d.weapon]?WEAPONS[d.weapon].spd:1)}
+function fighterSpeed(d){return (d.species==='cat'?3.3*Math.sqrt(d.k):d.species==='human'?2.1:2.6*Math.sqrt(d.k))*(WEAPONS[d.weapon]?WEAPONS[d.weapon].spd:1)*(d.slowUntil>world.t?0.55:1)} // suppressive fire pins units down
 function baseCD(d){return d.species==='cat'?0.75:d.species==='human'?1.15:0.95}
 function tendFor(d){const mine=player.side?d.team===player.side:d.team==='A';return mine?AI.mine:AI.enemy}
 function enemiesOf(d){const f=d.fight;return f?(d.team==='A'?f.B:f.A).filter(x=>!x.dead&&x.fight===f):[]}
@@ -3108,7 +3122,7 @@ function pickTarget(d,en,T){
 }
 function applyHit(a,t){
   const base=a.lion?4.5:a.species==='human'?3.0:a.species==='cat'?1.7:2.0;
-  const dmg=base*rand(0.7,1.3)*Math.pow(Math.max(0.3,a.k)/Math.max(0.3,t.k),0.6)*(a.stamina<20?0.7:1)*(a.name==='콩이'?2.2:1)/(t.name==='콩이'?3:1)/(t.lion?2.5:1)*warMul(a,t);
+  const dmg=base*rand(0.7,1.3)*Math.pow(Math.max(0.3,a.k)/Math.max(0.3,t.k),0.6)*(a.stamina<20?0.7:1)*(a.name==='콩이'?2.2:1)/(t.name==='콩이'?3:1)/(t.lion?2.5:1)*warMul(a,t)*profAtk(a)*(!a.weapon&&skillsOf(a,'none').length?1.25:1)/profDef(t);
   t.stamina-=dmg;t.health=Math.max(0,t.health-dmg*0.5);t.happy=clamp(t.happy-dmg*0.35);
   a.stamina-=0.6;a.happy=clamp(a.happy-0.25);return dmg;
 }
@@ -4538,7 +4552,7 @@ function syncCards(){
     const hot=!!d.fight;if(c.hot!==hot){c.hot=hot;R.st.classList.toggle('hot',hot)}
     if(CARDS.rows){const v=[d.happy,d.health,d.stamina];for(let i=0;i<3;i++){const r=Math.round(v[i]);if(c['n'+i]!==r){c['n'+i]=r;R.nums[i].textContent=r;R.nums[i].style.color=barColor(r,false)}}continue}
     const Bd=BREEDS[d.breed],meta=`${d.sex==='f'?'♀':'♂'} ${Bd?Bd.n:''} · ${fmtAge(d.age)} · ⚽${ovr(d)}${d.stray?' · 침입 길고양이':''}${d.pregnant?` · 🤰 임신 ${Math.floor((world.t-d.pregnant.start)/1440)}일째`:''}`;
-    if(c.meta!==meta){c.meta=meta;R.meta.textContent=meta;d.card.title=`능력치 · ${skillLine(d)}`}
+    if(c.meta!==meta){c.meta=meta;R.meta.textContent=meta}{const tt=`능력치 · ${skillLine(d)}${profTag(d)?` · 🎯 ${profTag(d)}`:''}`;if(c.tt!==tt){c.tt=tt;d.card.title=tt}}
     const vals=[d.hunger,d.thirst,Math.max(d.pee,d.poo),d.happy,d.health,d.stamina];
     for(let i=0;i<6;i++){const r=Math.round(vals[i]);if(c['n'+i]===r)continue;c['n'+i]=r;R.fills[i].style.width=r+'%';R.fills[i].style.background=barColor(r,i<3);R.nums[i].textContent=r}
   }
@@ -5227,7 +5241,7 @@ const TERRAIN={plain:{n:'🌾 평지',col:'#a9cf7a'},mountain:{n:'⛰ 산악',co
   coast:{n:'🌊 해안',col:'#cfe3a5',sea:true,note:'전투함·항공모함 사용 가능'},island:{n:'🏝 섬',col:'#f0d68a',sea:true,needBoat:true,note:'전투함·항공모함이나 전투기가 있어야 갈 수 있어요'}};
 const WAR_DIFF={easy:{n:'쉬움',inc:3000,atk:0.06,me:0.3,keep:0,ai:0.8},normal:{n:'보통',inc:6000,atk:0.12,me:0.5,keep:0.35,ai:1},hard:{n:'어려움',inc:12000,atk:0.22,me:0.7,keep:0.6,ai:1.25}};
 const AI_OWNERS=['바둑이','흰둥이','누렁이','점박이','깜순이','복실이','해피','메리','쫑이','방울이','진돌이','삽살이'];
-const WAR_KEYS=['species','breed','color','sex','age','name','skills','lifespan','temper','happy','health','hunger','thirst','stamina','id','mom','dad','gen','mate','weapon','lastBirth','pregnant','lg','everBred','bredIn','fertileSeen','oid','ally'];
+const WAR_KEYS=['species','breed','color','sex','age','name','skills','lifespan','temper','happy','health','hunger','thirst','stamina','id','mom','dad','gen','mate','weapon','lastBirth','pregnant','lg','everBred','bredIn','fertileSeen','oid','ally','prof'];
 const warOn=()=>!!(world&&world.war&&world.war.on);
 const myHouses=()=>world.war.houses.filter(h=>h.owner==='me');
 const houseById=id=>world.war.houses.find(h=>h.id===id);
@@ -5249,7 +5263,10 @@ function houseDogCount(h){return h.id===world.war.active?dogs.filter(d=>!d.dead&
 const NET_MAX=500; // armies or houses of 500+ animals are treated as cheating and blocked
 const NET={on:false,db:null,room:null,user:null,uid:null,nick:'',players:{},peers:new Set(),attacks:{},myList:[],applied:new Set(),told:new Set(),idOf:{},taken:new Set(),since:0,pubT:0,lastPub:'',unsub:[],seq:0};
 function netStatus(t,bad){$$('[data-netstatus]').forEach(e=>{e.textContent=t;e.classList.toggle('bad',!!bad)})}
-function netNick(){const v=($('[data-nick]')||{}).value;if(v&&v.trim())return v.trim().slice(0,12);return NET.nick||('멍멍이'+Math.floor(rand(100,999)))}
+const BAD_NICK=[/n[\W_]*[i1!|l][\W_]*g[\W_]*g/i,/n[\W_]*[i1!|l][\W_]*g[\W_]*[e3a@]?[\W_]*r/i,/f[\W_]*a[\W_]*g/i,/r[\W_]*e[\W_]*t[\W_]*a[\W_]*r[\W_]*d/i,/깜[\W_]*둥/,/흑[\W_]*형/,/니[\W_]*거/,/시[\W_]*발|씨[\W_]*발|ㅅ[\W_]*ㅂ/,/병[\W_]*신|ㅂ[\W_]*ㅅ/,/좆|존[\W_]*나/,/개[\W_]*새/,/느[\W_]*금/,/짱[\W_]*깨|쪽[\W_]*바리|조[\W_]*센[\W_]*징/];
+function nickBad(v){return BAD_NICK.some(r=>r.test(String(v||'').replace(/\s+/g,'')))}
+function safeNick(v){return nickBad(v)?'(금지된 닉네임)':v}
+function netNick(){const v=($('[data-nick]')||{}).value;if(v&&v.trim()){if(nickBad(v)){toast('🚫 욕설·차별 표현은 닉네임으로 쓸 수 없어요. 다른 닉네임을 써 주세요',true);$$('[data-nick]').forEach(x=>x.value='');return '멍멍이'+Math.floor(rand(100,999))}return v.trim().slice(0,12)}return NET.nick||('멍멍이'+Math.floor(rand(100,999)))}
 function netOff(msg){netStatus(msg,true);$$('[data-online]').forEach(x=>x.checked=false)}
 async function netStart(){
   if(NET.on||NET.starting||!warOn())return;
@@ -5312,7 +5329,7 @@ function netSync(){
       if(!h){const used=new Set(W.houses.filter(x=>x.online).map(x=>x.slot));let slot=0;while(used.has(slot))slot++;
         h={id:W.hid++,online:true,owner:'online',uid,k:ph.k,slot,cap:99,color:'#2f7fd0',dogs:[],money:0,x:70+(slot%9)*107,y:668+Math.floor(slot/9)*95,terrain:'plain'};NET.idOf[key]=h.id;W.houses.push(h)}
       if(W.battle&&W.battle.h===h)return;
-      h.nick=String(P.nick||'플레이어').slice(0,12);h.name=`🌐 ${h.nick}의 ${String(ph.name||'집').replace(/^🌐 /,'').slice(0,16)}`;h.terrain=TERRAIN[ph.terrain]?ph.terrain:'plain';
+      h.nick=safeNick(String(P.nick||'플레이어').slice(0,12));h.name=`🌐 ${h.nick}의 ${String(ph.name||'집').replace(/^🌐 /,'').slice(0,16)}`;h.terrain=TERRAIN[ph.terrain]?ph.terrain:'plain';
       h.n=netNum(ph.n,0,1e7,0);h.banned=!!ph.banned||h.n>=NET_MAX||(Array.isArray(ph.dogs)&&ph.dogs.length>=NET_MAX);h.last=hs.length<=1;
       const m=+P.money,total=m<0?200000:netNum(m,0,1e12,0);h.money=h.last?total:Math.round(total/hs.length);
       const sig=JSON.stringify(ph.dogs||[]);if(h.sig!==sig){h.sig=sig;h.dogs=h.banned||!Array.isArray(ph.dogs)?[]:ph.dogs.slice(0,60).map(netClean).filter(Boolean);h.snapOids=h.dogs.map(o=>o.oid)}
@@ -5353,7 +5370,7 @@ function netIncoming(){
   if(!NET.on||!warOn())return;
   for(const [auid,doc] of Object.entries(NET.attacks)){if(auid===NET.uid||!doc||!Array.isArray(doc.list))continue;
     for(const e of doc.list.slice(-20)){if(!e||e.to!==NET.uid||typeof e.id!=='string')continue;const key=auid+':'+e.id;if((+e.sent||0)<NET.since-60000||NET.applied.has(key))continue;
-      const nick=String(e.nick||'플레이어').slice(0,12),n=netNum(e.n,0,1e7,0),h=houseById(+e.k),hn=h&&h.owner==='me'?h.name:'우리 집';
+      const nick=safeNick(String(e.nick||'플레이어').slice(0,12)),n=netNum(e.n,0,1e7,0),h=houseById(+e.k),hn=h&&h.owner==='me'?h.name:'우리 집';
       if(n>=NET_MAX){NET.applied.add(key);warSnack(`🚫 🌐 ${nick}님이 보낸 ${n}마리 부대는 사기 부대라서 막았어요`,null,8);warLog(`🚫 ${nick}님의 사기 부대(${n}마리) 차단`,'');continue}
       if(e.state==='march'&&!NET.told.has(key)){NET.told.add(key);warSnack(`🚨 🌐 ${nick}님의 군대 ${n}마리(${String(e.units||'').slice(0,80)})가 ${hn}(으)로 진격 중!`,[{t:'🗺 지도 보기',f:openMap}],12);warLog(`🚨 🌐 ${nick} → ${hn} 침략 시작`,'bad');if(soundOn){blip(660,0.2,0.08);setTimeout(()=>blip(440,0.3,0.08),220)}}
       else if(e.state==='recalled'){NET.applied.add(key);warSnack(`↩ 🌐 ${nick}님의 군대가 되돌아갔어요`)}
@@ -5452,7 +5469,8 @@ function startWarOnly(){
 }
 /* ---------- setup ---------- */
 function warCount(){return clamp(Math.round(+$('[data-warcount]').value)||40,5,200)}
-function initWar(diff,size,count){
+let WAR_INIT_DIFF=null;
+function initWar(diff,size,count){WAR_INIT_DIFF=diff;
   const W={on:true,diff,houses:[],armies:[],armory:{},active:0,aiT:0,crowdT:0,battle:null,log:[],seq:1,inf:size==='inf'||size==='rep',rep:size==='rep',n:clamp(Math.round(count)||40,5,200),chunks:{'0,0':1},zones:[],view:{x:0,y:0,k:1},hid:10};
   // houses are spread by population: each region's chance is its population (millions), so crowded regions get several houses
   const names=AI_OWNERS.slice().sort(()=>Math.random()-0.5),spots=worldSpots(W.n,0,0,[[852.8,196.4,'plain','한반도']]);
@@ -5468,6 +5486,9 @@ function initWar(diff,size,count){
 function aiArm(h,frac){ // AI spends some money on weapons for its dogs (cheap ones first, boats for island houses)
   const pickW=()=>{const pool=['rifle','rifle','mg','bazooka','tank','fighter'].concat(TERRAIN[h.terrain].sea?['warship','carrier']:[]);return pick(pool)};
   for(const d of h.dogs){if(d.weapon||Math.random()>0.6)continue;const w=pickW(),c=WEAPONS[w].cost;if(h.money*frac>=c){h.money-=c;d.weapon=w}}
+  // AI houses train too: their dogs get some proficiency depending on the difficulty
+  const D=(world.war&&world.war.diff)||WAR_INIT_DIFF||'normal',[lo,hi]=D==='easy'?[0,25]:D==='hard'?[30,75]:[10,45];
+  for(const d of h.dogs){const k=wtOf(d);d.prof=d.prof||{};if(d.prof[k]==null)d.prof[k]=Math.round(rand(lo,hi))}
 }
 /* ---------- power & battles ---------- */
 function unitPower(d,terrain,fresh){
@@ -5475,7 +5496,7 @@ function unitPower(d,terrain,fresh){
   if(d.weapon==='tank'&&T.tank){atk*=T.tank;def*=T.tank}
   if(W&&W.kind==='sea'&&!T.sea){atk*=0.35;def*=0.5}
   const sp=d.species==='cat'?0.8:d.species==='human'?1.2:1,k=Math.pow(BREEDS[d.breed]?BREEDS[d.breed].k:1,0.6),ag=d.age<1?0.35:1;
-  return sp*k*ag*(fresh?1:(0.45+0.55*(d.stamina||70)/100)*(0.5+0.5*(d.health||80)/100))*atk*Math.sqrt(def)*(d.name==='콩이'?3:1);
+  return (1+0.5*profOf(d))*sp*k*ag*(fresh?1:(0.45+0.55*(d.stamina||70)/100)*(0.5+0.5*(d.health||80)/100))*atk*Math.sqrt(def)*(d.name==='콩이'?3:1);
 }
 const armyPower=(list,t,fresh)=>list.reduce((a,d)=>a+unitPower(d,t,fresh),0);
 function canReach(list,terrain){if(!TERRAIN[terrain].needBoat)return true;return list.some(d=>d.weapon&&['warship','carrier','fighter'].includes(d.weapon))}
@@ -5823,51 +5844,51 @@ function gunSound(type){if(!soundOn||speed>4||performance.now()-sndT<55)return;s
 function explode(x,y,z,r){addFx('blast',x,y,z,r*1.5);addFx('flash',x,y,z,r*2.1);for(let i=0;i<3;i++)addFx('smoke',x+rand(-r,r)*0.4,y+rand(0.1,0.4),z+rand(-r,r)*0.4,r*rand(0.7,1.1));gunSound('boom')}
 function shotDamage(a,t,k,wk){
   if(!t||t.dead||!t.fight)return;const saved=a.weapon;a.weapon=wk; // the projectile carries the weapon it was fired from
-  const dmg=2.0*rand(0.7,1.3)*warMul(a,t)*k/(t.name==='콩이'?3:1)/(t.lion?2.5:1);a.weapon=saved;const SS=world.shotStat=world.shotStat||{};SS['dmg'+a.team]=(SS['dmg'+a.team]||0)+dmg;SS['hit'+a.team]=(SS['hit'+a.team]||0)+1;
+  const dmg=2.0*rand(0.7,1.3)*warMul(a,t)*k*profAtk(a,wk)/profDef(t)/(t.name==='콩이'?3:1)/(t.lion?2.5:1);a.weapon=saved;const SS=world.shotStat=world.shotStat||{};SS['dmg'+a.team]=(SS['dmg'+a.team]||0)+dmg;SS['hit'+a.team]=(SS['hit'+a.team]||0)+1;
   t.stamina-=dmg;t.health=Math.max(0,t.health-dmg*0.5);t.happy=clamp(t.happy-dmg*0.3);hitFx(t);
   if(t.stamina<=0||t.health<=0){const veh=WEAPONS[t.weapon]&&WEAPONS[t.weapon].veh;if(veh)explode(t.pos.x,bodyY(t),t.pos.y,0.8);die(t,'싸움')}
 }
-function fireWeapon(d,t,moving,missile){
-  const Wp=WEAPONS[d.weapon],G=shotGeos(),type=missile?'rocket':Wp.proj,from=muzzleOf(d),td=dist(d,t);
+function fireWeapon(d,t,moving,missile,spec){
+  const Wp=WEAPONS[d.weapon],G=shotGeos(),type=spec?spec.type:missile?'rocket':Wp.proj,from=muzzleOf(d),td=dist(d,t),P=profOf(d,d.weapon);
   d.lastAct=world.t;const SS=world.shotStat=world.shotStat||{};SS['fire'+d.team]=(SS['fire'+d.team]||0)+1;
-  let ch=(missile?0.8:Wp.acc)*(1-0.35*clamp(td/Wp.range,0,1))*(moving?0.6:1)*((t.speed||0)>1.5?0.8:1);if(isAir(t))ch*=missile?0.9:Wp.aa;
+  let ch=(spec?spec.acc:missile?0.8:Wp.acc)*(1-0.35*clamp(td/(spec?spec.range:Wp.range),0,1))*(moving?0.6:1)*((t.speed||0)>1.5?0.8:1);if(isAir(t))ch*=spec?(spec.tgt==='air'?1:0.3):missile?0.9:Wp.aa;ch=Math.min(0.97,ch*(1+0.3*P)); // trained shooters hit more often
   const hit=Math.random()<ch,ty=bodyY(t),off=hit?0:rand(0.5,1.3)*(Math.random()<0.5?-1:1);
   const ax=t.pos.x-d.pos.x,az=t.pos.y-d.pos.y,l=Math.hypot(ax,az)||1,tx=t.pos.x-az/l*off+(hit?0:ax/l*rand(0,1.5)),tz=t.pos.y+ax/l*off+(hit?0:az/l*rand(0,1.5));
-  const m=new THREE.Mesh(type==='bullet'?G.bullet:type==='rocket'||type==='plane'?G.rocket:G.shell,type==='bullet'?G.mBullet:type==='rocket'||type==='plane'?G.mRocket:G.mShell);
-  if(type==='plane'){m.scale.set(2.2,1.2,2.2)}m.position.copy(from);scene.add(m);
-  const sp=type==='bullet'?26:type==='rocket'?9:type==='shell'?17:type==='arc'?8:5.5;
+  const rk=type==='rocket'||type==='plane'||type==='cruise',m=new THREE.Mesh(type==='bullet'?G.bullet:rk?G.rocket:G.shell,type==='bullet'?G.mBullet:rk?G.mRocket:G.mShell);
+  if(type==='plane'){m.scale.set(2.2,1.2,2.2)}if(type==='cruise')m.scale.set(1.8,1.8,1.8);m.position.copy(from);scene.add(m);
+  const sp=type==='bullet'?26:type==='rocket'?9:type==='shell'?17:type==='arc'?8:type==='cruise'?7:5.5;
   shots.push({m,type,from:d,side:d.team,fight:d.fight,target:t,hit,x:from.x,y:from.y,z:from.z,x0:from.x,y0:from.y,z0:from.z,tx,ty:type==='bullet'||type==='rocket'||type==='shell'?ty:0.05,tz,sp,p:0,len:Math.max(0.3,Math.hypot(tx-from.x,tz-from.z)),
-    k:missile?3:Wp.k,splash:missile?0.7:Wp.splash||0,wk:d.weapon,smokeT:0});
+    k:spec?spec.k:missile?3:Wp.k,splash:spec?spec.splash||0:missile?0.7:Wp.splash||0,wk:d.weapon,smokeT:0,slow:!!(spec&&spec.slow)});
   addFx('flash',from.x,from.y,from.z,type==='bullet'?0.35:0.8);if(type!=='bullet')addFx('smoke',from.x,from.y,from.z,0.5);if(type==='shell'||type==='arc')addFx('dust',d.pos.x,0.08,d.pos.y,0.9);
   d.recoil=type==='bullet'?0.5:1;if(d.root)d.root.userData.barkPulse=type==='bullet'?0.4:1;gunSound(type==='arc'||type==='shell'||type==='plane'?'shell':type);d.stamina-=0.05;
 }
 function updateShots(dt){
   for(let i=shots.length-1;i>=0;i--){const s=shots[i],t=s.target;
-    if(s.hit&&t&&!t.dead&&(s.type==='rocket'||s.type==='plane')){s.tx+=(t.pos.x-s.tx)*Math.min(1,dt*4);s.tz+=(t.pos.y-s.tz)*Math.min(1,dt*4);if(s.type==='rocket')s.ty=bodyY(t);s.len=Math.max(0.3,Math.hypot(s.tx-s.x0,s.tz-s.z0))} // guided
+    if(s.hit&&t&&!t.dead&&(s.type==='rocket'||s.type==='plane'||s.type==='cruise')){s.tx+=(t.pos.x-s.tx)*Math.min(1,dt*4);s.tz+=(t.pos.y-s.tz)*Math.min(1,dt*4);if(s.type==='rocket')s.ty=bodyY(t);s.len=Math.max(0.3,Math.hypot(s.tx-s.x0,s.tz-s.z0))} // guided
     s.p=Math.min(1,s.p+s.sp*dt/s.len);const p=s.p;s.x=s.x0+(s.tx-s.x0)*p;s.z=s.z0+(s.tz-s.z0)*p;
-    s.y=s.type==='arc'?s.y0+(s.ty-s.y0)*p+Math.sin(p*Math.PI)*Math.min(2.4,s.len*0.35):s.type==='plane'?1.7:s.y0+(s.ty-s.y0)*p;
-    s.m.position.set(s.x,s.y,s.z);s.m.rotation.set(0,-Math.atan2(s.tz-s.z0,s.tx-s.x0),s.type==='rocket'||s.type==='plane'?Math.PI/2:0);
-    if(s.type==='rocket'||s.type==='plane'){s.smokeT-=dt;if(s.smokeT<=0){s.smokeT=0.05;addFx('smoke',s.x,s.y,s.z,0.22)}}
+    s.y=s.type==='arc'?s.y0+(s.ty-s.y0)*p+Math.sin(p*Math.PI)*Math.min(2.4,s.len*0.35):s.type==='cruise'?s.y0+(s.ty-s.y0)*p+Math.sin(p*Math.PI)*Math.min(6,1.5+s.len*0.25):s.type==='plane'?1.7:s.y0+(s.ty-s.y0)*p;
+    s.m.position.set(s.x,s.y,s.z);s.m.rotation.set(0,-Math.atan2(s.tz-s.z0,s.tx-s.x0),s.type==='rocket'||s.type==='plane'||s.type==='cruise'?Math.PI/2:0);
+    if(s.type==='rocket'||s.type==='plane'||s.type==='cruise'){s.smokeT-=dt;if(s.smokeT<=0){s.smokeT=0.05;addFx('smoke',s.x,s.y,s.z,0.22)}}
     if(p<1)continue;
     scene.remove(s.m);shots.splice(i,1);const live=s.fight&&!s.fight.ended;
     if(s.splash){explode(s.tx,s.type==='rocket'&&t&&isAir(t)?s.ty:0.15,s.tz,s.splash);if(!live)continue;
       const en=(s.side==='A'?s.fight.B:s.fight.A).filter(x=>!x.dead&&x.fight===s.fight);
       for(const e of en){const dd=Math.hypot(e.pos.x-s.tx,e.pos.y-s.tz);if(isAir(e)&&e!==t)continue;if(e===t&&s.hit&&dd<s.splash+0.6)shotDamage(s.from,e,s.k,s.wk);else if(dd<s.splash)shotDamage(s.from,e,s.k*0.5*(1-dd/s.splash*0.5),s.wk)}}
-    else{if(s.hit&&live&&t&&!t.dead&&Math.hypot(t.pos.x-s.tx,t.pos.y-s.tz)<1.1){shotDamage(s.from,t,s.k,s.wk);const ax=s.tx-s.x0,az=s.tz-s.z0,l=Math.hypot(ax,az)||1;if(!(WEAPONS[t.weapon]&&WEAPONS[t.weapon].veh)){t.pos.x+=ax/l*0.04;t.pos.y+=az/l*0.04}}
+    else{if(s.hit&&live&&t&&!t.dead&&Math.hypot(t.pos.x-s.tx,t.pos.y-s.tz)<1.1){shotDamage(s.from,t,s.k,s.wk);if(s.slow)t.slowUntil=world.t+2.5;const ax=s.tx-s.x0,az=s.tz-s.z0,l=Math.hypot(ax,az)||1;if(!(WEAPONS[t.weapon]&&WEAPONS[t.weapon].veh)){t.pos.x+=ax/l*0.04;t.pos.y+=az/l*0.04}}
       else addFx('dust',s.tx,0.05,s.tz,0.25)}
   }
 }
 function clearShots(){for(const s of shots)scene.remove(s.m);shots.length=0;for(const f of fxs){scene.remove(f.m);f.m.material.dispose()}fxs.length=0}
 // armed units keep their distance and shoot; returns whether the unit is moving, or null to fall back to biting
 function rangedAI(d,t,td,dt,sp,aggr){
-  const Wp=WEAPONS[d.weapon];if(!Wp||!Wp.range)return null;
+  const Wp=WEAPONS[d.weapon];if(!Wp||!Wp.range)return null;specialFire(d,dt);
   if(d.weapon==='fighter'){ // strafing passes: fly over the target, turn round, come back
     if(!d.way||Math.hypot(d.way.x-d.pos.x,d.way.z-d.pos.y)<0.7||(d.wayT=(d.wayT||0)-dt)<=0){const a=rand(0,6.283),r=rand(2.6,4.2);d.way={x:clamp(t.pos.x+Math.cos(a)*r,B.minx+0.3,B.maxx-0.3),z:clamp(t.pos.y+Math.sin(a)*r,B.minz+0.3,B.maxz-0.3)};d.wayT=4}
     const aimAt=td<Wp.range&&td>1.2&&Math.random()<0.6?t.pos:null,gx=aimAt?t.pos.x:d.way.x,gz=aimAt?t.pos.y:d.way.z,want=Math.atan2(gz-d.pos.y,gx-d.pos.x);let dh=want-d.heading;while(dh>Math.PI)dh-=6.283;while(dh<-Math.PI)dh+=6.283;
     const turn=clamp(dh,-2.6*dt,2.6*dt);d.heading+=turn;d.bank=(d.bank||0)+(clamp(-turn/Math.max(dt,1e-4)*0.28,-0.7,0.7)-(d.bank||0))*Math.min(1,dt*6);
     d.pos.x=clamp(d.pos.x+Math.cos(d.heading)*sp*dt,B.minx+0.2,B.maxx-0.2);d.pos.y=clamp(d.pos.y+Math.sin(d.heading)*sp*dt,B.minz+0.2,B.maxz-0.2);d.speed=sp;
     const toT=Math.atan2(t.pos.y-d.pos.y,t.pos.x-d.pos.x);let da=toT-d.heading;while(da>Math.PI)da-=6.283;while(da<-Math.PI)da+=6.283;
-    if(Math.abs(da)<0.3&&td<Wp.range&&td>0.8){if(d.atkCD<=0){fireWeapon(d,t,false);d.atkCD=Wp.cd}d.mslCD=(d.mslCD||2)-dt;if(d.mslCD<=0){fireWeapon(d,t,false,true);d.mslCD=Wp.msl*rand(0.8,1.3)}}
+    if(Math.abs(da)<0.3&&td<Wp.range&&td>0.8){if(d.atkCD<=0){fireWeapon(d,t,false);d.atkCD=Wp.cd*(1-0.3*profOf(d))}d.mslCD=(d.mslCD||2)-dt;if(d.mslCD<=0){fireWeapon(d,t,false,true);d.mslCD=Wp.msl*rand(0.8,1.3)}}
     return true}
   const melee=!(WEAPONS[t.weapon]&&WEAPONS[t.weapon].range),minR=Wp.min||0;
   if(td>Wp.range*0.9){steer(d,t.pos.x,t.pos.y,sp*(0.75+0.25*aggr),dt);return true}
@@ -5885,7 +5906,7 @@ function rangedAI(d,t,td,dt,sp,aggr){
     if(nx>B.minx+0.4&&nx<B.maxx-0.4&&nz>B.minz+0.4&&nz<B.maxz-0.4){const h0=d.heading;steer(d,nx,nz,sp*0.55,dt);d.heading=h0;face(d,t.pos.x,t.pos.y,dt*6);moving=true}}
   if(!moving)d.speed=0;
   const toT=Math.atan2(t.pos.y-d.pos.y,t.pos.x-d.pos.x);let da=toT-d.heading;while(da>Math.PI)da-=6.283;while(da<-Math.PI)da+=6.283;
-  if(d.atkCD<=0&&(d.gearT||Math.abs(da)<0.5)){fireWeapon(d,t,moving);d.atkCD=Wp.cd*rand(0.85,1.2)/Math.max(0.7,aggr)}
+  if(d.atkCD<=0&&(d.gearT||Math.abs(da)<0.5)){fireWeapon(d,t,moving);d.atkCD=Wp.cd*rand(0.85,1.2)/Math.max(0.7,aggr)*(1-0.3*profOf(d))}
   return moving;
 }
 // turret tracking, recoil, tracks, banking, bobbing on water
@@ -6205,6 +6226,47 @@ function renderMap(){
   renderMapSide();
 }
 
+
+/* ======================= MILITARY TRAINING: proficiency per weapon, unlockable special attacks ======================= */
+// proficiency 0~100 per weapon (맨몸 included): more damage, less damage taken, faster and more accurate fire
+function profOf(d,k){return (((d&&d.prof)||{})[k||wtOf(d)]||0)/100}
+function profAtk(d,k){return 1+0.6*profOf(d,k)}           // up to +60% damage dealt
+function profDef(d){return 1+0.5*profOf(d,wtOf(d))}       // up to 1/1.5 of the damage taken
+const SKILLS={
+  none:[{lv:50,id:'fury',n:'🐾 연속 물기',passive:true,desc:'맨몸 공격이 25% 더 세져요'}],
+  rifle:[{lv:30,id:'grenade',n:'💣 수류탄',cd:7,range:3.6,min:1,k:2.2,splash:0.9,type:'arc',tgt:'ground',acc:0.8},{lv:70,id:'snipe',n:'🎯 저격',cd:6,range:7.5,k:4,type:'bullet',tgt:'any',acc:0.95,pick:'strong'}],
+  mg:[{lv:30,id:'aaburst',n:'🛩 대공 사격',cd:2.5,range:5.5,k:1.1,type:'bullet',tgt:'air',acc:0.7,burst:3},{lv:70,id:'suppress',n:'🔥 제압 사격',cd:5,range:5,k:0.5,type:'bullet',tgt:'ground',acc:0.6,burst:6,slow:true}],
+  bazooka:[{lv:30,id:'sam',n:'🚀 대공 미사일',cd:8,range:7.5,k:4.2,type:'rocket',tgt:'air',acc:0.9},{lv:70,id:'atgm',n:'💥 대전차 미사일',cd:7,range:7.5,k:4.8,splash:0.5,type:'rocket',tgt:'veh',acc:0.9,pick:'strong'}],
+  tank:[{lv:30,id:'apfsds',n:'🎯 주포 철갑탄',cd:5,range:7.5,k:5.2,type:'shell',tgt:'veh',acc:0.9,pick:'strong'},{lv:60,id:'tankaa',n:'🛩 대공 기관포',cd:2.5,range:5.5,k:1.2,type:'bullet',tgt:'air',acc:0.7,burst:3}],
+  fighter:[{lv:30,id:'agm',n:'🚀 대지 미사일',cd:7,range:6.5,k:4.6,splash:0.8,type:'rocket',tgt:'ground',acc:0.9,pick:'strong'},{lv:70,id:'aam',n:'✈ 공대공 미사일',cd:6,range:7.5,k:5,type:'rocket',tgt:'air',acc:0.92}],
+  warship:[{lv:30,id:'shipsam',n:'🛩 함대공 미사일',cd:7,range:9,k:4.2,type:'rocket',tgt:'air',acc:0.9},{lv:70,id:'cruise',n:'🎇 순항 미사일',cd:14,range:40,k:7,splash:1.8,type:'cruise',tgt:'ground',acc:0.95,pick:'strong'}],
+  carrier:[{lv:40,id:'cruise',n:'🎇 순항 미사일',cd:12,range:40,k:7,splash:1.8,type:'cruise',tgt:'ground',acc:0.95,pick:'strong'},{lv:80,id:'wing',n:'🛫 함재기 편대',cd:9,range:14,k:3.2,splash:0.8,type:'plane',tgt:'any',acc:0.85,burst:2}],
+};
+function skillsOf(d,k){k=k||wtOf(d);const p=((d.prof||{})[k]||0);return (SKILLS[k]||[]).filter(S=>p>=S.lv)}
+function trainGain(d,dt){
+  const k=wtOf(d);d.prof=d.prof||{};const p0=d.prof[k]||0;if(p0>=100)return;const p1=Math.min(100,p0+dt*1.1*(1-p0/120)*(d.age<1?0.5:1));d.prof[k]=p1;
+  for(const S of SKILLS[k]||[])if(p0<S.lv&&p1>=S.lv){log(`🔓 ${d.name}${josa(d.name,'이','가')} ${k==='none'?'맨몸':WEAPONS[k].n} 숙련 ${S.lv}을 넘어 '${S.n}'${josa(S.n.replace(/[^가-힣]/g,'')||'기','을','를')} 해금했어요!`,'good',true);toast(`🔓 ${d.name}: ${S.n} 해금!`,false,true);if(soundOn){blip(880,0.08,0.06);setTimeout(()=>blip(1320,0.12,0.06),90)}}
+  if(Math.floor(p0/10)!==Math.floor(p1/10))world.cardsDirty=world.cardsDirty||false;
+}
+// fires the unlocked special attacks when a suitable target is in range
+function specialFire(d,dt){
+  const k=wtOf(d),L=skillsOf(d,k).filter(S=>!S.passive);if(!L.length||!d.fight)return;const f=d.fight,en=(d.team==='A'?f.B:f.A).filter(x=>!x.dead&&x.fight===f);if(!en.length)return;
+  d.skCD=d.skCD||{};
+  for(const S of L){d.skCD[S.id]=(d.skCD[S.id]??rand(1,S.cd))-dt;if(d.skCD[S.id]>0)continue;
+    const ok=e=>S.tgt==='air'?isAir(e):S.tgt==='veh'?(!!(WEAPONS[e.weapon]&&WEAPONS[e.weapon].veh)&&!isAir(e)):S.tgt==='ground'?!isAir(e):true;
+    const c=en.filter(e=>ok(e)&&dist(d,e)<=S.range&&dist(d,e)>=(S.min||0));if(!c.length){d.skCD[S.id]=0.8;continue}
+    const t=S.pick==='strong'?c.sort((a,b)=>((WEAPONS[b.weapon]||{atk:1}).atk-(WEAPONS[a.weapon]||{atk:1}).atk)||(a.stamina-b.stamina))[0]:c.sort((a,b)=>dist(d,a)-dist(d,b))[0];
+    for(let i=0;i<(S.burst||1);i++)fireWeapon(d,t,false,false,S);d.skCD[S.id]=S.cd*(1-0.2*profOf(d,k))*rand(0.9,1.15);d.skEmo={e:S.n.split(' ')[0],until:performance.now()+1200};
+    const SS=world.shotStat=world.shotStat||{};SS[S.id]=(SS[S.id]||0)+1;
+  }
+}
+function sendToTraining(ids){
+  const L=(dev.st&&dev.st.train)||[];if(!L.length){toast('🎯 군사 훈련장이 없어요. 방 꾸미기나 건설로 먼저 지어 주세요',true);return}
+  let n=0,full=0;for(const d of dogs.filter(x=>ids.includes(x.id))){if(d.dead||d.away||d.fight||d.stray||d.enemy){continue}const S=L.filter(x=>x.users<(STDEF.train.cap||1))[0];if(!S){full++;continue}S.users++;setState(d,'idle',0.1);d.st=S;setState(d,'toSt',40);n++}
+  toast(n?`🎯 ${n}마리가 훈련장으로 가요${full?` · 자리가 없어서 ${full}마리는 다음에`:''}`:'훈련장 자리가 다 찼어요 (한 번에 '+(STDEF.train.cap*L.length)+'마리)',!n);
+}
+function profTag(d){const k=wtOf(d),p=Math.round(((d.prof||{})[k])||0),sk=skillsOf(d,k);return p?`숙련 ${p}${sk.length?' 🔓'+sk.map(S=>S.n.split(' ')[0]).join(''):''}`:''}
+function skillTableHTML(){return Object.entries(SKILLS).map(([k,L])=>`<li><b>${k==='none'?'🐕 맨몸':WEAPONS[k].n}</b> ${L.map(S=>`<span class="sk">${S.lv} → ${S.n}</span>`).join(' ')}</li>`).join('')}
 // "병과 모두 선택": one chip per unit type present; a click selects every dog of that type (click again to drop them)
 function wtOf(o){return o.weapon&&WEAPONS[o.weapon]?o.weapon:'none'}
 function typeChips(units,sel){
@@ -6273,10 +6335,10 @@ function warUI(){
   $('#warShop').innerHTML=Object.entries(WEAPONS).map(([k,w])=>`<div class="shoprow"><span>${w.n}<small> 공격 ×${w.atk} · 방어 ×${w.def}</small></span><b>${won(w.cost)}</b><span class="small">창고 ${W.armory[k]||0}</span><button class="btn" data-buy="${k}">사기</button></div>`).join('');
   $('#warShop').querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=>buyWeapon(b.dataset.buy));
   const ds=dogs.filter(d=>!d.dead&&!d.stray&&!d.enemy&&!d.away);for(const id of [...EQSEL])if(!ds.some(d=>d.id===id))EQSEL.delete(id);
-  const eqTop=$('#eqList').scrollTop;$('#eqList').innerHTML=ds.map(d=>`<label><input type="checkbox" data-eq="${d.id}"${EQSEL.has(d.id)?' checked':''}> ${esc(d.name)} <small>${d.weapon?WEAPONS[d.weapon].n:'맨몸'} · ${fmtAge(d.age)}${d.age<1?' (어려요)':''}</small></label>`).join('')||'<span class="small muted">강아지가 없어요</span>';
+  const eqTop=$('#eqList').scrollTop;$('#eqList').innerHTML=ds.map(d=>`<label><input type="checkbox" data-eq="${d.id}"${EQSEL.has(d.id)?' checked':''}> ${esc(d.name)} <small>${d.weapon?WEAPONS[d.weapon].n:'맨몸'} · ${fmtAge(d.age)}${d.age<1?' (어려요)':''}${profTag(d)?' · '+profTag(d):''}</small></label>`).join('')||'<span class="small muted">강아지가 없어요</span>';
   $('#eqList').scrollTop=eqTop;{const us=ds.map(d=>({id:d.id,o:d}));$('#eqTypes').innerHTML=typeChips(us,EQSEL);bindTypeChips($('#eqTypes'),us,EQSEL,warUI)}$('#eqList').querySelectorAll('[data-eq]').forEach(c=>c.onchange=()=>{const id=+c.dataset.eq;c.checked?EQSEL.add(id):EQSEL.delete(id);eqCount()});eqCount();
   const keepW=$('#eqW').value;$('#eqW').innerHTML='<option value="none">무장 해제</option>'+Object.entries(WEAPONS).map(([k,w])=>`<option value="${k}">${w.n} (창고 ${W.armory[k]||0} · ${won(w.cost)})</option>`).join('');if(keepW)$('#eqW').value=keepW;
-  nbUI();transferUI();$('#warArmies').dataset.sig='';warLite();
+  nbUI();transferUI();if($('#skTable')&&!$('#skTable').innerHTML)$('#skTable').innerHTML=skillTableHTML();{const L=(dev.st&&dev.st.train)||[];$('#trainInfo').textContent=L.length?`훈련장 ${L.length}곳 · 한 번에 ${L.length*STDEF.train.cap}마리`:'훈련장이 없어요';$('#trainGo').disabled=!L.length}$('#warArmies').dataset.sig='';warLite();
 }
 
 let mapT=0;
@@ -6303,12 +6365,15 @@ const STDEF={
     use:(d,dt)=>{d.happy=clamp(d.happy+dt*0.7);d.stamina=clamp(d.stamina-dt*0.03);if(Math.random()<dt*0.3&&d.root)d.root.userData.barkPulse=0.6}},
   snackbar:{lab:'🦴 간식 먹는 중',dur:[2,3],front:0.4,emo:'😋',power:'snackbar',per:1,want:d=>world.snacks>0&&(d.hunger>45||d.happy<50)&&world.t-(d.lastSnack??-1e9)>180?0.35:0,
     start:d=>{if(world.snacks<=0)return false;world.snacks--;return true},use:(d,dt)=>{d.hunger=clamp(d.hunger-dt*5);d.happy=clamp(d.happy+dt*3)},done:d=>{d.lastSnack=world.t}},
+  train:{lab:'🎯 군사훈련 중',dur:[10,20],front:0.55,cap:3,emo:'🎯',want:d=>d.age>=1&&d.stamina>45&&!d.stray&&((d.prof||{})[wtOf(d)]||0)<100?(warOn()?0.22:0.06):0,
+    use:(d,dt)=>{trainGain(d,dt);d.stamina=clamp(d.stamina-dt*0.12);d.happy=clamp(d.happy+dt*0.04);if(!world.fastNow&&Math.random()<dt*1.4){const S=d.st,fx=S&&S.it._fx;if(d.weapon){const m=muzzleOf(d);addFx('flash',m.x,m.y,m.z,0.3)}else if(d.root)d.root.userData.barkPulse=1;if(fx){const T=pick(fx.tg);T.rotation.x=-0.25;setTimeout(()=>{T.rotation.x=0},140);const wp=new THREE.Vector3();T.getWorldPosition(wp);addFx('dust',wp.x,wp.y,wp.z,0.18)}if(soundOn&&speed<=4&&d.weapon)gunSound('bullet')}},
+    done:d=>{const k=wtOf(d);log(`🎯 ${d.name} 훈련 끝 · ${k==='none'?'맨몸':WEAPONS[k].n} 숙련 ${Math.round(d.prof[k]||0)}`)}},
   agility:{lab:'🚩 어질리티 중',dur:[8,15],run:true,emo:'🏃',want:d=>d.stamina>55&&d.age>=0.5&&!isNight()?0.12:0,
     use:(d,dt)=>{d.happy=clamp(d.happy+dt*1.0);d.health=clamp(d.health+dt*0.06);d.stamina=clamp(d.stamina-dt*0.22);d.thirst=clamp(d.thirst+dt*0.06)}},
   fountain:{lab:'⛲ 분수에서 물 마시는 중',dur:[2,4],front:0.55,cap:3,emo:'💧',want:d=>d.thirst>40?0.5:d.happy<60&&!isNight()?0.06:0,
     use:(d,dt)=>{d.thirst=clamp(d.thirst-dt*12);d.happy=clamp(d.happy+dt*0.6)}},
 };
-const STATION_ORDER=['medic','fountain','snackbar','bath','agility','groom','toybox'];
+const STATION_ORDER=['medic','fountain','snackbar','bath','train','agility','groom','toybox'];
 function stationSpot(S){const D=STDEF[S.type],r=S.it.rot||0,[fx,fz]=[[0,1],[-1,0],[0,-1],[1,0]][r];if(!D.front)return {x:S.x,z:S.z};const f=FURN[S.type],half=(fx?f.w:f.d)/2;const k=S.users;return {x:S.x+fx*(half+D.front)+(fz?(k-0.5)*0.4:0),z:S.z+fz*(half+D.front)+(fx?(k-0.5)*0.4:0),face:{x:S.x,z:S.z}}}
 function stationOk(S){const D=STDEF[S.type];return !D.power||hasPower()}
 function stationFor(d){
@@ -6386,7 +6451,7 @@ function careAuto(live,aH,aS,aHe){
 
 /* ======================= CONSTRUCTION during the simulation ======================= */
 // price (won) and build time (game minutes) for each piece of furniture
-const BUILD={sofa:[60000,90],bed:[80000,120],table:[30000,45],shelf:[40000,60],tv:[120000,60],plant:[8000,15],dogbed:[15000,20],rug:[12000,15],
+const BUILD={train:[80000,90],sofa:[60000,90],bed:[80000,120],table:[30000,45],shelf:[40000,60],tv:[120000,60],plant:[8000,15],dogbed:[15000,20],rug:[12000,15],
   water:[50000,60],food:[10000,15],launcher:[45000,60],potty:[70000,90],treadmill:[90000,120],farm:[250000,360],
   bath:[120000,150],medic:[300000,240],groom:[60000,60],toybox:[20000,20],snackbar:[50000,45],kennel:[40000,60],aircon:[150000,120],purifier:[60000,30],agility:[100000,180],fountain:[80000,120]};
 let buildPick=null;
@@ -6470,7 +6535,7 @@ function buyMarket(){
 
 /* ======================= SAVE / LOAD ======================= */
 const SAVE_V=1,SAVE_SLOTS=['auto','1','2','3'];
-const ANIMAL_SKIP=new Set(['root','pose','legs','head','tail','tongue','earL','earR','emo','lbl','gear','gearHelm','gearHead','gearT','gearMz','gearW','gearLift','card','cardR','fight','ball','st','target','ftgt','way','detour','stuck','team','anim','sc','pos','fleeing','fleeT','recoil','alt','bank','vs','pHead','turn','_newKids']);
+const ANIMAL_SKIP=new Set(['skCD','skEmo','slowUntil','root','pose','legs','head','tail','tongue','earL','earR','emo','lbl','gear','gearHelm','gearHead','gearT','gearMz','gearW','gearLift','card','cardR','fight','ball','st','target','ftgt','way','detour','stuck','team','anim','sc','pos','fleeing','fleeT','recoil','alt','bank','vs','pHead','turn','_newKids']);
 // keeps only plain data (numbers, strings, plain objects/arrays): drops 3D objects and live references
 function plainData(v,depth){
   if(v===null||typeof v==='number'||typeof v==='string'||typeof v==='boolean')return v;if(typeof v!=='object'||depth>8)return undefined;
@@ -6832,7 +6897,7 @@ $('#bgBtn').onclick=()=>{ac();if(world)startBoard($('#bgGame').value,+$('#bgLen'
 $$('[data-online]').forEach(c=>c.addEventListener('change',e=>{const on=e.target.checked;$$('[data-online]').forEach(x=>x.checked=on);
   if(world&&warOn()){on?netStart():netStop()}else netStatus(on?'전쟁이 시작되면 온라인이 켜져요':'꺼짐')}));
 {let v='';try{v=localStorage.getItem('mungNick')||''}catch(_){}$$('[data-nick]').forEach(x=>x.value=v)}
-$$('[data-nick]').forEach(c=>c.addEventListener('change',e=>{const v=e.target.value.trim().slice(0,12);$$('[data-nick]').forEach(x=>x.value=v);try{localStorage.setItem('mungNick',v)}catch(_){}
+$$('[data-nick]').forEach(c=>c.addEventListener('change',e=>{let v=e.target.value.trim().slice(0,12);if(nickBad(v)){toast('🚫 욕설·차별 표현은 닉네임으로 쓸 수 없어요',true);v=''}$$('[data-nick]').forEach(x=>x.value=v);try{localStorage.setItem('mungNick',v)}catch(_){}
   if(v)NET.nick=v;if(NET.on){NET.room.presence({war:true,nick:NET.nick}).catch(()=>{});netPublish(true)}}));
 $$('[data-pan]').forEach(b=>b.onclick=()=>{const [x,y]=b.dataset.pan.split(',').map(Number);panMap(x*400,y*260)});
 $('#mapHome').onclick=()=>{const W=world.war,h=activeHouse();if(!W||!h)return;const k=W.view.k||1;W.view.x=h.x-500/k;W.view.y=h.y-300/k;renderMap()};
@@ -6855,7 +6920,7 @@ $$('[data-warkeep]').forEach(c=>c.addEventListener('change',e=>{$$('[data-warkee
 try{if(localStorage.getItem('mh_warkeep')==='1')$$('[data-warkeep]').forEach(x=>x.checked=true)}catch(_){}
 $$('[data-warsize]').forEach(c=>c.addEventListener('change',e=>$$('[data-warsize]').forEach(x=>x.value=e.target.value)));$$('[data-warcount]').forEach(c=>c.addEventListener('change',e=>{const v=clamp(Math.round(+e.target.value)||40,5,200);$$('[data-warcount]').forEach(x=>x.value=v)}));$('#mapBtn2').onclick=()=>{if(!warOn()){toast('먼저 ⚔ 전쟁 허용을 켜 주세요',true);return}openMap()};
 $('#mapClose').onclick=()=>{$('#warMap').hidden=true};$('#warMap').addEventListener('click',e=>{if(e.target.id==='warMap')$('#warMap').hidden=true});
-$('#eqGo').onclick=()=>equipMany([...EQSEL],$('#eqW').value,$('#eqBuy').checked);$('#eqAuto').onclick=autoArm;
+$('#eqGo').onclick=()=>equipMany([...EQSEL],$('#eqW').value,$('#eqBuy').checked);$('#eqAuto').onclick=autoArm;$('#trainGo').onclick=()=>{if(!EQSEL.size){toast('훈련 보낼 강아지를 골라 주세요',true);return}sendToTraining([...EQSEL])};
 $('#tfFrom').onchange=()=>{TFSEL.clear();if($('#tfTo').value===$('#tfFrom').value){const o=world.war.houses.find(h=>h.owner==='me'&&String(h.id)!==$('#tfFrom').value);if(o)$('#tfTo').value=String(o.id)}transferUI()};$('#tfTo').onchange=tfInfo;
 $('#tfAll').onclick=()=>{const f=houseById(+$('#tfFrom').value);if(f)houseUnits(f).forEach(u=>TFSEL.add(u.id));transferUI()};$('#tfClr').onclick=()=>{TFSEL.clear();transferUI()};
 $('#tfGo').onclick=()=>tfSend([...TFSEL]);$('#tfSendN').onclick=()=>tfSend(tfTopN());$('#tfPickN').onclick=()=>{TFSEL.clear();tfTopN().forEach(id=>TFSEL.add(id));transferUI()};$('#tfN').addEventListener('input',tfInfo);

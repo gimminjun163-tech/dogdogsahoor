@@ -320,6 +320,23 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
 .recitem video{width:100%;border-radius:6px;background:#000;aspect-ratio:16/10}
 .recitem .meta{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);gap:6px}
 .dogs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+.main-panels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:stretch;align-content:stretch;flex:1 1 auto}
+.main-panels>.card{min-width:0;align-content:start}
+.main-panels>.card.span2{grid-column:1/-1}
+.main-panels:empty{display:none}
+@media (max-width:700px){.main-panels{grid-template-columns:minmax(0,1fr)}.main-panels>.card.span2{grid-column:auto}}
+@media (min-width:961px){
+  .sim-grid{align-items:stretch}
+  .main-col,.side-col{display:flex;flex-direction:column}
+  .main-col>*,.side-col>*{flex:0 0 auto}
+  .main-col>.main-panels{flex:1 1 auto}
+  .side-col>.logpanel{flex:1 1 auto;grid-template-rows:auto minmax(0,1fr)}
+  .side-col>.logpanel .log{max-height:none;min-height:220px;align-content:start}
+  .sim-grid.measuring{align-items:start}
+  .sim-grid.measuring .main-col>.main-panels,.sim-grid.measuring .side-col>.logpanel{flex-grow:0}
+  .sim-grid.measuring .main-panels{align-content:start}
+  .sim-grid.measuring .side-col>.logpanel .log{min-height:0;max-height:220px}
+}
 .dogs-grid.rows{grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:4px}
 .cardbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 8px;font-size:12px}
 .cardbar label{display:flex;gap:4px;align-items:center;color:var(--muted)}
@@ -606,6 +623,11 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         <button class="btn" id="clearFurn">가구만 모두 지우기</button>
       </div>
       <div class="stack">
+        <h3>📍 집 위치</h3>
+        <label class="f">집을 어디에 지을까요?<select id="homeLoc"><option value="meadow">🌾 초원</option><option value="beach">🏖 바닷가</option><option value="highland">⛰ 고산지대</option><option value="forest">🌲 숲속</option><option value="desert">🏜 사막</option><option value="snow">❄ 설원</option><option value="river">🏞 강가</option><option value="island">🏝 섬</option><option value="city">🏙 도시</option><option value="random">🎲 무작위</option></select></label>
+        <p class="small" id="homeLocNote"></p>
+      </div>
+      <div class="stack">
         <h3>마당</h3>
         <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="yardOn" checked> 마당 추가하기</label>
         <div class="row2">
@@ -889,6 +911,111 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         <span class="small muted" id="cardCount"></span>
       </div>
       <div class="dogs-grid" id="dogCards"></div>
+      <div class="main-panels" id="mainPanels">
+      <section class="card panel home-only">
+        <div class="panel-head"><h2>퀴즈 대회</h2><span class="tag" id="qzStatus">쉬는 중</span></div>
+        <div class="row2"><label class="f">주제<select id="qzTopic"><option value="rand">🎲 랜덤</option><option value="mil">⚔ 군사 (숙련도 ↑ · 전투력)</option><option value="potty">🚽 배변 (배변 참는 힘 ↑)</option><option value="math">🔢 수학 (반응·지능 ↑)</option><option value="soccer">⚽ 축구 (드리블·슈팅·패스 ↑)</option><option value="health">🩺 건강 (건강 ↑ · 덜 깎임)</option></select></label>
+          <label class="f">문제 수<select id="qzN"><option value="5">5문제</option><option value="10" selected>10문제</option><option value="15">15문제</option></select></label></div>
+        <div class="row2"><label class="f">참가<select id="qzSize"><option value="4">최대 4마리</option><option value="6" selected>최대 6마리</option><option value="8">최대 8마리</option><option value="12">최대 12마리</option></select></label><button class="btn" id="qzWatch">👀 관전</button></div>
+        <button class="btn primary" id="qzStart">🧩 퀴즈 대회 시작</button>
+        <div id="qzBoards" class="qz-boards"></div>
+        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="qzAuto" checked> 🤖 자동화일 때 퀴즈 대회 알아서 열기</label>
+        <p class="small muted" style="margin:0">강아지들이 진행보드 앞에 모여 문제를 풀어요. 맞히면 1점, 가장 빨리 맞히면 2점이에요. 끝나면 1위 행복 +20, 2위 +15, 3위 +11, 나머지도 +7을 받고, 맞힌 만큼 그 주제의 능력이 올라요.</p>
+      </section>
+      <section class="card panel home-only">
+        <div class="panel-head"><h2>보드게임</h2><span class="tag" id="bgTag">쉬는 중</span></div>
+        <div class="row2">
+          <label class="f">게임<select id="bgGame"><option value="yut">🎋 윷놀이 (2~4마리)</option><option value="ludo">🎲 주사위 말판 (2~4마리)</option><option value="memory">🃏 카드 짝맞추기 (2~4마리)</option><option value="omok">⚫ 오목 (2마리)</option><option value="chess">♟ 체스 (2마리)</option></select></label>
+          <label class="f">시간<select id="bgLen"><option value="20">20분</option><option value="40" selected>40분</option><option value="90">1시간 30분</option></select></label>
+        </div>
+        <button class="btn primary" id="bgBtn">🎲 보드게임 시작</button>
+        <div id="bgLive" class="bglist" aria-live="polite"></div>
+        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="bgAuto" checked> 🤖 자동화일 때 보드게임 자동으로 열기</label>
+        <p class="small">강아지들이 판 둘레에 모여 앉아 게임을 해요. 하는 동안 행복도가 오르고 체력이 회복되고, 이긴 동물은 더 기뻐해요. 여러 판을 동시에 열 수 있고(최대 6판), 👀 관전을 누르면 판이 어떻게 돌아가는지 볼 수 있어요.</p>
+      </section>
+      <section class="card panel home-only" id="tmPanel">
+        <div class="panel-head"><h2>강아지 런닝머신</h2><span class="tag" id="tmTag">비어 있음</span></div>
+        <div class="row2">
+          <label class="f">속도<select id="tmSpeed"><option value="slow">천천히 (걷기)</option><option value="mid" selected>보통 (뛰기)</option><option value="fast">빠르게 (전력 질주)</option></select></label>
+          <label class="small" style="display:flex;gap:6px;align-items:center;align-self:end"><input type="checkbox" id="tmAuto" checked> 강아지가 알아서 타기</label>
+        </div>
+        <div class="kv"><span>오늘까지 달린 시간</span><b id="tmMin">0분</b></div>
+        <div class="row2"><button class="btn primary" id="tmGo">지금 운동시키기</button><button class="btn" id="tmStop">멈추기</button></div>
+        <p class="small">달리면 건강과 행복도가 오르고, 체력은 줄고 목이 말라져요. 체력이 20 밑으로 떨어지면 스스로 내려와요.</p>
+      </section>
+      <section class="card panel home-only">
+        <div class="panel-head"><h2>음악</h2><span class="tag" id="musicTag">꺼짐</span></div>
+        <div class="row2">
+          <label class="f">장르<select id="musicGenre"><option value="classic">🎹 클래식</option><option value="lullaby">🌙 자장가</option><option value="happy">🎉 신나는 동요</option><option value="nature">🐦 자연의 소리</option></select></label>
+          <label class="f">꺼짐 예약<select id="musicTimer"><option value="0">안 함</option><option value="30">30분 뒤</option><option value="60">1시간 뒤</option><option value="120">2시간 뒤</option><option value="480">8시간 뒤</option></select></label>
+        </div>
+        <label class="f">음량<input type="range" id="musicVol" min="0" max="100" value="50" aria-label="음악 음량"></label>
+        <div class="eq" id="musicEq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <button class="btn primary" id="musicBtn">🎵 음악 틀기</button>
+        <table class="mstats" aria-label="음악 장르별 효과">
+          <thead><tr><th scope="col">장르</th><th scope="col">행복도 / 시간</th><th scope="col">체력 / 시간</th></tr></thead>
+          <tbody><tr data-mrow="classic"><th scope="row">🎹 클래식</th><td><span class="mbar"><i style="width:71%"></i></span><b>+6.0</b></td><td><span class="mbar sta"><i style="width:56%"></i></span><b>+1.5</b></td></tr><tr data-mrow="lullaby"><th scope="row">🌙 자장가</th><td><span class="mbar"><i style="width:50%"></i></span><b>+4.2</b></td><td><span class="mbar sta"><i style="width:100%"></i></span><b>+2.7</b></td></tr><tr data-mrow="happy"><th scope="row">🎉 신나는 동요</th><td><span class="mbar"><i style="width:100%"></i></span><b>+8.4</b></td><td><span class="mbar sta"><i style="width:27%"></i></span><b>+0.7</b></td></tr><tr data-mrow="nature"><th scope="row">🐦 자연의 소리</th><td><span class="mbar"><i style="width:64%"></i></span><b>+5.4</b></td><td><span class="mbar sta"><i style="width:67%"></i></span><b>+1.8</b></td></tr></tbody>
+        </table>
+        <p class="small muted">게임 시간 1시간 동안 한 마리가 얻는 양이에요. 자는 동물은 행복도 ×0.6, 체력 ×1.5.</p>
+        <div class="kv small" id="musicLive">지금 듣는 동물 없음</div>
+        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="musicAuto" checked> 🤖 자동화일 때 음악 자동으로 틀기</label>
+
+        <p class="small" id="musicNote">음악을 틀면 집과 마당의 동물들 행복도가 오르고 체력이 조금씩 회복돼요.</p>
+      </section>
+      <section class="card panel home-only">
+        <div class="panel-head"><h2>TV</h2><span class="tag" id="tvTag">꺼짐</span></div>
+        <div class="row2">
+          <label class="f">채널<select id="tvCh"><option value="dog">강아지 채널</option><option value="nature">자연 다큐</option><option value="cartoon">만화</option></select></label>
+          <label class="f">꺼짐 예약<select id="tvTimer"><option value="0">안 함</option><option value="30">30분 뒤</option><option value="60">1시간 뒤</option><option value="120">2시간 뒤</option></select></label>
+        </div>
+        <button class="btn primary" id="tvBtn">TV 켜기</button>
+        <p class="small" id="tvNote">TV를 켜면 강아지들이 앞에 앉아서 봐요. 강아지 채널을 가장 좋아해서 행복도가 더 많이 올라요.</p>
+      </section>
+      <section class="card panel home-only">
+        <div class="panel-head"><h2>공 던지기</h2><span class="balls" id="ballsBox"></span></div>
+        <div class="balltypes" id="ballTypes"></div>
+        <label class="f">다음에 던질 공
+          <select id="ballSel"><option value="mix">골고루 (랜덤)</option><option value="tennis">테니스공</option><option value="treat">간식 공</option><option value="frisbee">원반</option><option value="squeaky">삑삑이 공</option><option value="bouncy">탱탱볼</option></select>
+        </label>
+        <p class="small" id="ballDesc">발사기에 든 공 중에서 아무거나 던져요.</p>
+        <div class="tabs" role="group" aria-label="발사 모드">
+          <button data-bm="auto" aria-pressed="true">자동 (강아지가 오면)</button>
+          <button data-bm="manual" aria-pressed="false">직접 던지기</button>
+        </div>
+        <div id="manualBox" class="stack" hidden>
+          <div class="sl">방향<input type="range" id="aimDir" min="0" max="359" step="1" value="180"><b id="aimDirV">180°</b></div>
+          <div class="sl">발사각<input type="range" id="aimEl" min="5" max="70" step="1" value="35"><b id="aimElV">35°</b></div>
+          <div class="sl">힘<input type="range" id="aimPow" min="1" max="10" step="1" value="5"><b id="aimPowV">5</b></div>
+          <div class="row2"><button class="btn" id="aimCenter">방 가운데 조준</button><button class="btn primary" id="throwBtn">발사!</button></div>
+          <p class="small">방향 0°는 북쪽(위쪽) 벽, 90°는 동쪽 벽이에요. 3D 화면에 점선으로 궤적이 보여요.</p>
+        </div>
+        <p class="small" id="autoNote">강아지가 공을 물어 오거나 발사기 앞에서 기다리면 자동으로 던져 줘요.</p>
+        <div class="addrow">
+          <select id="ballAddType" aria-label="넣을 공 종류"><option value="tennis">테니스공</option><option value="treat">간식 공</option><option value="frisbee">원반</option><option value="squeaky">삑삑이 공</option><option value="bouncy">탱탱볼</option></select>
+          <button class="btn" id="ballAdd">새 공 넣기</button>
+        </div>
+        <div class="row2"><button class="btn" id="ballCollect">흩어진 공 회수</button><button class="btn" id="treatFill">간식 공 채우기</button></div>
+        <p class="small" id="snackInfo">간식 30개 남음 · 공은 최대 8개</p>
+      </section>
+      <section class="card panel home-only">
+        <div class="panel-head"><h2>마당 축구</h2><span class="tag" id="soccerTag"></span></div>
+        <div class="row2">
+          <label class="f">선발 인원 (팀당)<select id="scSize"><option value="1">1:1</option><option value="2">2:2</option><option value="3">3:3</option><option value="5">5:5</option><option value="7">7:7</option><option value="9">9:9</option><option value="11" selected>11:11</option></select></label>
+          <label class="f">경기 방식<select id="scKind"><option value="match">일반 경기 (전·후반)</option><option value="pk">승부차기만 (5명씩, 같으면 서든데스)</option></select></label>
+          <label class="f">전·후반 길이 (각)<select id="scLen"><option value="180">3분</option><option value="300">5분</option><option value="600" selected>10분</option><option value="900">15분</option><option value="1200">20분</option><option value="1800">30분</option><option value="2700">45분</option></select></label>
+        </div>
+        <label class="f">나는<select id="scMe"><option value="watch">관전 (공을 따라가는 카메라)</option><option value="teamA">A팀(빨강) 전체 조종 · 공 근처 선수로 자동 전환</option><option value="oneA">A팀(빨강) 한 선수만 조종</option><option value="teamB">B팀(파랑) 전체 조종</option><option value="oneB">B팀(파랑) 한 선수만 조종</option></select></label>
+        <div class="bal">
+          <div class="bal-top"><span class="bal-a">◀ 빨강 유리</span><b data-ballbl>랜덤 (중간)</b><span class="bal-b">파랑 유리 ▶</span></div>
+          <div class="bal-track"><input type="range" id="scBal" min="-100" max="100" step="5" value="0" class="bal-range" data-bal aria-label="경기 밸런스"></div>
+          <button class="btn" data-balreset>균형 초기화</button>
+        </div>
+        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" data-pk checked> 무승부면 승부차기 (5명씩, 같으면 서든데스)</label>
+        <div class="row2"><button class="btn primary" id="scStart">경기 시작</button><button class="btn" id="scTac">전술 설정</button></div>
+        <p class="small" id="scNote"></p>
+        <div class="roster-wrap" id="scRoster"></div>
+      </section>
+      </div>
     </div>
 
     <aside class="side-col">
@@ -949,24 +1076,6 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
       </section>
 
       <!-- soccer (home) -->
-      <section class="card panel home-only">
-        <div class="panel-head"><h2>마당 축구</h2><span class="tag" id="soccerTag"></span></div>
-        <div class="row2">
-          <label class="f">선발 인원 (팀당)<select id="scSize"><option value="1">1:1</option><option value="2">2:2</option><option value="3">3:3</option><option value="5">5:5</option><option value="7">7:7</option><option value="9">9:9</option><option value="11" selected>11:11</option></select></label>
-          <label class="f">경기 방식<select id="scKind"><option value="match">일반 경기 (전·후반)</option><option value="pk">승부차기만 (5명씩, 같으면 서든데스)</option></select></label>
-          <label class="f">전·후반 길이 (각)<select id="scLen"><option value="180">3분</option><option value="300">5분</option><option value="600" selected>10분</option><option value="900">15분</option><option value="1200">20분</option><option value="1800">30분</option><option value="2700">45분</option></select></label>
-        </div>
-        <label class="f">나는<select id="scMe"><option value="watch">관전 (공을 따라가는 카메라)</option><option value="teamA">A팀(빨강) 전체 조종 · 공 근처 선수로 자동 전환</option><option value="oneA">A팀(빨강) 한 선수만 조종</option><option value="teamB">B팀(파랑) 전체 조종</option><option value="oneB">B팀(파랑) 한 선수만 조종</option></select></label>
-        <div class="bal">
-          <div class="bal-top"><span class="bal-a">◀ 빨강 유리</span><b data-ballbl>랜덤 (중간)</b><span class="bal-b">파랑 유리 ▶</span></div>
-          <div class="bal-track"><input type="range" id="scBal" min="-100" max="100" step="5" value="0" class="bal-range" data-bal aria-label="경기 밸런스"></div>
-          <button class="btn" data-balreset>균형 초기화</button>
-        </div>
-        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" data-pk checked> 무승부면 승부차기 (5명씩, 같으면 서든데스)</label>
-        <div class="row2"><button class="btn primary" id="scStart">경기 시작</button><button class="btn" id="scTac">전술 설정</button></div>
-        <p class="small" id="scNote"></p>
-        <div class="roster-wrap" id="scRoster"></div>
-      </section>
 
       <!-- owner -->
       <section class="card panel home-only">
@@ -1031,43 +1140,8 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
       </section>
 
       <!-- ball -->
-      <section class="card panel home-only">
-        <div class="panel-head"><h2>공 던지기</h2><span class="balls" id="ballsBox"></span></div>
-        <div class="balltypes" id="ballTypes"></div>
-        <label class="f">다음에 던질 공
-          <select id="ballSel"><option value="mix">골고루 (랜덤)</option><option value="tennis">테니스공</option><option value="treat">간식 공</option><option value="frisbee">원반</option><option value="squeaky">삑삑이 공</option><option value="bouncy">탱탱볼</option></select>
-        </label>
-        <p class="small" id="ballDesc">발사기에 든 공 중에서 아무거나 던져요.</p>
-        <div class="tabs" role="group" aria-label="발사 모드">
-          <button data-bm="auto" aria-pressed="true">자동 (강아지가 오면)</button>
-          <button data-bm="manual" aria-pressed="false">직접 던지기</button>
-        </div>
-        <div id="manualBox" class="stack" hidden>
-          <div class="sl">방향<input type="range" id="aimDir" min="0" max="359" step="1" value="180"><b id="aimDirV">180°</b></div>
-          <div class="sl">발사각<input type="range" id="aimEl" min="5" max="70" step="1" value="35"><b id="aimElV">35°</b></div>
-          <div class="sl">힘<input type="range" id="aimPow" min="1" max="10" step="1" value="5"><b id="aimPowV">5</b></div>
-          <div class="row2"><button class="btn" id="aimCenter">방 가운데 조준</button><button class="btn primary" id="throwBtn">발사!</button></div>
-          <p class="small">방향 0°는 북쪽(위쪽) 벽, 90°는 동쪽 벽이에요. 3D 화면에 점선으로 궤적이 보여요.</p>
-        </div>
-        <p class="small" id="autoNote">강아지가 공을 물어 오거나 발사기 앞에서 기다리면 자동으로 던져 줘요.</p>
-        <div class="addrow">
-          <select id="ballAddType" aria-label="넣을 공 종류"><option value="tennis">테니스공</option><option value="treat">간식 공</option><option value="frisbee">원반</option><option value="squeaky">삑삑이 공</option><option value="bouncy">탱탱볼</option></select>
-          <button class="btn" id="ballAdd">새 공 넣기</button>
-        </div>
-        <div class="row2"><button class="btn" id="ballCollect">흩어진 공 회수</button><button class="btn" id="treatFill">간식 공 채우기</button></div>
-        <p class="small" id="snackInfo">간식 30개 남음 · 공은 최대 8개</p>
-      </section>
 
       <!-- tv -->
-      <section class="card panel home-only">
-        <div class="panel-head"><h2>TV</h2><span class="tag" id="tvTag">꺼짐</span></div>
-        <div class="row2">
-          <label class="f">채널<select id="tvCh"><option value="dog">강아지 채널</option><option value="nature">자연 다큐</option><option value="cartoon">만화</option></select></label>
-          <label class="f">꺼짐 예약<select id="tvTimer"><option value="0">안 함</option><option value="30">30분 뒤</option><option value="60">1시간 뒤</option><option value="120">2시간 뒤</option></select></label>
-        </div>
-        <button class="btn primary" id="tvBtn">TV 켜기</button>
-        <p class="small" id="tvNote">TV를 켜면 강아지들이 앞에 앉아서 봐요. 강아지 채널을 가장 좋아해서 행복도가 더 많이 올라요.</p>
-      </section>
 
       <!-- automation brain -->
       <section class="card panel home-only">
@@ -1129,62 +1203,12 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
       </section>
 
       <!-- quiz show -->
-      <section class="card panel home-only">
-        <div class="panel-head"><h2>퀴즈 대회</h2><span class="tag" id="qzStatus">쉬는 중</span></div>
-        <div class="row2"><label class="f">주제<select id="qzTopic"><option value="rand">🎲 랜덤</option><option value="mil">⚔ 군사 (숙련도 ↑ · 전투력)</option><option value="potty">🚽 배변 (배변 참는 힘 ↑)</option><option value="math">🔢 수학 (반응·지능 ↑)</option><option value="soccer">⚽ 축구 (드리블·슈팅·패스 ↑)</option><option value="health">🩺 건강 (건강 ↑ · 덜 깎임)</option></select></label>
-          <label class="f">문제 수<select id="qzN"><option value="5">5문제</option><option value="10" selected>10문제</option><option value="15">15문제</option></select></label></div>
-        <div class="row2"><label class="f">참가<select id="qzSize"><option value="4">최대 4마리</option><option value="6" selected>최대 6마리</option><option value="8">최대 8마리</option><option value="12">최대 12마리</option></select></label><button class="btn" id="qzWatch">👀 관전</button></div>
-        <button class="btn primary" id="qzStart">🧩 퀴즈 대회 시작</button>
-        <div id="qzBoards" class="qz-boards"></div>
-        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="qzAuto" checked> 🤖 자동화일 때 퀴즈 대회 알아서 열기</label>
-        <p class="small muted" style="margin:0">강아지들이 진행보드 앞에 모여 문제를 풀어요. 맞히면 1점, 가장 빨리 맞히면 2점이에요. 끝나면 1위 행복 +20, 2위 +15, 3위 +11, 나머지도 +7을 받고, 맞힌 만큼 그 주제의 능력이 올라요.</p>
-      </section>
 
       <!-- board games -->
-      <section class="card panel home-only">
-        <div class="panel-head"><h2>보드게임</h2><span class="tag" id="bgTag">쉬는 중</span></div>
-        <div class="row2">
-          <label class="f">게임<select id="bgGame"><option value="yut">🎋 윷놀이 (2~4마리)</option><option value="ludo">🎲 주사위 말판 (2~4마리)</option><option value="memory">🃏 카드 짝맞추기 (2~4마리)</option><option value="omok">⚫ 오목 (2마리)</option><option value="chess">♟ 체스 (2마리)</option></select></label>
-          <label class="f">시간<select id="bgLen"><option value="20">20분</option><option value="40" selected>40분</option><option value="90">1시간 30분</option></select></label>
-        </div>
-        <button class="btn primary" id="bgBtn">🎲 보드게임 시작</button>
-        <div id="bgLive" class="bglist" aria-live="polite"></div>
-        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="bgAuto" checked> 🤖 자동화일 때 보드게임 자동으로 열기</label>
-        <p class="small">강아지들이 판 둘레에 모여 앉아 게임을 해요. 하는 동안 행복도가 오르고 체력이 회복되고, 이긴 동물은 더 기뻐해요. 여러 판을 동시에 열 수 있고(최대 6판), 👀 관전을 누르면 판이 어떻게 돌아가는지 볼 수 있어요.</p>
-      </section>
 
       <!-- music -->
-      <section class="card panel home-only">
-        <div class="panel-head"><h2>음악</h2><span class="tag" id="musicTag">꺼짐</span></div>
-        <div class="row2">
-          <label class="f">장르<select id="musicGenre"><option value="classic">🎹 클래식</option><option value="lullaby">🌙 자장가</option><option value="happy">🎉 신나는 동요</option><option value="nature">🐦 자연의 소리</option></select></label>
-          <label class="f">꺼짐 예약<select id="musicTimer"><option value="0">안 함</option><option value="30">30분 뒤</option><option value="60">1시간 뒤</option><option value="120">2시간 뒤</option><option value="480">8시간 뒤</option></select></label>
-        </div>
-        <label class="f">음량<input type="range" id="musicVol" min="0" max="100" value="50" aria-label="음악 음량"></label>
-        <div class="eq" id="musicEq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-        <button class="btn primary" id="musicBtn">🎵 음악 틀기</button>
-        <table class="mstats" aria-label="음악 장르별 효과">
-          <thead><tr><th scope="col">장르</th><th scope="col">행복도 / 시간</th><th scope="col">체력 / 시간</th></tr></thead>
-          <tbody><tr data-mrow="classic"><th scope="row">🎹 클래식</th><td><span class="mbar"><i style="width:71%"></i></span><b>+6.0</b></td><td><span class="mbar sta"><i style="width:56%"></i></span><b>+1.5</b></td></tr><tr data-mrow="lullaby"><th scope="row">🌙 자장가</th><td><span class="mbar"><i style="width:50%"></i></span><b>+4.2</b></td><td><span class="mbar sta"><i style="width:100%"></i></span><b>+2.7</b></td></tr><tr data-mrow="happy"><th scope="row">🎉 신나는 동요</th><td><span class="mbar"><i style="width:100%"></i></span><b>+8.4</b></td><td><span class="mbar sta"><i style="width:27%"></i></span><b>+0.7</b></td></tr><tr data-mrow="nature"><th scope="row">🐦 자연의 소리</th><td><span class="mbar"><i style="width:64%"></i></span><b>+5.4</b></td><td><span class="mbar sta"><i style="width:67%"></i></span><b>+1.8</b></td></tr></tbody>
-        </table>
-        <p class="small muted">게임 시간 1시간 동안 한 마리가 얻는 양이에요. 자는 동물은 행복도 ×0.6, 체력 ×1.5.</p>
-        <div class="kv small" id="musicLive">지금 듣는 동물 없음</div>
-        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="musicAuto" checked> 🤖 자동화일 때 음악 자동으로 틀기</label>
-
-        <p class="small" id="musicNote">음악을 틀면 집과 마당의 동물들 행복도가 오르고 체력이 조금씩 회복돼요.</p>
-      </section>
 
       <!-- treadmill -->
-      <section class="card panel home-only" id="tmPanel">
-        <div class="panel-head"><h2>강아지 런닝머신</h2><span class="tag" id="tmTag">비어 있음</span></div>
-        <div class="row2">
-          <label class="f">속도<select id="tmSpeed"><option value="slow">천천히 (걷기)</option><option value="mid" selected>보통 (뛰기)</option><option value="fast">빠르게 (전력 질주)</option></select></label>
-          <label class="small" style="display:flex;gap:6px;align-items:center;align-self:end"><input type="checkbox" id="tmAuto" checked> 강아지가 알아서 타기</label>
-        </div>
-        <div class="kv"><span>오늘까지 달린 시간</span><b id="tmMin">0분</b></div>
-        <div class="row2"><button class="btn primary" id="tmGo">지금 운동시키기</button><button class="btn" id="tmStop">멈추기</button></div>
-        <p class="small">달리면 건강과 행복도가 오르고, 체력은 줄고 목이 말라져요. 체력이 20 밑으로 떨어지면 스스로 내려와요.</p>
-      </section>
 
       <!-- potty -->
       <section class="card panel home-only">
@@ -1320,7 +1344,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
       </section>
 
       <!-- log -->
-      <section class="card panel">
+      <section class="card panel logpanel">
         <div class="panel-head"><h2>기록</h2><span class="tag" id="logTag"></span></div>
         <div class="log" id="log"></div>
       </section>
@@ -1469,6 +1493,8 @@ const FURN={
   security:{n:'🚨 스마트 보안 시스템',w:0.4,d:0.3,h:1.2,c:'#3a4148',solid:true,unique:true,smart:true},
   pawwash:{n:'🐾 자동 발 세척기',w:0.8,d:0.6,h:0.25,c:'#9fb7c4',solid:false,unique:true,smart:true},
   petfountain:{n:'💧 순환 정수기',w:0.4,d:0.4,h:0.35,c:'#dff1f8',solid:true,st:true},
+  arcade:{n:'🕹 오락실 게임기',w:0.7,d:0.6,h:1.65,c:'#3b2a6b',solid:true,st:true},
+  claw:{n:'🧸 인형 뽑기 기계',w:0.8,d:0.8,h:1.85,c:'#e86aa0',solid:true,st:true},
   nosework:{n:'🧠 노즈워크 매트',w:1.0,d:0.7,h:0.05,c:'#6fa86a',solid:false,st:true},
   cattower:{n:'🐈 캣타워',w:0.7,d:0.7,h:1.6,c:'#c9a97a',solid:false,unique:true,st:true},
   petsofa:{n:'🛋 펫 소파',w:1.0,d:0.7,h:0.4,c:'#8a6fb0',solid:false,st:true},
@@ -1565,6 +1591,8 @@ function presetLiving(){
     {id:uid++,type:'petfountain',x:5.4,z:-4.2,rot:0},
     {id:uid++,type:'pawwash',x:5.65,z:0.9,rot:1},
     {id:uid++,type:'nosework',x:-4.6,z:-3.45,rot:0},
+    {id:uid++,type:'arcade',x:-3.55,z:-0.15,rot:3},
+    {id:uid++,type:'claw',x:-3.55,z:0.85,rot:3},
     {id:uid++,type:'cattower',x:-3.6,z:-3.45,rot:0},
     {id:uid++,type:'petsofa',x:-2.6,z:-3.45,rot:0},
     {id:uid++,type:'homecam',wall:'n',t:2.2},
@@ -1661,7 +1689,7 @@ let tool='move',drag=null;
 const TOOLDEF=[['move','이동 · 회전'],['del','삭제'],null,
   ['sofa'],['bed'],['table'],['shelf'],['tv'],['plant'],['dogbed'],['rug'],null,
   ['water'],['food'],['launcher'],['potty'],['treadmill'],['homecam'],['door'],['window'],['petdoor'],['farm'],null,
-  ['train'],['bath'],['medic'],['quiz'],['speaker'],['smartlight'],['thermo'],['whitenoise'],['security'],['pawwash'],['petfountain'],['nosework'],['cattower'],['petsofa'],['pool'],['shade'],['sandpit'],['solar'],['groom'],['toybox'],['snackbar'],['kennel'],['aircon'],['purifier'],['agility'],['fountain']];
+  ['train'],['bath'],['medic'],['quiz'],['speaker'],['smartlight'],['thermo'],['whitenoise'],['security'],['pawwash'],['petfountain'],['arcade'],['claw'],['nosework'],['cattower'],['petsofa'],['pool'],['shade'],['sandpit'],['solar'],['groom'],['toybox'],['snackbar'],['kennel'],['aircon'],['purifier'],['agility'],['fountain']];
 function buildTools(){
   const box=$('#tools');box.innerHTML='';
   for(const t of TOOLDEF){
@@ -1966,7 +1994,7 @@ function buildWorld(){
   // floor
   const ft=out?grassTexture():floorTexture();ft.repeat.set(out?W/2:W/2.5,out?D/2:D/2.5);
   const floor=new THREE.Mesh(new THREE.PlaneGeometry(W,D),new THREE.MeshStandardMaterial({map:ft,roughness:0.75}));
-  floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;scene.add(floor);
+  floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;scene.add(floor);floorMesh=floor;surroundG=null;
   // walls
   const H=out?0.45:2.6,T=0.12,wc=out?'#f4f2ea':'#e6ebec';
   const mk=(k,w,d,x,z)=>{
@@ -2002,6 +2030,7 @@ function buildWorld(){
     if(it.type==='tv'||it.type==='shelf'){(dev.loot=dev.loot||[]).push({type:it.type,x:it.x,z:it.z,box:bx})}
   }
   if(yard)buildYard();
+  applyLoc(locNow);
   // balls
   ['tennis','treat','frisbee'].forEach(t=>makeBall(t));
   // trajectory line
@@ -2011,7 +2040,7 @@ function buildWorld(){
   corpses=[];fights=[];hitPool.length=0;animalUid=1;if(typeof shots!=='undefined')clearShots();
   (arenaConf||[...dogConf,...catConf]).forEach(c=>{const d=makeAnimal(c,c.at);if(c.team)d.team0=c.team;resolve(d.pos,d.r);dogs.push(d)});
 }
-let arenaConf=null;
+let arenaConf=null,floorMesh=null;
 
 function grassTexture(){
   const c=document.createElement('canvas');c.width=256;c.height=256;const g=c.getContext('2d');g.fillStyle='#6fa64e';g.fillRect(0,0,256,256);
@@ -2021,7 +2050,7 @@ function grassTexture(){
 function buildYard(){
   const y=yard,yw=y.maxx-y.minx,yd=y.maxz-y.minz,cx=(y.minx+y.maxx)/2,cz=(y.minz+y.maxz)/2;
   const gt=grassTexture();gt.repeat.set(yw/2,yd/2);
-  const gr=new THREE.Mesh(new THREE.PlaneGeometry(yw,yd),new THREE.MeshStandardMaterial({map:gt,roughness:1}));gr.rotation.x=-Math.PI/2;gr.position.set(cx,0.001,cz);gr.receiveShadow=true;scene.add(gr);
+  const gr=new THREE.Mesh(new THREE.PlaneGeometry(yw,yd),new THREE.MeshStandardMaterial({map:gt,roughness:1}));gr.rotation.x=-Math.PI/2;gr.position.set(cx,0.001,cz);gr.receiveShadow=true;scene.add(gr);y.gr=gr;
   const fc='#efe6d4',edges=[];const s=y.side;
   if(s!=='s')edges.push([[y.minx,y.minz],[y.maxx,y.minz]]);if(s!=='n')edges.push([[y.minx,y.maxz],[y.maxx,y.maxz]]);
   if(s!=='e')edges.push([[y.minx,y.minz],[y.minx,y.maxz]]);if(s!=='w')edges.push([[y.maxx,y.minz],[y.maxx,y.maxz]]);
@@ -2190,6 +2219,23 @@ function buildFurniture(it){
     case 'petfountain':{
       g.add(cyl(0.18,0.2,0.12,'#f2f4f6',0,0.06,0,18));const bowl=cyl(0.15,0.15,0.02,'#8fd3f0',0,0.125,0,18,{transparent:true,opacity:0.8});bowl.castShadow=false;g.add(bowl);
       g.add(cyl(0.06,0.08,0.16,'#cfe8f5',0,0.2,0,12,{transparent:true,opacity:0.7}));const jet=sph(0.03,'#cdefff',0,0.3,0,{transparent:true,opacity:0.8});jet.castShadow=false;g.add(jet);it._fx={jet};break;}
+    case 'arcade':{
+      g.add(box(w,1.2,d,c,0,0.6,0));const top=box(w,0.42,d*0.75,c,0,1.41,-d*0.12);g.add(top);
+      const scr=box(w-0.14,0.36,0.02,'#101820',0,1.36,d*0.26,{emissive:'#2a6aff'});scr.rotation.x=-0.18;g.add(scr);
+      const marq=box(w,0.14,d*0.75+0.02,'#ffd23f',0,1.69,-d*0.12,{emissive:'#ffb000'});g.add(marq);
+      const pnl=box(w,0.06,0.22,'#2a1d4f',0,1.05,d/2+0.06);pnl.rotation.x=0.35;g.add(pnl);
+      g.add(cyl(0.012,0.012,0.08,'#222',-0.15,1.12,d/2+0.06,8));g.add(sph(0.032,'#e84a4a',-0.15,1.17,d/2+0.06));
+      for(let i=0;i<3;i++)g.add(sph(0.022,['#4ad46a','#2f7fd0','#f2c14e'][i],0.03+i*0.08,1.1,d/2+0.07));
+      for(const sx of[-1,1])g.add(box(0.02,1.65,d,'#ff5fd2',sx*(w/2+0.005),0.83,0,{emissive:'#7a1060'}));
+      g.add(box(0.12,0.05,0.02,'#c9a227',0,0.55,d/2+0.005));it._fx={scr,marq};break;}
+    case 'claw':{
+      g.add(box(w,0.8,d,c,0,0.4,0));g.add(box(w,0.18,d,c,0,1.76,0));const sign=box(w*0.9,0.12,0.02,'#fff3a0',0,1.76,d/2+0.01,{emissive:'#ffcc00'});g.add(sign);
+      for(const [x,z] of[[-1,-1],[1,-1],[-1,1],[1,1]])g.add(box(0.04,0.88,0.04,'#f4d0e2',x*(w/2-0.02),1.24,z*(d/2-0.02)));
+      const gl=box(w-0.06,0.86,d-0.06,'#cfeaff',0,1.24,0,{transparent:true,opacity:0.22});gl.castShadow=false;g.add(gl);
+      for(let i=0;i<14;i++){const p=sph(0.07,pick(['#f2c14e','#7fd1f0','#f28aa8','#9adf7a','#c9a0f0','#ffffff']),rand(-w/2+0.12,w/2-0.12),0.86+rand(0,0.06),rand(-d/2+0.12,d/2-0.12));p.castShadow=false;g.add(p)}
+      const claw=new THREE.Group();claw.add(cyl(0.008,0.008,0.3,'#d0d0d0',0,0.15,0,6));for(let i=0;i<3;i++){const f=box(0.012,0.09,0.012,'#bfbfbf',0,-0.03,0);f.rotation.y=i*2.09;f.translateX(0.035);f.rotation.z=0.4;claw.add(f)}
+      claw.position.set(0,1.38,0);g.add(claw);g.add(box(0.14,0.05,0.12,'#2a2a2a',w/2-0.18,0.82,d/2-0.08));g.add(box(0.08,0.12,0.03,'#333',-w/2+0.18,0.55,d/2+0.01));
+      it._fx={claw,sign};break;}
     case 'nosework':{
       const m0=box(w,0.03,d,c,0,0.015,0);m0.castShadow=false;g.add(m0);for(let i=0;i<18;i++){const t=box(0.08,0.05,0.08,pick(['#8fd18a','#5f9a5a','#f2c14e','#e87a5a']),rand(-w/2+0.08,w/2-0.08),0.05,rand(-d/2+0.08,d/2-0.08));t.rotation.y=rand(0,3);g.add(t)}break;}
     case 'cattower':{
@@ -3039,7 +3085,7 @@ function updateIntruder(dt){
     if(I.fear>I.courage*3.5){I.state='flee';log('강아지들이 짖어서 침입자가 도망갔어요!','good');toast('강아지들이 침입자를 쫓아냈어요');dogs.forEach(d=>d.happy=clamp(d.happy+12))}
   }
   if(I.state==='sneak'){const dist=steer(I,I.tgt.x,I.tgt.z,0.9,dt);I.speed=0.9;if(dist<0.25){I.state='steal';I.stealT=0}}
-  else if(I.state==='steal'){I.speed=0;I.stealT+=dt;if(I.stealT>7){I.state='flee';world.stolen++;let take=isFinite(world.money)&&world.money>0?Math.min(world.money,Math.round(world.money*rand(0.1,0.3)+rand(3000,8000))):0;if(dev.security&&hasPower()&&take){take=Math.round(take*0.5);log('🚨 스마트 보안 시스템이 경보를 울려 강도가 절반만 들고 도망쳤어요','bad',true)}if(take){world.money-=take;world.bill.stolen+=take;checkPower()}
+  else if(I.state==='steal'){I.speed=0;I.stealT+=dt;if(I.stealT>7){I.state='flee';world.stolen++;let take=isFinite(world.money)&&world.money>0?Math.min(world.money,Math.round((world.money*rand(0.1,0.3)+rand(3000,8000))*(locNow==='city'?1.4:1))):0;if(dev.security&&hasPower()&&take){take=Math.round(take*0.5);log('🚨 스마트 보안 시스템이 경보를 울려 강도가 절반만 들고 도망쳤어요','bad',true)}if(take){world.money-=take;world.bill.stolen+=take;checkPower()}
     log(`강도가 ${I.tgt.name}에서 물건을 훔치고${take?` 돈 ${won(take)}을 빼 갔어요`:' 갔어요'}`,'bad',true);toast(take?`💸 강도가 ${won(take)}을 빼 갔어요!`:'물건을 도둑맞았어요',true,true);dogs.forEach(d=>d.happy=clamp(d.happy-8))}}
   else if(I.state==='flee'){const dist=steer(I,I.entry.x,I.entry.z,2.6,dt);I.speed=2.6;if(dist<0.25){I.state='gone';scene.remove(I.g);log('침입자가 집 밖으로 나갔어요');dogs.forEach(d=>{if(d.state==='alert')setState(d,'idle',2)})}}
   if(I.state==='gone'){intruder=null;return}
@@ -4619,6 +4665,7 @@ function cardList(){
   return l;
 }
 function buildDogCards(){
+  if(typeof balanceSoon==='function')balanceSoon(500);
   const box=$('#dogCards');box.innerHTML='';world.cardsDirty=false;refreshBreed();for(const d of dogs)d.card=null;
   $('#cardBar').hidden=dogs.length<=12&&!CARDS.find;
   if(!dogs.length){box.innerHTML='<p class="small">살아 있는 동물이 없어요. 방 다시 꾸미기에서 새로 시작할 수 있어요.</p>';return}
@@ -5263,7 +5310,7 @@ function renderRates(){
 function setIll(on){ILL.on=on;$$('[data-illon]').forEach(x=>x.checked=on);$$('[data-illnote]').forEach(n=>n.textContent=on?'건강이 0이 되면 병으로 세상을 떠나요.':'건강이 0이 되어도 1로 버텨요. 싸움으로 죽거나 노환은 그대로예요.')}
 
 /* ======================= MONEY & ELECTRICITY ======================= */
-const ELEC_N={speaker:'🔊 AI 스피커',smartlight:'💡 스마트 조명',whitenoise:'📻 백색소음기',security:'🚨 보안 시스템',pawwash:'🐾 발 세척기',petfountain:'💧 순환 정수기',market:'🐶 강아지 시장',build:'🔨 건설',bath:'🛁 자동 목욕기',medic:'🩺 자동 치료기',groom:'✂ 그루밍 테이블',snackbar:'🦴 자동 간식기',aircon:'❄ 냉난방기',purifier:'🌬 공기청정기',walk:'🚶 산책',vet:'🏥 동물병원',salon:'💇 애견 미용실',school:'🏫 훈련소',trade:'🛒 교류',weapons:'🎖 무기',pump:'💧 급수대 펌프',standby:'🔌 대기전력(급수대·홈캠)',launcher:'🎾 공 발사기',potty:'🚽 자동 배변판',tv:'📺 TV',music:'🎵 음악',treadmill:'🏃 런닝머신',farm:'🌱 자동화 농장',light:'💡 조명',vacuum:'🤖 로봇청소기',flood:'🏟 축구장 조명'};
+const ELEC_N={arcade:'🕹 오락실 (코인·전기)',claw:'🧸 인형 뽑기 (코인·전기)',speaker:'🔊 AI 스피커',smartlight:'💡 스마트 조명',whitenoise:'📻 백색소음기',security:'🚨 보안 시스템',pawwash:'🐾 발 세척기',petfountain:'💧 순환 정수기',market:'🐶 강아지 시장',build:'🔨 건설',bath:'🛁 자동 목욕기',medic:'🩺 자동 치료기',groom:'✂ 그루밍 테이블',snackbar:'🦴 자동 간식기',aircon:'❄ 냉난방기',purifier:'🌬 공기청정기',walk:'🚶 산책',vet:'🏥 동물병원',salon:'💇 애견 미용실',school:'🏫 훈련소',trade:'🛒 교류',weapons:'🎖 무기',pump:'💧 급수대 펌프',standby:'🔌 대기전력(급수대·홈캠)',launcher:'🎾 공 발사기',potty:'🚽 자동 배변판',tv:'📺 TV',music:'🎵 음악',treadmill:'🏃 런닝머신',farm:'🌱 자동화 농장',light:'💡 조명',vacuum:'🤖 로봇청소기',flood:'🏟 축구장 조명'};
 const won=v=>isFinite(v)?Math.round(v).toLocaleString()+'원':'무한';
 function hasPower(){return !world||world.money>0}
 function farmCount(){return dev.farmList?dev.farmList.length:(dev.farm?1:0)}
@@ -5341,7 +5388,7 @@ const TERRAIN={plain:{n:'🌾 평지',col:'#a9cf7a'},mountain:{n:'⛰ 산악',co
   coast:{n:'🌊 해안',col:'#cfe3a5',sea:true,note:'전투함·항공모함 사용 가능'},island:{n:'🏝 섬',col:'#f0d68a',sea:true,needBoat:true,note:'전투함·항공모함이나 전투기가 있어야 갈 수 있어요'}};
 const WAR_DIFF={easy:{n:'쉬움',inc:3000,atk:0.06,me:0.3,keep:0,ai:0.8},normal:{n:'보통',inc:6000,atk:0.12,me:0.5,keep:0.35,ai:1},hard:{n:'어려움',inc:12000,atk:0.22,me:0.7,keep:0.6,ai:1.25}};
 const AI_OWNERS=['바둑이','흰둥이','누렁이','점박이','깜순이','복실이','해피','메리','쫑이','방울이','진돌이','삽살이'];
-const WAR_KEYS=['species','breed','color','sex','age','name','skills','lifespan','temper','happy','health','hunger','thirst','stamina','id','mom','dad','gen','mate','weapon','lastBirth','pregnant','lg','everBred','bredIn','fertileSeen','oid','ally','prof','know'];
+const WAR_KEYS=['species','breed','color','sex','age','name','skills','lifespan','temper','happy','health','hunger','thirst','stamina','id','mom','dad','gen','mate','weapon','lastBirth','pregnant','lg','everBred','bredIn','fertileSeen','oid','ally','prof','know','plush','plushName','arcPlays'];
 const warOn=()=>!!(world&&world.war&&world.war.on);
 const myHouses=()=>world.war.houses.filter(h=>h.owner==='me');
 const houseById=id=>world.war.houses.find(h=>h.id===id);
@@ -5573,11 +5620,12 @@ let WAR_INIT_DIFF=null;
 function initWar(diff,size,count){WAR_INIT_DIFF=diff;
   const W={on:true,diff,houses:[],armies:[],armory:{},active:0,aiT:0,crowdT:0,battle:null,log:[],seq:1,inf:size==='inf'||size==='rep',rep:size==='rep',n:clamp(Math.round(count)||40,5,200),chunks:{'0,0':1},zones:[],view:{x:0,y:0,k:1},hid:10};
   // houses are spread by population: each region's chance is its population (millions), so crowded regions get several houses
-  const names=AI_OWNERS.slice().sort(()=>Math.random()-0.5),spots=worldSpots(W.n,0,0,[[852.8,196.4,'plain','한반도']]);
+  const names=AI_OWNERS.slice().sort(()=>Math.random()-0.5),spots=worldSpots(W.n,0,0,[[852.8,196.4,(LOCS[layout.loc]||LOCS.meadow).war,'한반도']]);
   spots.forEach(([x,y,t,place],i)=>{
     const me=i===0,n=me?0:Math.round(rand(3,9)*WAR_DIFF[diff].ai);
     const h={id:i,name:me?'우리 집':`${names[i%names.length]}${i>=names.length?Math.floor(i/names.length)+1:''}네 집`,owner:me?'me':'ai',terrain:t,place,x,y,dogs:[],money:me?0:Math.round(rand(30000,300000)*WAR_DIFF[diff].ai),cap:Math.round(rand(8,18)),color:me?'#f2c14e':pick(['#d4473a','#2f7fd0','#7b52c9','#2e9a6a','#c96a1e','#c23d7a','#3c8f9e'])};
     for(let k=0;k<n;k++){const o=randDogData(1);h.dogs.push(o)}
+    if(me)h.loc=LOCS[layout.loc]?layout.loc:'meadow';
     if(!me){aiArm(h,0.5);tradeInit(h)}W.houses.push(h);
   });
   W.hid=spots.length;W.base=spots.length;W.view={k:4,x:spots[0][0]-125,y:spots[0][1]-75}; // the map opens on the Korean peninsula
@@ -5649,6 +5697,7 @@ function switchHouse(id){endAllBoards(true);if(world.quiz&&world.quiz.on)endQuiz
   for(const o of h.dogs)dogs.push(fromData(o));h.dogs=[];W.active=id;world.cardsDirty=true;
   if(dogs[0])followId=dogs[0].id;
   warSnack(`🏠 ${h.name}(으)로 왔어요 · ${dogs.length}마리 (정원 ${houseCap(h)})`);log(`🏠 ${h.name}(으)로 화면을 옮겼어요`,'',true);
+  {const nl=houseLoc(h);if(nl!==locNow){applyLoc(nl);log(`📍 이 집은 ${LOCS[nl].n}에 있어요`,'',true)}}
   $('#warHouseName').textContent=h.name;renderMap();warUI();
 }
 
@@ -6071,13 +6120,13 @@ function buildEnemyRoom(name){
   scene.add(g);return {g,B:{minx:x0,maxx:x1,minz:z0,maxz:z1},S,water:[],bridges:[],door:{x:x0+0.7,z:0}};
 }
 function enterArea(A){ // swap the world bounds, colliders, light and sky to the battle area
-  if(!field)field={saved:{B,solids,bg:scene.background,sunP:sunLight.position.clone(),sunT:sunLight.target.position.clone()},areas:[]};
-  field.areas.push(A);field.cur=A;B=A.B;solids=A.S;scene.background=new THREE.Color(A.water.length?'#9cc8e8':'#a9cfe6');
+  if(!field){if(surroundG)surroundG.visible=false;}if(!field)field={saved:{fog:scene.fog,B,solids,bg:scene.background,sunP:sunLight.position.clone(),sunT:sunLight.target.position.clone()},areas:[]};
+  field.areas.push(A);field.cur=A;B=A.B;solids=A.S;scene.fog=null;scene.background=new THREE.Color(A.water.length?'#9cc8e8':'#a9cfe6');
   const cx=(A.B.minx+A.B.maxx)/2,cz=(A.B.minz+A.B.maxz)/2,sz=Math.max(A.B.maxx-A.B.minx,A.B.maxz-A.B.minz)*0.6;sunLight.position.set(cx+8,18,cz+6);sunLight.target.position.set(cx,0,cz);
   Object.assign(sunLight.shadow.camera,{left:-sz,right:sz,top:sz,bottom:-sz,far:60});sunLight.shadow.camera.updateProjectionMatrix();
 }
 function leaveField(){
-  if(!field)return;for(const A of field.areas)scene.remove(A.g);const S=field.saved;B=S.B;solids=S.solids;scene.background=S.bg;sunLight.position.copy(S.sunP);sunLight.target.position.copy(S.sunT);
+  if(!field)return;for(const A of field.areas)scene.remove(A.g);const S=field.saved;B=S.B;solids=S.solids;scene.background=S.bg;scene.fog=S.fog||null;if(surroundG)surroundG.visible=true;sunLight.position.copy(S.sunP);sunLight.target.position.copy(S.sunT);
   const s0=Math.max(B.maxx-B.minx,B.maxz-B.minz)*0.7;Object.assign(sunLight.shadow.camera,{left:-s0,right:s0,top:s0,bottom:-s0,far:40});sunLight.shadow.camera.updateProjectionMatrix();
   const far=c=>c.root&&c.root.position.x>FX0-FW;for(const c of corpses.filter(far))scene.remove(c.root);corpses=corpses.filter(c=>!far(c));field=null;clearShots();setCamMode(camMode==='follow'?'follow':'free');
 }
@@ -6503,6 +6552,11 @@ const STDEF={
     use:(d,dt)=>{trainGain(d,dt);d.stamina=clamp(d.stamina-dt*0.12);d.happy=clamp(d.happy+dt*0.04);if(!world.fastNow&&Math.random()<dt*1.4){const S=d.st,fx=S&&S.it._fx;if(d.weapon){const m=muzzleOf(d);addFx('flash',m.x,m.y,m.z,0.3)}else if(d.root)d.root.userData.barkPulse=1;if(fx){const T=pick(fx.tg);T.rotation.x=-0.25;setTimeout(()=>{T.rotation.x=0},140);const wp=new THREE.Vector3();T.getWorldPosition(wp);addFx('dust',wp.x,wp.y,wp.z,0.18)}if(soundOn&&speed<=4&&d.weapon)gunSound('bullet')}},
     done:d=>{const k=wtOf(d);log(`🎯 ${d.name} 훈련 끝 · ${k==='none'?'맨몸':WEAPONS[k].n} 숙련 ${Math.round(d.prof[k]||0)}`)}},
   petfountain:{lab:'💧 정수기 물 마시는 중',dur:[2,3],front:0.4,cap:2,emo:'💧',power:'petfountain',per:0.3,want:d=>d.thirst>35?0.55:0,use:(d,dt)=>{d.thirst=clamp(d.thirst-dt*14);d.happy=clamp(d.happy+dt*0.3)}},
+  arcade:{lab:'🕹 오락실 게임 중',dur:[6,12],front:0.42,cap:1,power:'arcade',per:0.4,emo:'🎮',want:d=>d.happy<88&&d.stamina>30&&d.age>=0.5&&coinOk(500)?0.12:0,
+    start:d=>coinPay(500,'arcade'),use:(d,dt)=>{d.happy=clamp(d.happy+dt*1.1);d.stamina=clamp(d.stamina-dt*0.03);if(d.skills)d.skills.rea=Math.min(99,(d.skills.rea||50)+dt*0.02);if(d.root&&Math.random()<dt*2)d.root.userData.barkPulse=0.5},
+    done:d=>arcadeDone(d)},
+  claw:{lab:'🧸 인형 뽑기 중',dur:[2,4],front:0.42,cap:1,power:'claw',per:0.2,emo:'🤞',want:d=>d.happy<82&&d.age>=0.5&&world.t-(d.lastClaw??-1e9)>240&&coinOk(1000)?0.1:0,
+    start:d=>coinPay(1000,'claw'),use:(d,dt)=>{d.happy=clamp(d.happy+dt*0.4)},done:d=>clawDone(d)},
   nosework:{lab:'🧠 노즈워크 중',dur:[5,10],lift:0.02,sit:true,cap:2,emo:'👃',want:d=>d.happy<85&&d.stamina>25?0.12:0,
     use:(d,dt)=>{d.happy=clamp(d.happy+dt*0.8);d.hunger=clamp(d.hunger-dt*0.4);if(d.skills)d.skills.rea=Math.min(99,(d.skills.rea||50)+dt*0.015);if(d.root&&Math.random()<dt*2)d.root.userData.barkPulse=0.4}},
   cattower:{lab:'🐈 캣타워에서 쉬는 중',dur:[8,20],lift:d=>d.species==='cat'?1.43:0.58,sit:true,cap:2,emo:'😺',want:d=>d.species==='cat'?(d.stamina<80||d.happy<85?0.35:0.1):(d.age<2&&d.happy<70?0.04:0),
@@ -6518,7 +6572,7 @@ const STDEF={
   fountain:{lab:'⛲ 분수에서 물 마시는 중',dur:[2,4],front:0.55,cap:3,emo:'💧',want:d=>d.thirst>40?0.5:d.happy<60&&!isNight()?0.06:0,
     use:(d,dt)=>{d.thirst=clamp(d.thirst-dt*12);d.happy=clamp(d.happy+dt*0.6)}},
 };
-const STATION_ORDER=['medic','petfountain','fountain','snackbar','petsofa','shade','cattower','bath','train','pool','agility','sandpit','nosework','groom','toybox'];
+const STATION_ORDER=['medic','petfountain','fountain','snackbar','petsofa','shade','cattower','bath','train','pool','agility','sandpit','claw','arcade','nosework','groom','toybox'];
 function stationSpot(S){const D=STDEF[S.type],r=S.it.rot||0,[fx,fz]=[[0,1],[-1,0],[0,-1],[1,0]][r];if(!D.front)return {x:S.x,z:S.z};if(D.front<0){const k=S.users;return {x:S.x+(k-1)*0.45*(fz?1:0),z:S.z+(k-1)*0.45*(fx?1:0)}}const f=FURN[S.type],half=(fx?f.w:f.d)/2;const k=S.users;return {x:S.x+fx*(half+D.front)+(fz?(k-0.5)*0.4:0),z:S.z+fz*(half+D.front)+(fx?(k-0.5)*0.4:0),face:{x:S.x,z:S.z}}}
 function stationOk(S){const D=STDEF[S.type];return !D.power||hasPower()}
 function stationFor(d){
@@ -6535,12 +6589,137 @@ function stationFx(rdt){
     if(fx.bub)fx.bub.forEach((b,i)=>{b.visible=busy;if(busy){b.position.y=0.32+((t*0.6+i*0.13)%1)*0.25;b.scale.setScalar(0.7+((t+i)%1)*0.6)}});
     if(fx.lamp)fx.lamp.material=busy?mat('#b8f0ff',{emissive:'#5fd0ff'}):mat('#dfe6ea');
     if(fx.br){fx.br.visible=busy;if(busy){fx.br.position.x=Math.sin(t*6)*0.18;fx.br.position.y=0.66+Math.abs(Math.sin(t*6))*0.03}}
+    if(fx.scr){const m=OWN(fx.scr),wn=fx.win&&t-fx.win<2.5;if(busy||wn){m.emissive.setHSL(wn?((t*3)%1):(0.6+Math.sin(t*5)*0.08),0.9,wn?0.55:0.35+Math.abs(Math.sin(t*9))*0.15)}else m.emissive.setHSL(0.62,0.8,0.12);const mq=OWN(fx.marq);mq.emissiveIntensity=busy||wn?0.9+Math.sin(t*8)*0.3:0.4}
+    if(fx.claw){const dr=fx.drop&&t-fx.drop<1.6?(t-fx.drop)/1.6:0;if(dr){fx.claw.position.y=1.38-Math.sin(dr*Math.PI)*0.4}else if(busy){fx.claw.position.x=Math.sin(t*1.3)*0.22;fx.claw.position.z=Math.cos(t*0.9)*0.22;fx.claw.position.y=1.38}else fx.claw.position.y=1.38;
+      OWN(fx.sign).emissiveIntensity=busy||dr?0.8+Math.sin(t*10)*0.3:0.35}
     if(fx.jets)fx.jets.forEach(j=>{j.t=(j.t+rdt*0.8)%1;const r=0.05+j.t*0.32;j.m.position.set(Math.cos(j.a)*r,0.72+Math.sin(j.t*Math.PI)*0.28,Math.sin(j.a)*r)})}
   if(dev.aircon){const fx=dev.aircon.it._fx,on=world&&world.ac&&world.ac.on&&hasPower();if(fx){fx.led.material=on?mat('#5fd0ff',{emissive:world.ac.mode==='heat'?'#ff9a5f':'#5fd0ff'}):mat('#9aa6ae');fx.air.forEach((a,i)=>{a.visible=on;if(on){const p=(t*0.7+i/8)%1;a.position.z=0.22+p*0.9;a.position.y=1.1-p*0.25+Math.sin(i)*0.05;a.material.opacity=0.5*(1-p)}})}}
   if(dev.purifier){const fx=dev.purifier.it._fx,on=world&&world.pur&&hasPower();if(fx)fx.led.material=on?mat('#2ad46a',{emissive:'#2ad46a'}):mat('#9aa6ae')}
 }
+
+/* ---------- arcade & claw machine ---------- */
+const PLUSH=['🐻 곰 인형','🐰 토끼 인형','🦊 여우 인형','🐥 병아리 인형','🦖 공룡 인형','🐳 고래 인형','🐱 고양이 인형','🦄 유니콘 인형'];
+const ARCADE_GAMES=['🏃 멍멍 러너','🦴 뼈다귀 테트리스','👾 고양이 침공','🏎 강아지 레이싱','🎯 공 맞히기'];
+function coinOk(c){return !world||!isFinite(world.money)||world.money>=c*3}
+function coinPay(c,cat){if(!isFinite(world.money))return true;if(world.money<c)return false;pay(cat,c);world.coins=(world.coins||0)+c;return true}
+function arcadeDone(d){const game=pick(ARCADE_GAMES),sc=Math.round(((d.skills&&d.skills.rea)||50)*rand(60,140)+rand(0,3000)),H=world.arcadeHi=world.arcadeHi||{};const old=H[game];
+  d.arcPlays=(d.arcPlays||0)+1;if(!old||sc>old.score){H[game]={name:d.name,id:d.id,score:sc};d.happy=clamp(d.happy+10);if(d.skills)d.skills.rea=Math.min(99,(d.skills.rea||50)+0.5);
+    log(`🕹 ${d.name}${josa(d.name,'이','가')} ${game}에서 ${sc.toLocaleString()}점으로 ${old?'최고 기록을 깼어요! 🏆':'첫 기록을 세웠어요!'} (행복도 +10)`,'good',!old?false:true);arcadeBlink(d.st)}
+  else if(!world.fastNow&&Math.random()<0.35)log(`🕹 ${d.name} · ${game} ${sc.toLocaleString()}점 (최고 ${old.name} ${old.score.toLocaleString()}점)`)}
+function arcadeBlink(S){const fx=S&&S.it._fx;if(fx)fx.win=performance.now()/1000}
+function clawDone(d){d.lastClaw=world.t;d.clawTries=(d.clawTries||0)+1;const p=clamp(0.14+(((d.skills&&d.skills.rea)||50)-50)/400+(world.clawPity||0)*0.04,0.05,0.6);
+  const fx=d.st&&d.st.it._fx;if(fx)fx.drop=performance.now()/1000;
+  if(Math.random()<p){world.clawPity=0;const prize=pick(PLUSH);d.plush=(d.plush||0)+1;d.plushName=prize;world.plushWon=(world.plushWon||0)+1;d.happy=clamp(d.happy+25);if(d.root)d.root.userData.barkPulse=1;
+    log(`🧸 ${d.name}${josa(d.name,'이','가')} 인형 뽑기 성공! ${prize}${josa(prize,'을','를')} 품에 안았어요 (행복도 +25 · 잘 때 행복도가 더 올라요)`,'good');if(soundOn&&speed<=4){blip(784,0.08,0.05);setTimeout(()=>blip(1047,0.12,0.05),120)}}
+  else{world.clawPity=(world.clawPity||0)+1;d.happy=clamp(d.happy-2);if(!world.fastNow&&Math.random()<0.5)log(`😿 ${d.name} 인형 뽑기 실패… 아깝다!`)}}
+function arcadeLine(){const H=world.arcadeHi||{},ks=Object.keys(H);let t='';if(dev.st&&(dev.st.arcade||[]).length)t+=`🕹 오락실 ${ks.length?ks.map(k=>`${k.split(' ')[0]} ${H[k].name} ${H[k].score.toLocaleString()}`).slice(0,3).join(', '):'아직 기록 없음'}`;
+  if(dev.st&&(dev.st.claw||[]).length)t+=`${t?' · ':''}🧸 뽑은 인형 ${world.plushWon||0}개`;return t}
 function kennelWalls(it){return []} // a dog kennel is walk-in (the opening faces forward), so it does not block movement
 
+/* ---------- home location: meadow, beach, highland, forest, desert, snow, river, island, city ---------- */
+const LOCS={
+  meadow:{n:'🌾 초원',war:'plain',sky:'#8fbfdf',temp:18,amp:6,yard:['#6fa64e',['#5f9842','#7fb75a','#68a048','#8cc265','#578b3c']],ground:['#79ad57',['#6a9e4a','#86ba62','#5f9442']],note:'푸른 들판이에요. 특별한 효과 없이 균형 잡힌 곳이에요.'},
+  beach:{n:'🏖 바닷가',war:'coast',sky:'#7ec4ea',temp:25,amp:5,yard:['#e8d6a0',['#dcc58a','#f1e2b4','#d3bb7d','#efe0b0']],ground:['#e9d7a2',['#dcc68c','#f2e4b8']],note:'마당에서 놀면 행복도 ↑ · 모래가 묻어 바닥이 빨리 더러워져요 · 덥고 바다 바람이 불어요 · 전쟁: 해안 (전투함·항공모함 사용 가능)'},
+  highland:{n:'⛰ 고산지대',war:'mountain',sky:'#9ec6e8',temp:5,amp:7,yard:['#7f9a5c',['#6f8a4f','#8fa86a','#9a9a88','#7d7d70','#6b8547']],ground:['#8d9070',['#7c8062','#9fa184','#6f735a','#a8a89a']],note:'공기가 맑아 건강 ↑ · 밤엔 추워서 난방이 필요해요 · 전쟁: 산악 (적 탱크 힘 −40%)'},
+  forest:{n:'🌲 숲속',war:'plain',sky:'#8cbad2',temp:15,amp:5,yard:['#5a8f40',['#4d7f36','#6a9c4c','#5b4a2e','#3f6e30','#7a6a40']],ground:['#4f7d3a',['#446f32','#5c8c44','#5a4a30']],note:'자연 속이라 늘 행복도 ↑ · 벌레 때문에 건강이 조금씩 ↓ · 깊은 숲이라 도둑이 덜 와요 · 산책하면 행복도 더 ↑'},
+  desert:{n:'🏜 사막',war:'plain',sky:'#e7c98f',temp:31,amp:11,yard:['#e2bf7c',['#d6b06a','#ecd096','#c99f5c']],ground:['#e0bb76',['#d3ab64','#ebcd90','#c8995a']],note:'낮엔 아주 더워서 목마름 ↑·체력 ↓ (냉방 필요) · 밤엔 서늘해요 · 햇빛이 강해 태양광 수익 ×1.8'},
+  snow:{n:'❄ 설원',war:'mountain',sky:'#c9dceb',temp:-6,amp:4,yard:['#eef3f7',['#dfe8ef','#ffffff','#d3dee8','#e8eef4']],ground:['#f1f5f9',['#e2eaf1','#ffffff','#d6e1ea']],note:'추워서 배고픔 ↑·건강 ↓ (난방 필요) · 눈밭에서 놀면 행복도 ↑ · 태양광 수익 ×0.6 · 전쟁: 산악'},
+  river:{n:'🏞 강가',war:'river',sky:'#8fc4e2',temp:17,amp:5,yard:['#6aa553',['#5b9646','#7cb562','#8a7e5a']],ground:['#74aa58',['#649a4a','#82b866']],note:'물가라 목마름이 덜 차요 · 강을 따라 바람이 시원해요 · 전쟁: 강가 (적 탱크 힘 −20%)'},
+  island:{n:'🏝 섬',war:'island',sky:'#74c3ec',temp:26,amp:4,yard:['#e4d39c',['#d8c486','#f0e2b0','#7fb75a']],ground:['#e4d39c',['#d8c486','#f0e2b0']],note:'바다로 둘러싸여 배나 전투기가 없으면 적이 못 쳐들어와요 · 바다 바람에 행복도 ↑ · 따뜻해요 · 모래 때문에 바닥이 더러워져요'},
+  city:{n:'🏙 도시',war:'plain',sky:'#a9bccb',temp:20,amp:5,yard:['#6e9c52',['#628f48','#7aa95c','#9aa0a4']],ground:['#8f959a',['#858b90','#9aa0a5','#7c8287']],note:'이웃이 많아 산책하면 행복도 더 ↑ · 도둑이 더 자주 오고 많이 훔쳐가요 · 냉난방 전기 요금 −30%'},
+};
+const LOC_KEYS=Object.keys(LOCS);
+let locNow='meadow',surroundG=null,locFxT=0;
+function houseLoc(h){return h&&LOCS[h.loc]?h.loc:({plain:'meadow',mountain:'highland',river:'river',coast:'beach',island:'island'}[h&&h.terrain]||'meadow')}
+function outTemp(){const L=LOCS[locNow]||LOCS.meadow,hr=hour();return L.temp+L.amp*Math.sin((hr-9)/24*Math.PI*2)}
+function locTex(k,which){const L=LOCS[k]||LOCS.meadow,[b,d]=L[which];return canvasTex(b,d,which==='yard'?2600:1800)}
+function applyLoc(k,rebuild){
+  locNow=LOCS[k]?k:'meadow';const L=LOCS[locNow];
+  scene.background=new THREE.Color(L.sky);scene.fog=new THREE.Fog(L.sky,38,95);
+  if(rebuild!==false)buildSurround();
+  if(yard&&yard.gr){const t=locTex(locNow,'yard');const yw=yard.maxx-yard.minx,yd=yard.maxz-yard.minz;t.repeat.set(yw/2,yd/2);yard.gr.material=new THREE.MeshStandardMaterial({map:t,roughness:1})}
+  if(floorMesh&&layout.outdoor){const t=locTex(locNow,'yard');t.repeat.set(W/2,D/2);floorMesh.material=new THREE.MeshStandardMaterial({map:t,roughness:0.85})}
+}
+function buildSurround(){
+  if(surroundG){scene.remove(surroundG);surroundG.traverse(o=>{if(o.geometry)o.geometry.dispose()})}
+  const G=new THREE.Group();surroundG=G;G.userData.fx=[];scene.add(G);const k=locNow,L=LOCS[k];
+  const cx=(B.minx+B.maxx)/2,cz=(B.minz+B.maxz)/2,hx=(B.maxx-B.minx)/2+1.2,hz=(B.maxz-B.minz)/2+1.2,R=60;
+  const add=m=>{m.castShadow=false;m.receiveShadow=false;G.add(m);return m};
+  const gt=locTex(k,'ground');gt.repeat.set(30,30);
+  const gnd=new THREE.Mesh(new THREE.PlaneGeometry(R*2.4,R*2.4),new THREE.MeshStandardMaterial({map:gt,roughness:1}));gnd.rotation.x=-Math.PI/2;gnd.position.set(cx,-0.03,cz);gnd.receiveShadow=true;G.add(gnd);
+  const outside=(x,z,m)=>Math.abs(x-cx)>hx+(m||0)||Math.abs(z-cz)>hz+(m||0);
+  const spot=(minR,maxR,m,tries)=>{for(let i=0;i<(tries||30);i++){const a=Math.random()*Math.PI*2,r=rand(minR,maxR),x=cx+Math.cos(a)*r,z=cz+Math.sin(a)*r;if(outside(x,z,m))return [x,z]}return null};
+  const near=Math.max(hx,hz);
+  const water=(x,z,w,d,c)=>{const m=add(new THREE.Mesh(new THREE.PlaneGeometry(w,d,24,24),new THREE.MeshStandardMaterial({color:c||'#3f8fc8',roughness:0.25,metalness:0.1,transparent:true,opacity:0.92})));m.rotation.x=-Math.PI/2;m.position.set(x,-0.01,z);G.userData.fx.push({k:'wave',m});return m};
+  const pine=(x,z,s,snow)=>{s=s||1;add(cyl(0.1*s,0.14*s,0.9*s,'#6b4a2e',x,0.45*s,z,6));for(let i=0;i<3;i++){const c=new THREE.Mesh(new THREE.ConeGeometry((0.95-i*0.25)*s,1.0*s,8),mat(snow&&i===2?'#f4f8fb':pick(['#2f6b3a','#3a7a43','#2a5e33'])));c.position.set(x,(1.1+i*0.55)*s,z);add(c)}};
+  const tree=(x,z,s)=>{s=s||1;add(cyl(0.12*s,0.16*s,1.4*s,'#7a5232',x,0.7*s,z,6));add(sph(0.8*s,pick(['#3f8a46','#4c9b52','#367a3d']),x,1.9*s,z));add(sph(0.55*s,pick(['#4c9b52','#5aa95e']),x+0.4*s,2.2*s,z+0.2*s))};
+  const palm=(x,z)=>{const h=rand(2.2,3.2);const t=add(cyl(0.09,0.14,h,'#9a7a4c',x,h/2,z,6));t.rotation.z=rand(-0.15,0.15);for(let i=0;i<6;i++){const f=add(box(1.3,0.04,0.28,'#3e9a46',x,h+0.05,z));f.rotation.y=i/6*Math.PI*2;f.rotation.z=-0.35;f.translateX(0.55)}};
+  const rock=(x,z,s,c)=>{const m=add(new THREE.Mesh(new THREE.DodecahedronGeometry(s,0),mat(c||pick(['#8a8a80','#9a978c','#7a7870']))));m.position.set(x,s*0.4,z);m.rotation.set(rand(0,3),rand(0,3),0);m.scale.y=0.7};
+  const mountain=(x,z,r,h,snowCap,c)=>{const m=add(new THREE.Mesh(new THREE.ConeGeometry(r,h,7),mat(c||pick(['#7d7a6e','#8a8574','#6f6c62']))));m.position.set(x,h/2-0.1,z);m.rotation.y=rand(0,3);
+    if(snowCap){const cap=add(new THREE.Mesh(new THREE.ConeGeometry(r*0.36,h*0.36,7),mat('#f4f7fa')));cap.position.set(x,h-h*0.18-0.1+0.02,z);cap.rotation.y=m.rotation.y}};
+  const hill=(x,z,r,c)=>{const m=add(sph(r,c,x,-r*0.55,z));m.scale.y=0.45};
+  const ring=(n,minR,maxR,m,fn)=>{for(let i=0;i<n;i++){const p=spot(minR,maxR,m);if(p)fn(p[0],p[1])}};
+  if(k==='meadow'){ring(10,near+4,R*0.75,2,(x,z)=>tree(x,z,rand(0.8,1.3)));ring(8,R*0.6,R*0.95,6,(x,z)=>hill(x,z,rand(6,12),pick(['#7fb35c','#73a852','#8cc068'])));
+    ring(60,near+1.5,R*0.6,0.5,(x,z)=>{const f=add(sph(0.06,pick(['#f2d64a','#ef7a8a','#ffffff','#b48ef0']),x,0.08,z))})}
+  else if(k==='beach'){const sz=B.maxz+5;water(cx,sz+R*0.6,R*2.4,R*1.2);add(box(R*2.4,0.02,1.2,'#f6f0dc',cx,-0.015,sz+0.6)).material=mat('#f6f0dc',{transparent:true,opacity:0.7});
+    ring(9,near+2,R*0.55,1.5,(x,z)=>{if(z<sz-1)palm(x,z)});ring(10,near+2,R*0.5,1,(x,z)=>{if(z<sz-0.5)rock(x,z,rand(0.15,0.4),'#cdbb8a')});
+    for(let i=0;i<3;i++){const bx=cx+rand(-R*0.6,R*0.6),bz=sz+rand(10,40);const b=add(box(1.6,0.4,0.6,'#ffffff',bx,0.15,bz));add(box(0.06,1.4,0.06,'#8a6a4a',bx,0.9,bz));const sail=add(new THREE.Mesh(new THREE.ConeGeometry(0.5,1.2,3),mat('#f2f2f2')));sail.position.set(bx+0.2,1.0,bz);G.userData.fx.push({k:'bob',m:b,y:0.15,ph:i},{k:'bob',m:sail,y:1.0,ph:i})}
+    const um=[[cx-hx-2,cz-2],[cx+hx+2.5,cz+1]];for(const [x,z] of um){if(z<sz-1){add(cyl(0.03,0.03,1.8,'#dddddd',x,0.9,z,6));add(new THREE.Mesh(new THREE.ConeGeometry(1,0.5,10),mat(pick(['#e84a4a','#2f7fd0','#f2c14e'])))).position.set(x,1.85,z)}}}
+  else if(k==='highland'){ring(12,R*0.65,R*1.05,8,(x,z)=>mountain(x,z,rand(6,10),rand(9,16),Math.random()<0.75));ring(14,near+2,R*0.45,1,(x,z)=>rock(x,z,rand(0.25,0.9)));ring(8,near+3,R*0.4,1.5,(x,z)=>pine(x,z,rand(0.7,1.1)))}
+  else if(k==='forest'){ring(60,near+1.8,R*0.8,1.2,(x,z)=>Math.random()<0.55?pine(x,z,rand(0.9,1.6)):tree(x,z,rand(0.9,1.5)));ring(10,near+1.5,R*0.4,0.8,(x,z)=>{add(cyl(0.03,0.04,0.12,'#f4efe2',x,0.06,z,6));add(sph(0.09,'#d4473a',x,0.14,z)).scale.y=0.55})}
+  else if(k==='desert'){ring(12,R*0.4,R*0.95,5,(x,z)=>hill(x,z,rand(5,11),pick(['#e3bd78','#d9b06a','#ebc988'])));
+    ring(12,near+2,R*0.5,1.2,(x,z)=>{const h=rand(0.9,1.8);add(cyl(0.16,0.18,h,'#4f8a3e',x,h/2,z,8));add(sph(0.16,'#4f8a3e',x,h,z));if(Math.random()<0.7){add(cyl(0.09,0.09,0.5,'#4f8a3e',x+0.28,h*0.6,z,6));add(cyl(0.09,0.09,0.2,'#4f8a3e',x+0.18,h*0.45,z,6)).rotation.z=Math.PI/2}});
+    ring(8,near+2,R*0.5,1,(x,z)=>rock(x,z,rand(0.2,0.6),'#b88c55'));const p=spot(near+8,R*0.5,3);if(p){const pyr=add(new THREE.Mesh(new THREE.ConeGeometry(6,6,4),mat('#d7b06a')));pyr.position.set(p[0],2.9,p[1])}}
+  else if(k==='snow'){ring(10,R*0.65,R*1.05,8,(x,z)=>mountain(x,z,rand(6,10),rand(8,14),true,'#d9e3ec'));ring(28,near+2,R*0.6,1.2,(x,z)=>pine(x,z,rand(0.8,1.3),true));ring(10,near+1.5,R*0.45,0.8,(x,z)=>hill(x,z,rand(0.6,1.6),'#ffffff'));
+    const sp=spot(near+2.5,near+6,1.5);if(sp){const [x,z]=sp;add(sph(0.45,'#ffffff',x,0.42,z));add(sph(0.32,'#ffffff',x,1.05,z));add(sph(0.22,'#ffffff',x,1.5,z));add(new THREE.Mesh(new THREE.ConeGeometry(0.05,0.25,6),mat('#f08a2a'))).position.set(x,1.5,z+0.25)}
+    const n=600,pos=new Float32Array(n*3);for(let i=0;i<n;i++){pos[i*3]=cx+rand(-30,30);pos[i*3+1]=rand(0,14);pos[i*3+2]=cz+rand(-30,30)}const gg=new THREE.BufferGeometry();gg.setAttribute('position',new THREE.BufferAttribute(pos,3));
+    const pts=new THREE.Points(gg,new THREE.PointsMaterial({color:'#ffffff',size:0.09,transparent:true,opacity:0.9}));G.add(pts);G.userData.fx.push({k:'snow',m:pts,cx,cz})}
+  else if(k==='river'){const rz=B.minz-7;const rv=water(cx,rz,R*2.4,6,'#4a9ad0');G.userData.fx.push({k:'flow',m:rv});
+    add(box(R*2.4,0.05,0.8,'#8a7e5a',cx,-0.01,rz+3.3));add(box(R*2.4,0.05,0.8,'#8a7e5a',cx,-0.01,rz-3.3));
+    const bx=cx+rand(-6,6);add(box(2,0.15,7.6,'#9a6a3e',bx,0.35,rz));for(const sx of[-0.95,0.95])add(box(0.06,0.5,7.6,'#7a5232',bx+sx,0.6,rz));
+    ring(16,near+2,R*0.75,1.5,(x,z)=>{if(Math.abs(z-rz)>4.5)tree(x,z,rand(0.8,1.3))});ring(12,near+1,R*0.5,0.5,(x,z)=>{if(Math.abs(z-rz)<4.2&&Math.abs(z-rz)>3)add(cyl(0.02,0.02,0.7,'#5a8a3a',x,0.35,z,4))})}
+  else if(k==='island'){const ir=near+6;const sea=add(new THREE.Mesh(new THREE.RingGeometry(ir,R*1.6,48,1),new THREE.MeshStandardMaterial({color:'#2f8fd0',roughness:0.25,transparent:true,opacity:0.95})));sea.rotation.x=-Math.PI/2;sea.position.set(cx,0.0,cz);G.userData.fx.push({k:'wave',m:sea});
+    const shallow=add(new THREE.Mesh(new THREE.RingGeometry(ir-1.2,ir,48,1),new THREE.MeshStandardMaterial({color:'#7fd3e6',transparent:true,opacity:0.7})));shallow.rotation.x=-Math.PI/2;shallow.position.set(cx,-0.005,cz);
+    ring(8,near+1.5,ir-1.8,1,(x,z)=>palm(x,z));ring(6,near+1,ir-1.5,0.8,(x,z)=>rock(x,z,rand(0.15,0.35),'#cdbb8a'));
+    for(let i=0;i<4;i++){const a=rand(0,6.28),r=rand(ir+12,R*1.1);const x=cx+Math.cos(a)*r,z=cz+Math.sin(a)*r;hill(x,z,rand(3,6),'#e4d39c');palm(x,z)}}
+  else if(k==='city'){const roadZ=B.maxz+3.2;ring(40,near+4,R*0.9,2.5,(x,z)=>{if(Math.abs(z-roadZ)<4.5)return;const dist=Math.hypot(x-cx,z-cz),w=rand(2.5,5),d=rand(2.5,5),h=rand(3,6)+Math.max(0,dist-near-10)*rand(0.2,0.6);const b=add(box(w,h,d,pick(['#8c96a0','#a7b0b8','#6f7a85','#b9a990','#9aa6b2','#c4c9cc']),x,h/2,z));
+      const win=add(box(w*1.01,h*0.9,d*1.01,'#ffe9a0',x,h/2,z,{emissive:'#ffd76a',emissiveIntensity:0,transparent:true,opacity:0.0}));win.material=new THREE.MeshStandardMaterial({color:'#ffe9a0',emissive:'#ffd76a',emissiveIntensity:0,transparent:true,opacity:0});G.userData.fx.push({k:'win',m:win})});
+    add(box(R*2.4,0.02,3,'#4a4f55',cx,-0.02,B.maxz+3.2));for(let i=-12;i<=12;i++)add(box(1.2,0.025,0.15,'#f2f2f2',cx+i*3,-0.01,B.maxz+3.2));
+    for(let i=0;i<2;i++){const c=add(box(1.6,0.6,0.8,pick(['#d4473a','#2f7fd0','#f2c14e']),cx,0.35,B.maxz+2.6+i*1.2));G.userData.fx.push({k:'car',m:c,sp:(i?-1:1)*rand(3,5),cx})}
+    ring(6,near+1.5,near+3.2,0.5,(x,z)=>{if(Math.abs(z-B.maxz-3.2)<2)return;add(cyl(0.05,0.05,2.6,'#555c63',x,1.3,z,6));add(sph(0.14,'#fff6d0',x,2.65,z))})}
+}
+function locFx(rdt){
+  if(!surroundG||!surroundG.visible)return;const F=surroundG.userData.fx;if(!F.length)return;locFxT+=rdt;const t=locFxT,sp=Math.min(speed,8);const night=world&&isNight();
+  for(const f of F){
+    if(f.k==='wave'){f.m.position.y=-0.01+Math.sin(t*1.2)*0.015}
+    else if(f.k==='bob'){f.m.position.y=f.y+Math.sin(t*1.5+f.ph)*0.06;f.m.rotation.z=Math.sin(t*1.1+f.ph)*0.05}
+    else if(f.k==='flow'){if(f.m.material.map)f.m.material.map.offset.x+=rdt*0.1;f.m.position.y=-0.01+Math.sin(t*2)*0.006}
+    else if(f.k==='snow'){const a=f.m.geometry.attributes.position,p=a.array;for(let i=0;i<p.length;i+=3){p[i+1]-=rdt*(0.8+((i*7)%5)*0.12)*Math.min(3,sp);p[i]+=Math.sin(t+i)*rdt*0.15;if(p[i+1]<0){p[i+1]=14;p[i]=f.cx+rand(-30,30);p[i+2]=f.cz+rand(-30,30)}}a.needsUpdate=true}
+    else if(f.k==='win'){const v=night?0.55:0;if(f.m.material.opacity!==v*0.6){f.m.material.opacity=v*0.6;f.m.material.emissiveIntensity=v}}
+    else if(f.k==='car'){f.m.position.x+=f.sp*rdt*Math.min(4,sp);if(f.m.position.x>f.cx+60)f.m.position.x=f.cx-60;if(f.m.position.x<f.cx-60)f.m.position.x=f.cx+60}
+  }
+}
+function locStep(h){
+  if(!world||field||world.arena)return;const k=locNow,T=outTemp(),A=world.ac||{},P=hasPower();
+  if(careMode==='auto'&&dev.aircon&&!dev.thermo&&P&&world.ac){const need=T<8?'heat':T>28?'cool':null;
+    if(need&&(!A.on||A.mode!==need)){A.on=true;A.mode=need;if(!world.fastNow)log(`🤖 바깥이 ${Math.round(T)}℃라 ${need==='heat'?'🔥 난방':'❄ 냉방'}을 켰어요`)}}
+  const cond=dev.aircon&&A.on&&P;
+  for(const d of dogs){if(d.dead||d.stray||d.enemy||d.away||d.lion)continue;const inside=!yard||inRoom(d.pos.x,d.pos.y),eff=inside?0.5:1;
+    const ok=inside&&cond&&((T<8&&A.mode==='heat')||(T>28&&A.mode==='cool'));
+    if(!ok){if(T>28){const x=Math.min(2,(T-28)/8)*eff;d.thirst=clamp(d.thirst+h*0.06*x);d.stamina=clamp(d.stamina-h*0.03*x)}
+      if(T<8){const x=Math.min(2,(8-T)/10)*eff;d.health=clamp(d.health-h*0.007*x);d.hunger=clamp(d.hunger+h*0.03*x);d.stamina=clamp(d.stamina-h*0.015*x)}}
+    if(d.plush&&d.state==='sleep')d.happy=clamp(d.happy+h*0.008*Math.min(3,d.plush));
+    if(k==='beach'||k==='island'){if(!inside)d.happy=clamp(d.happy+h*0.012);else d.happy=clamp(d.happy+h*0.003)}
+    else if(k==='snow'){if(!inside)d.happy=clamp(d.happy+h*0.01)}
+    else if(k==='forest'){d.happy=clamp(d.happy+h*0.006);d.health=clamp(d.health-h*0.0025)}
+    else if(k==='highland')d.health=clamp(d.health+h*0.004);
+    else if(k==='river')d.thirst=clamp(d.thirst-h*0.03);
+  }
+  if(k==='city'&&!intruder&&!fights.length&&!world.fastNow&&Math.random()<h/2880){log('🏙 도시라 낯선 사람이 집 주변을 기웃거려요…','bad',true);spawnIntruder(Math.random()<0.6?'door':'window',1+Math.floor(Math.random()*3),'any')}
+  if((k==='beach'||k==='island')&&yard)world.dirt=Math.min(1,(world.dirt||0)+h*0.0006);
+}
+function locLine(){const L=LOCS[locNow];return `📍 ${L.n} · 바깥 ${Math.round(outTemp())}℃`}
+function locNoteUI(){const v=$('#homeLoc').value,el=$('#homeLocNote');if(el)el.textContent=v==='random'?'시작할 때 9곳 중 한 곳을 무작위로 골라요.':LOCS[v].note}
 /* ---------- smart home: speaker, light, thermostat, white noise, security, paw wash, solar ---------- */
 const SPEAKER_LINES=['우리 강아지들 최고야! 사랑해~','오늘도 잘 지내고 있지? 착하다!','신나는 노래 틀어줄게 🎵','주인님이 곧 오실 거야, 조금만 기다려!','물 마시는 거 잊지 마~','다들 꼬리 흔들기 시작!'];
 function smartStep(h){
@@ -6551,19 +6730,19 @@ function smartStep(h){
   if(dev.smartlight&&P&&night)pay('smartlight',h*0.12);
   if(dev.whitenoise&&P&&night){pay('whitenoise',h*0.05);for(const d of dogs)if(!d.dead&&!d.away&&d.state==='sleep')d.happy=clamp(d.happy+h*0.02)}
   if(dev.thermo&&dev.aircon&&P){const A=world.ac=world.ac||{on:false,mode:'cool'},live=dogs.filter(d=>!d.dead&&!d.stray&&!d.away);if(live.length){const aS=live.reduce((a,d)=>a+d.stamina,0)/live.length,aH=live.reduce((a,d)=>a+d.happy,0)/live.length;
-    const hr=hour(),hot=hr>=11&&hr<18,cold=hr<6||hr>=22;A.mode=cold?'heat':'cool';const want=aS<65||aH<60||hot||cold;
+    const hr=hour(),To=outTemp(),hot=To>26||(hr>=12&&hr<17&&To>22),cold=To<12;A.mode=cold?'heat':'cool';const want=aS<65||aH<60||hot||cold;
     if(want&&!A.on){A.on=true;if(!world.fastNow)log(`🌡 스마트 온도조절기가 ${A.mode==='heat'?'🔥 난방':'❄ 냉방'}을 켰어요`)}else if(!want&&A.on&&aS>85){A.on=false;if(!world.fastNow)log('🌡 스마트 온도조절기가 냉난방기를 껐어요')}}}
   if(dev.security&&P)pay('security',h*0.1);
   if(dev.pawwash&&P){const b=dev.pawwash.box;for(const d of dogs){if(d.dead||d.away||d.stray||d.fight)continue;const inside=inBox(d.pos.x,d.pos.y,b,0.05);
       if(inside&&!d.pawIn&&(d.speed||0)>0.05){d.health=clamp(d.health+0.6);world.dirt=Math.max(0,(world.dirt||0)-0.03);world.pawWashed=(world.pawWashed||0)+1;pay('pawwash',2);if(!world.fastNow&&d.root)addFx('dust',d.pos.x,0.1,d.pos.y,0.25)}d.pawIn=inside}}
-  if(dev.solar){const hr=hour(),sun=hr>=7&&hr<19?Math.sin((hr-7)/12*Math.PI):0;if(sun>0){const v=h*sun*1.4;world.solarAcc=(world.solarAcc||0)+v;if(world.solarAcc>=100){earn(Math.floor(world.solarAcc));world.solarTotal=(world.solarTotal||0)+Math.floor(world.solarAcc);world.solarAcc%=1}}}
+  if(dev.solar){const hr=hour(),sun=hr>=7&&hr<19?Math.sin((hr-7)/12*Math.PI):0;if(sun>0){const v=h*sun*1.4*(locNow==='desert'?1.8:locNow==='snow'?0.6:1);world.solarAcc=(world.solarAcc||0)+v;if(world.solarAcc>=100){earn(Math.floor(world.solarAcc));world.solarTotal=(world.solarTotal||0)+Math.floor(world.solarAcc);world.solarAcc%=1}}}
 }
 function OWN(m){if(!m.userData.own){m.material=m.material.clone();m.userData.own=1}return m.material} // a private copy, so lighting one LED does not light every LED sharing its colour
 function smartFx(){
   if(!world)return;const t=performance.now()/1000,P=hasPower(),night=isNight();
   if(dev.speaker){const fx=dev.speaker.it._fx;if(fx)OWN(fx.ring).emissive.set(P?((world.spkT||99)>55?'#5fd0ff':'#1f7fb0'):'#000000')}
   if(dev.smartlight){const fx=dev.smartlight.it._fx;if(fx){const on=P&&night;fx.L.intensity=on?0.9:0;OWN(fx.sh).emissive.set(on?'#ffcf80':'#000000')}}
-  if(dev.thermo){const fx=dev.thermo.it._fx,A=world.ac||{};if(fx){const tC=Math.round((A.on?(A.mode==='heat'?24:23):26+Math.sin(hour()/24*6.28)*3));if(fx.last!==tC){fx.last=tC;setSprite(fx.lbl,`${tC}℃${A.on?(A.mode==='heat'?' 🔥':' ❄'):''}`)}}}
+  if(dev.thermo){const fx=dev.thermo.it._fx,A=world.ac||{};if(fx){const To=Math.round(outTemp()),tC=Math.round(A.on?(A.mode==='heat'?24:23):clamp(To*0.6+9,8,33)),key=tC+'/'+To;if(fx.last!==key){fx.last=key;setSprite(fx.lbl,`${tC}℃${A.on?(A.mode==='heat'?' 🔥':' ❄'):''} · 밖${To}℃`)}}}
   if(dev.whitenoise){const fx=dev.whitenoise.it._fx;if(fx)OWN(fx.led).emissive.set(P&&night?'#3f9fd0':'#000000')}
   if(dev.security){const fx=dev.security.it._fx,alarm=intruderActive();if(fx){fx.cam.rotation.y=Math.sin(t*0.8)*0.8;OWN(fx.siren).emissive.set(alarm&&Math.floor(t*4)%2?'#ff2a2a':'#300808');OWN(fx.led).emissive.set(P?'#2ad46a':'#000000')}}
   if(dev.solar){const fx=dev.solar.it._fx,hr=hour();if(fx)OWN(fx.led).emissive.set(hr>=7&&hr<19?'#2ad46a':'#000000')}
@@ -6573,7 +6752,7 @@ function smartFx(){
 /* ---------- climate: air conditioner/heater and air purifier ---------- */
 function climateStep(h){
   if(!world)return;const A=world.ac=world.ac||{on:false,mode:'cool',auto:true},P=hasPower();
-  if(dev.aircon&&A.on&&P){pay('aircon',h*1.2);for(const d of dogs){if(d.dead||d.stray||d.away||(yard&&!inRoom(d.pos.x,d.pos.y)))continue;d.stamina=clamp(d.stamina+h*0.05);d.happy=clamp(d.happy+h*0.04)}}
+  if(dev.aircon&&A.on&&P){pay('aircon',h*1.2*(locNow==='city'?0.7:1));for(const d of dogs){if(d.dead||d.stray||d.away||(yard&&!inRoom(d.pos.x,d.pos.y)))continue;d.stamina=clamp(d.stamina+h*0.05);d.happy=clamp(d.happy+h*0.04)}}
   if(dev.purifier&&world.pur&&P){pay('purifier',h*0.3);if(world.dirt>0)world.dirt=Math.max(0,world.dirt-h*0.004);for(const d of dogs)if(!d.dead&&!d.away&&!d.stray)d.health=clamp(d.health+h*0.006)}
 }
 /* ---------- going out: walks, vet, salon, training school ---------- */
@@ -6595,7 +6774,7 @@ function sendOut(kind,n,byAI){
 }
 function awayReturn(d,early){
   const A=d.away;if(!A)return;const O=OUTINGS[A.kind];d.away=null;d.root.visible=true;const p=spawnAt('land');d.pos.x=p.x;d.pos.y=p.z;resolve(d.pos,d.r);
-  const done=early?Math.min(1,(world.t-A.since)/Math.max(1,A.until-A.since)):1;let extra='';if(done>0.5){const r=O.back(d);if(typeof r==='string')extra=` (${r} 실력 +)`}
+  const done=early?Math.min(1,(world.t-A.since)/Math.max(1,A.until-A.since)):1;let extra='';if(done>0.5){const r=O.back(d);if(typeof r==='string')extra=` (${r} 실력 +)`;if(A.kind==='walk'&&(locNow==='city'||locNow==='forest')){d.happy=clamp(d.happy+10);extra+=locNow==='city'?' · 🏙 동네 친구들 만남 +10':' · 🌲 숲길 산책 +10'}}
   setState(d,'idle',rand(1,3));log(`🏠 ${d.name}${josa(d.name,'이','가')} ${O.lab.replace(' 중','')}에서 돌아왔어요${extra}${early?' · 일찍 데려옴':''}`,'good');world.cardsDirty=true;careUI();
 }
 function recallAway(){for(const d of dogs)if(d.away)awayReturn(d,true)}
@@ -6613,6 +6792,8 @@ function careUI(){
   const have=Object.keys(STDEF).filter(k=>dev.st&&dev.st[k]&&dev.st[k].length),users=dogs.filter(d=>d.state==='atSt'&&d.st),smart=Object.keys(FURN).filter(k=>FURN[k].smart&&dev[k]);
   $('#careSt').textContent=have.length?have.map(k=>`${FURN[k].n}${dev.st[k].length>1?' ×'+dev.st[k].length:''}${users.some(d=>d.st.type===k)?' (사용 중)':''}`).join(' · '):'방 꾸미기에서 목욕기·치료기·그루밍 테이블·장난감 바구니·간식기·강아지 집·냉난방기·공기청정기를 놓을 수 있어요 (마당: 어질리티·분수).';
   if(smart.length)$('#careSt').textContent='🏠 스마트홈: '+smart.map(k=>FURN[k].n).join(' · ')+(dev.solar?` (태양광 수익 ${won(world.solarTotal||0)})`:'')+' / '+$('#careSt').textContent;
+  {const al=arcadeLine();if(al)$('#careSt').textContent=al+' / '+$('#careSt').textContent}
+  $('#careSt').textContent=locLine()+' / '+$('#careSt').textContent;
   const pc=(world.petCD||0)-world.t;$('#petBtn').textContent=pc>0?`🤚 쓰다듬기 (${fmtDur(pc)} 뒤)`:'🤚 모두 쓰다듬기';
 }
 // automation: uses the outings and climate controls when the numbers call for it
@@ -6627,7 +6808,7 @@ function careAuto(live,aH,aS,aHe){
 
 /* ======================= CONSTRUCTION during the simulation ======================= */
 // price (won) and build time (game minutes) for each piece of furniture
-const BUILD={quiz:[90000,60],speaker:[45000,15],smartlight:[30000,15],thermo:[40000,20],whitenoise:[25000,10],security:[150000,60],pawwash:[70000,45],petfountain:[25000,15],nosework:[15000,10],cattower:[60000,60],petsofa:[50000,30],pool:[200000,240],shade:[40000,40],sandpit:[30000,60],solar:[300000,180],train:[80000,90],sofa:[60000,90],bed:[80000,120],table:[30000,45],shelf:[40000,60],tv:[120000,60],plant:[8000,15],dogbed:[15000,20],rug:[12000,15],
+const BUILD={arcade:[120000,60],claw:[100000,45],quiz:[90000,60],speaker:[45000,15],smartlight:[30000,15],thermo:[40000,20],whitenoise:[25000,10],security:[150000,60],pawwash:[70000,45],petfountain:[25000,15],nosework:[15000,10],cattower:[60000,60],petsofa:[50000,30],pool:[200000,240],shade:[40000,40],sandpit:[30000,60],solar:[300000,180],train:[80000,90],sofa:[60000,90],bed:[80000,120],table:[30000,45],shelf:[40000,60],tv:[120000,60],plant:[8000,15],dogbed:[15000,20],rug:[12000,15],
   water:[50000,60],food:[10000,15],launcher:[45000,60],potty:[70000,90],treadmill:[90000,120],farm:[250000,360],
   bath:[120000,150],medic:[300000,240],groom:[60000,60],toybox:[20000,20],snackbar:[50000,45],kennel:[40000,60],aircon:[150000,120],purifier:[60000,30],agility:[100000,180],fountain:[80000,120]};
 let buildPick=null;
@@ -6757,7 +6938,7 @@ function loadSave(txt){
   ['#clockBox','#speedSeg','#pauseBtn','#soundBtn','#backSetup','#modeChip','#escBtn','#statBtn','#moneyBox','#saveBtn'].forEach(q=>$(q).hidden=false);$('#phaseLbl').textContent='2단계 · 시뮬레이션';
   player.spect=null;player.ctrl=null;player.side=null;player.escape=null;player.bannerFight=null;$('#fightHud').hidden=true;$('#touchPad').hidden=true;$('#fightBanner').hidden=true;
   Object.assign(owner,{visiting:false,dead:false,state:'out',fight:null,g:null,stamina:100,health:100});
-  const saveDog=dogConf,saveCat=catConf;dogConf=[];catConf=[];initRenderers();buildWorld();dogConf=saveDog;catConf=saveCat;resizeAll();
+  locNow=LOCS[layout.loc]?layout.loc:'meadow';const saveDog=dogConf,saveCat=catConf;dogConf=[];catConf=[];initRenderers();buildWorld();dogConf=saveDog;catConf=saveCat;resizeAll();
   for(const d of dogs)removeQuiet(d);dogs=[];
   world=Object.assign(newWorldState(S.world.t),S.world,{builds:[],bgs:[],floorMess:[],autoDrop:null,breakLoop:false,fastNow:false});world.pad=Object.assign(newWorldState(0).pad,S.world.pad||{},{waste:[],cleaning:0});
   world.tm=Object.assign({user:null,speed:'mid',auto:true,minutes:0,start:0},S.world.tm||{},{user:null});if(world.war){world.war.battle=null;world.war.pendingFight=null}
@@ -6770,10 +6951,10 @@ function loadSave(txt){
   $('#log').innerHTML='';speed=1;clearInterval(musicIv);musicIv=0;const mOn=world.music.on;world.music.on=false;if(mOn)setMusic(true);else musicUI();
   const tOn=world.tv&&world.tv.on;if(world.tv){world.tv.on=false;if(tOn&&tvs.length)setTV(true)}
   followId=dogs[0]?dogs[0].id:1;world.cardsDirty=true;buildDogCards();renderEvents();setCamMode('free');buildSpeedSeg();
-  if(world.quiz)world.quiz.on=false;world.trainQ=world.trainQ||[];
+  if(world.quiz)world.quiz.on=false;world.trainQ=world.trainQ||[];if(world.war){const ah=world.war.houses.find(x=>x.id===world.war.active);if(ah&&houseLoc(ah)!==locNow)applyLoc(houseLoc(ah))}
   if(!world.ai)aiInit();if(S.careMode)applyMode(S.careMode,false);setTimeout(()=>{warUI();careUI();buildUI();boardUI()},0);
   log(`📂 저장한 게임을 불러왔어요 · ${saveSummary(S.meta)}`,'good');toast('📂 이어서 시작해요!',false,true);
-  running=true;lastT=performance.now();ac();
+  running=true;lastT=performance.now();ac();balanceSoon(600);
 }
 function restoreBuild(b){ // re-creates a construction site from the save (already paid for)
   const save=world.money;world.money=Infinity;const B0=(world.builds||[]).length;startBuild(b.type,{x:b.x,z:b.z,rot:b.rot});world.money=save;
@@ -7057,7 +7238,7 @@ function boardAuto(live){
 let lastT=performance.now(),uiT=0;
 function frame(now){
   requestAnimationFrame(frame);if(!running)return;
-  const realDt=Math.min(0.1,(now-lastT)/1000);lastT=now;musicFx(realDt);stationFx(realDt);smartFx();if(!paused)autoSaveTick(realDt);
+  const realDt=Math.min(0.1,(now-lastT)/1000);lastT=now;musicFx(realDt);stationFx(realDt);smartFx();locFx(realDt);if(!paused)autoSaveTick(realDt);
   if(!$('#warMap').hidden){mapT-=realDt;if(mapT<=0){mapT=1;renderMap()}}
   if(NET.on){NET.pubT-=realDt;if(NET.pubT<=0){NET.pubT=20;netPublish()}}
   if(!$('#statOv').hidden){statT-=realDt;if(statT<=0||statQueued){statT=1;renderStats()}}
@@ -7071,12 +7252,12 @@ function frame(now){
     for(let s=0;s<steps;s++){
       const before=world.t;world.t+=h;
       // scheduled events
-      for(const ev of world.events){if(!ev.done&&world.t>=ev.at){ev.done=true;if(ev.kind==='lion')spawnLion(ev.entry);else if(ev.kind==='cats')spawnStrays(ev.entry,ev.n||2);else spawnIntruder(ev.entry,ev.courage,ev.goal);world.breakLoop=world.fastNow}}
+      for(const ev of world.events){if(!ev.done&&world.t>=ev.at){ev.done=true;if(ev.kind==='lion')spawnLion(ev.entry);else if(ev.kind==='cats')spawnStrays(ev.entry,ev.n||2);else if(locNow==='forest'&&Math.random()<0.4)log('🌲 숲이 깊어 도둑이 길을 잃고 돌아갔어요','good');else spawnIntruder(ev.entry,ev.courage,ev.goal);world.breakLoop=world.fastNow}}
       if(world.events.some(e=>e.done)){world.events=world.events.filter(e=>!e.done);renderEvents()}
       if(Math.floor(before/1440)!==Math.floor(world.t/1440))log(`${Math.floor(world.t/1440)+1}일차 아침이 밝았어요`);
       while(world.t>=world.nextHourT){world.nextHourT+=60;hourTick();if(world.breakLoop)break}
       world.launcherBalls=balls.filter(b=>b.state==='in').length;
-      updatePotty(h);autoManager(h);updateFarm(h);billStep(h);warStep(h);boardStep(h);climateStep(h);smartStep(h);buildStep(h);trainQueueStep();quizStep(h);
+      updatePotty(h);autoManager(h);updateFarm(h);billStep(h);warStep(h);boardStep(h);climateStep(h);locStep(h);smartStep(h);buildStep(h);trainQueueStep();quizStep(h);
       if(world.tv.on&&world.tv.offAt>0&&world.t>=world.tv.offAt){setTV(false);log('꺼짐 예약 시간이 되어 TV가 꺼졌어요')}
       if(world.music.on&&world.music.offAt>0&&world.t>=world.music.offAt){setMusic(false);log('꺼짐 예약 시간이 되어 음악이 꺼졌어요')}
       if(world.fastNow){for(const d of dogs.slice())fastAnimal(d,h)}
@@ -7387,6 +7568,7 @@ function startSim(){
   $('#setupErr').textContent='';arenaConf=null;if(match)cleanupMatch(true);$('#sim').classList.remove('arena','soccer');$('#arenaRes').hidden=true;
   dogConf.forEach((d,i)=>{d.name=($('#dogName'+i).value||'').trim()||d.name;d.age=clamp(parseFloat($('#dogAge'+i).value)||0,0,14)});
   catConf.forEach((d,i)=>{d.name=($('#catName'+i).value||'').trim()||d.name;d.age=clamp(parseFloat($('#catAge'+i).value)||0,0,14)});
+  {let lv=$('#homeLoc').value;if(lv==='random')lv=pick(LOC_KEYS);layout.loc=lv;locNow=lv}
   $('#setup').hidden=true;$('#sim').hidden=false;
   ['#clockBox','#speedSeg','#pauseBtn','#soundBtn','#backSetup','#modeChip','#escBtn','#statBtn','#moneyBox','#saveBtn'].forEach(s=>$(s).hidden=false);$('#phaseLbl').textContent='2단계 · 시뮬레이션';autoSaveT=120;
   player.spect=null;player.ctrl=null;player.side=null;player.escape=null;player.bannerFight=null;
@@ -7408,6 +7590,7 @@ function startSim(){
   $('#camZoom').value=1;$('#camZoomV').textContent='x1.0';
   world.tv.ch=$('#tvCh').value;$('#tvBtn').textContent='TV 켜기';$('#tvBtn').classList.add('primary');$('#tvBtn').disabled=!tvs.length;
   $('#tvNote').textContent=tvs.length?'TV를 켜면 강아지들이 앞에 앉아서 봐요. 강아지 채널을 가장 좋아해서 행복도가 더 많이 올라요.':'방에 TV장이 없어요. 방 꾸미기에서 TV장을 놓으면 쓸 수 있어요.';
+  log(`📍 집 위치: ${LOCS[locNow].n} — ${LOCS[locNow].note}`,'good');
   if(yard)log('마당 문이 열려 있어요. 낮에는 강아지들이 마당에 나가 놀아요');
   applyMode(($('input[name="careMode"]:checked')||{value:'auto'}).value,false);autoT=0;
   log(careMode==='auto'?'관리 방식: 모두 자동화 — 밥·물·청소·공·TV를 집이 알아서 챙겨요':'관리 방식: 직접 조작 — 밥, 물통, 배변판 청소, 공 던지기를 직접 해 주세요');
@@ -7415,9 +7598,39 @@ function startSim(){
   const nd=dogs.filter(d=>d.species==='dog').length,nc=dogs.length-nd;
   log(`시뮬레이션 시작 · 강아지 ${nd}마리${nc?` · 고양이 ${nc}마리`:''}`,'good');
   if(nd&&nc)toast('강아지와 고양이가 마주치면 싸워요. Esc로 싸움 설정을 바꿀 수 있어요',true);
-  running=true;lastT=performance.now();
+  running=true;lastT=performance.now();balanceSoon(600);
 }
 $('#startBtn').onclick=startSim;
+/* ---------- column balancing: keeps the right column about as long as the left one ---------- */
+let balT=0,balHover=0;
+function spanFix(){const mp=$('#mainPanels'),g=$('.sim-grid');if(!mp||!g)return;const had=g.classList.contains('measuring');g.classList.add('measuring');
+  const vis=[...mp.children].filter(e=>!e.hidden&&e.offsetParent!==null);vis.forEach(e=>e.classList.remove('span2'));
+  const two=getComputedStyle(mp).gridTemplateColumns.split(' ').length>1;
+  if(two){const hs=vis.map(e=>e.getBoundingClientRect().height);let run=[];const flush=()=>{if(run.length%2===1)run[run.length-1].classList.add('span2');run=[]};
+    vis.forEach((e,i)=>{const nb=i%2?hs[i-1]:hs[i+1];if(hs[i]>760||(nb&&hs[i]>nb*2.2&&hs[i]>520)){flush();e.classList.add('span2')}else run.push(e)});flush()}
+  if(!had)g.classList.remove('measuring')}
+function balanceCols(){
+  const grid=$('.sim-grid'),side=$('.side-col'),mc=$('.main-col'),mp=$('#mainPanels');if(!grid||!side||!mp||$('#sim').hidden)return;
+  const sim=$('#sim');if(sim.classList.contains('arena')||sim.classList.contains('soccer')||innerWidth<=960){spanFix();return}
+  const ae=document.activeElement;if(ae&&ae.matches&&ae.matches('input,select,textarea')&&(side.contains(ae)||mp.contains(ae)))return;
+  const log=side.querySelector('.logpanel'),homecam=side.querySelector('section.home-only');
+  grid.classList.add('measuring');spanFix();
+  const diff=()=>side.getBoundingClientRect().height-mc.getBoundingClientRect().height;
+  const movable=()=>[...side.children].filter(e=>e.matches('section.home-only')&&e!==homecam&&e.offsetHeight>0);
+  for(let i=0;i<30;i++){const d0=diff();if(Math.abs(d0)<120)break;let undo;
+    if(d0>0){const m=movable(),el=m[m.length-1];if(!el)break;mp.prepend(el);undo=()=>side.insertBefore(el,log)}
+    else{const el=[...mp.children].find(e=>e.offsetHeight>0);if(!el)break;side.insertBefore(el,log);undo=()=>mp.prepend(el)}
+    spanFix();const d1=diff();if(Math.abs(d1)>=Math.abs(d0)){undo();spanFix();break}}
+  grid.classList.remove('measuring');
+}
+function balanceSoon(ms){clearTimeout(balT);balT=setTimeout(balanceCols,ms||250)}
+addEventListener('resize',()=>balanceSoon(300));
+document.addEventListener('pointermove',e=>{if(e.target&&e.target.closest&&e.target.closest('.side-col,#mainPanels'))balHover=performance.now()},{passive:true});
+setInterval(()=>{if(!running||$('#sim').hidden||innerWidth<=960)return;const side=$('.side-col'),mc=$('.main-col'),g=$('.sim-grid');if(!side||!mc)return;
+  g.classList.add('measuring');const d=Math.abs(side.getBoundingClientRect().height-mc.getBoundingClientRect().height);g.classList.remove('measuring');spanFix();
+  if(d>450&&performance.now()-balHover>4000)balanceCols()},3000);
+
+$('#homeLoc').onchange=locNoteUI;locNoteUI();
 $('#saveBtn').onclick=openSaves;$('#contBtn').onclick=openSaves;$('#saveClose').onclick=()=>{$('#saveOv').hidden=true};$('#saveExport').onclick=exportSave;
 $('#saveFile').onchange=e=>{const f=e.target.files&&e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>loadSave(String(r.result));r.readAsText(f);e.target.value=''};
 try{if(lsGet('mh_autosave')==='0')$('#autoSave').checked=false}catch(_){}$('#autoSave').onchange=e=>lsSet('mh_autosave',e.target.checked?'1':'0');

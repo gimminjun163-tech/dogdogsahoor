@@ -336,6 +336,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
 .arc-ctl{display:grid;grid-template-columns:1fr 2fr 1fr;gap:6px}.arc-ctl .btn{min-height:44px;font-size:16px;touch-action:none;user-select:none;color:#fff;background:#2a3346;border-color:#3d4a63}.arc-ctl .btn.primary{background:#1d8a80;border-color:#1d8a80}
 .arc-btns{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}.arc-help{margin:0;font-size:11px;color:#b9c3cf;text-align:center}
 .arcask{left:50%;bottom:12px;transform:translateX(-50%);display:flex;gap:6px;align-items:center;background:rgba(14,18,28,.9);color:#fff;border-radius:999px;padding:6px 8px 6px 14px;font-size:12px;z-index:7;max-width:94%;flex-wrap:wrap;justify-content:center}.arcask[hidden]{display:none}
+.arcme{display:grid;grid-template-columns:1fr 1fr;gap:6px}.arcme select{grid-column:1/-1}.arcme small{opacity:.75;font-size:11px}
 .arclist{list-style:none;margin:0;padding:0;display:grid;gap:5px}.arclist li{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:13px;padding:6px 8px;border:1px solid var(--line);border-radius:10px}.arclist li b{flex:1 1 auto}.arclist li.muted{color:var(--muted);border-style:dashed}
 .main-panels:empty{display:none}
 @media (min-width:961px){
@@ -615,6 +616,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
     <button id="tabArena" aria-pressed="false">⚔ 싸움만 하기</button>
     <button id="tabSoccer" aria-pressed="false">⚽ 축구만 하기</button>
     <button id="tabWar" aria-pressed="false">⚔ 전쟁만 하기</button>
+    <button id="tabArcade" aria-pressed="false">🕹 오락만 하기</button>
   </div>
   <div class="setup-grid" id="homeSetup">
     <div class="card editor-wrap">
@@ -783,6 +785,23 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
       <button class="btn primary big" id="woStart">⚔ 전쟁 시작</button>
     </section>
   </div>
+  <div class="soccer-grid" id="arcSetup" hidden>
+    <section class="card panel">
+      <h2>🕹 오락만 하기</h2>
+      <p class="small">강아지 오락실을 열어요. 오락실 게임기와 인형 뽑기 기계가 가득한 방에서 강아지들이 게임을 해요. 강아지가 하는 게임을 관전할 수도 있고, 강아지 대신 내가 하거나 나 혼자 직접 할 수도 있어요. 밥·물·청소는 자동화가 챙겨요.</p>
+      <div class="row2">
+        <label class="f">강아지 수<select id="aoDogs"><option>0</option><option>3</option><option selected>6</option><option>8</option><option>12</option></select></label>
+        <label class="f">시작 돈 (게임 코인)<select id="aoMoney"><option value="100000">100,000원</option><option value="300000" selected>300,000원</option><option value="1000000">1,000,000원</option><option value="inf">무한</option></select></label>
+      </div>
+      <div class="row2">
+        <label class="f">🕹 오락실 게임기<select id="aoArc"><option>1</option><option>2</option><option selected>4</option><option>6</option><option>8</option></select></label>
+        <label class="f">🧸 인형 뽑기 기계<select id="aoClaw"><option>0</option><option>1</option><option selected>2</option><option>3</option><option>4</option></select></label>
+      </div>
+      <label class="f">강아지가 게임을 하면<select id="aoMode"><option value="watch" selected>자동으로 관전하기</option><option value="ask">물어보기 (관전 · 내가 하기 버튼)</option><option value="off">그냥 두기 (관전 안 함)</option></select></label>
+      <p class="small muted">시작하면 '🎮 오락실 · 인형 뽑기' 패널에서 '내가 오락하기'·'내가 인형 뽑기'로 언제든 직접 할 수 있어요. 한 판에 오락 500원, 인형 뽑기 1,000원이에요. 게임을 끝내고 방 다시 꾸미기를 누르면 원래 방 배치로 돌아가요.</p>
+      <button class="btn primary big" id="aoStart">🕹 오락실 열기</button>
+    </section>
+  </div>
   <div class="soccer-grid" id="soccerSetup" hidden>
     <div class="card team" style="--teamc:var(--good)">
       <div class="panel-head"><h2>⚽ 참가 동물</h2><span class="tag" id="soCount"></span></div>
@@ -947,6 +966,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
       <section class="card panel home-only" id="arcPanel">
         <div class="panel-head"><h2>🎮 오락실 · 인형 뽑기</h2><span class="tag" id="arcTag">쉬는 중</span></div>
         <label class="f">강아지가 기계를 쓰면<select id="arcMode"><option value="off">그냥 두기 (관전 안 함)</option><option value="watch">자동으로 관전하기</option><option value="ask">물어보기 (관전 · 내가 하기 버튼이 떠요)</option></select></label>
+        <div class="arcme"><select id="arcGame" aria-label="게임 고르기"><option value="">🎲 아무 게임</option><option>🏃 멍멍 러너</option><option>🏎 강아지 레이싱</option><option>🦴 뼈다귀 테트리스</option><option>👾 고양이 침공</option><option>🎯 공 맞히기</option></select><button class="btn primary" id="arcMeA">🕹 내가 오락하기 <small>500원</small></button><button class="btn" id="arcMeC">🧸 내가 인형 뽑기 <small>1,000원</small></button></div>
         <ul class="arclist" id="arcNow"></ul>
         <div class="kv small" id="arcHi"></div>
         <p class="small muted">관전하면 강아지가 하는 게임 화면이 그대로 보여요. '🎮 내가 하기'를 누르면 강아지 대신 직접 조작해요 — 오락실: 스페이스·↑ 점프 / ←→ 이동, 인형 뽑기: ←→로 집게 옮기고 스페이스로 내리기. 점수와 인형은 그 강아지 몫이에요.</p>
@@ -1943,9 +1963,9 @@ function renderArenaCounts(){for(const t of['A','B'])$('#team'+t+'Count').textCo
 $$('[data-add]').forEach(b=>b.onclick=()=>{const t=b.dataset.add;arenaTeams[t].push({breed:t==='A'?'shiba':'korshort',n:1,age:3});renderArenaTeams()});
 $$('[data-owner]').forEach(c=>c.onchange=e=>{const t=c.dataset.owner,o=t==='A'?'B':'A';arenaTeams['owner'+t]=e.target.checked;if(e.target.checked)arenaTeams['owner'+o]=false;renderArenaTeams()});
 $$('[data-preset]').forEach(b=>b.onclick=()=>{arenaTeams=JSON.parse(JSON.stringify(ARENA_PRESETS[b.dataset.preset]));renderArenaTeams()});
-function setAppMode(m){appMode=m;for(const [id,k] of [['#tabHome','home'],['#tabArena','arena'],['#tabSoccer','soccer'],['#tabWar','war']])$(id).setAttribute('aria-pressed',String(m===k));
-  $('#warSetup').hidden=m!=='war';$('#homeSetup').hidden=m!=='home';$('#arenaSetup').hidden=m!=='arena';$('#soccerSetup').hidden=m!=='soccer';$('#phaseLbl').textContent=m==='home'?'1단계 · 방 꾸미기':m==='arena'?'싸움장 · 팀 구성':m==='war'?'전쟁 · 군대 준비':'축구장 · 선수 구성';if(m==='home')edResize();if(m==='soccer')renderSoccerRows()}
-$('#tabHome').onclick=()=>setAppMode('home');$('#tabWar').onclick=()=>setAppMode('war');$('#woStart').onclick=()=>{ac();startWarOnly()};$('#tabArena').onclick=()=>setAppMode('arena');$('#tabSoccer').onclick=()=>setAppMode('soccer');
+function setAppMode(m){appMode=m;for(const [id,k] of [['#tabHome','home'],['#tabArena','arena'],['#tabSoccer','soccer'],['#tabWar','war'],['#tabArcade','arcade']])$(id).setAttribute('aria-pressed',String(m===k));
+  $('#arcSetup').hidden=m!=='arcade';$('#warSetup').hidden=m!=='war';$('#homeSetup').hidden=m!=='home';$('#arenaSetup').hidden=m!=='arena';$('#soccerSetup').hidden=m!=='soccer';$('#phaseLbl').textContent=m==='arcade'?'오락실 · 준비':m==='home'?'1단계 · 방 꾸미기':m==='arena'?'싸움장 · 팀 구성':m==='war'?'전쟁 · 군대 준비':'축구장 · 선수 구성';if(m==='home')edResize();if(m==='soccer')renderSoccerRows()}
+$('#tabHome').onclick=()=>setAppMode('home');$('#tabArcade').onclick=()=>setAppMode('arcade');$('#aoStart').onclick=()=>{ac();startArcadeOnly()};$('#tabWar').onclick=()=>setAppMode('war');$('#woStart').onclick=()=>{ac();startWarOnly()};$('#tabArena').onclick=()=>setAppMode('arena');$('#tabSoccer').onclick=()=>setAppMode('soccer');
 $('#arenaAI').onclick=()=>toggleMenu(true);
 function arenaLayout(){
   const sz={s:[8,6],m:[12,9],l:[16,12]}[$('#arenaSize').value];const [W0,D0]=sz;const items=[];const ob=$('#arenaObs').value;
@@ -6594,10 +6614,10 @@ const STDEF={
     use:(d,dt)=>{trainGain(d,dt);d.stamina=clamp(d.stamina-dt*0.12);d.happy=clamp(d.happy+dt*0.04);if(!world.fastNow&&Math.random()<dt*1.4){const S=d.st,fx=S&&S.it._fx;if(d.weapon){const m=muzzleOf(d);addFx('flash',m.x,m.y,m.z,0.3)}else if(d.root)d.root.userData.barkPulse=1;if(fx){const T=pick(fx.tg);T.rotation.x=-0.25;setTimeout(()=>{T.rotation.x=0},140);const wp=new THREE.Vector3();T.getWorldPosition(wp);addFx('dust',wp.x,wp.y,wp.z,0.18)}if(soundOn&&speed<=4&&d.weapon)gunSound('bullet')}},
     done:d=>{const k=wtOf(d);log(`🎯 ${d.name} 훈련 끝 · ${k==='none'?'맨몸':WEAPONS[k].n} 숙련 ${Math.round(d.prof[k]||0)}`)}},
   petfountain:{lab:'💧 정수기 물 마시는 중',dur:[2,3],front:0.4,cap:2,emo:'💧',power:'petfountain',per:0.3,want:d=>d.thirst>35?0.55:0,use:(d,dt)=>{d.thirst=clamp(d.thirst-dt*14);d.happy=clamp(d.happy+dt*0.3)}},
-  arcade:{lab:'🕹 오락실 게임 중',dur:[6,12],front:0.42,cap:1,power:'arcade',per:0.4,emo:'🎮',want:d=>d.happy<88&&d.stamina>30&&d.age>=0.5&&coinOk(500)?0.12:0,
+  arcade:{lab:'🕹 오락실 게임 중',dur:[6,12],front:0.42,cap:1,power:'arcade',per:0.4,emo:'🎮',want:d=>d.stamina>30&&d.age>=0.5&&coinOk(500)&&(world.arcOnly||d.happy<88)?(world.arcOnly?0.4:0.12):0,
     start:d=>coinPay(500,'arcade'),use:(d,dt)=>{d.happy=clamp(d.happy+dt*1.1);d.stamina=clamp(d.stamina-dt*0.03);if(d.skills)d.skills.rea=Math.min(99,(d.skills.rea||50)+dt*0.02);if(d.root&&Math.random()<dt*2)d.root.userData.barkPulse=0.5},
     done:d=>arcadeDone(d)},
-  claw:{lab:'🧸 인형 뽑기 중',dur:[2,4],front:0.42,cap:1,power:'claw',per:0.2,emo:'🤞',want:d=>d.happy<82&&d.age>=0.5&&world.t-(d.lastClaw??-1e9)>240&&coinOk(1000)?0.1:0,
+  claw:{lab:'🧸 인형 뽑기 중',dur:[2,4],front:0.42,cap:1,power:'claw',per:0.2,emo:'🤞',want:d=>(world.arcOnly||d.happy<82)&&d.age>=0.5&&world.t-(d.lastClaw??-1e9)>(world.arcOnly?60:240)&&coinOk(1000)?(world.arcOnly?0.3:0.1):0,
     start:d=>coinPay(1000,'claw'),use:(d,dt)=>{d.happy=clamp(d.happy+dt*0.4)},done:d=>clawDone(d)},
   nosework:{lab:'🧠 노즈워크 중',dur:[5,10],lift:0.02,sit:true,cap:2,emo:'👃',want:d=>d.happy<85&&d.stamina>25?0.12:0,
     use:(d,dt)=>{d.happy=clamp(d.happy+dt*0.8);d.hunger=clamp(d.hunger-dt*0.4);if(d.skills)d.skills.rea=Math.min(99,(d.skills.rea||50)+dt*0.015);if(d.root&&Math.random()<dt*2)d.root.userData.barkPulse=0.4}},
@@ -6671,20 +6691,31 @@ function arcOpen(d,ctrl){
   if(ARC&&!ARC.over&&ARC.d===d){ARC.ctrl=ctrl;ARC.show=true;arcShow();arcCam(ARC.S);return}
   if(ARC&&!ARC.over)arcEnd('switch');
   const kind=d.st.type,rea=(d.skills&&d.skills.rea)||50;
-  const A=ARC={d,S:d.st,kind,ctrl,show:true,over:false,t:0,rea,score:0,lives:3,msg:'',endT:0,W:440,H:240};
-  if(kind==='arcade'){A.game=pick(ARCADE_GAMES);A.mode=ARC_KIND[A.game]||'run';A.sk=ARC_SKIN[A.mode];A.dur=40;
+  const A=ARC={d,S:d.st,kind,ctrl,show:true,over:false,t:0,rea,score:0,lives:3,msg:'',endT:0,W:440,H:240};arcInit(A);
+  arcCam(A.S);arcShow();if(!world.fastNow)log(`${ctrl==='user'?'🎮':'👀'} ${d.name}의 ${kind==='arcade'?A.game:'인형 뽑기'} ${ctrl==='user'?'— 내가 대신 해요':'관전 중'}`,'',true);arcUI(true);
+}
+function arcSolo(kind,game){
+  const L=(dev.st&&dev.st[kind])||[];if(!L.length){toast(kind==='arcade'?'오락실 게임기가 없어요 (방 꾸미기·건설로 놓아 주세요)':'인형 뽑기 기계가 없어요 (방 꾸미기·건설로 놓아 주세요)',true);return}
+  if(ARC&&!ARC.over)arcEnd('switch');const cost=kind==='arcade'?500:1000;if(!coinPay(cost,kind)){toast(`돈이 모자라요 (${won(cost)} 필요)`,true);return}
+  const S=L.find(x=>!x.users)||L[0];$('#arcAsk').hidden=true;arcAskD=null;
+  const A=ARC={d:null,S,kind,ctrl:'user',show:true,over:false,t:0,rea:60,score:0,lives:3,msg:'',endT:0,W:440,H:240,solo:true};arcInit(A,game);
+  arcCam(S);arcShow();{const nm=kind==='arcade'?A.game:'인형 뽑기';log(`🙋 내가 ${nm}${josa(nm,'을','를')} 시작했어요 (−${won(cost)})`,'',true)};arcUI(true);
+}
+function arcInit(A,game){const kind=A.kind,rea=A.rea;
+  if(kind==='arcade'){A.game=ARCADE_GAMES.includes(game)?game:pick(ARCADE_GAMES);A.mode=ARC_KIND[A.game]||'run';A.sk=ARC_SKIN[A.mode];A.dur=40;
     if(A.mode==='run'||A.mode==='race'){A.py=0;A.vy=0;A.obs=[];A.items=[];A.spd=170;A.spawn=1;A.dist=0;A.inv=0;A.bonus=0}
     else{A.px=220;A.drops=[];A.spawn=0.6;A.inv=0;A.aiErr=0;A.aiT=0}}
   else{A.toys=[];for(let i=0;i<7;i++)A.toys.push({x:95+i*47+rand(-8,8),y:212,e:pick(['🧸','🐰','🦊','🐥','🦖','🐳','🐱','🦄'])});A.cx=250;A.cy=34;A.ph='aim';A.aimT=12;A.tgt=pick(A.toys);A.aiErr=rand(-1,1)*clamp(34-rea*0.3,5,30);A.aiWait=0.3;A.grab=null;A.slip=false}
-  arcCam(A.S);arcShow();if(!world.fastNow)log(`${ctrl==='user'?'🎮':'👀'} ${d.name}의 ${kind==='arcade'?A.game:'인형 뽑기'} ${ctrl==='user'?'— 내가 대신 해요':'관전 중'}`,'',true);arcUI(true);
 }
 function arcShow(){const A=ARC,ov=$('#arcOv');if(!A||!A.show){ov.hidden=true;return}ov.hidden=false;
-  $('#arcTitle').textContent=`${A.kind==='arcade'?'🕹 '+A.game:'🧸 인형 뽑기'} · ${A.d.name}`;
+  $('#arcTitle').textContent=`${A.kind==='arcade'?'🕹 '+A.game:'🧸 인형 뽑기'} · ${A.d?A.d.name:'🙋 나'}`;$('#arcSwap').hidden=!A.d;
   $('#arcSwap').textContent=A.ctrl==='user'?'🤖 강아지에게 맡기기':'🎮 내가 하기';$('#arcClose').textContent=A.ctrl==='user'?'✕ 그만하고 닫기':'✕ 관전 끄기';
   const run=A.kind==='arcade'&&(A.mode==='run'||A.mode==='race');$('#arcAct').textContent=A.kind==='claw'?'⬇ 집게 내리기':run?'⤒ 점프':'—';$('#arcCtl').hidden=A.ctrl!=='user';
   $('#arcCtl').querySelectorAll('[data-k="left"],[data-k="right"]').forEach(b=>b.hidden=run);$('#arcAct').hidden=!(A.kind==='claw'||run);
-  $('#arcHelp').textContent=A.ctrl!=='user'?`${A.d.name}${josa(A.d.name,'이','가')} 하는 화면을 보고 있어요`:A.kind==='claw'?'←→ 집게 옮기기 · 스페이스/↓ 집게 내리기 · 12초 안에 내려야 해요':run?'스페이스·↑ 점프 · 장애물을 피하고 별/뼈다귀를 먹어요':'←→ 이동 · 좋은 건 받고 나쁜 건 피해요'}
-function arcEnd(why){const A=ARC;if(!A||A.over)return;A.over=true;A.endT=0;const d=A.d,still=d.state==='atSt'&&d.st===A.S;
+  $('#arcHelp').textContent=A.ctrl!=='user'&&A.d?`${A.d.name}${josa(A.d.name,'이','가')} 하는 화면을 보고 있어요`:A.kind==='claw'?'←→ 집게 옮기기 · 스페이스/↓ 집게 내리기 · 12초 안에 내려야 해요':run?'스페이스·↑ 점프 · 장애물을 피하고 별/뼈다귀를 먹어요':'←→ 이동 · 좋은 건 받고 나쁜 건 피해요'}
+function arcEnd(why){const A=ARC;if(!A||A.over)return;A.over=true;A.endT=0;const d=A.d;
+  if(!d){if(why==='done')arcSoloDone(A);A.msg=why==='done'?(A.kind==='arcade'?`게임 끝! ${Math.round(A.score).toLocaleString()}점`:A.win?'🎉 인형 뽑기 성공!':'😿 아깝다! 실패'):'';if(why==='switch'){ARC=null;$('#arcOv').hidden=true}arcKeys.left=arcKeys.right=arcKeys.act=false;return}
+  const still=d.state==='atSt'&&d.st===A.S;
   if(why==='done'&&still){d.arcForce=A.kind==='arcade'?{game:A.game,score:Math.round(A.score),user:A.ctrl==='user'}:{win:!!A.win,user:A.ctrl==='user'};d.think=0}
   A.msg=why==='left'?`${d.name}${josa(d.name,'이','가')} 자리를 떠났어요`:why==='done'?(A.kind==='arcade'?`게임 끝! ${Math.round(A.score).toLocaleString()}점`:A.win?'🎉 인형 뽑기 성공!':'😿 아깝다! 실패'):'';if(why==='switch'){ARC=null;$('#arcOv').hidden=true}arcKeys.left=arcKeys.right=arcKeys.act=false}
 function arcStepArcade(A,dt){
@@ -6740,21 +6771,25 @@ function arcFx(rdt){
   arcPrev=now;if(arcAskD){arcAskT-=rdt;if(arcAskT<=0||!now.has(arcAskD.id)){arcAskD=null;$('#arcAsk').hidden=true}}
   arcUIT-=rdt;if(arcUIT<=0){arcUIT=0.8;arcUI()}
   const A=ARC;if(!A)return;
-  if(!A.over){if(!(A.d.state==='atSt'&&A.d.st===A.S)||A.d.dead)arcEnd('left');else if(!paused){const dt=Math.min(rdt,0.05);A.kind==='arcade'?arcStepArcade(A,dt):arcStepClaw(A,dt)}}
+  if(!A.over){if(A.d&&(!(A.d.state==='atSt'&&A.d.st===A.S)||A.d.dead))arcEnd('left');else if(!paused){const dt=Math.min(rdt,0.05);A.kind==='arcade'?arcStepArcade(A,dt):arcStepClaw(A,dt)}}
   else{A.endT+=rdt;if(A.endT>2.6){ARC=null;$('#arcOv').hidden=true;arcUI(true);return}}
   if(A.show&&!$('#arcOv').hidden)arcDraw(A);
 }
+function arcSoloDone(A){const M=world.myArc=world.myArc||{plays:0,claw:0,plush:0};
+  if(A.kind==='arcade'){M.plays++;const sc=Math.round(A.score),H=world.arcadeHi=world.arcadeHi||{},old=H[A.game];if(!old||sc>old.score){H[A.game]={name:'🙋 나',id:0,score:sc};log(`🙋 내가 ${A.game}에서 ${sc.toLocaleString()}점으로 ${old?`최고 기록을 깼어요! 🏆 (전 기록 ${old.name} ${old.score.toLocaleString()}점)`:'첫 기록을 세웠어요!'}`,'good')}else log(`🙋 ${A.game} ${sc.toLocaleString()}점 (최고 ${old.name} ${old.score.toLocaleString()}점)`)}
+  else{M.claw++;if(A.win){M.plush++;world.plushWon=(world.plushWon||0)+1;log(`🙋 내가 인형 뽑기 성공! 🧸 인형을 뽑았어요 (내 인형 ${M.plush}개)`,'good');const pet=dogs.filter(x=>!x.dead&&!x.stray&&!x.away);if(pet.length){const lucky=pet.sort((p,q)=>p.happy-q.happy)[0];lucky.plush=(lucky.plush||0)+1;lucky.happy=clamp(lucky.happy+15);log(`🎁 뽑은 인형을 ${lucky.name}에게 선물했어요 (행복도 +15)`,'good')}}else log('🙋 인형 뽑기 실패… 다시 해 볼까요?')}}
 function arcUI(force){
   if(!world||!$('#arcNow'))return;const busy=arcBusy(),has=dev.st&&((dev.st.arcade||[]).length||(dev.st.claw||[]).length);
-  $('#arcTag').textContent=!has?'기계가 없어요':ARC&&!ARC.over?(ARC.ctrl==='user'?'🎮 내가 하는 중':'👀 관전 중'):busy.length?`${busy.length}마리 노는 중`:'쉬는 중';
+  $('#arcTag').textContent=!has?'기계가 없어요':ARC&&!ARC.over?(ARC.solo?'🙋 내가 하는 중':ARC.ctrl==='user'?'🎮 내가 하는 중':'👀 관전 중'):busy.length?`${busy.length}마리 노는 중`:'쉬는 중';
   const html=busy.length?busy.map(d=>{const me=ARC&&!ARC.over&&ARC.d===d;return `<li><b>${d.st.type==='arcade'?'🕹':'🧸'} ${esc(d.name)} · ${d.st.type==='arcade'?'오락실 게임 중':'인형 뽑기 중'}${me?(ARC.ctrl==='user'?' (🎮 내가 조작 중)':' (👀 관전 중)'):''}</b><button class="chip" data-arcw="${d.id}">👀 관전</button><button class="chip" data-arcp="${d.id}">🎮 내가 하기</button></li>`}).join(''):`<li class="muted">${has?'지금 기계를 쓰는 강아지가 없어요. 강아지가 쓰기 시작하면 여기에 나와요.':'방 꾸미기·건설로 오락실 게임기나 인형 뽑기 기계를 놓아 주세요.'}</li>`;
   const ul=$('#arcNow');if(force||ul.dataset.h!==html){ul.dataset.h=html;ul.innerHTML=html}
-  const H=world.arcadeHi||{},rows=Object.keys(H).map(k=>`<span>${k} 최고</span><b>${esc(H[k].name)} ${H[k].score.toLocaleString()}점</b>`);rows.push(`<span>🧸 뽑은 인형</span><b>${world.plushWon||0}개</b>`);
+  const H=world.arcadeHi||{},rows=Object.keys(H).map(k=>`<span>${k} 최고</span><b>${esc(H[k].name)} ${H[k].score.toLocaleString()}점</b>`);rows.push(`<span>🧸 뽑은 인형 (모두)</span><b>${world.plushWon||0}개</b>`);if(world.myArc)rows.push(`<span>🙋 내 기록</span><b>오락 ${world.myArc.plays}판 · 인형 ${world.myArc.plush}/${world.myArc.claw}</b>`);
   const hh=rows.join('');if($('#arcHi').dataset.h!==hh){$('#arcHi').dataset.h=hh;$('#arcHi').innerHTML=hh}
   if($('#arcMode').value!==(world.arcMode||'off'))$('#arcMode').value=world.arcMode||'off';
 }
 $('#arcNow').addEventListener('click',e=>{const w=e.target.closest('[data-arcw]'),p=e.target.closest('[data-arcp]');const id=w?+w.dataset.arcw:p?+p.dataset.arcp:null;if(id==null)return;ac();arcOpen(dogs.find(d=>d.id===id),p?'user':'ai')});
 $('#arcMode').onchange=e=>{if(world)world.arcMode=e.target.value};
+$('#arcMeA').onclick=()=>{ac();arcSolo('arcade',$('#arcGame').value)};$('#arcMeC').onclick=()=>{ac();arcSolo('claw')};
 $('#arcSwap').onclick=()=>{if(!ARC||ARC.over)return;ARC.ctrl=ARC.ctrl==='user'?'ai':'user';arcKeys.left=arcKeys.right=arcKeys.act=false;arcShow();arcUI(true)};
 $('#arcClose').onclick=()=>{if(!ARC)return;if(ARC.over){ARC=null;$('#arcOv').hidden=true;return}ARC.ctrl='ai';ARC.show=false;$('#arcOv').hidden=true;arcUI(true)};
 $('#arcAskW').onclick=()=>{ac();if(arcAskD)arcOpen(arcAskD,'ai')};$('#arcAskP').onclick=()=>{ac();if(arcAskD)arcOpen(arcAskD,'user')};$('#arcAskX').onclick=()=>{arcAskD=null;$('#arcAsk').hidden=true};
@@ -6764,6 +6799,27 @@ $('#arcCv').addEventListener('pointerdown',e=>{if(ARC&&!ARC.over&&ARC.ctrl==='us
 const ARC_KEYMAP={' ':'act',ArrowUp:'act',ArrowDown:'act',Enter:'act',ArrowLeft:'left',ArrowRight:'right',a:'left',d:'right',w:'act',s:'act'};
 window.addEventListener('keydown',e=>{if(!ARC||ARC.over||ARC.ctrl!=='user'||$('#arcOv').hidden||/INPUT|SELECT|TEXTAREA/.test(e.target.tagName||''))return;const k=ARC_KEYMAP[e.key];if(!k)return;e.preventDefault();e.stopImmediatePropagation();if(k==='act'){if(!e.repeat)arcKeys.act=true}else arcKeys[k]=true},true);
 window.addEventListener('keyup',e=>{if(!ARC)return;const k=ARC_KEYMAP[e.key];if(k&&k!=='act'){arcKeys[k]=false;e.stopImmediatePropagation()}},true);
+
+/* ---------- arcade-only mode ---------- */
+let layoutPrevArc=null;
+function arcHallLayout(nA,nC){let id=1;const W=Math.max(12,nA*1.0+4,nC*1.15+5),D=10,it=[];const add=(type,x,z,rot)=>it.push({id:id++,type,x,z,rot:rot||0});
+  for(let i=0;i<nA;i++)add('arcade',-W/2+0.9+i*1.0,-D/2+0.42,0);
+  for(let i=0;i<nC;i++)add('claw',-W/2+1.0+i*1.15,D/2-0.52,2);
+  add('water',W/2-0.4,-1.2,1);add('food',W/2-0.4,-0.3,0);add('snackbar',W/2-0.35,0.6,3);add('launcher',W/2-1.6,1.9,0);
+  add('dogbed',-W/2+0.6,-1.4,0);add('dogbed',-W/2+0.6,0.0,0);add('dogbed',-W/2+0.6,1.4,0);add('rug',0,0,0);add('plant',W/2-0.35,-D/2+0.35,0);
+  it.push({id:id++,type:'homecam',wall:'n',t:W/2-1.2});it.push({id:id++,type:'door',wall:'s',t:W/2-1.3});
+  return {W,D,yard:{on:false,depth:6,wide:0,pitch:false},items:it,loc:layout&&layout.loc}}
+function startArcadeOnly(){
+  layoutPrevArc=layoutPrevArc||layout;layout=arcHallLayout(+$('#aoArc').value,+$('#aoClaw').value);
+  $$('[data-war]').forEach(x=>x.checked=false);$('#startMoney').value=$('#aoMoney').value;$('#modeAuto').checked=true;
+  const ai=$('#aiSoccerPre');if(ai){ai.checked=false;ai.dispatchEvent(new Event('change'))}
+  const n=+$('#aoDogs').value;$('#dogCount').value=String(n);$('#dogCount').dispatchEvent(new Event('change'));
+  setAppMode('home');try{startSim()}catch(e){console.error(e)}
+  if(!world||$('#sim').hidden){layout=layoutPrevArc;layoutPrevArc=null;setAppMode('arcade');toast($('#setupErr').textContent||'오락실을 열 수 없어요',true);return}
+  world.arcOnly=true;world.arcMode=$('#aoMode').value;$('#arcMode').value=world.arcMode;
+  log(`🕹 오락실 오픈! 게임기 ${$('#aoArc').value}대 · 인형 뽑기 ${$('#aoClaw').value}대${n?` · 강아지 ${n}마리`:''}. '🎮 오락실 · 인형 뽑기' 패널에서 직접 할 수도 있어요`,'good');
+  arcUI(true);setTimeout(()=>{const p=$('#arcPanel');if(p)p.scrollIntoView({block:'nearest'})},900);
+}
 function kennelWalls(it){return []} // a dog kennel is walk-in (the opening faces forward), so it does not block movement
 
 /* ---------- home location: meadow, beach, highland, forest, desert, snow, river, island, city ---------- */
@@ -7834,7 +7890,9 @@ $('#backSetup').onclick=()=>{
   const wasSoccer=world&&world.soccerOnly;if(match)cleanupMatch(true);
   running=false;if(viewRec)viewRec.stop();if(intruder)intruder=null;if(menuOpen)toggleMenu(false);if(tacOpen)toggleTac(false);
   $('#sim').hidden=true;$('#setup').hidden=false;['#clockBox','#speedSeg','#pauseBtn','#soundBtn','#backSetup','#modeChip','#escBtn','#statBtn','#moneyBox','#mapBtn','#saveBtn'].forEach(s=>$(s).hidden=true);['#warMap','#warSnack','#warBanner'].forEach(s=>$(s).hidden=true);$('#statOv').hidden=true;if(NET.on)netStop(true);
-  setAppMode(wasSoccer?'soccer':world&&world.arena?'arena':'home');
+  const wasArc=world&&world.arcOnly;if(wasArc&&layoutPrevArc){layout=layoutPrevArc;layoutPrevArc=null;setRoom(layout.W,layout.D)}
+  if(ARC){ARC=null;$('#arcOv').hidden=true}
+  setAppMode(wasArc?'arcade':wasSoccer?'soccer':world&&world.arena?'arena':'home');
 };
 
 

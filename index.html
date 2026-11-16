@@ -1,9 +1,4 @@
-<!doctype html>
-<html lang="ko">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>멍하우스 홈케어</title>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>멍하우스 홈케어</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap">
@@ -452,6 +447,9 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
 .eqpow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:6px}
 .eqbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:4px 0}
 .eqlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:2px 8px;max-height:180px;overflow:auto;border:1px solid var(--line);border-radius:8px;padding:6px;font-size:12px}.eqlist label{display:flex;gap:5px;align-items:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.eqlist small{color:var(--muted)}
+.qzhud{width:260px}.qz-q{font-weight:700;font-size:13px;line-height:1.35}.qz-opts{display:grid;grid-template-columns:1fr 1fr;gap:4px}.qz-opts span{padding:4px 6px;border-radius:6px;background:rgba(255,255,255,.1);font-size:11px}.qz-opts span.ok{background:#2e9a6a;font-weight:700}.qz-opts span.no{opacity:.45}
+.qz-sc{list-style:none;margin:0;padding:0;display:grid;gap:2px}.qz-sc li{display:grid;grid-template-columns:22px minmax(0,1fr) auto auto;gap:6px;align-items:center;font-size:12px}.qz-sc em{font-style:normal;font-size:11px}.qz-sc i{font-style:normal;font-variant-numeric:tabular-nums;color:#f2c14e}
+.qz-boards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin:6px 0}.qz-board{border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:12px}.qz-board ol{margin:4px 0 0;padding-left:18px;display:grid;gap:2px}.qz-board span{color:var(--muted);font-size:11px}
 .bh-last{min-height:2.6em;line-height:1.3;background:rgba(255,255,255,.08);border-radius:6px;padding:4px 6px}
 .bglist{display:grid;gap:8px;margin:6px 0}
 .bgl-head{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;color:var(--muted)}.bgl-head b{color:var(--ink)}
@@ -556,11 +554,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
 @media (max-width:960px){.arena-grid,.soccer-grid{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:600px){.rollcall{width:calc(100% - 20px);left:10px;transform:none}.rc-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.sbhud{top:auto;bottom:10px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-</style>
-<style>body{margin:0} img{max-width:100%}</style>
-</head>
-<body>
-
+</style><style>body{margin:0} img{max-width:100%}</style></head><body>
 <header class="topbar">
   <h1 class="brand"><i aria-hidden="true"></i>멍하우스 홈케어</h1>
   <span class="phase" id="phaseLbl">1단계 · 방 꾸미기</span>
@@ -836,6 +830,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         </div>
         <div class="ov arenares" id="arenaRes" hidden><div class="ar-card"><b id="arTitle">A편 승리!</b><p id="arText"></p><div class="row2"><button class="btn primary" id="arAgain">다시 하기</button><button class="btn" id="arSetup">팀 바꾸기</button></div><button class="btn" id="arClose">닫고 계속 보기</button></div></div>
         <div class="ov bghud" id="bgHud" hidden aria-live="off"></div>
+        <div class="ov bghud qzhud" id="quizHud" hidden aria-live="off"></div>
         <div class="ov fighthud sbhud" id="soccerHud" hidden>
           <div class="scoreboard"><span class="sb-team"><i class="sb-dot" style="background:#d4473a"></i>A <b id="sbA">0</b></span><span>:</span><span class="sb-team"><b id="sbB">0</b> B<i class="sb-dot" style="background:#2f7fd0"></i></span><span class="sb-time" id="sbTime"></span><button class="chip fold" data-fold="soccerHud" aria-expanded="true">▲ 접기</button></div>
           <div class="sb-ages" id="sbAges"></div>
@@ -1116,6 +1111,13 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         <p class="small muted" id="careSt"></p>
         <div class="row2"><button class="btn" id="acBtn">❄ 냉난방기 켜기</button><button class="btn" id="purBtn">🌬 공기청정기 켜기</button></div>
         <div class="row2"><label class="f">냉난방 모드<select id="acMode"><option value="cool">❄ 냉방</option><option value="heat">🔥 난방</option></select></label><button class="btn" id="petBtn">🤚 모두 쓰다듬기</button></div>
+        <h3>🎯 군사훈련 시키기</h3>
+        <p class="small muted" id="trainSt" style="margin:0"></p>
+        <div class="row2"><label class="f">누구를<select id="trainWho"><option value="armed">무장한 강아지 (숙련 낮은 순)</option><option value="low">모든 강아지 (숙련 낮은 순)</option></select></label>
+          <label class="f">몇 마리<select id="trainN"><option value="1">1마리</option><option value="3" selected>3마리</option><option value="6">6마리</option><option value="all">모두</option></select></label></div>
+        <button class="btn primary" id="trainGo2">🎯 훈련 명령</button>
+        <ol class="ai-log" id="trainQ"></ol>
+        <label class="small" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><input type="checkbox" id="trainAuto" checked> 🤖 자동화일 때 군사훈련 알아서 시키기 <select id="trainAutoMode" style="font:inherit;font-size:11px"><option value="war" selected>전쟁 중일 때만 · 무장한 강아지</option><option value="armed">항상 · 무장한 강아지</option><option value="all">항상 · 모든 강아지</option></select></label>
         <h3>🏠 밖으로 보내기</h3>
         <div class="row2"><label class="f">어디로<select id="outKind"><option value="walk">🚶 산책 (30~60분 · 무료 · 행복↑ 배변 해결)</option><option value="vet">🏥 동물병원 (2시간 · 20,000원 · 건강 100)</option><option value="salon">💇 애견 미용실 (1시간 · 15,000원 · 행복↑)</option><option value="school">🏫 훈련소 (3시간 · 30,000원 · 실력↑)</option></select></label>
           <label class="f">몇 마리<select id="outN"><option value="1">1마리</option><option value="3" selected>3마리</option><option value="all">모두</option></select></label></div>
@@ -1124,6 +1126,18 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         <ol class="ai-log" id="careAway"></ol>
         <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="acAuto" checked> 🤖 자동화일 때 냉난방기·공기청정기 알아서 켜고 끄기</label>
         <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="outAuto" checked> 🤖 자동화일 때 산책·병원 알아서 보내기</label>
+      </section>
+
+      <!-- quiz show -->
+      <section class="card panel home-only">
+        <div class="panel-head"><h2>퀴즈 대회</h2><span class="tag" id="qzStatus">쉬는 중</span></div>
+        <div class="row2"><label class="f">주제<select id="qzTopic"><option value="rand">🎲 랜덤</option><option value="mil">⚔ 군사 (숙련도 ↑ · 전투력)</option><option value="potty">🚽 배변 (배변 참는 힘 ↑)</option><option value="math">🔢 수학 (반응·지능 ↑)</option><option value="soccer">⚽ 축구 (드리블·슈팅·패스 ↑)</option><option value="health">🩺 건강 (건강 ↑ · 덜 깎임)</option></select></label>
+          <label class="f">문제 수<select id="qzN"><option value="5">5문제</option><option value="10" selected>10문제</option><option value="15">15문제</option></select></label></div>
+        <div class="row2"><label class="f">참가<select id="qzSize"><option value="4">최대 4마리</option><option value="6" selected>최대 6마리</option><option value="8">최대 8마리</option><option value="12">최대 12마리</option></select></label><button class="btn" id="qzWatch">👀 관전</button></div>
+        <button class="btn primary" id="qzStart">🧩 퀴즈 대회 시작</button>
+        <div id="qzBoards" class="qz-boards"></div>
+        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="qzAuto" checked> 🤖 자동화일 때 퀴즈 대회 알아서 열기</label>
+        <p class="small muted" style="margin:0">강아지들이 진행보드 앞에 모여 문제를 풀어요. 맞히면 1점, 가장 빨리 맞히면 2점이에요. 끝나면 1위 행복 +20, 2위 +15, 3위 +11, 나머지도 +7을 받고, 맞힌 만큼 그 주제의 능력이 올라요.</p>
       </section>
 
       <!-- board games -->
@@ -1447,6 +1461,21 @@ const FURN={
   window:{n:'창문',wall:true,unique:true,len:1.3,c:'#8fc8e6'},
   petdoor:{n:'마당 문',wall:true,unique:true,len:0.9,c:'#4f9a5c'},
   farm:{n:'자동화 농장',w:2.4,d:1.6,h:0.4,c:'#6f9a3a',solid:true,device:true,yard:true},
+  quiz:{n:'🧩 퀴즈 진행보드',w:1.4,d:0.45,h:1.7,c:'#24324a',solid:true,unique:true},
+  speaker:{n:'🔊 AI 스피커',w:0.3,d:0.3,h:0.4,c:'#2b2f33',solid:true,unique:true,smart:true},
+  smartlight:{n:'💡 스마트 조명',w:0.4,d:0.4,h:1.5,c:'#e9e4d8',solid:true,unique:true,smart:true},
+  thermo:{n:'🌡 스마트 온도조절기',w:0.3,d:0.25,h:1.1,c:'#f2f4f6',solid:true,unique:true,smart:true},
+  whitenoise:{n:'📻 백색소음기',w:0.3,d:0.3,h:0.35,c:'#cfd8dc',solid:true,unique:true,smart:true},
+  security:{n:'🚨 스마트 보안 시스템',w:0.4,d:0.3,h:1.2,c:'#3a4148',solid:true,unique:true,smart:true},
+  pawwash:{n:'🐾 자동 발 세척기',w:0.8,d:0.6,h:0.25,c:'#9fb7c4',solid:false,unique:true,smart:true},
+  petfountain:{n:'💧 순환 정수기',w:0.4,d:0.4,h:0.35,c:'#dff1f8',solid:true,st:true},
+  nosework:{n:'🧠 노즈워크 매트',w:1.0,d:0.7,h:0.05,c:'#6fa86a',solid:false,st:true},
+  cattower:{n:'🐈 캣타워',w:0.7,d:0.7,h:1.6,c:'#c9a97a',solid:false,unique:true,st:true},
+  petsofa:{n:'🛋 펫 소파',w:1.0,d:0.7,h:0.4,c:'#8a6fb0',solid:false,st:true},
+  pool:{n:'🏊 강아지 수영장',w:2.0,d:1.4,h:0.35,c:'#5fb4e8',solid:false,yard:true,unique:true,st:true},
+  shade:{n:'⛱ 그늘막 쉼터',w:1.6,d:1.2,h:1.8,c:'#f2c14e',solid:false,yard:true,st:true},
+  sandpit:{n:'🏖 땅파기 모래장',w:1.2,d:1.2,h:0.15,c:'#e6d29a',solid:false,yard:true,unique:true,st:true},
+  solar:{n:'☀ 태양광 패널',w:1.6,d:1.0,h:0.9,c:'#2a3f66',solid:true,yard:true,smart:true},
   train:{n:'🎯 군사 훈련장',w:1.6,d:0.9,h:0.9,c:'#6f7d4a',solid:true,st:true},
   bath:{n:'🛁 자동 목욕기',w:1.0,d:0.7,h:0.45,c:'#e8f4f8',solid:false,unique:true,st:true},
   medic:{n:'🩺 자동 치료기',w:1.1,d:0.7,h:0.5,c:'#f4f6f8',solid:false,unique:true,st:true},
@@ -1527,12 +1556,27 @@ function presetLiving(){
     {id:uid++,type:'aircon',x:-4.4,z:-4.2,rot:0},
     {id:uid++,type:'purifier',x:5.6,z:2.4,rot:0},
     {id:uid++,type:'train',x:3.6,z:-0.4,rot:0},
+    {id:uid++,type:'quiz',x:0.5,z:4.2,rot:2},
+    {id:uid++,type:'speaker',x:-5.1,z:-4.2,rot:0},
+    {id:uid++,type:'smartlight',x:-3.85,z:-4.2,rot:0},
+    {id:uid++,type:'thermo',x:-3.35,z:-4.2,rot:0},
+    {id:uid++,type:'whitenoise',x:-2.85,z:-4.2,rot:0},
+    {id:uid++,type:'security',x:0.9,z:-4.2,rot:0},
+    {id:uid++,type:'petfountain',x:5.4,z:-4.2,rot:0},
+    {id:uid++,type:'pawwash',x:5.65,z:0.9,rot:1},
+    {id:uid++,type:'nosework',x:-4.6,z:-3.45,rot:0},
+    {id:uid++,type:'cattower',x:-3.6,z:-3.45,rot:0},
+    {id:uid++,type:'petsofa',x:-2.6,z:-3.45,rot:0},
     {id:uid++,type:'homecam',wall:'n',t:2.2},
     {id:uid++,type:'door',wall:'s',t:2.0},
     {id:uid++,type:'window',wall:'w',t:-0.6},
     {id:uid++,type:'farm',x:8.2,z:-5.2,rot:0},
     {id:uid++,type:'agility',x:8.4,z:-1.0,rot:1},
     {id:uid++,type:'fountain',x:8.4,z:3.2,rot:0},
+    {id:uid++,type:'pool',x:8.35,z:-7.15,rot:0},
+    {id:uid++,type:'shade',x:7.1,z:-3.65,rot:0},
+    {id:uid++,type:'sandpit',x:8.6,z:-3.65,rot:0},
+    {id:uid++,type:'solar',x:6.85,z:-1.9,rot:1},
   ]};
 }
 function presetStudio(){
@@ -1617,7 +1661,7 @@ let tool='move',drag=null;
 const TOOLDEF=[['move','이동 · 회전'],['del','삭제'],null,
   ['sofa'],['bed'],['table'],['shelf'],['tv'],['plant'],['dogbed'],['rug'],null,
   ['water'],['food'],['launcher'],['potty'],['treadmill'],['homecam'],['door'],['window'],['petdoor'],['farm'],null,
-  ['train'],['bath'],['medic'],['groom'],['toybox'],['snackbar'],['kennel'],['aircon'],['purifier'],['agility'],['fountain']];
+  ['train'],['bath'],['medic'],['quiz'],['speaker'],['smartlight'],['thermo'],['whitenoise'],['security'],['pawwash'],['petfountain'],['nosework'],['cattower'],['petsofa'],['pool'],['shade'],['sandpit'],['solar'],['groom'],['toybox'],['snackbar'],['kennel'],['aircon'],['purifier'],['agility'],['fountain']];
 function buildTools(){
   const box=$('#tools');box.innerHTML='';
   for(const t of TOOLDEF){
@@ -1954,7 +1998,7 @@ function buildWorld(){
     if(it.type==='dogbed'){(dev.beds=dev.beds||[]).push({x:it.x,z:it.z,used:0})}
     if(it.type==='kennel'){const r=it.rot||0,[fx,fz]=[[0,1],[-1,0],[0,-1],[1,0]][r];(dev.beds=dev.beds||[]).push({x:it.x-fx*0.08,z:it.z-fz*0.08,used:0,kennel:true});solids.push(...kennelWalls(it))}
     if(f.st)((dev.st=dev.st||{})[it.type]=dev.st[it.type]||[]).push({type:it.type,it,x:it.x,z:it.z,users:0,box:bx,g});
-    if(it.type==='aircon'||it.type==='purifier')dev[it.type]={it,box:bx,group:g};
+    if(it.type==='aircon'||it.type==='purifier'||f.smart||it.type==='quiz')dev[it.type]={it,box:bx,group:g};
     if(it.type==='tv'||it.type==='shelf'){(dev.loot=dev.loot||[]).push({type:it.type,x:it.x,z:it.z,box:bx})}
   }
   if(yard)buildYard();
@@ -2120,6 +2164,54 @@ function buildFurniture(it){
       const scr=box(0.01,0.07,0.2,'#163b2a',w/2-0.175,0.81,0,{emissive:'#0b2a1c'});g.add(scr);
       const led=sph(0.015,'#2ad46a',w/2-0.17,0.76,0.12,{emissive:'#2ad46a'});g.add(led);
       dev.tmParts={tex,led,scr};break;}
+    case 'quiz':{
+      for(const sx of[-1,1])g.add(box(0.07,1.0,0.07,'#3a3f44',sx*(w/2-0.1),0.5,0));g.add(box(w,0.08,d,'#2b2f33',0,0.04,0));
+      g.add(box(w,0.78,0.08,'#16202e',0,1.28,0));const cv=document.createElement('canvas');cv.width=512;cv.height=280;const tex=new THREE.CanvasTexture(cv);
+      const scr=new THREE.Mesh(new THREE.PlaneGeometry(w-0.08,0.7),new THREE.MeshBasicMaterial({map:tex}));scr.position.set(0,1.28,0.045);g.add(scr);
+      const title=box(w*0.7,0.12,0.06,'#f2c14e',0,1.75,0,{emissive:'#7a5a10'});g.add(title);for(let i=0;i<6;i++){const b=sph(0.03,i%2?'#ff5a5a':'#5fd0ff',-w/2+0.12+i*(w-0.24)/5,1.75,0.04,{emissive:i%2?'#a02020':'#1f7fb0'});g.add(b)}
+      it._fx={cv,tex};setTimeout(()=>drawQuizScreen(),0);break;}
+    case 'speaker':{
+      g.add(cyl(0.12,0.13,0.32,c,0,0.16,0,20));const ring=new THREE.Mesh(new THREE.TorusGeometry(0.12,0.012,6,24),mat('#5fd0ff',{emissive:'#1f7fb0'}));ring.rotation.x=Math.PI/2;ring.position.y=0.325;g.add(ring);
+      for(let i=0;i<4;i++)g.add(box(0.012,0.02,0.012,'#9aa6ae',Math.cos(i*1.57)*0.06,0.33,Math.sin(i*1.57)*0.06));it._fx={ring};break;}
+    case 'smartlight':{
+      g.add(cyl(0.16,0.18,0.04,'#3a3f44',0,0.02,0,16));g.add(cyl(0.015,0.015,1.25,'#9aa6ae',0,0.65,0,8));const sh=cyl(0.18,0.1,0.22,c,0,1.32,0,16,{emissive:'#000000'});g.add(sh);
+      const L=new THREE.PointLight('#ffd9a0',0,4,2);L.position.set(0,1.25,0);g.add(L);it._fx={sh,L};break;}
+    case 'thermo':{
+      g.add(box(0.2,1.0,0.08,'#cfd8dc',0,0.5,0));const sc=box(0.16,0.12,0.012,'#0f2a1e',0,0.85,0.045,{emissive:'#0b3a22'});g.add(sc);const dial=new THREE.Mesh(new THREE.TorusGeometry(0.05,0.012,6,20),mat('#ff9a3c',{emissive:'#a04a10'}));dial.position.set(0,0.62,0.05);g.add(dial);
+      const lbl=textSprite('22℃',{size:0.18});lbl.position.set(0,1.18,0);g.add(lbl);it._fx={lbl};break;}
+    case 'whitenoise':{
+      g.add(cyl(0.13,0.14,0.18,c,0,0.09,0,18));g.add(cyl(0.1,0.1,0.02,'#9aa6ae',0,0.19,0,18));const led=sph(0.018,'#7fd0ff',0.1,0.12,0.08,{emissive:'#3f9fd0'});g.add(led);it._fx={led};break;}
+    case 'security':{
+      g.add(box(0.3,1.0,0.16,c,0,0.5,0));const pan=box(0.22,0.18,0.012,'#0f1a24',0,0.82,0.085,{emissive:'#082030'});g.add(pan);const siren=cyl(0.06,0.07,0.08,'#d63c3c',0,1.05,0,12,{emissive:'#300808'});g.add(siren);
+      const cam=new THREE.Group();cam.add(box(0.12,0.07,0.09,'#f2f2f2',0,0,0));cam.add(cyl(0.025,0.025,0.03,'#1c1f22',0,0,0.055,10));cam.position.set(0,1.15,0.04);g.add(cam);const led=sph(0.015,'#2ad46a',0.1,0.95,0.085,{emissive:'#2ad46a'});g.add(led);it._fx={siren,cam,led};break;}
+    case 'pawwash':{
+      g.add(box(w,0.12,d,'#c9d1d6',0,0.06,0));const wtr=box(w-0.12,0.02,d-0.12,'#8fd3f0',0,0.125,0,{transparent:true,opacity:0.8});wtr.castShadow=false;g.add(wtr);
+      for(let i=0;i<6;i++)g.add(box(0.04,0.06,0.3,'#5fa0c8',-w/2+0.12+i*0.11,0.15,0));g.add(box(0.06,0.22,0.06,'#7b8894',w/2-0.06,0.2,-d/2+0.06));it._fx={wtr};break;}
+    case 'petfountain':{
+      g.add(cyl(0.18,0.2,0.12,'#f2f4f6',0,0.06,0,18));const bowl=cyl(0.15,0.15,0.02,'#8fd3f0',0,0.125,0,18,{transparent:true,opacity:0.8});bowl.castShadow=false;g.add(bowl);
+      g.add(cyl(0.06,0.08,0.16,'#cfe8f5',0,0.2,0,12,{transparent:true,opacity:0.7}));const jet=sph(0.03,'#cdefff',0,0.3,0,{transparent:true,opacity:0.8});jet.castShadow=false;g.add(jet);it._fx={jet};break;}
+    case 'nosework':{
+      const m0=box(w,0.03,d,c,0,0.015,0);m0.castShadow=false;g.add(m0);for(let i=0;i<18;i++){const t=box(0.08,0.05,0.08,pick(['#8fd18a','#5f9a5a','#f2c14e','#e87a5a']),rand(-w/2+0.08,w/2-0.08),0.05,rand(-d/2+0.08,d/2-0.08));t.rotation.y=rand(0,3);g.add(t)}break;}
+    case 'cattower':{
+      g.add(box(w,0.06,d,'#a08060',0,0.03,0));for(const [x,z] of [[-0.2,-0.2],[0.2,0.2],[0.2,-0.2]])g.add(cyl(0.06,0.06,1.4,'#d8c7a0',x,0.7,z,10));
+      g.add(box(0.5,0.05,0.5,'#c9a97a',0.1,0.55,0.1));g.add(box(0.55,0.05,0.55,'#c9a97a',-0.05,0.95,-0.05));const top=box(0.5,0.06,0.5,'#c9a97a',0.05,1.4,0.05);g.add(top);
+      g.add(box(0.36,0.3,0.36,'#b48a5a',-0.12,0.21,0.12));g.add(box(0.2,0.2,0.02,'#5a3b22',-0.12,0.22,0.31));const ball=sph(0.05,'#e84a4a',0.25,0.45,0.25);g.add(ball);break;}
+    case 'petsofa':{
+      g.add(box(w,0.22,d,c,0,0.11,0));g.add(box(w,0.3,0.14,c,0,0.3,-d/2+0.07));g.add(box(0.12,0.24,d,c,-w/2+0.06,0.26,0));g.add(box(0.12,0.24,d,c,w/2-0.06,0.26,0));
+      g.add(box(w-0.26,0.06,d-0.2,'#a48ac8',0,0.25,0.04));const bone=box(0.18,0.04,0.05,'#f4ead2',0.2,0.3,0.1);bone.rotation.y=0.5;g.add(bone);break;}
+    case 'pool':{
+      g.add(box(w,0.3,0.08,'#e8eef2',0,0.15,-d/2+0.04));g.add(box(w,0.3,0.08,'#e8eef2',0,0.15,d/2-0.04));g.add(box(0.08,0.3,d,'#e8eef2',-w/2+0.04,0.15,0));g.add(box(0.08,0.3,d,'#e8eef2',w/2-0.04,0.15,0));
+      const wtr=box(w-0.16,0.02,d-0.16,'#4fa8e0',0,0.22,0,{transparent:true,opacity:0.8});wtr.castShadow=false;g.add(wtr);const rmp=box(0.4,0.04,0.3,'#c9d1d6',w/2+0.1,0.12,0);rmp.rotation.z=0.5;g.add(rmp);
+      const duck=new THREE.Group();duck.add(sph(0.06,'#ffd23f',0,0,0));duck.add(sph(0.035,'#ffd23f',0.05,0.05,0));duck.position.set(-0.4,0.27,0.2);g.add(duck);it._fx={wtr,duck};break;}
+    case 'shade':{
+      for(const [x,z] of [[-w/2+0.08,-d/2+0.08],[w/2-0.08,-d/2+0.08],[-w/2+0.08,d/2-0.08],[w/2-0.08,d/2-0.08]])g.add(box(0.05,1.6,0.05,'#8a6a45',x,0.8,z));
+      const can=box(w+0.15,0.04,d+0.15,c,0,1.65,0);g.add(can);for(let i=0;i<5;i++)g.add(box(0.12,0.02,d+0.16,'#f2f2f2',-w/2+0.15+i*0.33,1.68,0));const mat2=box(w-0.3,0.02,d-0.3,'#6fa86a',0,0.01,0);mat2.castShadow=false;g.add(mat2);break;}
+    case 'sandpit':{
+      g.add(box(w,0.15,0.08,'#a07a4a',0,0.075,-d/2+0.04));g.add(box(w,0.15,0.08,'#a07a4a',0,0.075,d/2-0.04));g.add(box(0.08,0.15,d,'#a07a4a',-w/2+0.04,0.075,0));g.add(box(0.08,0.15,d,'#a07a4a',w/2-0.04,0.075,0));
+      const sand=box(w-0.16,0.1,d-0.16,c,0,0.06,0);sand.castShadow=false;g.add(sand);const shovel=box(0.25,0.03,0.06,'#e84a4a',0.2,0.13,0.25);shovel.rotation.y=0.6;g.add(shovel);g.add(sph(0.07,'#d8c48a',-0.25,0.12,-0.2));it._fx={sand};break;}
+    case 'solar':{
+      g.add(box(0.06,0.5,0.06,'#7b8894',-w/2+0.2,0.25,0));g.add(box(0.06,0.5,0.06,'#7b8894',w/2-0.2,0.25,0));const pn=box(w,0.04,d,c,0,0.62,0);pn.rotation.x=-0.45;g.add(pn);
+      for(let i=1;i<4;i++){const l=box(0.01,0.045,d,'#9aa6ae',-w/2+i*w/4,0.62,0);l.rotation.x=-0.45;g.add(l)}const inv=box(0.2,0.15,0.08,'#cfd8dc',w/2+0.12,0.2,0);g.add(inv);const led=sph(0.015,'#2ad46a',w/2+0.12,0.25,0.045,{emissive:'#2ad46a'});g.add(led);it._fx={led};break;}
     case 'train':{
       const mat0=box(w,0.03,d,'#8a7a55',0,0.015,0);mat0.castShadow=false;g.add(mat0);
       for(let i=0;i<5;i++){const b=box(0.3,0.16,0.18,'#b9a77a',-w/2+0.2+i*0.3,0.11,d/2-0.12);g.add(b)} // sandbag firing line
@@ -2414,7 +2506,7 @@ function face(a,tx,tz,dt){const want=Math.atan2(tz-a.pos.y,tx-a.pos.x);let dh=wa
 
 /* ======================= DOG AI ======================= */
 const STATE_KO={idle:'쉬는 중',wander:'돌아다님',toWater:'물 마시러',drink:'물 마시는 중',toFood:'밥 먹으러',eat:'밥 먹는 중',waitFood:'밥 기다림',
-  toBed:'잠자리로',sleep:'자는 중',chase:'공 쫓는 중',carry:'공 가져가는 중',toLauncher:'놀고 싶어함',waitThrow:'공 기다림',toVoice:'목소리 쪽으로',listen:'귀 기울이는 중',alert:'침입자 경계!',sit:'앉아 있음',toPotty:'화장실 가는 중',doPotty:'볼일 보는 중',toTV:'TV 보러 가는 중',watchTV:'TV 보는 중',toBoard:'보드게임 하러 가는 중',playBoard:'🎲 보드게임 중',toSt:'케어 받으러 가는 중',atSt:'케어 중',toTM:'런닝머신 가는 중',onTM:'🏃 런닝머신 운동 중',eatTreat:'간식 먹는 중',fight:'싸우는 중!',scared:'겁먹고 피함',leave:'나가는 중',soccer:'⚽ 축구 중'};
+  toBed:'잠자리로',sleep:'자는 중',chase:'공 쫓는 중',carry:'공 가져가는 중',toLauncher:'놀고 싶어함',waitThrow:'공 기다림',toVoice:'목소리 쪽으로',listen:'귀 기울이는 중',alert:'침입자 경계!',sit:'앉아 있음',toPotty:'화장실 가는 중',doPotty:'볼일 보는 중',toTV:'TV 보러 가는 중',watchTV:'TV 보는 중',toBoard:'보드게임 하러 가는 중',playBoard:'🎲 보드게임 중',toSt:'케어 받으러 가는 중',atSt:'케어 중',toQuiz:'퀴즈 대회 가는 중',atQuiz:'🧩 퀴즈 푸는 중',toTM:'런닝머신 가는 중',onTM:'🏃 런닝머신 운동 중',eatTreat:'간식 먹는 중',fight:'싸우는 중!',scared:'겁먹고 피함',leave:'나가는 중',soccer:'⚽ 축구 중'};
 function tmEnds(){const it=dev.treadmill.it,r=it.rot||0,dirs=[[1,0],[0,1],[-1,0],[0,-1]],[ax,az]=dirs[r];const half=FURN.treadmill.w/2;
   // dog faces the console end (+local x); it climbs on from the back end
   return {mid:{x:it.x-ax*0.08,z:it.z-az*0.08},back:{x:it.x-ax*(half+0.35),z:it.z-az*(half+0.35)},head:Math.atan2(az,ax)}}
@@ -2502,12 +2594,12 @@ function updateDog(d,dt){
   d.hunger=clamp(d.hunger+dt*0.1*(sl?0.5:1)*(running?1.4:1)*(d.pregnant?1.3:1));
   if(corpses.length)d.happy=clamp(d.happy-dt*0.01*Math.min(5,corpses.length));
   d.thirst=clamp(d.thirst+dt*0.16*(sl?0.4:1)*(running?1.8:1));
-  d.pee=clamp(d.pee+dt*0.06*(sl?0.4:1));d.poo=clamp(d.poo+dt*0.03*(sl?0.4:1));
+  {const pm=1-0.3*quizKnow(d,'potty')/100;d.pee=clamp(d.pee+dt*0.06*(sl?0.4:1)*pm);d.poo=clamp(d.poo+dt*0.03*(sl?0.4:1)*pm)}
   if((d.pee>=99||d.poo>=99)&&d.state!=='doPotty'&&!d.fight)accident(d);
   if(world.dirt>0){d.happy=clamp(d.happy-dt*0.012*Math.min(40,world.dirt));if(world.dirt>9)d.health=clamp(d.health-dt*0.008)}
-  if(sl)d.stamina=clamp(d.stamina+dt*(d.target&&d.target.bed&&d.target.bed.kennel&&Math.hypot(d.target.bed.x-d.pos.x,d.target.bed.z-d.pos.y)<0.6?0.5:0.35)); // a proper dog house means deeper sleepelse if(!d.fight)d.stamina=clamp(d.stamina-dt*(running?0.5:d.speed>0.1?0.08:-0.06));
+  if(sl)d.stamina=clamp(d.stamina+dt*(d.target&&d.target.bed&&d.target.bed.kennel&&Math.hypot(d.target.bed.x-d.pos.x,d.target.bed.z-d.pos.y)<0.6?0.5:0.35)*(isNight()&&hasPower()?(dev.smartlight?1.1:1)*(dev.whitenoise?1.12:1):1)); // a proper dog house means deeper sleepelse if(!d.fight)d.stamina=clamp(d.stamina-dt*(running?0.5:d.speed>0.1?0.08:-0.06));
   d.happy=clamp(d.happy-dt*(0.035+(d.hunger>80?0.12:0)+(d.thirst>80?0.12:0)));
-  if(d.hunger>92||d.thirst>92||d.stamina<3)d.health=clamp(d.health-dt*0.1);
+  if(d.hunger>92||d.thirst>92||d.stamina<3)d.health=clamp(d.health-dt*0.1*(1-0.35*quizKnow(d,'health')/100));
   else if(d.hunger<70&&d.thirst<70&&d.stamina>15)d.health=clamp(d.health+dt*0.015);
   d.think-=dt;d.actT+=dt;
   if(d.shoutT>0)d.shoutT-=dt;
@@ -2623,10 +2715,18 @@ function updateDog(d,dt){
       if(d.pee>90||d.poo>90||(S.type!=='medic'&&(d.thirst>92||d.hunger>92))||intruderActive()){setState(d,'idle',0.2);break}
       if(D.run){const f=FURN[S.type],r=S.it.rot||0,a=world.t*1.6+d.stPh,ex=(r%2?f.d:f.w)/2-0.35,ez=(r%2?f.w:f.d)/2-0.3;const tx=S.x+Math.cos(a)*ex,tz=S.z+Math.sin(a)*ez;steer(d,tx,tz,run*0.85,dt);moving=true;tongue=true;
         d.lift=Math.max(0,Math.sin(a*4))*0.12} // jumps over the hurdles as it laps the course
-      else if(D.lift!=null){d.pos.set(S.x,S.z);d.lift=D.lift;const r=S.it.rot||0;d.heading=[Math.PI/2,Math.PI,-Math.PI/2,0][r]+Math.PI;if(D.lie)lie=true;else if(D.sit)sit=true}
+      else if(D.swim){const f=FURN[S.type],r=S.it.rot||0,a=world.t*0.9+d.stPh,ex=(r%2?f.d:f.w)/2-0.3,ez=(r%2?f.w:f.d)/2-0.25;steer(d,S.x+Math.cos(a)*ex,S.z+Math.sin(a)*ez,walk*0.8,dt);moving=true;d.lift=0.02+Math.sin(performance.now()/300+d.id)*0.015} // paddling round the pool
+      else if(D.lift!=null){d.pos.set(S.x+(D.dig?Math.sin(d.stPh)*0.2:0),S.z+(D.dig?Math.cos(d.stPh)*0.2:0));d.lift=typeof D.lift==='function'?D.lift(d):D.lift;const r=S.it.rot||0;d.heading=[Math.PI/2,Math.PI,-Math.PI/2,0][r]+Math.PI;if(D.lie)lie=true;else if(D.sit)sit=true}
       else{const sp=stationSpot(S);if(sp.face)face(d,sp.face.x,sp.face.z,dt);if(D.sit)sit=true}
       D.use(d,dt);if(D.power&&D.per)pay(S.type,dt*D.per);emo=D.emo;
       if(d.think<=0){D.done&&D.done(d);setState(d,'idle',rand(2,4))}break}
+    case 'toQuiz':{
+      const Q=world.quiz;if(!Q||!Q.on||!Q.seat[d.id]){setState(d,'idle',1);break}const st=Q.seat[d.id],dist=steer(d,st.x,st.z,walk*1.3,dt);moving=true;
+      if(dist<0.2||(d.actT>8&&dist<1.0))setState(d,'atQuiz',9999);break}
+    case 'atQuiz':{
+      const Q=world.quiz;if(!Q||!Q.on||!Q.seat[d.id]){setState(d,'idle',rand(2,4));break}
+      if(d.pee>92||d.poo>92||d.thirst>92||intruderActive()){Q.players=Q.players.filter(x=>x!==d.id);setState(d,'idle',0.2);break}
+      sit=true;const b=dev.quiz.box;face(d,(b.minx+b.maxx)/2,(b.minz+b.maxz)/2,dt);d.happy=clamp(d.happy+dt*0.2);break}
     case 'toBoard':{
       const G=boardOf(d);if(!G){setState(d,'idle',1);break}
       const st=G.seats[d.id],dist=steer(d,st.x,st.z,walk*1.3,dt);moving=true;
@@ -2695,7 +2795,7 @@ function animateDog(d,realDt){
   // head: bark pulse, nod with the stride, look into the turn
   const bp=d.root.userData.barkPulse||0;d.head.rotation.z=0.25*bp+(an.sit?-0.3:0)+(run&&!veh?Math.sin(ph+0.9)*0.07:spd>0.05&&!veh?Math.sin(ph*2)*0.025:0);d.head.rotation.y=clamp(-d.turn*0.12,-0.4,0.4);d.root.userData.barkPulse=Math.max(0,bp-realDt*5);
   const ear=an.emo==='?'||an.emo==='♥'?0.5:run&&!veh?-0.25+Math.sin(ph)*0.1:0;d.earL.rotation.x=ear;d.earR.rotation.x=-ear;
-  setSprite(d.emo,d.skEmo&&d.skEmo.until>performance.now()?d.skEmo.e:an.emo||'');
+  const nowP=performance.now();setSprite(d.emo,d.skEmo&&d.skEmo.until>nowP?d.skEmo.e:(d.state==='atQuiz'&&d.quizEmo&&d.quizEmo.until>nowP)?d.quizEmo.e:an.emo||'');
 }
 const speedVisual=()=>Math.min(speed,4)*(paused?0:1);
 
@@ -2939,7 +3039,7 @@ function updateIntruder(dt){
     if(I.fear>I.courage*3.5){I.state='flee';log('강아지들이 짖어서 침입자가 도망갔어요!','good');toast('강아지들이 침입자를 쫓아냈어요');dogs.forEach(d=>d.happy=clamp(d.happy+12))}
   }
   if(I.state==='sneak'){const dist=steer(I,I.tgt.x,I.tgt.z,0.9,dt);I.speed=0.9;if(dist<0.25){I.state='steal';I.stealT=0}}
-  else if(I.state==='steal'){I.speed=0;I.stealT+=dt;if(I.stealT>7){I.state='flee';world.stolen++;const take=isFinite(world.money)&&world.money>0?Math.min(world.money,Math.round(world.money*rand(0.1,0.3)+rand(3000,8000))):0;if(take){world.money-=take;world.bill.stolen+=take;checkPower()}
+  else if(I.state==='steal'){I.speed=0;I.stealT+=dt;if(I.stealT>7){I.state='flee';world.stolen++;let take=isFinite(world.money)&&world.money>0?Math.min(world.money,Math.round(world.money*rand(0.1,0.3)+rand(3000,8000))):0;if(dev.security&&hasPower()&&take){take=Math.round(take*0.5);log('🚨 스마트 보안 시스템이 경보를 울려 강도가 절반만 들고 도망쳤어요','bad',true)}if(take){world.money-=take;world.bill.stolen+=take;checkPower()}
     log(`강도가 ${I.tgt.name}에서 물건을 훔치고${take?` 돈 ${won(take)}을 빼 갔어요`:' 갔어요'}`,'bad',true);toast(take?`💸 강도가 ${won(take)}을 빼 갔어요!`:'물건을 도둑맞았어요',true,true);dogs.forEach(d=>d.happy=clamp(d.happy-8))}}
   else if(I.state==='flee'){const dist=steer(I,I.entry.x,I.entry.z,2.6,dt);I.speed=2.6;if(dist<0.25){I.state='gone';scene.remove(I.g);log('침입자가 집 밖으로 나갔어요');dogs.forEach(d=>{if(d.state==='alert')setState(d,'idle',2)})}}
   if(I.state==='gone'){intruder=null;return}
@@ -3472,7 +3572,7 @@ function fastAnimal(d,h){
   const sl=isNight()||d.stamina<25;
   if(sl)d.state='sleep';else if(d.state==='sleep'||!['sit','idle'].includes(d.state))d.state='idle';
   d.hunger=clamp(d.hunger+h*0.1*(sl?0.5:1)*(d.pregnant?1.3:1));d.thirst=clamp(d.thirst+h*0.16*(sl?0.4:1));
-  d.pee=clamp(d.pee+h*0.06*(sl?0.4:1));d.poo=clamp(d.poo+h*0.03*(sl?0.4:1));
+  {const pm=1-0.3*quizKnow(d,'potty')/100;d.pee=clamp(d.pee+h*0.06*(sl?0.4:1)*pm);d.poo=clamp(d.poo+h*0.03*(sl?0.4:1)*pm)}
   d.stamina=clamp(d.stamina+(sl?h*0.35:-h*0.05)+(world.music.on?h*MUSIC[world.music.genre].sta*0.5:0));
   if(d.thirst>55){const need=d.thirst*4.5;let got=Math.min(world.bowl,need);world.bowl-=got;if(got<need&&dev.water&&hasPower()){const t=Math.min(world.tank,need-got);world.tank-=t;got+=t;pay('pump',t*0.04)}
     if(got>0){d.thirst=clamp(d.thirst-got*0.22);d.pee=clamp(d.pee+got*0.12)}}
@@ -3489,7 +3589,7 @@ function fastAnimal(d,h){
   tgt-=Math.min(30,world.dirt*2)+corpses.length*5;
   if(d.hunger>80)tgt-=15;if(d.thirst>80)tgt-=15;if(d.health<40)tgt-=10;if(d.stray)tgt-=20;
   d.happy=clamp(d.happy+(clamp(tgt)-d.happy)*(1-Math.exp(-h/240)));
-  if(d.hunger>92||d.thirst>92)d.health=clamp(d.health-h*0.1);else if(d.hunger<70&&d.thirst<70)d.health=clamp(d.health+h*0.015);
+  if(d.hunger>92||d.thirst>92)d.health=clamp(d.health-h*0.1*(1-0.35*quizKnow(d,'health')/100));else if(d.hunger<70&&d.thirst<70)d.health=clamp(d.health+h*0.015);
   if(d.age>d.lifespan-1.5)d.health=clamp(d.health-h*0.002);
 }
 function fastVisual(realDt){
@@ -4318,7 +4418,7 @@ function buildFloodlights(P){
   scene.add(light,light.target,light2,light2.target);
   return {g,heads,beams,light,light2,bg0:scene.background?scene.background.clone():null,night:new THREE.Color('#0b1222')};
 }
-function startMatch(cfg){recallAway();
+function startMatch(cfg){recallAway();if(world&&world.quiz&&world.quiz.on)endQuiz(world.quiz,true);
   if(match)cleanupMatch(true);
   const P=cfg.P,size=cfg.size;
   const pets=cfg.pets.slice().sort(()=>Math.random()-0.5).slice(0,(size+BENCH)*2);
@@ -4596,7 +4696,7 @@ function syncUI(){
   const mood=world.dirt<=0?'좋음':world.dirt<3?'조금 신경 씀':world.dirt<7?'불쾌함':'매우 불쾌함';$('#dirtMood').textContent=mood;$('#dirtMood').style.color=world.dirt>=3?'var(--alert)':'';
   $('#ballAdd').disabled=balls.length>=MAX_BALLS;
   const watching=dogs.filter(d=>d.state==='watchTV').length;
-  musicLive();boardUI();careUI();buildUI();aiUI();moneyUI();warLite();
+  musicLive();boardUI();careUI();buildUI();trainUI();quizUI();aiUI();moneyUI();warLite();
   $('#tvTag').textContent=!tvs.length?'TV장 없음':world.tv.on?`${TV_CH[world.tv.ch]} · ${watching}마리 시청${world.tv.offAt>0?' · '+fmtClock(world.tv.offAt)+' 꺼짐':''}`:'꺼짐';
   syncCards();
   $('#logTag').textContent=world.stolen?`도난 ${world.stolen}건`:'';
@@ -5001,7 +5101,7 @@ function aiTick(){
 // fast reactions between the 3-hour checks: floor accidents, emergencies, and (if allowed) a soccer match when the animals need fun
 function aiCare(){
   const A=world.ai;if(!A||careMode!=='auto'||world.arena||match)return;
-  const live=dogs.filter(d=>!d.dead&&!d.stray&&!d.away);if(!live.length)return;boardAuto(live);{const n=live.length,aH=live.reduce((a,d)=>a+d.happy,0)/n,aS=live.reduce((a,d)=>a+d.stamina,0)/n,aHe=live.reduce((a,d)=>a+d.health,0)/n;careAuto(live,aH,aS,aHe)}
+  const live=dogs.filter(d=>!d.dead&&!d.stray&&!d.away);if(!live.length)return;boardAuto(live);trainAuto(live);quizAuto(live);{const n=live.length,aH=live.reduce((a,d)=>a+d.happy,0)/n,aS=live.reduce((a,d)=>a+d.stamina,0)/n,aHe=live.reduce((a,d)=>a+d.health,0)/n;careAuto(live,aH,aS,aHe)}
   // robot vacuum: accidents on the floor are cleaned right away
   if(world.floorMess.length&&hasPower()){const n=world.floorMess.length;pay('vacuum',25);world.floorMess.forEach(w=>scene.remove(w.mesh));world.floorMess=[];log(`🤖 로봇청소기가 바닥 실수 ${n}곳을 치웠어요`,'good')}
   if(dev.potty&&world.pad.waste.length&&!world.pad.cleaning&&!dogs.some(d=>d.state==='doPotty'))startClean(true);
@@ -5163,7 +5263,7 @@ function renderRates(){
 function setIll(on){ILL.on=on;$$('[data-illon]').forEach(x=>x.checked=on);$$('[data-illnote]').forEach(n=>n.textContent=on?'건강이 0이 되면 병으로 세상을 떠나요.':'건강이 0이 되어도 1로 버텨요. 싸움으로 죽거나 노환은 그대로예요.')}
 
 /* ======================= MONEY & ELECTRICITY ======================= */
-const ELEC_N={market:'🐶 강아지 시장',build:'🔨 건설',bath:'🛁 자동 목욕기',medic:'🩺 자동 치료기',groom:'✂ 그루밍 테이블',snackbar:'🦴 자동 간식기',aircon:'❄ 냉난방기',purifier:'🌬 공기청정기',walk:'🚶 산책',vet:'🏥 동물병원',salon:'💇 애견 미용실',school:'🏫 훈련소',trade:'🛒 교류',weapons:'🎖 무기',pump:'💧 급수대 펌프',standby:'🔌 대기전력(급수대·홈캠)',launcher:'🎾 공 발사기',potty:'🚽 자동 배변판',tv:'📺 TV',music:'🎵 음악',treadmill:'🏃 런닝머신',farm:'🌱 자동화 농장',light:'💡 조명',vacuum:'🤖 로봇청소기',flood:'🏟 축구장 조명'};
+const ELEC_N={speaker:'🔊 AI 스피커',smartlight:'💡 스마트 조명',whitenoise:'📻 백색소음기',security:'🚨 보안 시스템',pawwash:'🐾 발 세척기',petfountain:'💧 순환 정수기',market:'🐶 강아지 시장',build:'🔨 건설',bath:'🛁 자동 목욕기',medic:'🩺 자동 치료기',groom:'✂ 그루밍 테이블',snackbar:'🦴 자동 간식기',aircon:'❄ 냉난방기',purifier:'🌬 공기청정기',walk:'🚶 산책',vet:'🏥 동물병원',salon:'💇 애견 미용실',school:'🏫 훈련소',trade:'🛒 교류',weapons:'🎖 무기',pump:'💧 급수대 펌프',standby:'🔌 대기전력(급수대·홈캠)',launcher:'🎾 공 발사기',potty:'🚽 자동 배변판',tv:'📺 TV',music:'🎵 음악',treadmill:'🏃 런닝머신',farm:'🌱 자동화 농장',light:'💡 조명',vacuum:'🤖 로봇청소기',flood:'🏟 축구장 조명'};
 const won=v=>isFinite(v)?Math.round(v).toLocaleString()+'원':'무한';
 function hasPower(){return !world||world.money>0}
 function farmCount(){return dev.farmList?dev.farmList.length:(dev.farm?1:0)}
@@ -5241,7 +5341,7 @@ const TERRAIN={plain:{n:'🌾 평지',col:'#a9cf7a'},mountain:{n:'⛰ 산악',co
   coast:{n:'🌊 해안',col:'#cfe3a5',sea:true,note:'전투함·항공모함 사용 가능'},island:{n:'🏝 섬',col:'#f0d68a',sea:true,needBoat:true,note:'전투함·항공모함이나 전투기가 있어야 갈 수 있어요'}};
 const WAR_DIFF={easy:{n:'쉬움',inc:3000,atk:0.06,me:0.3,keep:0,ai:0.8},normal:{n:'보통',inc:6000,atk:0.12,me:0.5,keep:0.35,ai:1},hard:{n:'어려움',inc:12000,atk:0.22,me:0.7,keep:0.6,ai:1.25}};
 const AI_OWNERS=['바둑이','흰둥이','누렁이','점박이','깜순이','복실이','해피','메리','쫑이','방울이','진돌이','삽살이'];
-const WAR_KEYS=['species','breed','color','sex','age','name','skills','lifespan','temper','happy','health','hunger','thirst','stamina','id','mom','dad','gen','mate','weapon','lastBirth','pregnant','lg','everBred','bredIn','fertileSeen','oid','ally','prof'];
+const WAR_KEYS=['species','breed','color','sex','age','name','skills','lifespan','temper','happy','health','hunger','thirst','stamina','id','mom','dad','gen','mate','weapon','lastBirth','pregnant','lg','everBred','bredIn','fertileSeen','oid','ally','prof','know'];
 const warOn=()=>!!(world&&world.war&&world.war.on);
 const myHouses=()=>world.war.houses.filter(h=>h.owner==='me');
 const houseById=id=>world.war.houses.find(h=>h.id===id);
@@ -5541,7 +5641,7 @@ function bringDogs(fromId){ // call every dog of another of my houses to the hou
   const data=from.dogs.splice(0);const a=sendArmy(from.id,to.id,data,'move','me');warSnack(`🚚 ${from.name}의 ${data.length}마리가 ${to.name}(으)로 와요 · ${fmtDur(a.eta-world.t)}`);renderMap();
 }
 /* ---------- switching houses ---------- */
-function switchHouse(id){endAllBoards(true);recallAway();
+function switchHouse(id){endAllBoards(true);if(world.quiz&&world.quiz.on)endQuiz(world.quiz,true);recallAway();
   const W=world.war,h=houseById(id);if(!h||h.owner!=='me'||id===W.active)return;
   if(W.battle||fights.length){toast('전투 중에는 집을 옮겨 갈 수 없어요',true);return}
   const cur=activeHouse();cur.dogs=dogs.filter(d=>!d.dead&&!d.stray&&!d.enemy).map(toData);
@@ -6243,8 +6343,9 @@ const SKILLS={
   carrier:[{lv:40,id:'cruise',n:'🎇 순항 미사일',cd:12,range:40,k:7,splash:1.8,type:'cruise',tgt:'ground',acc:0.95,pick:'strong'},{lv:80,id:'wing',n:'🛫 함재기 편대',cd:9,range:14,k:3.2,splash:0.8,type:'plane',tgt:'any',acc:0.85,burst:2}],
 };
 function skillsOf(d,k){k=k||wtOf(d);const p=((d.prof||{})[k]||0);return (SKILLS[k]||[]).filter(S=>p>=S.lv)}
-function trainGain(d,dt){
-  const k=wtOf(d);d.prof=d.prof||{};const p0=d.prof[k]||0;if(p0>=100)return;const p1=Math.min(100,p0+dt*1.1*(1-p0/120)*(d.age<1?0.5:1));d.prof[k]=p1;
+function trainGain(d,dt){profAdd(d,dt*1.1*(1-(((d.prof||{})[wtOf(d)]||0))/120)*(d.age<1?0.5:1))}
+function profAdd(d,amt){
+  const k=wtOf(d);d.prof=d.prof||{};const p0=d.prof[k]||0;if(p0>=100)return;const p1=Math.min(100,p0+amt);d.prof[k]=p1;
   for(const S of SKILLS[k]||[])if(p0<S.lv&&p1>=S.lv){log(`🔓 ${d.name}${josa(d.name,'이','가')} ${k==='none'?'맨몸':WEAPONS[k].n} 숙련 ${S.lv}을 넘어 '${S.n}'${josa(S.n.replace(/[^가-힣]/g,'')||'기','을','를')} 해금했어요!`,'good',true);toast(`🔓 ${d.name}: ${S.n} 해금!`,false,true);if(soundOn){blip(880,0.08,0.06);setTimeout(()=>blip(1320,0.12,0.06),90)}}
   if(Math.floor(p0/10)!==Math.floor(p1/10))world.cardsDirty=world.cardsDirty||false;
 }
@@ -6259,6 +6360,39 @@ function specialFire(d,dt){
     for(let i=0;i<(S.burst||1);i++)fireWeapon(d,t,false,false,S);d.skCD[S.id]=S.cd*(1-0.2*profOf(d,k))*rand(0.9,1.15);d.skEmo={e:S.n.split(' ')[0],until:performance.now()+1200};
     const SS=world.shotStat=world.shotStat||{};SS[S.id]=(SS[S.id]||0)+1;
   }
+}
+
+/* ---------- training orders: a queue so any number of dogs can be sent; automation fills it too ---------- */
+function trainEligible(d){return !d.dead&&!d.stray&&!d.enemy&&!d.fight&&!d.away&&d.age>=1&&d.root.visible!==false}
+function trainQueueStep(){
+  const Q=world.trainQ;if(!Q||!Q.length||field)return;const L=(dev.st&&dev.st.train)||[];if(!L.length)return;
+  for(let i=0;i<Q.length;){const d=dogs.find(x=>x.id===Q[i]);if(!d||d.dead){Q.splice(i,1);continue}
+    if(d.st&&d.st.type==='train'){Q.splice(i,1);continue}
+    const S=L.find(x=>x.users<STDEF.train.cap);if(!S)break;
+    if(!trainEligible(d)||d.stamina<30||d.state==='sleep'){i++;continue}
+    S.users++;setState(d,'idle',0.1);d.st=S;setState(d,'toSt',40);Q.splice(i,1)}
+}
+function queueTraining(ids,byAI){
+  const L=(dev.st&&dev.st.train)||[];if(!L.length){if(!byAI)toast('🎯 군사 훈련장이 없어요. 방 꾸미기나 건설로 먼저 지어 주세요',true);return 0}
+  const Q=world.trainQ=world.trainQ||[];let n=0;for(const id of ids){const d=dogs.find(x=>x.id===id);if(!d||!trainEligible(d)||Q.includes(id)||(d.st&&d.st.type==='train'))continue;if(((d.prof||{})[wtOf(d)]||0)>=100)continue;Q.push(id);n++}
+  trainQueueStep();if(!byAI)toast(n?`🎯 ${n}마리 훈련 명령! 자리가 나는 대로 차례로 훈련해요`:'보낼 강아지가 없어요 (이미 훈련 중이거나 숙련 100, 1살 미만이에요)',!n);trainUI();return n;
+}
+function trainPick(mode,n){
+  const c=dogs.filter(d=>trainEligible(d)&&((d.prof||{})[wtOf(d)]||0)<100);
+  const key=d=>((d.prof||{})[wtOf(d)]||0);let L=mode==='armed'?c.filter(d=>d.weapon):mode==='low'?c:c;L=L.sort((a,b)=>key(a)-key(b));return (n==='all'?L:L.slice(0,+n)).map(d=>d.id);
+}
+function trainUI(){
+  if(!world||!$('#trainQ'))return;const Q=world.trainQ||[],L=(dev.st&&dev.st.train)||[],now=dogs.filter(d=>d.st&&d.st.type==='train');
+  $('#trainSt').textContent=L.length?`훈련장 ${L.length}곳 · 지금 훈련 중 ${now.length}마리 · 대기 ${Q.length}마리`:'훈련장이 없어요 (방 꾸미기·건설로 지을 수 있어요)';
+  const html=[...now.map(d=>`<li>🎯 <b>${esc(d.name)}</b> 훈련 중 · ${d.weapon?WEAPONS[d.weapon].n:'맨몸'} 숙련 ${Math.round((d.prof||{})[wtOf(d)]||0)}</li>`),...Q.map(id=>{const d=dogs.find(x=>x.id===id);return d?`<li>⏳ ${esc(d.name)} 대기 <button class="chip" data-tq="${id}">빼기</button></li>`:''})].join('')||'<li class="muted">훈련 중인 강아지가 없어요</li>';
+  const ul=$('#trainQ');if(ul.dataset.html!==html){ul.dataset.html=html;ul.innerHTML=html;ul.querySelectorAll('[data-tq]').forEach(b=>b.onclick=()=>{world.trainQ=(world.trainQ||[]).filter(x=>x!==+b.dataset.tq);trainUI()})}
+  $('#trainGo2').disabled=!L.length;
+}
+function trainAuto(live){
+  if(!$('#trainAuto')||!$('#trainAuto').checked||isNight()||!(dev.st&&dev.st.train))return;const mode=$('#trainAutoMode').value;if(mode==='war'&&!warOn())return;
+  const Q=world.trainQ=world.trainQ||[];if(Q.length>=3)return;
+  const c=live.filter(d=>trainEligible(d)&&d.stamina>55&&d.happy>40&&!(d.st&&d.st.type==='train')&&!Q.includes(d.id)&&((d.prof||{})[wtOf(d)]||0)<100&&(d.weapon||mode==='all')).sort((a,b)=>((a.prof||{})[wtOf(a)]||0)-((b.prof||{})[wtOf(b)]||0));
+  const ids=c.slice(0,3-Q.length).map(d=>d.id);if(ids.length){queueTraining(ids,true);if(!world.fastNow)log(`🤖 숙련도가 낮은 ${ids.length}마리에게 군사훈련을 시켰어요`)}
 }
 function sendToTraining(ids){
   const L=(dev.st&&dev.st.train)||[];if(!L.length){toast('🎯 군사 훈련장이 없어요. 방 꾸미기나 건설로 먼저 지어 주세요',true);return}
@@ -6368,13 +6502,24 @@ const STDEF={
   train:{lab:'🎯 군사훈련 중',dur:[10,20],front:0.55,cap:3,emo:'🎯',want:d=>d.age>=1&&d.stamina>45&&!d.stray&&((d.prof||{})[wtOf(d)]||0)<100?(warOn()?0.22:0.06):0,
     use:(d,dt)=>{trainGain(d,dt);d.stamina=clamp(d.stamina-dt*0.12);d.happy=clamp(d.happy+dt*0.04);if(!world.fastNow&&Math.random()<dt*1.4){const S=d.st,fx=S&&S.it._fx;if(d.weapon){const m=muzzleOf(d);addFx('flash',m.x,m.y,m.z,0.3)}else if(d.root)d.root.userData.barkPulse=1;if(fx){const T=pick(fx.tg);T.rotation.x=-0.25;setTimeout(()=>{T.rotation.x=0},140);const wp=new THREE.Vector3();T.getWorldPosition(wp);addFx('dust',wp.x,wp.y,wp.z,0.18)}if(soundOn&&speed<=4&&d.weapon)gunSound('bullet')}},
     done:d=>{const k=wtOf(d);log(`🎯 ${d.name} 훈련 끝 · ${k==='none'?'맨몸':WEAPONS[k].n} 숙련 ${Math.round(d.prof[k]||0)}`)}},
+  petfountain:{lab:'💧 정수기 물 마시는 중',dur:[2,3],front:0.4,cap:2,emo:'💧',power:'petfountain',per:0.3,want:d=>d.thirst>35?0.55:0,use:(d,dt)=>{d.thirst=clamp(d.thirst-dt*14);d.happy=clamp(d.happy+dt*0.3)}},
+  nosework:{lab:'🧠 노즈워크 중',dur:[5,10],lift:0.02,sit:true,cap:2,emo:'👃',want:d=>d.happy<85&&d.stamina>25?0.12:0,
+    use:(d,dt)=>{d.happy=clamp(d.happy+dt*0.8);d.hunger=clamp(d.hunger-dt*0.4);if(d.skills)d.skills.rea=Math.min(99,(d.skills.rea||50)+dt*0.015);if(d.root&&Math.random()<dt*2)d.root.userData.barkPulse=0.4}},
+  cattower:{lab:'🐈 캣타워에서 쉬는 중',dur:[8,20],lift:d=>d.species==='cat'?1.43:0.58,sit:true,cap:2,emo:'😺',want:d=>d.species==='cat'?(d.stamina<80||d.happy<85?0.35:0.1):(d.age<2&&d.happy<70?0.04:0),
+    use:(d,dt)=>{d.happy=clamp(d.happy+dt*(d.species==='cat'?1.0:0.5));d.stamina=clamp(d.stamina+dt*0.2)}},
+  petsofa:{lab:'🛋 펫 소파에서 낮잠',dur:[10,25],lift:0.24,lie:true,cap:1,emo:'😌',want:d=>!isNight()&&d.stamina<60?0.3:0,use:(d,dt)=>{d.stamina=clamp(d.stamina+dt*0.42);d.happy=clamp(d.happy+dt*0.3)}},
+  pool:{lab:'🏊 수영 중',dur:[6,12],swim:true,cap:3,emo:'💦',want:d=>!isNight()&&d.stamina>45&&d.age>=0.5&&d.species!=='cat'?0.12:0,
+    use:(d,dt)=>{d.happy=clamp(d.happy+dt*1.3);d.health=clamp(d.health+dt*0.08);d.stamina=clamp(d.stamina-dt*0.2);d.thirst=clamp(d.thirst-dt*0.8)},done:d=>{d.lastBath=world.t}},
+  shade:{lab:'⛱ 그늘에서 쉬는 중',dur:[10,20],front:-0.2,lie:true,cap:3,emo:'😎',want:d=>!isNight()&&d.stamina<70&&yard&&!inRoom(d.pos.x,d.pos.y)?0.35:0,use:(d,dt)=>{d.stamina=clamp(d.stamina+dt*0.35);d.happy=clamp(d.happy+dt*0.2)}},
+  sandpit:{lab:'🏖 땅 파는 중',dur:[5,10],lift:0.08,dig:true,cap:2,emo:'🦴',want:d=>!isNight()&&d.stamina>35&&d.species!=='cat'?0.1:0,
+    use:(d,dt)=>{d.happy=clamp(d.happy+dt*1.0);d.stamina=clamp(d.stamina-dt*0.1);if(!world.fastNow&&Math.random()<dt*1.5){addFx('dust',d.pos.x+rand(-0.15,0.15),0.12,d.pos.y+rand(-0.15,0.15),0.3);if(d.root)d.root.userData.barkPulse=0.6}}},
   agility:{lab:'🚩 어질리티 중',dur:[8,15],run:true,emo:'🏃',want:d=>d.stamina>55&&d.age>=0.5&&!isNight()?0.12:0,
     use:(d,dt)=>{d.happy=clamp(d.happy+dt*1.0);d.health=clamp(d.health+dt*0.06);d.stamina=clamp(d.stamina-dt*0.22);d.thirst=clamp(d.thirst+dt*0.06)}},
   fountain:{lab:'⛲ 분수에서 물 마시는 중',dur:[2,4],front:0.55,cap:3,emo:'💧',want:d=>d.thirst>40?0.5:d.happy<60&&!isNight()?0.06:0,
     use:(d,dt)=>{d.thirst=clamp(d.thirst-dt*12);d.happy=clamp(d.happy+dt*0.6)}},
 };
-const STATION_ORDER=['medic','fountain','snackbar','bath','train','agility','groom','toybox'];
-function stationSpot(S){const D=STDEF[S.type],r=S.it.rot||0,[fx,fz]=[[0,1],[-1,0],[0,-1],[1,0]][r];if(!D.front)return {x:S.x,z:S.z};const f=FURN[S.type],half=(fx?f.w:f.d)/2;const k=S.users;return {x:S.x+fx*(half+D.front)+(fz?(k-0.5)*0.4:0),z:S.z+fz*(half+D.front)+(fx?(k-0.5)*0.4:0),face:{x:S.x,z:S.z}}}
+const STATION_ORDER=['medic','petfountain','fountain','snackbar','petsofa','shade','cattower','bath','train','pool','agility','sandpit','nosework','groom','toybox'];
+function stationSpot(S){const D=STDEF[S.type],r=S.it.rot||0,[fx,fz]=[[0,1],[-1,0],[0,-1],[1,0]][r];if(!D.front)return {x:S.x,z:S.z};if(D.front<0){const k=S.users;return {x:S.x+(k-1)*0.45*(fz?1:0),z:S.z+(k-1)*0.45*(fx?1:0)}}const f=FURN[S.type],half=(fx?f.w:f.d)/2;const k=S.users;return {x:S.x+fx*(half+D.front)+(fz?(k-0.5)*0.4:0),z:S.z+fz*(half+D.front)+(fx?(k-0.5)*0.4:0),face:{x:S.x,z:S.z}}}
 function stationOk(S){const D=STDEF[S.type];return !D.power||hasPower()}
 function stationFor(d){
   if(!dev.st||d.stray||d.lion||d.enemy||d.age<0.3||aiQuiet())return null;const out=yard&&!inRoom(d.pos.x,d.pos.y);
@@ -6395,6 +6540,36 @@ function stationFx(rdt){
   if(dev.purifier){const fx=dev.purifier.it._fx,on=world&&world.pur&&hasPower();if(fx)fx.led.material=on?mat('#2ad46a',{emissive:'#2ad46a'}):mat('#9aa6ae')}
 }
 function kennelWalls(it){return []} // a dog kennel is walk-in (the opening faces forward), so it does not block movement
+
+/* ---------- smart home: speaker, light, thermostat, white noise, security, paw wash, solar ---------- */
+const SPEAKER_LINES=['우리 강아지들 최고야! 사랑해~','오늘도 잘 지내고 있지? 착하다!','신나는 노래 틀어줄게 🎵','주인님이 곧 오실 거야, 조금만 기다려!','물 마시는 거 잊지 마~','다들 꼬리 흔들기 시작!'];
+function smartStep(h){
+  if(!world||field)return;const P=hasPower(),night=isNight();
+  if(dev.speaker&&P){pay('speaker',h*0.15);world.spkT=(world.spkT||0)-h;const live=dogs.filter(d=>!d.dead&&!d.stray&&!d.away);
+    if(world.spkT<=0&&live.length){world.spkT=60+rand(0,40);const aH=live.reduce((a,d)=>a+d.happy,0)/live.length;
+      if(aH<75){live.forEach(d=>{d.happy=clamp(d.happy+4);if(d.root)d.root.userData.barkPulse=1});if(!world.fastNow)log(`🔊 AI 스피커: "${pick(SPEAKER_LINES)}" · 모두 행복도 +4`,'good');if(soundOn&&speed<=4){blip(660,0.08,0.04);setTimeout(()=>blip(880,0.08,0.04),110)}}}}
+  if(dev.smartlight&&P&&night)pay('smartlight',h*0.12);
+  if(dev.whitenoise&&P&&night){pay('whitenoise',h*0.05);for(const d of dogs)if(!d.dead&&!d.away&&d.state==='sleep')d.happy=clamp(d.happy+h*0.02)}
+  if(dev.thermo&&dev.aircon&&P){const A=world.ac=world.ac||{on:false,mode:'cool'},live=dogs.filter(d=>!d.dead&&!d.stray&&!d.away);if(live.length){const aS=live.reduce((a,d)=>a+d.stamina,0)/live.length,aH=live.reduce((a,d)=>a+d.happy,0)/live.length;
+    const hr=hour(),hot=hr>=11&&hr<18,cold=hr<6||hr>=22;A.mode=cold?'heat':'cool';const want=aS<65||aH<60||hot||cold;
+    if(want&&!A.on){A.on=true;if(!world.fastNow)log(`🌡 스마트 온도조절기가 ${A.mode==='heat'?'🔥 난방':'❄ 냉방'}을 켰어요`)}else if(!want&&A.on&&aS>85){A.on=false;if(!world.fastNow)log('🌡 스마트 온도조절기가 냉난방기를 껐어요')}}}
+  if(dev.security&&P)pay('security',h*0.1);
+  if(dev.pawwash&&P){const b=dev.pawwash.box;for(const d of dogs){if(d.dead||d.away||d.stray||d.fight)continue;const inside=inBox(d.pos.x,d.pos.y,b,0.05);
+      if(inside&&!d.pawIn&&(d.speed||0)>0.05){d.health=clamp(d.health+0.6);world.dirt=Math.max(0,(world.dirt||0)-0.03);world.pawWashed=(world.pawWashed||0)+1;pay('pawwash',2);if(!world.fastNow&&d.root)addFx('dust',d.pos.x,0.1,d.pos.y,0.25)}d.pawIn=inside}}
+  if(dev.solar){const hr=hour(),sun=hr>=7&&hr<19?Math.sin((hr-7)/12*Math.PI):0;if(sun>0){const v=h*sun*1.4;world.solarAcc=(world.solarAcc||0)+v;if(world.solarAcc>=100){earn(Math.floor(world.solarAcc));world.solarTotal=(world.solarTotal||0)+Math.floor(world.solarAcc);world.solarAcc%=1}}}
+}
+function OWN(m){if(!m.userData.own){m.material=m.material.clone();m.userData.own=1}return m.material} // a private copy, so lighting one LED does not light every LED sharing its colour
+function smartFx(){
+  if(!world)return;const t=performance.now()/1000,P=hasPower(),night=isNight();
+  if(dev.speaker){const fx=dev.speaker.it._fx;if(fx)OWN(fx.ring).emissive.set(P?((world.spkT||99)>55?'#5fd0ff':'#1f7fb0'):'#000000')}
+  if(dev.smartlight){const fx=dev.smartlight.it._fx;if(fx){const on=P&&night;fx.L.intensity=on?0.9:0;OWN(fx.sh).emissive.set(on?'#ffcf80':'#000000')}}
+  if(dev.thermo){const fx=dev.thermo.it._fx,A=world.ac||{};if(fx){const tC=Math.round((A.on?(A.mode==='heat'?24:23):26+Math.sin(hour()/24*6.28)*3));if(fx.last!==tC){fx.last=tC;setSprite(fx.lbl,`${tC}℃${A.on?(A.mode==='heat'?' 🔥':' ❄'):''}`)}}}
+  if(dev.whitenoise){const fx=dev.whitenoise.it._fx;if(fx)OWN(fx.led).emissive.set(P&&night?'#3f9fd0':'#000000')}
+  if(dev.security){const fx=dev.security.it._fx,alarm=intruderActive();if(fx){fx.cam.rotation.y=Math.sin(t*0.8)*0.8;OWN(fx.siren).emissive.set(alarm&&Math.floor(t*4)%2?'#ff2a2a':'#300808');OWN(fx.led).emissive.set(P?'#2ad46a':'#000000')}}
+  if(dev.solar){const fx=dev.solar.it._fx,hr=hour();if(fx)OWN(fx.led).emissive.set(hr>=7&&hr<19?'#2ad46a':'#000000')}
+  for(const k of ['pool']){const L=dev.st&&dev.st[k];if(L)for(const S of L){const fx=S.it._fx;if(fx&&fx.duck){fx.duck.position.x=-0.4+Math.sin(t*0.4)*0.5;fx.duck.position.y=0.27+Math.sin(t*2)*0.01}}}
+  {const L=dev.st&&dev.st.petfountain;if(L)for(const S of L){const fx=S.it._fx;if(fx)fx.jet.position.y=0.3+Math.abs(Math.sin(t*3))*0.04}}
+}
 /* ---------- climate: air conditioner/heater and air purifier ---------- */
 function climateStep(h){
   if(!world)return;const A=world.ac=world.ac||{on:false,mode:'cool',auto:true},P=hasPower();
@@ -6435,8 +6610,9 @@ function careUI(){
   const ul=$('#careAway');if(ul.dataset.html!==html){ul.dataset.html=html;ul.innerHTML=html;ul.querySelectorAll('[data-callback]').forEach(b=>b.onclick=()=>{const d=dogs.find(x=>x.id===+b.dataset.callback);if(d)awayReturn(d,true)})}
   const A=world.ac||{};$('#acBtn').textContent=!dev.aircon?'❄ 냉난방기 없음':A.on?'❄ 냉난방기 끄기':'❄ 냉난방기 켜기';$('#acBtn').disabled=!dev.aircon;$('#acBtn').classList.toggle('primary',!!A.on);
   $('#purBtn').textContent=!dev.purifier?'🌬 공기청정기 없음':world.pur?'🌬 공기청정기 끄기':'🌬 공기청정기 켜기';$('#purBtn').disabled=!dev.purifier;$('#purBtn').classList.toggle('primary',!!world.pur);
-  const have=Object.keys(STDEF).filter(k=>dev.st&&dev.st[k]&&dev.st[k].length),users=dogs.filter(d=>d.state==='atSt'&&d.st);
+  const have=Object.keys(STDEF).filter(k=>dev.st&&dev.st[k]&&dev.st[k].length),users=dogs.filter(d=>d.state==='atSt'&&d.st),smart=Object.keys(FURN).filter(k=>FURN[k].smart&&dev[k]);
   $('#careSt').textContent=have.length?have.map(k=>`${FURN[k].n}${dev.st[k].length>1?' ×'+dev.st[k].length:''}${users.some(d=>d.st.type===k)?' (사용 중)':''}`).join(' · '):'방 꾸미기에서 목욕기·치료기·그루밍 테이블·장난감 바구니·간식기·강아지 집·냉난방기·공기청정기를 놓을 수 있어요 (마당: 어질리티·분수).';
+  if(smart.length)$('#careSt').textContent='🏠 스마트홈: '+smart.map(k=>FURN[k].n).join(' · ')+(dev.solar?` (태양광 수익 ${won(world.solarTotal||0)})`:'')+' / '+$('#careSt').textContent;
   const pc=(world.petCD||0)-world.t;$('#petBtn').textContent=pc>0?`🤚 쓰다듬기 (${fmtDur(pc)} 뒤)`:'🤚 모두 쓰다듬기';
 }
 // automation: uses the outings and climate controls when the numbers call for it
@@ -6451,7 +6627,7 @@ function careAuto(live,aH,aS,aHe){
 
 /* ======================= CONSTRUCTION during the simulation ======================= */
 // price (won) and build time (game minutes) for each piece of furniture
-const BUILD={train:[80000,90],sofa:[60000,90],bed:[80000,120],table:[30000,45],shelf:[40000,60],tv:[120000,60],plant:[8000,15],dogbed:[15000,20],rug:[12000,15],
+const BUILD={quiz:[90000,60],speaker:[45000,15],smartlight:[30000,15],thermo:[40000,20],whitenoise:[25000,10],security:[150000,60],pawwash:[70000,45],petfountain:[25000,15],nosework:[15000,10],cattower:[60000,60],petsofa:[50000,30],pool:[200000,240],shade:[40000,40],sandpit:[30000,60],solar:[300000,180],train:[80000,90],sofa:[60000,90],bed:[80000,120],table:[30000,45],shelf:[40000,60],tv:[120000,60],plant:[8000,15],dogbed:[15000,20],rug:[12000,15],
   water:[50000,60],food:[10000,15],launcher:[45000,60],potty:[70000,90],treadmill:[90000,120],farm:[250000,360],
   bath:[120000,150],medic:[300000,240],groom:[60000,60],toybox:[20000,20],snackbar:[50000,45],kennel:[40000,60],aircon:[150000,120],purifier:[60000,30],agility:[100000,180],fountain:[80000,120]};
 let buildPick=null;
@@ -6490,7 +6666,7 @@ function addItemLive(it){
   if(it.type==='kennel'){const r=it.rot||0,[fx,fz]=[[0,1],[-1,0],[0,-1],[1,0]][r];(dev.beds=dev.beds||[]).push({x:it.x-fx*0.08,z:it.z-fz*0.08,used:0,kennel:true})}
   if(it.type==='tv'||it.type==='shelf')(dev.loot=dev.loot||[]).push({type:it.type,x:it.x,z:it.z,box:bx});
   if(f.st)((dev.st=dev.st||{})[it.type]=dev.st[it.type]||[]).push({type:it.type,it,x:it.x,z:it.z,users:0,box:bx,g});
-  if(it.type==='aircon'||it.type==='purifier')dev[it.type]={it,box:bx,group:g};
+  if(it.type==='aircon'||it.type==='purifier'||f.smart||it.type==='quiz')dev[it.type]={it,box:bx,group:g};
   if(it.type==='treadmill'&&!world.tm)world.tm={user:null,speed:'mid',auto:true,minutes:0};
 }
 function buildStep(h){
@@ -6535,7 +6711,7 @@ function buyMarket(){
 
 /* ======================= SAVE / LOAD ======================= */
 const SAVE_V=1,SAVE_SLOTS=['auto','1','2','3'];
-const ANIMAL_SKIP=new Set(['skCD','skEmo','slowUntil','root','pose','legs','head','tail','tongue','earL','earR','emo','lbl','gear','gearHelm','gearHead','gearT','gearMz','gearW','gearLift','card','cardR','fight','ball','st','target','ftgt','way','detour','stuck','team','anim','sc','pos','fleeing','fleeT','recoil','alt','bank','vs','pHead','turn','_newKids']);
+const ANIMAL_SKIP=new Set(['quizEmo','pawIn','skCD','skEmo','slowUntil','root','pose','legs','head','tail','tongue','earL','earR','emo','lbl','gear','gearHelm','gearHead','gearT','gearMz','gearW','gearLift','card','cardR','fight','ball','st','target','ftgt','way','detour','stuck','team','anim','sc','pos','fleeing','fleeT','recoil','alt','bank','vs','pHead','turn','_newKids']);
 // keeps only plain data (numbers, strings, plain objects/arrays): drops 3D objects and live references
 function plainData(v,depth){
   if(v===null||typeof v==='number'||typeof v==='string'||typeof v==='boolean')return v;if(typeof v!=='object'||depth>8)return undefined;
@@ -6594,6 +6770,7 @@ function loadSave(txt){
   $('#log').innerHTML='';speed=1;clearInterval(musicIv);musicIv=0;const mOn=world.music.on;world.music.on=false;if(mOn)setMusic(true);else musicUI();
   const tOn=world.tv&&world.tv.on;if(world.tv){world.tv.on=false;if(tOn&&tvs.length)setTV(true)}
   followId=dogs[0]?dogs[0].id:1;world.cardsDirty=true;buildDogCards();renderEvents();setCamMode('free');buildSpeedSeg();
+  if(world.quiz)world.quiz.on=false;world.trainQ=world.trainQ||[];
   if(!world.ai)aiInit();if(S.careMode)applyMode(S.careMode,false);setTimeout(()=>{warUI();careUI();buildUI();boardUI()},0);
   log(`📂 저장한 게임을 불러왔어요 · ${saveSummary(S.meta)}`,'good');toast('📂 이어서 시작해요!',false,true);
   running=true;lastT=performance.now();ac();
@@ -6617,6 +6794,125 @@ function renderSaves(){
 function openSaves(){$('#saveOv').hidden=false;renderSaves()}
 let autoSaveT=120;
 function autoSaveTick(rdt){if(!world||world.arena||!$('#autoSave').checked)return;autoSaveT-=rdt;if(autoSaveT>0)return;if(saveBlocked()){autoSaveT=15;return}autoSaveT=120;saveTo('auto',true)}
+
+/* ======================= QUIZ SHOW: questions by topic, live scoreboard, rankings, stat rewards ======================= */
+const QUIZ_TOPICS={
+  mil:{n:'⚔ 군사',reward:'무기 숙련도 ↑ (전투력)'},potty:{n:'🚽 배변',reward:'배변 참는 힘 ↑ (소변·대변이 천천히 차요)'},math:{n:'🔢 수학',reward:'반응(지능) 능력치 ↑'},
+  soccer:{n:'⚽ 축구',reward:'드리블·슈팅·패스 ↑'},health:{n:'🩺 건강',reward:'건강 ↑ · 건강이 덜 깎여요'},
+};
+const QUIZ_BANK={
+  mil:[['탱크를 잡기에 가장 좋은 무기는?',['바주카','보병 소총','기관총','모래주머니']],['섬을 공격하려면 꼭 있어야 하는 것은?',['배나 전투기','탱크','기관총','맨몸']],['전투기를 떨어뜨리기 좋은 것은?',['대공 미사일','수류탄','주포 철갑탄','삽']],
+    ['적에게 덜 맞으려면?',['엄폐물 뒤에 숨는다','크게 짖는다','한가운데 선다','꼬리를 흔든다']],['순항 미사일을 쏠 수 있는 것은?',['전투함','보병','맨몸 강아지','기관총병']],['산악 지형에서 힘이 약해지는 무기는?',['탱크','보병 소총','바주카','기관총']],
+    ['후퇴해야 할 때는?',['적이 훨씬 강할 때','이기고 있을 때','배부를 때','공놀이할 때']],['모래주머니는 무엇에 쓸까?',['방어선 만들기','간식','베개','장난감']],['제압 사격을 맞으면?',['움직임이 느려진다','빨라진다','날 수 있다','배가 부르다']],
+    ['항공모함이 띄우는 것은?',['함재기','잠수함','탱크','기차']],['수비 보너스를 받는 쪽은?',['방어하는 쪽','공격하는 쪽','구경꾼','상인']],['전투력을 높이는 방법이 아닌 것은?',['낮잠만 자기','군사훈련','무기 장착','숙련도 올리기']],
+    ['바주카를 쏘기 어려운 거리는?',['아주 가까울 때','중간 거리','멀 때','언제나 쉽다']],['강가 전장에서 강을 건너는 곳은?',['다리','강 한가운데','나무 위','하늘']]],
+  potty:[['강아지가 배변하기 좋은 곳은?',['배변판','소파','침대','밥그릇 옆']],['배변판을 깨끗이 해야 하는 이유는?',['더러우면 다른 곳에 싸서','예뻐서','무거워서','이유 없음']],['배변을 잘했을 때 칭찬하면?',['배변을 더 잘 가린다','화를 낸다','배가 고프다','잠이 든다']],
+    ['산책 중 배변하면 보호자는?',['봉투로 치운다','그냥 둔다','흙으로 덮고 간다','못 본 척한다']],['배변 실수를 했을 때 좋은 행동은?',['조용히 치우고 냄새를 없앤다','크게 혼낸다','코를 박게 한다','밥을 굶긴다']],['배변 신호가 아닌 것은?',['밥을 맛있게 먹기','바닥 냄새 맡기','빙글빙글 돌기','낑낑대기']],
+    ['강아지는 보통 언제 배변이 마려울까?',['밥 먹고 조금 뒤','목욕하는 중','깊이 잘 때','축구 경기 중']],['배변 시트는 언제 갈아야 할까?',['더러워지면 바로','일주일 뒤','한 달 뒤','안 갈아도 된다']],['물을 많이 마시면?',['소변이 늘어난다','줄어든다','그대로다','대변이 사라진다']],
+    ['설사가 계속되면?',['동물병원에 간다','간식을 더 준다','그냥 둔다','더 뛰게 한다']],['배변 훈련에 가장 중요한 것은?',['꾸준함과 칭찬','큰 소리','벌','운']],['배변판은 어디에 두면 좋을까?',['밥·잠자리와 떨어진 곳','밥그릇 바로 옆','침대 위','현관 밖']]],
+  soccer:[['축구 한 팀의 선수는 보통 몇 명?',['11명','7명','5명','9명']],['손을 써도 되는 선수는?',['골키퍼','공격수','수비수','미드필더']],['수비가 마지막으로 차서 골라인 밖으로 나가면?',['코너킥','스로인','골킥','페널티킥']],
+    ['옆줄 밖으로 공이 나가면?',['스로인','코너킥','골킥','프리킥']],['경고(옐로카드)를 2장 받으면?',['퇴장','칭찬','골 인정','교체 금지']],['추가 시간이 생기는 이유는?',['멈춘 시간을 채우려고','비가 와서','심판 쉬는 시간','간식 시간']],
+    ['승부차기는 기본으로 몇 명씩 찰까?',['5명','1명','11명','3명']],['골키퍼가 슛을 막아 내는 것을?',['선방','태클','패스','드리블']],['페널티킥은 어디에 공을 놓고 찰까?',['페널티 마크','센터 서클','코너','하프라인']],
+    ['전반과 후반 사이 쉬는 시간은?',['하프타임','오버타임','타임아웃','브레이크댄스']],['공을 몰고 가는 기술은?',['드리블','헤딩','스로인','오프사이드']],['같은 편에게 공을 주는 것은?',['패스','태클','파울','선방']]],
+  health:[['강아지에게 위험한 음식은?',['초콜릿','삶은 닭가슴살','강아지 사료','물']],['더운 날 산책하기 좋은 때는?',['시원한 아침·저녁','한낮','뜨거운 아스팔트 위','물 없이 오래']],['강아지 정상 체온에 가까운 것은?',['38~39℃','30℃','45℃','25℃']],
+    ['예방접종을 하는 이유는?',['병을 막으려고','예뻐지려고','빨리 달리려고','배부르려고']],['이빨 건강에 좋은 것은?',['양치질','사탕','콜라','돌 씹기']],['포도는 강아지에게?',['위험하다','아주 좋다','상관없다','꼭 먹어야 한다']],
+    ['목욕을 너무 자주 하면?',['피부가 건조해진다','털이 파래진다','키가 큰다','배가 부르다']],['혀를 내밀고 헐떡이는 이유는?',['더위를 식히려고','화가 나서','배불러서','노래하려고']],['아플 때 가장 먼저 갈 곳은?',['동물병원','놀이터','수영장','축구장']],
+    ['강아지에게 꼭 필요하지 않은 것은?',['초콜릿','물','잠','운동']],['양파는 강아지에게?',['위험하다','건강식이다','간식이다','상관없다']],['살이 너무 찌면 좋은 방법은?',['산책과 알맞은 양의 밥','간식 두 배','하루 종일 잠','밥 굶기기']]],
+};
+function mathQ(){const t=Math.floor(Math.random()*5);let q,a;
+  if(t===0){const x=Math.ceil(rand(2,9)),y=Math.ceil(rand(2,9));q=`${x} × ${y} = ?`;a=x*y}else if(t===1){const x=Math.ceil(rand(10,60)),y=Math.ceil(rand(5,40));q=`${x} + ${y} = ?`;a=x+y}
+  else if(t===2){const x=Math.ceil(rand(30,90)),y=Math.ceil(rand(5,29));q=`${x} − ${y} = ?`;a=x-y}else if(t===3){const n=Math.ceil(rand(2,6));q=`강아지 ${n}마리의 다리는 모두 몇 개?`;a=n*4}
+  else{const y=Math.ceil(rand(2,9)),a0=Math.ceil(rand(2,9));q=`${a0*y} ÷ ${y} = ?`;a=a0}
+  const opts=new Set([a]);while(opts.size<4){const v=a+Math.round(rand(-10,10))||a+opts.size;if(v>=0)opts.add(v)}return [q,[...opts].map(String).sort((x,y)=>(x===String(a)?-1:y===String(a)?1:0))]}
+function quizKnow(d,t){return ((d.know||{})[t]||0)}
+function quizSeats(n){const b=dev.quiz.box,it=dev.quiz.it,r=it.rot||0,[fx,fz]=[[0,1],[-1,0],[0,-1],[1,0]][r],cx=(b.minx+b.maxx)/2,cz=(b.minz+b.maxz)/2,half=(fx?b.maxx-b.minx:b.maxz-b.minz)/2;
+  const out=[];for(let i=0;i<n;i++){const off=(i-(n-1)/2)*0.55,row=Math.floor(i/6);out.push({x:clamp(cx+fx*(half+1.1+row*0.6)+(fz?off:0),-W/2+0.3,W/2-0.3),z:clamp(cz+fz*(half+1.1+row*0.6)+(fx?off:0),-D/2+0.3,D/2-0.3)})}return out}
+function startQuiz(topic,n,size,byAI){
+  if(!world||world.arena||match||field)return false;if(!dev.quiz){if(!byAI)toast('🧩 퀴즈 진행보드가 없어요. 방 꾸미기나 건설로 먼저 지어 주세요',true);return false}
+  if(world.quiz&&world.quiz.on){if(!byAI)toast('이미 퀴즈 대회가 진행 중이에요',true);return false}
+  if(topic==='rand')topic=pick(Object.keys(QUIZ_TOPICS));
+  const c=dogs.filter(d=>!d.dead&&!d.stray&&!d.enemy&&!d.fight&&!d.away&&d.age>=0.5&&d.state!=='sleep'&&d.pee<85&&d.thirst<85&&!boardOf(d)).sort((a,b)=>a.happy-b.happy).slice(0,size);
+  if(c.length<2){if(!byAI)toast('🧩 퀴즈를 하려면 깨어 있는 동물이 2마리 이상 있어야 해요',true);return false}
+  const seats=quizSeats(c.length),Q={on:true,topic,n,qi:-1,phase:'gather',t:4,players:c.map(d=>d.id),seat:{},score:{},right:{},ans:{},fast:null,cur:null,used:new Set(),byAI:!!byAI,log:[]};
+  c.forEach((d,i)=>{Q.seat[d.id]=seats[i];Q.score[d.id]=0;Q.right[d.id]=0;setState(d,'toQuiz',30)});world.quiz=Q;
+  log(`🧩 ${QUIZ_TOPICS[topic].n} 퀴즈 대회 시작! 참가: ${c.map(d=>d.name).join(', ')} (${n}문제)${byAI?' · 🤖 자동':''}`,'good',true);drawQuizScreen();quizUI();return true;
+}
+function nextQuestion(Q){
+  Q.qi++;if(Q.qi>=Q.n){endQuiz(Q);return}
+  let qa;if(Q.topic==='math')qa=mathQ();else{const bank=QUIZ_BANK[Q.topic],free=bank.map((x,i)=>i).filter(i=>!Q.used.has(i));const i=free.length?pick(free):Math.floor(Math.random()*bank.length);Q.used.add(i);qa=bank[i]}
+  const right=qa[1][0],opts=qa[1].slice().sort(()=>Math.random()-0.5);Q.cur={q:qa[0],opts,ans:opts.indexOf(right)};Q.ans={};Q.fast=null;Q.phase='ask';Q.t=1.6;
+  // each dog decides when and what it answers: knowledge (and a little brains) make it right more often
+  const ps=dogs.filter(d=>Q.players.includes(d.id)&&!d.dead);for(const d of ps){const p=clamp(0.28+0.55*quizKnow(d,Q.topic)/100+((d.skills&&d.skills.rea||50)-50)/400,0.25,0.95),ok=Math.random()<p;
+    const pickI=ok?Q.cur.ans:pick([0,1,2,3].filter(i=>i!==Q.cur.ans));Q.ans[d.id]={i:pickI,at:rand(0.15,1.4)*(1.2-quizKnow(d,Q.topic)/250)}}
+  drawQuizScreen();if(soundOn&&speed<=4&&!world.fastNow)blip(520,0.08,0.05);
+}
+function revealQuestion(Q){
+  Q.phase='reveal';Q.t=1.1;const ps=dogs.filter(d=>Q.players.includes(d.id)&&!d.dead),win=ps.filter(d=>Q.ans[d.id]&&Q.ans[d.id].i===Q.cur.ans).sort((a,b)=>Q.ans[a.id].at-Q.ans[b.id].at);
+  Q.fast=win[0]?win[0].id:null;
+  for(const d of ps){const ok=Q.ans[d.id]&&Q.ans[d.id].i===Q.cur.ans;if(ok){Q.score[d.id]+=d.id===Q.fast?2:1;Q.right[d.id]++;d.happy=clamp(d.happy+1)}d.know=d.know||{};d.know[Q.topic]=Math.min(100,quizKnow(d,Q.topic)+(ok?1.2:2.4)); // even a wrong answer teaches
+    d.quizEmo={e:ok?'⭕':'❌',until:performance.now()+1500}}
+  Q.log.unshift(`Q${Q.qi+1} 정답 ${'ABCD'[Q.cur.ans]}. ${Q.cur.opts[Q.cur.ans]} · ${win.length?`맞힘: ${win.map(d=>d.name).join(', ')}${Q.fast?` (가장 빠름 ${dogs.find(x=>x.id===Q.fast).name} +2)`:''}`:'아무도 못 맞혔어요'}`);
+  drawQuizScreen();if(soundOn&&speed<=4&&!world.fastNow){win.length?(blip(880,0.08,0.05),setTimeout(()=>blip(1100,0.1,0.05),90)):blip(220,0.18,0.05)}
+}
+function endQuiz(Q,quiet){
+  if(!Q||!Q.on)return;Q.on=false;Q.phase='done';const ps=dogs.filter(d=>Q.players.includes(d.id)&&!d.dead).sort((a,b)=>Q.score[b.id]-Q.score[a.id]||Q.right[b.id]-Q.right[a.id]);
+  const R=world.quizRank=world.quizRank||{},bonus=[20,15,11];const lines=[];
+  if(!quiet&&Q.qi>0)ps.forEach((d,i)=>{const hp=bonus[i]??7,c=Q.right[d.id];d.happy=clamp(d.happy+hp);
+    if(Q.topic==='mil')profAdd(d,1.6*c);else if(Q.topic==='math'){if(d.skills)d.skills.rea=Math.min(99,(d.skills.rea||50)+0.8*c)}else if(Q.topic==='soccer'){if(d.skills)for(const k of ['dri','sho','pas'])d.skills[k]=Math.min(99,(d.skills[k]||50)+0.5*c)}
+    else if(Q.topic==='health')d.health=clamp(d.health+3*c);
+    const r=R[d.id]=R[d.id]||{name:d.name,played:0,wins:0,pts:0,right:0};r.name=d.name;r.played++;r.pts+=Q.score[d.id];r.right+=c;if(i===0)r.wins++;
+    lines.push(`${i+1}위 ${d.name} ${Q.score[d.id]}점 (행복 +${hp})`)});
+  Q.result=ps.map(d=>({id:d.id,name:d.name,score:Q.score[d.id],right:Q.right[d.id]}));world.quizLast=Q;
+  if(!quiet&&lines.length){log(`🏆 ${QUIZ_TOPICS[Q.topic].n} 퀴즈 결과: ${lines.join(' · ')} · 보상: ${QUIZ_TOPICS[Q.topic].reward}`,'good',true);toast(`🏆 퀴즈 우승: ${ps[0].name}!`,false,true);if(soundOn){blip(660,0.1,0.06);setTimeout(()=>blip(880,0.1,0.06),120);setTimeout(()=>blip(1320,0.18,0.06),240)}}
+  dogs.forEach(d=>{if(d.state==='toQuiz'||d.state==='atQuiz')setState(d,'idle',rand(1,3))});world.quizCool=world.t+120;drawQuizScreen();quizUI();
+}
+function quizStep(h){
+  const Q=world.quiz;if(!Q||!Q.on)return;if(!dev.quiz||match||field){endQuiz(Q,true);return}
+  Q.players=Q.players.filter(id=>{const d=dogs.find(x=>x.id===id);return d&&!d.dead&&!d.fight&&!d.away});if(Q.players.length<2){endQuiz(Q,Q.qi<1);return}
+  if(world.fastNow){Q.t-=h;while(Q.on&&Q.t<=0){if(Q.phase==='gather'||Q.phase==='reveal')nextQuestion(Q);else revealQuestion(Q)}return}
+  for(const id of Q.players){const d=dogs.find(x=>x.id===id);if(d.state!=='toQuiz'&&d.state!=='atQuiz')setState(d,'toQuiz',30)}
+  Q.t-=h;const seated=Q.players.every(id=>dogs.find(x=>x.id===id).state==='atQuiz');
+  if(Q.phase==='gather'){if(seated||Q.t<=0)nextQuestion(Q)}
+  else if(Q.phase==='ask'){const ps=dogs.filter(d=>Q.players.includes(d.id));for(const d of ps){const A=Q.ans[d.id];if(A&&!A.shown&&1.6-Q.t>=A.at){A.shown=true;if(d.root)d.root.userData.barkPulse=1;d.quizEmo={e:'ABCD'[A.i],until:performance.now()+99999}}}if(Q.t<=0)revealQuestion(Q);else if(Math.random()<0.2)drawQuizScreen()}
+  else if(Q.phase==='reveal'&&Q.t<=0)nextQuestion(Q);
+}
+// the board's screen (also what spectators see in the corner)
+function drawQuizScreen(){
+  if(!dev.quiz||!dev.quiz.it._fx)return;const {cv,tex}=dev.quiz.it._fx,g=cv.getContext('2d'),Q=world&&world.quiz;g.fillStyle='#0f1726';g.fillRect(0,0,512,280);
+  g.fillStyle='#f2c14e';g.font='bold 22px Jua, sans-serif';g.textAlign='left';
+  if(!Q||(!Q.on&&!Q.result)){g.fillText('🧩 퀴즈 진행보드',18,40);g.fillStyle='#cfd8dc';g.font='18px sans-serif';g.fillText('퀴즈 대회를 열어 보세요!',18,80);
+    const R=Object.values(world&&world.quizRank||{}).sort((a,b)=>b.wins-a.wins||b.pts-a.pts).slice(0,5);R.forEach((r,i)=>{g.fillText(`${i+1}. ${r.name}  🏆${r.wins}  ${r.pts}점`,18,120+i*28)});tex.needsUpdate=true;return}
+  const ps=Q.players.concat((Q.result||[]).map(r=>r.id)).filter((v,i,a)=>a.indexOf(v)===i).map(id=>dogs.find(d=>d.id===id)).filter(Boolean).sort((a,b)=>(Q.score[b.id]||0)-(Q.score[a.id]||0));
+  g.fillText(`${QUIZ_TOPICS[Q.topic].n} 퀴즈  ${Q.on?`Q${Math.max(1,Q.qi+1)}/${Q.n}`:'결과'}`,18,34);
+  if(Q.on&&Q.cur){g.fillStyle='#fff';g.font='bold 20px sans-serif';const q=Q.cur.q;g.fillText(q.length>24?q.slice(0,24):q,18,68);if(q.length>24)g.fillText(q.slice(24,48),18,92);
+    Q.cur.opts.forEach((o,i)=>{const x=18+(i%2)*170,y=112+Math.floor(i/2)*44,rv=Q.phase==='reveal',ok=i===Q.cur.ans;g.fillStyle=rv?(ok?'#2e9a6a':'#3a4250'):'#2a3a5a';g.fillRect(x,y,162,36);g.fillStyle='#fff';g.font='16px sans-serif';g.fillText(`${'ABCD'[i]}. ${o}`.slice(0,14),x+8,y+24)})}
+  else if(Q.phase==='gather'){g.fillStyle='#cfd8dc';g.font='18px sans-serif';g.fillText('참가자들이 자리로 오는 중…',18,80)}
+  g.font='15px sans-serif';ps.slice(0,8).forEach((d,i)=>{const y=40+i*28;g.fillStyle=i===0&&(Q.score[d.id]||0)>0?'#f2c14e':'#cfd8dc';g.fillText(`${i+1}. ${d.name.slice(0,5)} ${Q.score[d.id]||0}`,364,y+14);
+    if(Q.phase==='reveal'&&Q.ans[d.id]){g.fillText(Q.ans[d.id].i===Q.cur.ans?'⭕':'❌',478,y+14)}});
+  tex.needsUpdate=true;
+}
+let quizWatch=false;
+function quizHud(){
+  const el=$('#quizHud');if(!quizWatch||!world){el.hidden=true;return}const Q=world.quiz;if(!Q){el.hidden=true;return}el.hidden=false;
+  const ps=Q.players.concat((Q.result||[]).map(r=>r.id)).filter((v,i,a)=>a.indexOf(v)===i).map(id=>dogs.find(d=>d.id===id)).filter(Boolean).sort((a,b)=>(Q.score[b.id]||0)-(Q.score[a.id]||0));
+  const html=`<div class="bh-top"><b>🧩 ${QUIZ_TOPICS[Q.topic].n} 퀴즈</b><span class="small">${Q.on?`Q${Math.max(1,Q.qi+1)}/${Q.n}`:'끝'}</span><button class="chip" data-qx>✕</button></div>`+
+    (Q.on&&Q.cur?`<div class="qz-q">${esc(Q.cur.q)}</div><div class="qz-opts">${Q.cur.opts.map((o,i)=>`<span class="${Q.phase==='reveal'?(i===Q.cur.ans?'ok':'no'):''}">${'ABCD'[i]}. ${esc(o)}</span>`).join('')}</div>`:Q.on?'<div class="qz-q">참가자들이 자리로 오는 중…</div>':'<div class="qz-q">🏆 대회 끝!</div>')+
+    `<ol class="qz-sc">${ps.map((d,i)=>{const A=Q.ans[d.id];return `<li><span>${i===0&&(Q.score[d.id]||0)>0?'👑':i+1+'.'}</span><b>${esc(d.name)}</b><em>${Q.phase==='ask'&&A&&A.shown?'✋ '+'ABCD'[A.i]:Q.phase==='reveal'&&A?(A.i===Q.cur.ans?'⭕':'❌')+(Q.fast===d.id?' ⚡':''):''}</em><i>${Q.score[d.id]||0}점</i></li>`}).join('')}</ol>`+
+    `<div class="bh-last">${esc(Q.log[0]||'')}</div>`;
+  if(el.dataset.html===html)return;el.dataset.html=html;el.innerHTML=html;el.querySelector('[data-qx]').onclick=()=>{quizWatch=false;quizHud();quizUI()};
+}
+function watchQuiz(on){quizWatch=on;if(on&&dev.quiz){const b=dev.quiz.box,cx=(b.minx+b.maxx)/2,cz=(b.minz+b.maxz)/2,r=dev.quiz.it.rot||0,[fx,fz]=[[0,1],[-1,0],[0,-1],[1,0]][r];if(player.spect)stopSpectate();setCamMode('free');controls.target.set(cx+fx*0.6,0.9,cz+fz*0.6);mainCam.position.set(cx+fx*4.2+fz*1.2,2.6,cz+fz*4.2+fx*1.2);controls.update()}quizHud();quizUI()}
+function quizUI(){
+  if(!world||!$('#qzStatus'))return;const Q=world.quiz,on=Q&&Q.on;$('#qzStart').textContent=on?'⏹ 퀴즈 그만하기':'🧩 퀴즈 대회 시작';$('#qzStart').classList.toggle('primary',!on);$('#qzWatch').textContent=quizWatch?'👀 관전 끄기':'👀 관전';
+  $('#qzStatus').textContent=!dev.quiz?'퀴즈 진행보드가 없어요 (방 꾸미기·건설로 지을 수 있어요)':on?`${QUIZ_TOPICS[Q.topic].n} · ${Q.phase==='gather'?'모이는 중':`${Math.max(1,Q.qi+1)}/${Q.n}번 문제`} · 참가 ${Q.players.length}마리`:'쉬는 중';
+  const cur=Q?Q.players.concat((Q.result||[]).map(r=>r.id)).filter((v,i,a)=>a.indexOf(v)===i).map(id=>dogs.find(d=>d.id===id)).filter(Boolean).sort((a,b)=>(Q.score[b.id]||0)-(Q.score[a.id]||0)):[];
+  const curHTML=Q&&cur.length?`<b>${on?'지금 대회':'지난 대회'} · ${QUIZ_TOPICS[Q.topic].n}</b><ol>${cur.map((d,i)=>`<li>${i===0&&(Q.score[d.id]||0)>0?'👑':''}${esc(d.name)} <span>${Q.score[d.id]||0}점 · 정답 ${Q.right[d.id]||0}</span></li>`).join('')}</ol>`:'<span class="muted">아직 대회가 없어요</span>';
+  const R=Object.entries(world.quizRank||{}).map(([id,r])=>({...r,id:+id})).sort((a,b)=>b.wins-a.wins||b.pts-a.pts).slice(0,10);
+  const allHTML=R.length?`<b>🏆 전체 순위표</b><ol>${R.map((r,i)=>`<li>${i<3?['🥇','🥈','🥉'][i]:i+1+'.'} ${esc(r.name)}${dogs.some(d=>d.id===r.id&&!d.dead)?'':' 🕊'} <span>우승 ${r.wins} · ${r.pts}점 · ${r.played}회</span></li>`).join('')}</ol>`:'';
+  const html=`<div class="qz-board">${curHTML}</div>${allHTML?`<div class="qz-board">${allHTML}</div>`:''}`;const el=$('#qzBoards');if(el.dataset.html!==html){el.dataset.html=html;el.innerHTML=html}
+  quizHud();
+}
+function quizAuto(live){if(!$('#qzAuto')||!$('#qzAuto').checked||!dev.quiz||(world.quiz&&world.quiz.on)||world.t<(world.quizCool||0)||isNight()||fights.length)return;const aH=live.reduce((a,d)=>a+d.happy,0)/live.length;if(aH<75&&Math.random()<0.5)startQuiz('rand',8,6,true)}
 /* ======================= BOARD GAMES ======================= */
 const BOARD={yut:{n:'윷놀이',e:'🎋',max:4,col:'#e9d8a6'},ludo:{n:'주사위 말판',e:'🎲',max:4,col:'#f3f0e6'},memory:{n:'카드 짝맞추기',e:'🃏',max:4,col:'#3f7d5a'},omok:{n:'오목',e:'⚫',max:2,col:'#d9a85c'},chess:{n:'체스',e:'♟',max:2,col:'#ece3cf'}};
 function boardMesh(k,x,z){
@@ -6635,7 +6931,7 @@ function boardMesh(k,x,z){
 const BG_COL=['#d4473a','#2f7fd0','#2e9a6a','#f2c14e'],BG_MAX=6;let bgSeq=1,bgWatch=null;
 function bgList(){if(!world.bgs)world.bgs=[];return world.bgs}
 function boardOf(d){return bgList().find(G=>G.on&&G.seats[d.id])||null}
-function boardCan(d){return !d.away&&!d.dead&&!d.stray&&!d.enemy&&!d.fight&&!d.lion&&!d.sc&&d.root.visible!==false&&d.state!=='sleep'&&d.age>=0.3&&d.pee<80&&d.thirst<80&&d.hunger<85}
+function boardCan(d){return !(world.quiz&&world.quiz.on&&world.quiz.players.includes(d.id))&&!d.away&&!d.dead&&!d.stray&&!d.enemy&&!d.fight&&!d.lion&&!d.sc&&d.root.visible!==false&&d.state!=='sleep'&&d.age>=0.3&&d.pee<80&&d.thirst<80&&d.hunger<85}
 function boardInit(G){
   const k=G.game,st={};
   if(k==='yut'||k==='ludo'){st.pos={};G.order.forEach(id=>st.pos[id]=0)}
@@ -6761,7 +7057,7 @@ function boardAuto(live){
 let lastT=performance.now(),uiT=0;
 function frame(now){
   requestAnimationFrame(frame);if(!running)return;
-  const realDt=Math.min(0.1,(now-lastT)/1000);lastT=now;musicFx(realDt);stationFx(realDt);if(!paused)autoSaveTick(realDt);
+  const realDt=Math.min(0.1,(now-lastT)/1000);lastT=now;musicFx(realDt);stationFx(realDt);smartFx();if(!paused)autoSaveTick(realDt);
   if(!$('#warMap').hidden){mapT-=realDt;if(mapT<=0){mapT=1;renderMap()}}
   if(NET.on){NET.pubT-=realDt;if(NET.pubT<=0){NET.pubT=20;netPublish()}}
   if(!$('#statOv').hidden){statT-=realDt;if(statT<=0||statQueued){statT=1;renderStats()}}
@@ -6780,7 +7076,7 @@ function frame(now){
       if(Math.floor(before/1440)!==Math.floor(world.t/1440))log(`${Math.floor(world.t/1440)+1}일차 아침이 밝았어요`);
       while(world.t>=world.nextHourT){world.nextHourT+=60;hourTick();if(world.breakLoop)break}
       world.launcherBalls=balls.filter(b=>b.state==='in').length;
-      updatePotty(h);autoManager(h);updateFarm(h);billStep(h);warStep(h);boardStep(h);climateStep(h);buildStep(h);
+      updatePotty(h);autoManager(h);updateFarm(h);billStep(h);warStep(h);boardStep(h);climateStep(h);smartStep(h);buildStep(h);trainQueueStep();quizStep(h);
       if(world.tv.on&&world.tv.offAt>0&&world.t>=world.tv.offAt){setTV(false);log('꺼짐 예약 시간이 되어 TV가 꺼졌어요')}
       if(world.music.on&&world.music.offAt>0&&world.t>=world.music.offAt){setMusic(false);log('꺼짐 예약 시간이 되어 음악이 꺼졌어요')}
       if(world.fastNow){for(const d of dogs.slice())fastAnimal(d,h)}
@@ -6882,6 +7178,8 @@ $('#buildPick').onclick=()=>{if(!world)return;buildPick=buildPick?null:$('#build
 $('#mainCanvas').addEventListener('pointerdown',e=>{if(!buildPick||!world)return;e.stopPropagation();e.preventDefault();const pt=floorPoint(e);if(!pt)return;const k=buildPick,x=Math.round(pt.x*4)/4,z=Math.round(pt.z*4)/4;
   let rot=0;if(!spotFree(k,x,z,0)){if(spotFree(k,x,z,1))rot=1;else{toast('그 자리는 막혀 있어요 (가구·벽과 겹치거나 범위 밖이에요)',true);return}}
   buildPick=null;$('#mainCanvas').style.cursor='';startBuild(k,{x,z,rot})},true);
+$('#qzStart').onclick=()=>{ac();if(!world)return;if(world.quiz&&world.quiz.on)endQuiz(world.quiz);else startQuiz($('#qzTopic').value,+$('#qzN').value,+$('#qzSize').value)};$('#qzWatch').onclick=()=>watchQuiz(!quizWatch);
+$('#trainGo2').onclick=()=>{ac();if(!world)return;const ids=trainPick($('#trainWho').value,$('#trainN').value);if(!ids.length){toast('훈련할 강아지가 없어요 (모두 숙련 100이거나 1살 미만이에요)',true);return}queueTraining(ids)};
 $('#outBtn').onclick=()=>{ac();if(world)sendOut($('#outKind').value,$('#outN').value)};$('#petBtn').onclick=()=>{ac();petAll();careUI()};
 $('#acBtn').onclick=()=>{if(!world||!dev.aircon)return;const A=world.ac=world.ac||{on:false,mode:'cool'};if(!A.on&&!hasPower()){toast('⚡ 정전이라 켤 수 없어요',true);return}A.on=!A.on;A.mode=$('#acMode').value;log(A.on?`${A.mode==='heat'?'🔥 난방':'❄ 냉방'}을 켰어요 · 체력 회복과 행복도가 조금씩 올라요`:'❄ 냉난방기를 껐어요');careUI()};
 $('#acMode').onchange=e=>{if(world&&world.ac)world.ac.mode=e.target.value};
@@ -6920,7 +7218,7 @@ $$('[data-warkeep]').forEach(c=>c.addEventListener('change',e=>{$$('[data-warkee
 try{if(localStorage.getItem('mh_warkeep')==='1')$$('[data-warkeep]').forEach(x=>x.checked=true)}catch(_){}
 $$('[data-warsize]').forEach(c=>c.addEventListener('change',e=>$$('[data-warsize]').forEach(x=>x.value=e.target.value)));$$('[data-warcount]').forEach(c=>c.addEventListener('change',e=>{const v=clamp(Math.round(+e.target.value)||40,5,200);$$('[data-warcount]').forEach(x=>x.value=v)}));$('#mapBtn2').onclick=()=>{if(!warOn()){toast('먼저 ⚔ 전쟁 허용을 켜 주세요',true);return}openMap()};
 $('#mapClose').onclick=()=>{$('#warMap').hidden=true};$('#warMap').addEventListener('click',e=>{if(e.target.id==='warMap')$('#warMap').hidden=true});
-$('#eqGo').onclick=()=>equipMany([...EQSEL],$('#eqW').value,$('#eqBuy').checked);$('#eqAuto').onclick=autoArm;$('#trainGo').onclick=()=>{if(!EQSEL.size){toast('훈련 보낼 강아지를 골라 주세요',true);return}sendToTraining([...EQSEL])};
+$('#eqGo').onclick=()=>equipMany([...EQSEL],$('#eqW').value,$('#eqBuy').checked);$('#eqAuto').onclick=autoArm;$('#trainGo').onclick=()=>{if(!EQSEL.size){toast('훈련 보낼 강아지를 골라 주세요',true);return}queueTraining([...EQSEL])};
 $('#tfFrom').onchange=()=>{TFSEL.clear();if($('#tfTo').value===$('#tfFrom').value){const o=world.war.houses.find(h=>h.owner==='me'&&String(h.id)!==$('#tfFrom').value);if(o)$('#tfTo').value=String(o.id)}transferUI()};$('#tfTo').onchange=tfInfo;
 $('#tfAll').onclick=()=>{const f=houseById(+$('#tfFrom').value);if(f)houseUnits(f).forEach(u=>TFSEL.add(u.id));transferUI()};$('#tfClr').onclick=()=>{TFSEL.clear();transferUI()};
 $('#tfGo').onclick=()=>tfSend([...TFSEL]);$('#tfSendN').onclick=()=>tfSend(tfTopN());$('#tfPickN').onclick=()=>{TFSEL.clear();tfTopN().forEach(id=>TFSEL.add(id));transferUI()};$('#tfN').addEventListener('input',tfInfo);
@@ -7102,7 +7400,7 @@ function startSim(){
   world.breedOn=$('#breedOn').checked;world.tm.speed=$('#tmSpeed').value;world.tm.auto=$('#tmAuto').checked;$('#farmCrop').value='corn';
   aiInit();
   if(NET.on)netStop(true);NET.idOf={};NET.taken=new Set();
-  bgWatch=null;$('#bgHud').hidden=true;
+  bgWatch=null;$('#bgHud').hidden=true;quizWatch=false;$('#quizHud').hidden=true;
   world.war=null;if($('[data-war]').checked)initWar($('[data-wardiff]').value,$('[data-warsize]').value,warCount());setTimeout(warUI,0);if(world.war&&$('[data-online]').checked)setTimeout(netStart,300);
   {const v=$('#startMoney').value;world.money=v==='inf'?Infinity:+v;world.powerOut=false;world.bill={day:Math.floor(world.t/1440),today:{},yest:{},stolen:0,incToday:0,incTotal:0}}
   followId=dogs[0]?dogs[0].id:1;
@@ -7469,6 +7767,4 @@ edResize();
 requestAnimationFrame(frame);
 })();
 </script>
-
-</body>
-</html>
+</body></html>

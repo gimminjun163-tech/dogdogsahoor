@@ -1254,6 +1254,12 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         <div class="row2"><button class="btn primary" id="buildGo">🔨 빈자리에 바로 짓기</button><button class="btn" id="buildPick">📍 위치 골라서 짓기</button></div>
         <p class="small muted" style="margin:0">📍를 누르고 3D 화면에서 바닥을 클릭하면 그 자리에 지어요. 공사 중에는 비계와 진행률이 보이고, 취소하면 절반을 돌려받아요.</p>
         <ol class="ai-log" id="buildList"></ol>
+        <h3>🏠 집 확장공사</h3>
+        <div class="row2"><label class="f">무엇을<select id="exKind"><option value="w">방 가로 넓히기</option><option value="d">방 세로 넓히기</option><option value="wd">방 가로·세로 둘 다</option><option value="yard">마당 넓히기 (깊이)</option></select></label>
+          <label class="f">얼마나<select id="exAmt"><option value="2">+2m</option><option value="4" selected>+4m</option><option value="6">+6m</option><option value="10">+10m</option><option value="20">+20m</option></select></label></div>
+        <p class="small" id="exInfo" style="margin:0"></p>
+        <div class="row2"><button class="btn primary" id="exGo">🏗 확장공사 시작</button><button class="btn" id="exCancel" hidden>공사 취소 (반값 환불)</button></div>
+        <p class="small muted" style="margin:0">공사 중에도 강아지들은 평소처럼 지내요. 끝나면 벽이 바깥으로 밀려나고, 가구와 마당은 그대로 따라가요. 방은 최대 100m, 마당 깊이는 최대 120m까지.</p>
       </section>
 
       <!-- care center -->
@@ -1275,6 +1281,10 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         <button class="btn primary" id="outBtn">🏠 보내기</button>
         <p class="small muted" style="margin:0">산책은 행복도 낮은 순, 병원은 건강 낮은 순, 훈련소는 실력 낮은 순으로 보내요.</p>
         <ol class="ai-log" id="careAway"></ol>
+        <h3>🏫 학교 · 💼 회사</h3>
+        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="schoolOn" checked> 🏫 2살 미만 강아지는 강아지 학교에 보내기 (7시 기상 · 8시 등교 · 16시 하교)</label>
+        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="workOn" checked> 💼 노령견의 절반은 회사에 출근 (9시 출근 · 18시 퇴근 · 돈과 간식을 벌어 와요)</label>
+        <p class="small" id="schoolSt" style="margin:0"></p>
         <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="acAuto" checked> 🤖 자동화일 때 냉난방기·공기청정기 알아서 켜고 끄기</label>
         <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="outAuto" checked> 🤖 자동화일 때 산책·병원 알아서 보내기</label>
       </section>
@@ -1574,7 +1584,7 @@ const FURN={
   claw:{n:'🧸 인형 뽑기 기계',w:0.8,d:0.8,h:1.85,c:'#e86aa0',solid:true,st:true},
   hurdle:{n:'🚧 허들 세트',w:2.4,d:0.6,h:0.5,c:'#f2f2f2',solid:false,yard:true,st:true},
   tunnel:{n:'🌈 강아지 터널',w:2.6,d:0.8,h:0.7,c:'#e84a7a',solid:false,yard:true,st:true},
-  weave:{n:'🦮 위브 폴',w:2.6,d:0.5,h:0.9,c:'#f2c14e',solid:false,yard:true,st:true},
+  weave:{n:'🎌 위브 폴',w:2.6,d:0.5,h:0.9,c:'#f2c14e',solid:false,yard:true,st:true},
   aframe:{n:'🔺 A-프레임',w:2.4,d:1.0,h:1.2,c:'#2f7fd0',solid:false,yard:true,st:true},
   seesaw:{n:'⚖ 시소',w:2.6,d:0.5,h:0.5,c:'#f28a2e',solid:false,yard:true,st:true},
   beam:{n:'🪵 평균대',w:3.0,d:0.4,h:0.5,c:'#c9944a',solid:false,yard:true,st:true},
@@ -2735,7 +2745,7 @@ function decide(d){
     if(t){startFight(d,t,'grudge');return}
   }
   if(!cat&&!d.stray&&(world.voiceActive||world.t<world.voiceUntil)){setState(d,'toVoice',20);return}
-  if(d.pee>70||d.poo>75){if(dev.potty)setState(d,'toPotty',25);else accident(d);return}
+  {const pe=d.pottyEd||0;if(d.pee>70-15*pe||d.poo>75-15*pe){if(dev.potty)setState(d,'toPotty',25);else accident(d);return}}
   if(d.thirst>62){setState(d,'toWater',30);return}
   if(d.hunger>58){setState(d,'toFood',30);return}
   if(d.health<45&&dev.st&&dev.st.medic&&!d.stray&&hasPower()){const S=dev.st.medic.find(x=>x.users<1);if(S){S.users++;d.st=S;setState(d,'toSt',40);return}}
@@ -2955,7 +2965,7 @@ function updateDog(d,dt){
       if(!dev.potty){accident(d);break}
       if(!d.target||!d.target.potty){const b=dev.potty.box;d.target={x:rand(b.minx+0.2,b.maxx-0.2),z:rand(b.minz+0.2,b.maxz-0.2),potty:true}}
       const dist=steer(d,d.target.x,d.target.z,(d.pee>90||d.poo>90)?run:walk*1.3,dt);moving=true;
-      if(dist<0.15){setState(d,'doPotty',3);d.target=null}else if(d.think<=0){d.target=null;if(d.pee>92||d.poo>92)accident(d);else setState(d,'idle',1)}break}
+      if(dist<0.15){setState(d,'doPotty',3);d.target=null}else if(d.think<=0){d.target=null;if((d.pee>92||d.poo>92)&&Math.random()>=(d.pottyEd||0))accident(d);else if(d.pottyEd&&(d.pee>80||d.poo>80))setState(d,'toPotty',25);else setState(d,'idle',1)}break}
     case 'doPotty':{
       sit=true;const kind=d.poo>=d.pee*0.9&&d.poo>40?'poo':'pee';emo=kind==='poo'?'💩':'💦';
       if(d.think<=0){doBusiness(d,true);setState(d,'idle',rand(2,4))}break}
@@ -6908,6 +6918,74 @@ window.addEventListener('keydown',e=>{if(!ARC||ARC.over||ARC.ctrl!=='user'||$('#
 window.addEventListener('keyup',e=>{if(!ARC)return;const k=ARC_KEYMAP[e.key];if(k&&k!=='act'){arcKeys[k]=false;e.stopImmediatePropagation()}},true);
 
 
+
+/* ---------- dog school (under 2) & senior dogs at work ---------- */
+function schoolOk(d){return d.species!=='cat'&&!d.dead&&!d.stray&&!d.enemy&&!d.lion&&!d.sc&&!d.fight&&!d.away&&d.age>=0.25&&d.age<2&&d.root.visible!==false&&!(world.quiz&&world.quiz.on&&world.quiz.players.includes(d.id))&&!(world.arena)}
+function workOk(d){return d.species!=='cat'&&!d.dead&&!d.stray&&!d.enemy&&!d.lion&&!d.sc&&!d.fight&&!d.away&&d.age>=1&&isOld(d)&&d.health>30&&d.root.visible!==false&&!(world.quiz&&world.quiz.on&&world.quiz.players.includes(d.id))}
+function goOut(d,kind,until){boardLeave(d);if(world.tag&&world.tag.on&&world.tag.players.includes(d.id))tagLeave(d,kind==='work'?'출근하느라':'학교 가느라');stationRelease(d);setState(d,'idle',1);d.away={kind,until,since:world.t};d.root.visible=false;d.speed=0;if(followId===d.id&&camMode==='follow')setCamMode('free')}
+function schoolStep(h){
+  if(!world||field||match||world.arena||world.arcOnly)return;const hr=hour(),day=Math.floor(world.t/1440),d0=day*1440;
+  const sOn=!$('#schoolOn')||$('#schoolOn').checked,wOn=!$('#workOn')||$('#workOn').checked;
+  if(sOn){const woke=[],went=[];
+    for(const d of dogs){if(d.species==='cat'||d.dead||d.stray)continue;
+      if(d.age>=2&&(d.schoolDays||0)>0&&!d.graduated){d.graduated=true;log(`🎓 ${d.name}${josa(d.name,'이','가')} 강아지 학교를 졸업했어요! (${d.schoolDays}일 다님 · 배변 훈련 ${Math.round((d.pottyEd||0)*100)}%)`,'good')}
+      if(!schoolOk(d))continue;
+      if(hr>=7&&hr<8&&d.state==='sleep'&&d.schoolWake!==day){d.schoolWake=day;setState(d,'idle',rand(1,2));d.hunger=clamp(d.hunger+5);woke.push(d.name)}
+      if(hr>=8&&hr<15&&d.schoolDay!==day&&!(d.state==='toPotty'||d.state==='doPotty')){d.schoolDay=day;goOut(d,'kschool',d0+16*60);went.push(d.name)}}
+    if(woke.length&&!world.fastNow)log(`⏰ 학교 가는 강아지들이 다른 강아지보다 일찍 일어났어요: ${woke.join(', ')}`,'',true);
+    if(went.length)log(`🏫 등교! ${went.join(', ')} · 16시에 돌아와요`,'good',true)}
+  if(wOn){const old=dogs.filter(d=>d.species!=='cat'&&!d.dead&&!d.stray&&!d.enemy&&d.age>=1&&isOld(d)).sort((a,b)=>a.id-b.id),went=[];
+    old.forEach((d,i)=>{d.job=i%2===0?'work':'rest'});
+    for(const d of old){if(d.job!=='work'||d.workDay===day||!workOk(d))continue;if(hr>=8.5&&hr<16){d.workDay=day;goOut(d,'work',d0+18*60);went.push(d.name)}}
+    if(went.length)log(`💼 출근! ${went.join(', ')} · 18시에 퇴근해요`,'good',true)}
+  else for(const d of dogs)if(d.job)d.job='rest';
+}
+function schoolBack(d){d.schoolDays=(d.schoolDays||0)+1;d.pottyEd=Math.min(1,(d.pottyEd||0)+0.12);profAdd(d,1.4);d.health=clamp(d.health+6);d.happy=clamp(d.happy+8);d.stamina=clamp(d.stamina-10);
+  d.know=d.know||{};d.know.health=Math.min(100,(d.know.health||0)+3);d.know.potty=Math.min(100,(d.know.potty||0)+3);d.know.math=Math.min(100,(d.know.math||0)+3);d.know.mil=Math.min(100,(d.know.mil||0)+2);
+  if(d.skills)d.skills.rea=Math.min(99,(d.skills.rea||50)+0.8);d.iq=Math.min(200,(d.iq||100)+0.6);d.hunger=Math.min(d.hunger,40);d.thirst=Math.min(d.thirst,40);d.pee=Math.min(d.pee,30);d.poo=Math.min(d.poo,25);
+  log(`🏫 ${d.name}${josa(d.name,'이','가')} 하교했어요 (${d.schoolDays}일째) · 배변 훈련 ${Math.round(d.pottyEd*100)}% · 군사 숙련도·건강·반응속도·지능 ↑`,'good',true)}
+function workBack(d){const sk=d.skills?Object.values(d.skills).reduce((a,b)=>a+b,0)/Math.max(1,Object.keys(d.skills).length):50,pay0=Math.round((22000+sk*300)*rand(0.85,1.15)/100)*100,sn=Math.round(rand(2,4));
+  d.workDays=(d.workDays||0)+1;d.stamina=clamp(d.stamina-20);d.happy=clamp(d.happy+5);d.hunger=clamp(d.hunger+10);earn(pay0);world.workEarned=(world.workEarned||0)+pay0;
+  const got=Math.max(0,Math.min(sn,SNACK_MAX-(world.snacks||0)));world.snacks=(world.snacks||0)+got;world.workSnacks=(world.workSnacks||0)+got;
+  log(`💼 ${d.name}${josa(d.name,'이','가')} 퇴근했어요 · 💰 +${won(pay0)}${got?` · 🍪 간식 ${got}개`:''} (${d.workDays}일째 근무)`,'good')}
+function schoolUI(){const el=$('#schoolSt');if(!el||!world)return;const st=dogs.filter(d=>!d.dead&&d.away&&d.away.kind==='kschool').length,wk=dogs.filter(d=>!d.dead&&d.away&&d.away.kind==='work').length,
+  kids=dogs.filter(d=>!d.dead&&!d.stray&&d.species!=='cat'&&d.age>=0.25&&d.age<2).length,old=dogs.filter(d=>!d.dead&&!d.stray&&d.species!=='cat'&&d.age>=1&&isOld(d)).length;
+  const t=`🏫 학생 ${kids}마리 (지금 수업 ${st}) · 💼 노령견 ${old}마리 중 직장인 ${Math.ceil(old/2)} (지금 근무 ${wk}) · 번 돈 ${won(world.workEarned||0)} · 간식 ${world.workSnacks||0}개`;if(el.textContent!==t)el.textContent=t}
+/* ---------- house expansion (집 확장공사) ---------- */
+let exG=null;
+function exQuote(){const k=$('#exKind').value,a=+$('#exAmt').value,L=layout,W0=L.W,D0=L.D;
+  if(k==='yard'){if(!L.yard||!L.yard.on)return {err:'마당이 없어요'};const nd=Math.min(120,L.yard.depth+a),add=(nd-L.yard.depth);if(add<=0)return {err:'마당이 이미 최대 깊이(120m)예요'};const y=yardBase(L),wid=y?(y.side==='s'||y.side==='n'?y.maxx-y.minx:y.maxz-y.minz):L.W;const area=add*wid;return {k,dw:0,dd:0,dy:add,area,cost:Math.round(area*3000/1000)*1000,min:Math.max(30,Math.round(area*1.5))}}
+  const dw=k==='w'||k==='wd'?Math.min(100,W0+a)-W0:0,dd=k==='d'||k==='wd'?Math.min(100,D0+a)-D0:0;if(!dw&&!dd)return {err:'방이 이미 최대 크기(100m)예요'};
+  const area=(W0+dw)*(D0+dd)-W0*D0;return {k,dw,dd,dy:0,area,cost:Math.round(area*15000/1000)*1000,min:Math.max(60,Math.round(area*8))}}
+function exUI(){if(!world||!$('#exInfo'))return;const E=world.expand;
+  if(E){const p=clamp((world.t-E.start)/Math.max(1,E.end-E.start),0,1);$('#exInfo').textContent=`🚧 ${E.label} 공사 중 · ${Math.floor(p*100)}% · ${fmtClock(E.end)} 완성 예정 (${fmtDur(Math.max(0,E.end-world.t))} 남음)`;$('#exGo').disabled=true;$('#exCancel').hidden=false;return}
+  $('#exCancel').hidden=true;const q=exQuote();if(q.err){$('#exInfo').textContent='⛔ '+q.err;$('#exGo').disabled=true;return}
+  const nm=q.k==='yard'?`마당 깊이 ${layout.yard.depth}→${layout.yard.depth+q.dy}m`:`방 ${layout.W}×${layout.D} → ${layout.W+q.dw}×${layout.D+q.dd}m`;
+  $('#exInfo').textContent=`${nm} · 넓어지는 면적 ${Math.round(q.area)}㎡ · ${won(q.cost)} · 공사 ${fmtDur(q.min)}`;$('#exGo').disabled=isFinite(world.money)&&world.money<q.cost}
+function exStart(){if(world.expand){toast('이미 확장공사 중이에요',true);return}if(field||match||world.arena){toast('지금은 공사를 시작할 수 없어요',true);return}
+  const q=exQuote();if(q.err){toast(q.err,true);return}if(isFinite(world.money)&&world.money<q.cost){toast(`돈이 모자라요 (${won(q.cost)} 필요)`,true);return}
+  pay('build',q.cost);const label=q.k==='yard'?`마당 +${q.dy}m`:`방 ${q.dw?`가로 +${q.dw}m`:''}${q.dw&&q.dd?' · ':''}${q.dd?`세로 +${q.dd}m`:''}`;
+  world.expand={dw:q.dw,dd:q.dd,dy:q.dy,start:world.t,end:world.t+q.min,cost:q.cost,label};exFx();log(`🏗 집 확장공사 시작: ${label} (−${won(q.cost)} · ${fmtDur(q.min)})`,'good');exUI()}
+function exCancel(){const E=world.expand;if(!E)return;world.expand=null;const back=Math.round(E.cost/2);earn(back);exFx();log(`🏗 확장공사를 취소했어요 (+${won(back)} 환불)`,'',true);exUI()}
+function exFx(){if(exG){scene.remove(exG);exG=null}const E=world&&world.expand;if(!E)return;exG=new THREE.Group();scene.add(exG);const W0=layout.W,D0=layout.D;
+  const bar=(x,z,len,alongX)=>{for(let i=0;i<Math.max(1,Math.floor(len/1.2));i++){const t=-len/2+0.6+i*1.2;const px=alongX?x+t:x,pz=alongX?z:z+t;exG.add(box(alongX?1.0:0.08,0.5,alongX?0.08:1.0,i%2?'#f28a2e':'#ffffff',px,0.45,pz));exG.add(cyl(0.03,0.03,0.7,'#555',px,0.35,pz,6))}};
+  if(E.dy&&yard){const y=yard.base||yard,s2=yard.side;if(s2==='s')bar((y.minx+y.maxx)/2,y.maxz+0.5,y.maxx-y.minx,true);else if(s2==='n')bar((y.minx+y.maxx)/2,y.minz-0.5,y.maxx-y.minx,true);else if(s2==='e')bar(y.maxx+0.5,(y.minz+y.maxz)/2,y.maxz-y.minz,false);else bar(y.minx-0.5,(y.minz+y.maxz)/2,y.maxz-y.minz,false)}
+  if(E.dw){bar(W0/2+0.5,0,D0,false);bar(-W0/2-0.5,0,D0,false)}if(E.dd){bar(0,D0/2+0.5,W0,true);bar(0,-D0/2-0.5,W0,true)}
+  const lb=textSprite('🏗 확장공사 0%',{size:0.4});lb.position.set(0,3.2,-D0/2-0.6);exG.add(lb);exG.userData.lbl=lb}
+function exStep(h){const E=world.expand;if(!E)return;if(!exG)exFx();const p=clamp((world.t-E.start)/Math.max(1,E.end-E.start),0,1),pc=Math.floor(p*100);
+  if(exG&&exG.userData.lbl&&exG.userData.pc!==pc){exG.userData.pc=pc;setSprite(exG.userData.lbl,`🏗 확장공사 ${pc}% · ${fmtDur(Math.max(0,E.end-world.t))}`)}
+  if(p>=1&&!field&&!match)exFinish()}
+function exFinish(){const E=world.expand;if(!E)return;world.expand=null;if(exG){scene.remove(exG);exG=null}
+  const S=makeSave(),L=S.layout,W0=L.W,D0=L.D,W1=W0+E.dw,D1=D0+E.dd,hx=E.dw/2,hz=E.dd/2;
+  const yb=yardBase(layout),side=yb&&yb.side;
+  const mv=(p,isX)=>{if(isX){if(p>W0/2-1e-6)return p+hx;if(p<-W0/2+1e-6)return p-hx;return p}if(p>D0/2-1e-6)return p+hz;if(p<-D0/2+1e-6)return p-hz;return p};
+  for(const it of L.items){if(FURN[it.type]&&FURN[it.type].wall)continue;it.x=mv(it.x,true);it.z=mv(it.z,false)}
+  for(const o of S.dogs){if(!o.pos)continue;o.pos.x=mv(o.pos.x,true);o.pos.y=mv(o.pos.y,false)}
+  for(const b of S.world.builds||[]){b.x=mv(b.x,true);b.z=mv(b.z,false)}
+  L.W=W1;L.D=D1;if(E.dy&&L.yard)L.yard.depth=Math.min(120,L.yard.depth+E.dy);
+  const sp=speed;loadSave(JSON.stringify(S,saveRep),{rebuild:true});speed=sp;buildSpeedSeg&&buildSpeedSeg();
+  log(`🏠 집 확장공사 완료! ${E.label}${E.dy?` → 마당 깊이 ${layout.yard.depth}m`:` → 방 ${layout.W}×${layout.D}m`}`,'good');toast(`🏠 확장공사 완료! ${E.label}`,false,true);if(soundOn){blip(660,0.1,0.06);setTimeout(()=>blip(990,0.15,0.06),120)}}
+$('#exKind').onchange=exUI;$('#exAmt').onchange=exUI;$('#exGo').onclick=()=>{ac();exStart()};$('#exCancel').onclick=()=>exCancel();
 /* ---------- tag (술래잡기) ---------- */
 let tagUIT=0;
 function tagArea(where){const g=yard&&yard.gym,yb=yard&&(yard.base||yard),day=!isNight();
@@ -7148,6 +7226,8 @@ const OUTINGS={
   walk:{n:'🚶 산책',lab:'산책 중',cost:0,min:[30,60],pick:'happy',back:d=>{d.happy=clamp(d.happy+25);d.health=clamp(d.health+3);d.stamina=clamp(d.stamina-18);d.hunger=clamp(d.hunger+15);d.thirst=clamp(d.thirst+18);d.pee=0;d.poo=Math.max(0,d.poo-50)}},
   vet:{n:'🏥 동물병원',lab:'병원 진료 중',cost:20000,min:[120,120],pick:'health',back:d=>{d.health=100;d.happy=clamp(d.happy-5)}},
   salon:{n:'💇 애견 미용실',lab:'미용실',cost:15000,min:[60,60],pick:'happy',back:d=>{d.happy=clamp(d.happy+20);d.lastBath=world.t;d.lastGroom=world.t}},
+  kschool:{n:'🏫 강아지 학교',lab:'학교 수업 중',cost:0,min:[480,480],pick:'happy',back:d=>schoolBack(d)},
+  work:{n:'💼 회사',lab:'회사 근무 중',cost:0,min:[540,540],pick:'happy',back:d=>workBack(d)},
   school:{n:'🏫 훈련소',lab:'훈련소',cost:30000,min:[180,180],pick:'ovr',back:d=>{const ks=SKILL_KEYS.slice().sort(()=>Math.random()-0.5).slice(0,2);ks.forEach(k=>d.skills[k]=Math.min(99,(d.skills[k]||50)+Math.round(rand(2,5))));d.stamina=clamp(d.stamina-15);d.trained=(d.trained||0)+1;return ks.map(k=>SKILL_N[k]||k).join('·')}},
 };
 const SKILL_N={spd:'속도',sta:'지구력',dri:'드리블',sho:'슈팅',pas:'패스',tac:'태클',gk:'골키퍼',rea:'반응'};
@@ -7163,7 +7243,7 @@ function sendOut(kind,n,byAI){
 function awayReturn(d,early){
   const A=d.away;if(!A)return;const O=OUTINGS[A.kind];d.away=null;d.root.visible=true;const p=spawnAt('land');d.pos.x=p.x;d.pos.y=p.z;resolve(d.pos,d.r);
   const done=early?Math.min(1,(world.t-A.since)/Math.max(1,A.until-A.since)):1;let extra='';if(done>0.5){const r=O.back(d);if(typeof r==='string')extra=` (${r} 실력 +)`;if(A.kind==='walk'&&(locNow==='city'||locNow==='forest')){d.happy=clamp(d.happy+10);extra+=locNow==='city'?' · 🏙 동네 친구들 만남 +10':' · 🌲 숲길 산책 +10'}}
-  setState(d,'idle',rand(1,3));log(`🏠 ${d.name}${josa(d.name,'이','가')} ${O.lab.replace(' 중','')}에서 돌아왔어요${extra}${early?' · 일찍 데려옴':''}`,'good');world.cardsDirty=true;careUI();
+  setState(d,'idle',rand(1,3));if(A.kind==='work'||A.kind==='kschool'){if(early)log(`🏠 ${d.name}${josa(d.name,'을','를')} ${A.kind==='work'?'회사에서':'학교에서'} 일찍 데려왔어요`,'',true)}else log(`🏠 ${d.name}${josa(d.name,'이','가')} ${O.lab.replace(' 중','')}에서 돌아왔어요${extra}${early?' · 일찍 데려옴':''}`,'good');world.cardsDirty=true;careUI();
 }
 function recallAway(){for(const d of dogs)if(d.away)awayReturn(d,true)}
 function petAll(){
@@ -7172,7 +7252,7 @@ function petAll(){
   log(`🤚 ${n}마리를 모두 쓰다듬어 줬어요 · 행복도 +6`,'good');toast('🤚 쓰다듬기! 모두 꼬리를 흔들어요');if(soundOn){blip(880,0.06,0.05);setTimeout(()=>blip(1100,0.06,0.05),80)}
 }
 function careUI(){
-  if(!world||!$('#careAway'))return;const away=dogs.filter(d=>d.away);
+  if(!world||!$('#careAway'))return;schoolUI();const away=dogs.filter(d=>d.away);
   const html=away.length?away.map(d=>`<li>${OUTINGS[d.away.kind].n} · <b>${esc(d.name)}</b> · ${fmtClock(d.away.until)} 귀가 <button class="chip" data-callback="${d.id}">데려오기</button></li>`).join(''):'<li class="muted">밖에 나간 동물이 없어요</li>';
   const ul=$('#careAway');if(ul.dataset.html!==html){ul.dataset.html=html;ul.innerHTML=html;ul.querySelectorAll('[data-callback]').forEach(b=>b.onclick=()=>{const d=dogs.find(x=>x.id===+b.dataset.callback);if(d)awayReturn(d,true)})}
   const A=world.ac||{};$('#acBtn').textContent=!dev.aircon?'❄ 냉난방기 없음':A.on?'❄ 냉난방기 끄기':'❄ 냉난방기 켜기';$('#acBtn').disabled=!dev.aircon;$('#acBtn').classList.toggle('primary',!!A.on);
@@ -7247,7 +7327,7 @@ function buildStep(h){
       log(`🏗 ${FURN[B.type].n} 완성!`,'good',true);toast(`🏗 ${FURN[B.type].n} 완성!`,false,true);if(soundOn){blip(660,0.1,0.06);setTimeout(()=>blip(990,0.15,0.06),120)}buildUI();careUI()}}
 }
 function buildUI(){
-  if(!world||!$('#buildList'))return;const L=world.builds||[];
+  if(!world||!$('#buildList'))return;exUI();const L=world.builds||[];
   const html=L.length?L.map(B=>`<li>🚧 <b>${FURN[B.type].n}</b> · ${Math.floor(clamp((world.t-B.start)/Math.max(1,B.end-B.start),0,1)*100)}% · ${fmtClock(B.end)} 완성 <button class="chip" data-bcancel="${B.id}">취소 (반값 환불)</button></li>`).join(''):'<li class="muted">짓고 있는 것이 없어요</li>';
   const ul=$('#buildList');if(ul.dataset.html!==html){ul.dataset.html=html;ul.innerHTML=html;ul.querySelectorAll('[data-bcancel]').forEach(b=>b.onclick=()=>cancelBuild(+b.dataset.bcancel))}
   const k=$('#buildType').value,why=k?buildBlocked(k):'';$('#buildInfo').textContent=k?(why?`⛔ ${why}`:`${won(BUILD[k][0])} · 공사 ${fmtDur(BUILD[k][1])}${FURN[k].yard?' · 마당에 지어요':''}`):'';
@@ -7317,7 +7397,7 @@ async function exportSave(){
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);toast('📤 저장 파일을 내보냈어요');
 }
 function loadFromSlot(slot){const txt=lsGet('mh_save_'+slot);if(!txt){toast('그 칸은 비어 있어요',true);return}loadSave(txt)}
-function loadSave(txt){
+function loadSave(txt,opt){opt=opt||{};
   let S;try{S=JSON.parse(txt,saveRev)}catch(e){toast('저장 파일을 읽을 수 없어요',true);return}
   if(!S||S.app!=='멍하우스 홈케어'||!S.world||!S.layout||!Array.isArray(S.dogs)){toast('멍하우스 저장 파일이 아니에요',true);return}
   if(match)cleanupMatch(true);if(NET.on)netStop(true);NET.idOf={};NET.taken=new Set();bgWatch=null;$('#bgHud').hidden=true;
@@ -7336,12 +7416,12 @@ function loadSave(txt){
     applyGrowth(d);equipGear(d);if(d.away)d.root.visible=false;dogs.push(d);maxId=Math.max(maxId,+d.id||0)}
   animalUid=Math.max(animalUid,maxId+1);
   for(const b of S.world.builds||[]){const left=Math.max(1,b.end-b.start);world.builds=world.builds||[];restoreBuild(b)}
-  $('#log').innerHTML='';speed=1;clearInterval(musicIv);musicIv=0;const mOn=world.music.on;world.music.on=false;if(mOn)setMusic(true);else musicUI();
+  if(!opt.rebuild)$('#log').innerHTML='';speed=1;clearInterval(musicIv);musicIv=0;const mOn=world.music.on;world.music.on=false;if(mOn)setMusic(true);else musicUI();
   const tOn=world.tv&&world.tv.on;if(world.tv){world.tv.on=false;if(tOn&&tvs.length)setTV(true)}
   followId=dogs[0]?dogs[0].id:1;world.cardsDirty=true;buildDogCards();renderEvents();setCamMode('free');buildSpeedSeg();
   if(world.quiz)world.quiz.on=false;if(world.tag)world.tag.on=false;world.trainQ=world.trainQ||[];ARC=null;arcPrev=new Set();arcAskD=null;$('#arcOv').hidden=true;$('#arcAsk').hidden=true;if(world.war){const ah=world.war.houses.find(x=>x.id===world.war.active);if(ah&&houseLoc(ah)!==locNow)applyLoc(houseLoc(ah))}
   if(!world.ai)aiInit();if(S.careMode)applyMode(S.careMode,false);setTimeout(()=>{warUI();careUI();buildUI();boardUI()},0);
-  log(`📂 저장한 게임을 불러왔어요 · ${saveSummary(S.meta)}`,'good');toast('📂 이어서 시작해요!',false,true);
+  if(!opt.rebuild){log(`📂 저장한 게임을 불러왔어요 · ${saveSummary(S.meta)}`,'good');toast('📂 이어서 시작해요!',false,true)}exG=null;if(world.expand)setTimeout(exFx,0);
   running=true;lastT=performance.now();ac();balanceStart();
 }
 function restoreBuild(b){ // re-creates a construction site from the save (already paid for)
@@ -7645,7 +7725,7 @@ function frame(now){
       if(Math.floor(before/1440)!==Math.floor(world.t/1440))log(`${Math.floor(world.t/1440)+1}일차 아침이 밝았어요`);
       while(world.t>=world.nextHourT){world.nextHourT+=60;hourTick();if(world.breakLoop)break}
       world.launcherBalls=balls.filter(b=>b.state==='in').length;
-      updatePotty(h);autoManager(h);updateFarm(h);billStep(h);warStep(h);boardStep(h);climateStep(h);locStep(h);smartStep(h);gymStep(h);tagStep(h);buildStep(h);trainQueueStep();quizStep(h);
+      updatePotty(h);autoManager(h);updateFarm(h);billStep(h);warStep(h);boardStep(h);climateStep(h);locStep(h);smartStep(h);gymStep(h);tagStep(h);schoolStep(h);exStep(h);buildStep(h);trainQueueStep();quizStep(h);
       if(world.tv.on&&world.tv.offAt>0&&world.t>=world.tv.offAt){setTV(false);log('꺼짐 예약 시간이 되어 TV가 꺼졌어요')}
       if(world.music.on&&world.music.offAt>0&&world.t>=world.music.offAt){setMusic(false);log('꺼짐 예약 시간이 되어 음악이 꺼졌어요')}
       if(world.fastNow){for(const d of dogs.slice())fastAnimal(d,h)}

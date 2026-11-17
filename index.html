@@ -336,6 +336,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
 .arc-ctl{display:grid;grid-template-columns:1fr 2fr 1fr;gap:6px}.arc-ctl .btn{min-height:44px;font-size:16px;touch-action:none;user-select:none;color:#fff;background:#2a3346;border-color:#3d4a63}.arc-ctl .btn.primary{background:#1d8a80;border-color:#1d8a80}
 .arc-btns{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}.arc-help{margin:0;font-size:11px;color:#b9c3cf;text-align:center}
 .arcask{left:50%;bottom:12px;transform:translateX(-50%);display:flex;gap:6px;align-items:center;background:rgba(14,18,28,.9);color:#fff;border-radius:999px;padding:6px 8px 6px 14px;font-size:12px;z-index:7;max-width:94%;flex-wrap:wrap;justify-content:center}.arcask[hidden]{display:none}
+.taghud{left:50%;top:50px;transform:translateX(-50%);background:rgba(14,18,28,.85);color:#fff;border-radius:999px;padding:5px 14px;font-size:12.5px;z-index:6;white-space:nowrap;max-width:90%;overflow:hidden;text-overflow:ellipsis}.taghud[hidden]{display:none}
 .arcme{display:grid;grid-template-columns:1fr 1fr;gap:6px}.arcme select{grid-column:1/-1}.arcme small{opacity:.75;font-size:11px}
 .arclist{list-style:none;margin:0;padding:0;display:grid;gap:5px}.arclist li{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:13px;padding:6px 8px;border:1px solid var(--line);border-radius:10px}.arclist li b{flex:1 1 auto}.arclist li.muted{color:var(--muted);border-style:dashed}
 .main-panels:empty{display:none}
@@ -651,6 +652,9 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
           <label class="f">마당 너비 (m)<input type="number" id="yardWide" min="0" max="160" step="1" value="16"></label>
         </div>
         <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="yardPitch" checked> 마당에 축구장 만들기</label>
+        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="yardGym"> 🏟 마당 옆에 강아지 운동장 만들기 <small class="muted">(마당 바깥쪽 끝에 붙어요)</small></label>
+        <label class="f">운동장 길이 (m, 6~60)<input type="number" id="gymDepth" min="6" max="60" step="1" value="14"></label>
+        <p class="small muted">운동장엔 허들·터널·위브 폴·A-프레임·시소·평균대·점프 링·점프 박스·타이어 끌기·스프링 폴·원반 머신·달리기 트랙이 자동으로 들어가요. 운동장 안에서는 강아지들이 35% 더 빨리 움직이고, 그냥 걷거나 뛰기만 해도 건강·행복도가 올라요.</p>
         <p class="small" id="pitchInfo"></p>
         <p class="small">'마당 문' 도구로 벽에 문을 놓으면 그 벽 바깥에 마당이 생겨요. 너비를 벽보다 크게 하면 마당이 옆으로 넓어져요. 0이면 벽 길이만큼이에요.</p>
       </div>
@@ -896,6 +900,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         <div class="ov arenares" id="arenaRes" hidden><div class="ar-card"><b id="arTitle">A편 승리!</b><p id="arText"></p><div class="row2"><button class="btn primary" id="arAgain">다시 하기</button><button class="btn" id="arSetup">팀 바꾸기</button></div><button class="btn" id="arClose">닫고 계속 보기</button></div></div>
         <div class="ov bghud" id="bgHud" hidden aria-live="off"></div>
         <div class="ov bghud qzhud" id="quizHud" hidden aria-live="off"></div>
+        <div class="ov taghud" id="tagHud" hidden aria-live="off"></div>
         <div class="ov arcov" id="arcOv" hidden>
           <div class="arc-head"><b id="arcTitle"></b><span id="arcInfo"></span></div>
           <canvas id="arcCv" width="440" height="240"></canvas>
@@ -963,6 +968,19 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
       </div>
       <div class="dogs-grid" id="dogCards"></div>
       <div class="main-panels" id="mainPanels">
+      <section class="card panel home-only" id="tagPanel">
+        <div class="panel-head"><h2>🏃 술래잡기</h2><span class="tag" id="tagTag">쉬는 중</span></div>
+        <div class="row2">
+          <label class="f">몇 마리가 할까요?<select id="tagN"><option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option><option>8</option><option value="99">모두</option></select></label>
+          <label class="f">어디서?<select id="tagWhere"><option value="auto">알아서 (운동장 → 마당 → 집 안)</option><option value="gym">🏟 운동장</option><option value="yard">마당</option><option value="room">집 안</option></select></label>
+        </div>
+        <label class="f">시간<select id="tagDur"><option value="40">짧게 (40분)</option><option value="90" selected>보통 (1시간 30분)</option><option value="180">길게 (3시간)</option></select></label>
+        <div class="row2"><button class="btn primary" id="tagStart">🏃 술래잡기 시작</button><button class="btn" id="tagWatch">👀 관전 (술래 따라가기)</button></div>
+        <button class="btn" id="tagStop" hidden>그만하기</button>
+        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="tagAuto" checked> 자동화: 강아지들이 심심하면 알아서 술래잡기를 해요</label>
+        <ul class="arclist" id="tagList"></ul>
+        <p class="small muted" id="tagLast">술래(😈)가 다른 강아지를 쫓아가서 닿으면 술래가 바뀌어요. 방금 잡힌 강아지는 바로 다시 잡을 수 없어요. 끝나면 모두 행복도가 오르고 속도·지구력이 늘어요. 많이 잡은 강아지는 보너스!</p>
+      </section>
       <section class="card panel home-only" id="arcPanel">
         <div class="panel-head"><h2>🎮 오락실 · 인형 뽑기</h2><span class="tag" id="arcTag">쉬는 중</span></div>
         <label class="f">강아지가 기계를 쓰면<select id="arcMode"><option value="off">그냥 두기 (관전 안 함)</option><option value="watch">자동으로 관전하기</option><option value="ask">물어보기 (관전 · 내가 하기 버튼이 떠요)</option></select></label>
@@ -1554,6 +1572,18 @@ const FURN={
   petfountain:{n:'💧 순환 정수기',w:0.4,d:0.4,h:0.35,c:'#dff1f8',solid:true,st:true},
   arcade:{n:'🕹 오락실 게임기',w:0.7,d:0.6,h:1.65,c:'#3b2a6b',solid:true,st:true},
   claw:{n:'🧸 인형 뽑기 기계',w:0.8,d:0.8,h:1.85,c:'#e86aa0',solid:true,st:true},
+  hurdle:{n:'🚧 허들 세트',w:2.4,d:0.6,h:0.5,c:'#f2f2f2',solid:false,yard:true,st:true},
+  tunnel:{n:'🌈 강아지 터널',w:2.6,d:0.8,h:0.7,c:'#e84a7a',solid:false,yard:true,st:true},
+  weave:{n:'🦮 위브 폴',w:2.6,d:0.5,h:0.9,c:'#f2c14e',solid:false,yard:true,st:true},
+  aframe:{n:'🔺 A-프레임',w:2.4,d:1.0,h:1.2,c:'#2f7fd0',solid:false,yard:true,st:true},
+  seesaw:{n:'⚖ 시소',w:2.6,d:0.5,h:0.5,c:'#f28a2e',solid:false,yard:true,st:true},
+  beam:{n:'🪵 평균대',w:3.0,d:0.4,h:0.5,c:'#c9944a',solid:false,yard:true,st:true},
+  hoop:{n:'⭕ 점프 링',w:1.2,d:0.4,h:1.0,c:'#e84a4a',solid:false,yard:true,st:true},
+  jumpbox:{n:'🟫 점프 박스',w:1.0,d:1.0,h:0.5,c:'#9a6a3e',solid:false,yard:true,st:true},
+  tirepull:{n:'🛞 타이어 끌기',w:1.6,d:0.9,h:0.4,c:'#2a2a2a',solid:false,yard:true,st:true},
+  springpole:{n:'🪢 스프링 폴',w:0.9,d:0.9,h:2.0,c:'#7a7f86',solid:false,yard:true,st:true},
+  discmachine:{n:'🥏 원반 머신',w:0.6,d:0.6,h:0.9,c:'#3fb27f',solid:true,yard:true,st:true},
+  track:{n:'🏃 달리기 트랙',w:6.0,d:3.6,h:0.02,c:'#c8644a',solid:false,yard:true,st:true},
   nosework:{n:'🧠 노즈워크 매트',w:1.0,d:0.7,h:0.05,c:'#6fa86a',solid:false,st:true},
   cattower:{n:'🐈 캣타워',w:0.7,d:0.7,h:1.6,c:'#c9a97a',solid:false,unique:true,st:true},
   petsofa:{n:'🛋 펫 소파',w:1.0,d:0.7,h:0.4,c:'#8a6fb0',solid:false,st:true},
@@ -1720,14 +1750,21 @@ function clampItem(it){
 function farmInYard(L=layout){const it=L.items.find(i=>i.type==='farm');if(!it)return true;const y=yardRect(L);if(!y)return false;const f=foot(it);
   return it.x-f.w/2>=y.minx-0.01&&it.x+f.w/2<=y.maxx+0.01&&it.z-f.d/2>=y.minz-0.01&&it.z+f.d/2<=y.maxz+0.01}
 
-function yardRect(L=layout){
+function yardBase(L=layout){
   if(!L.yard||!L.yard.on)return null;const pd=L.items.find(i=>i.type==='petdoor');if(!pd)return null;
   const Y=L.yard.depth,w=L.W/2,d=L.D/2,hx=Math.max(w,(L.yard.wide||0)/2),hz=Math.max(d,(L.yard.wide||0)/2);
   const r={n:{minx:-hx,maxx:hx,minz:-d-Y,maxz:-d},s:{minx:-hx,maxx:hx,minz:d,maxz:d+Y},w:{minx:-w-Y,maxx:-w,minz:-hz,maxz:hz},e:{minx:w,maxx:w+Y,minz:-hz,maxz:hz}}[pd.wall];
   return Object.assign({side:pd.wall,pd},r);
 }
+function yardRect(L=layout){const r=yardBase(L);if(!r||!L.yard.gym)return r;const G=clamp(+L.yard.gymD||14,6,60);let g,e;
+  if(r.side==='s'){g={minx:r.minx,maxx:r.maxx,minz:r.maxz,maxz:r.maxz+G};e={maxz:r.maxz+G}}
+  else if(r.side==='n'){g={minx:r.minx,maxx:r.maxx,minz:r.minz-G,maxz:r.minz};e={minz:r.minz-G}}
+  else if(r.side==='e'){g={minx:r.maxx,maxx:r.maxx+G,minz:r.minz,maxz:r.maxz};e={maxx:r.maxx+G}}
+  else{g={minx:r.minx-G,maxx:r.minx,minz:r.minz,maxz:r.maxz};e={minx:r.minx-G}}
+  return Object.assign({},r,e,{gym:g,base:{minx:r.minx,maxx:r.maxx,minz:r.minz,maxz:r.maxz}})}
+function inGym(x,z){const g=yard&&yard.gym;return !!g&&x>=g.minx&&x<=g.maxx&&z>=g.minz&&z<=g.maxz}
 function pitchRect(L=layout){
-  const y=yardRect(L);if(!y||!L.yard.pitch)return null;const near=Math.max(3,L.yard.depth*0.3),m=0.9;let r;
+  const y=yardBase(L);if(!y||!L.yard.pitch)return null;const near=Math.max(3,L.yard.depth*0.3),m=0.9;let r;
   if(y.side==='e')r={minx:y.minx+near,maxx:y.maxx-m,minz:y.minz+m,maxz:y.maxz-m};
   else if(y.side==='w')r={minx:y.minx+m,maxx:y.maxx-near,minz:y.minz+m,maxz:y.maxz-m};
   else if(y.side==='s')r={minx:y.minx+m,maxx:y.maxx-m,minz:y.minz+near,maxz:y.maxz-m};
@@ -1736,7 +1773,7 @@ function pitchRect(L=layout){
   // a huge yard keeps a normal-sized pitch (max 50×32 m) in its middle
   const lx=a>=b,ML=50,MW=32,cx=(r.minx+r.maxx)/2,cz=(r.minz+r.maxz)/2,ha=Math.min(a,lx?ML:MW)/2,hb=Math.min(b,lx?MW:ML)/2;return {minx:cx-ha,maxx:cx+ha,minz:cz-hb,maxz:cz+hb};
 }
-function nearStrip(L=layout){const y=yardRect(L),p=pitchRect(L);if(!y||!p)return y;
+function nearStrip(L=layout){const y=yardBase(L),p=pitchRect(L);if(!y||!p)return y;
   if(y.side==='e')return {...y,maxx:p.minx-0.3};if(y.side==='w')return {...y,minx:p.maxx+0.3};if(y.side==='s')return {...y,maxz:p.minz-0.3};return {...y,minz:p.maxz+0.3}}
 function makePitch(r){const lx=(r.maxx-r.minx)>=(r.maxz-r.minz);const P={...r,lx,len:lx?r.maxx-r.minx:r.maxz-r.minz,wid:lx?r.maxz-r.minz:r.maxx-r.minx,cx:(r.minx+r.maxx)/2,cz:(r.minz+r.maxz)/2};
   P.goalW=Math.min(3.6,Math.max(1.8,P.wid*0.28));P.goalH=Math.min(1.2,0.7+P.wid*0.025);return P}
@@ -1750,7 +1787,7 @@ let tool='move',drag=null;
 const TOOLDEF=[['move','이동 · 회전'],['del','삭제'],null,
   ['sofa'],['bed'],['table'],['shelf'],['tv'],['plant'],['dogbed'],['rug'],null,
   ['water'],['food'],['launcher'],['potty'],['treadmill'],['homecam'],['door'],['window'],['petdoor'],['farm'],null,
-  ['train'],['bath'],['medic'],['quiz'],['speaker'],['smartlight'],['thermo'],['whitenoise'],['security'],['pawwash'],['petfountain'],['arcade'],['claw'],['nosework'],['cattower'],['petsofa'],['pool'],['shade'],['sandpit'],['solar'],['groom'],['toybox'],['snackbar'],['kennel'],['aircon'],['purifier'],['agility'],['fountain']];
+  ['train'],['bath'],['medic'],['quiz'],['speaker'],['smartlight'],['thermo'],['whitenoise'],['security'],['pawwash'],['petfountain'],['arcade'],['claw'],['track'],['hurdle'],['tunnel'],['weave'],['aframe'],['seesaw'],['beam'],['hoop'],['jumpbox'],['tirepull'],['springpole'],['discmachine'],['nosework'],['cattower'],['petsofa'],['pool'],['shade'],['sandpit'],['solar'],['groom'],['toybox'],['snackbar'],['kennel'],['aircon'],['purifier'],['agility'],['fountain']];
 function buildTools(){
   const box=$('#tools');box.innerHTML='';
   for(const t of TOOLDEF){
@@ -1789,6 +1826,7 @@ function drawEditor(){
   const yr=yardRect();
   if(yr){const [yx,yz]=m2p(yr.minx,yr.minz);const yw=(yr.maxx-yr.minx)*edScale,yd=(yr.maxz-yr.minz)*edScale;
     ex.fillStyle='#8fbf6a';ex.fillRect(yx,yz,yw,yd);ex.setLineDash([6,4]);ex.strokeStyle='#6b4f2f';ex.lineWidth=2;ex.strokeRect(yx,yz,yw,yd);ex.setLineDash([]);
+    if(yr.gym){const g=yr.gym,[gx,gz]=m2p(g.minx,g.minz),gw=(g.maxx-g.minx)*edScale,gd=(g.maxz-g.minz)*edScale;ex.fillStyle='#4f9a66';ex.fillRect(gx,gz,gw,gd);ex.strokeStyle='#ffffff';ex.lineWidth=1.5;ex.strokeRect(gx+3,gz+3,gw-6,gd-6);ex.fillStyle='#ffffff';ex.font='bold 13px "IBM Plex Sans KR",sans-serif';ex.textAlign='center';ex.fillText(`🏟 강아지 운동장 (운동 기구 ${GYM_SET.length}종)`,gx+gw/2,gz+gd/2+5)}
     ex.fillStyle='#24421f';ex.font='bold 13px "IBM Plex Sans KR",sans-serif';ex.textAlign='center';
     const pr=pitchRect();
     if(pr){const P=makePitch(pr);ex.strokeStyle='#ffffff';ex.lineWidth=2;const q=(a,c)=>{const w=toW(P,a,c);return m2p(w.x,w.z)};
@@ -1798,7 +1836,7 @@ function drawEditor(){
       ex.lineWidth=5;for(const sg of[-1,1]){ex.strokeStyle=sg<0?'#d4473a':'#2f7fd0';ex.beginPath();ex.moveTo(...q(sg*P.len/2,-P.goalW/2));ex.lineTo(...q(sg*P.len/2,P.goalW/2));ex.stroke()}
       ex.fillStyle='#ffffff';ex.fillText(`⚽ 축구장 ${P.len.toFixed(0)}×${P.wid.toFixed(0)}m`,ccx,ccz-8);
       const y=yardRect();const ns=nearStrip();if(ns){const [nx,nz]=m2p((ns.minx+ns.maxx)/2,(ns.minz+ns.maxz)/2);ex.fillStyle='#24421f';ex.fillText('마당',nx,nz)}}
-    else ex.fillText('마당',yx+yw/2,yz+yd/2+5);
+    else{const yb=yr.base||yr,[bx,bz]=m2p((yb.minx+yb.maxx)/2,(yb.minz+yb.maxz)/2);ex.fillStyle='#24421f';ex.fillText('마당',bx,bz+5)}
     const pi=document.getElementById('pitchInfo');if(pi)pi.textContent=layout.yard.pitch?(pr?`축구장 크기: ${makePitch(pr).len.toFixed(0)}×${makePitch(pr).wid.toFixed(0)}m. 집 쪽 띠에는 농장·나무·개집이 들어가요.`:'마당이 작아서 축구장을 만들 수 없어요. 깊이 10m, 너비 12m 이상을 추천해요.'):'';}
   // floor
   ex.fillStyle='#d8c3a0';ex.fillRect(x0,z0,W*edScale,D*edScale);
@@ -1890,9 +1928,11 @@ ed.addEventListener('pointerup',()=>{
   drag=null;
 });
 function setRoom(W,D){layout.W=clamp(W,4,100);layout.D=clamp(D,4,100);$('#roomW').value=layout.W;$('#roomD').value=layout.D;layout.items.forEach(clampItem);
-  if(!layout.yard)layout.yard={on:false,depth:6,wide:0,pitch:false};$('#yardOn').checked=layout.yard.on;$('#yardDepth').value=layout.yard.depth;$('#yardWide').value=layout.yard.wide||0;$('#yardPitch').checked=!!layout.yard.pitch;edResize()}
+  if(!layout.yard)layout.yard={on:false,depth:6,wide:0,pitch:false};$('#yardOn').checked=layout.yard.on;$('#yardDepth').value=layout.yard.depth;$('#yardWide').value=layout.yard.wide||0;$('#yardPitch').checked=!!layout.yard.pitch;$('#yardGym').checked=!!layout.yard.gym;$('#gymDepth').value=layout.yard.gymD||14;edResize()}
 $('#yardOn').addEventListener('change',e=>{layout.yard.on=e.target.checked;
   if(layout.yard.on&&!layout.items.some(i=>i.type==='petdoor')){const it={id:uid++,type:'petdoor'};snapWall(it,layout.W/2,0);layout.items.push(it)}edResize()});
+$('#yardGym').addEventListener('change',e=>{layout.yard.gym=e.target.checked;if(!layout.yard.gymD)layout.yard.gymD=14;edResize()});
+$('#gymDepth').addEventListener('change',e=>{layout.yard.gymD=clamp(parseFloat(e.target.value)||14,6,60);e.target.value=layout.yard.gymD;edResize()});
 $('#yardDepth').addEventListener('change',e=>{layout.yard.depth=clamp(parseFloat(e.target.value)||4,2,120);e.target.value=layout.yard.depth;edResize()});
 $('#yardWide').addEventListener('change',e=>{layout.yard.wide=clamp(parseFloat(e.target.value)||0,0,160);e.target.value=layout.yard.wide;edResize()});
 $('#yardPitch').addEventListener('change',e=>{layout.yard.pitch=e.target.checked;edResize()});
@@ -2076,7 +2116,7 @@ function buildWorld(){
   };
   mk('n',W+T*2,T,0,-D/2-T/2);mk('s',W+T*2,T,0,D/2+T/2);mk('w',T,D,-W/2-T/2,0);mk('e',T,D,W/2+T/2,0);
   // items
-  for(const it of layout.items){
+  for(const it of layout.items.concat(gymItems())){
     const f=FURN[it.type];
     if(f.yard&&!yard)continue;
     if(f.wall){buildWallItem(it);continue}
@@ -2127,9 +2167,22 @@ function buildYard(){
     if(solid)solids.push({minx:Math.min(x1,x2)-0.06,maxx:Math.max(x1,x2)+0.06,minz:Math.min(z1,z2)-0.06,maxz:Math.max(z1,z2)+0.06,h:0.8,type:'wall'})};
   for(const e of edges)if(!onWall(e))fence(e,false);
   for(const e of inner)fence(e,true);
+  if(y.gym){const G=y.gym,b=y.base,gw=G.maxx-G.minx,gd=G.maxz-G.minz,gcx=(G.minx+G.maxx)/2,gcz=(G.minz+G.maxz)/2;
+    const tc=document.createElement('canvas');tc.width=tc.height=128;const tg=tc.getContext('2d');tg.fillStyle='#4f9a66';tg.fillRect(0,0,128,128);tg.fillStyle='#57a46e';tg.fillRect(0,0,128,64);
+    const tt=new THREE.CanvasTexture(tc);tt.wrapS=tt.wrapT=THREE.RepeatWrapping;tt.repeat.set(1,gd/2);const turf=new THREE.Mesh(new THREE.PlaneGeometry(gw,gd),new THREE.MeshStandardMaterial({map:tt,roughness:0.95}));turf.rotation.x=-Math.PI/2;turf.position.set(gcx,0.004,gcz);turf.receiveShadow=true;scene.add(turf);
+    for(const [x1,z1,x2,z2] of[[G.minx+0.3,G.minz+0.3,G.maxx-0.3,G.minz+0.3],[G.minx+0.3,G.maxz-0.3,G.maxx-0.3,G.maxz-0.3],[G.minx+0.3,G.minz+0.3,G.minx+0.3,G.maxz-0.3],[G.maxx-0.3,G.minz+0.3,G.maxx-0.3,G.maxz-0.3]]){const L=Math.hypot(x2-x1,z2-z1);g0(box(z1===z2?L:0.06,0.01,z1===z2?0.06:L,'#ffffff',(x1+x2)/2,0.008,(z1+z2)/2))}
+    const s2=y.side,gap=1.6;let gate;
+    if(s2==='s'||s2==='n'){const z=s2==='s'?b.maxz:b.minz,cx=(b.minx+b.maxx)/2;fence([[b.minx,z],[cx-gap,z]],true);fence([[cx+gap,z],[b.maxx,z]],true);gate={x:cx,z,ax:'x'};const sg=s2==='s'?1:-1;yard.gate={out:{x:cx,z:z-sg*0.9},in:{x:cx,z:z+sg*0.9}}}
+    else{const x=s2==='e'?b.maxx:b.minx,cz=(b.minz+b.maxz)/2;fence([[x,b.minz],[x,cz-gap]],true);fence([[x,cz+gap],[x,b.maxz]],true);gate={x,z:cz,ax:'z'};const sg=s2==='e'?1:-1;yard.gate={out:{x:x-sg*0.9,z:cz},in:{x:x+sg*0.9,z:cz}}}
+    const px=gate.ax==='x'?gap:0,pz=gate.ax==='z'?gap:0;for(const sg of[-1,1])g0(cyl(0.07,0.08,2.1,'#2f7fd0',gate.x+sg*px,1.05,gate.z+sg*pz,8));
+    const sc=document.createElement('canvas');sc.width=512;sc.height=96;const sx=sc.getContext('2d');sx.fillStyle='#2f7fd0';sx.fillRect(0,0,512,96);sx.fillStyle='#fff';sx.font='bold 54px sans-serif';sx.textAlign='center';sx.textBaseline='middle';sx.fillText('🏟 강아지 운동장',256,50);
+    const sign=new THREE.Mesh(new THREE.BoxGeometry(gate.ax==='x'?gap*2+0.2:0.08,0.42,gate.ax==='z'?gap*2+0.2:0.08),[mat('#2f7fd0'),mat('#2f7fd0'),mat('#2f7fd0'),mat('#2f7fd0'),new THREE.MeshStandardMaterial({map:new THREE.CanvasTexture(sc)}),new THREE.MeshStandardMaterial({map:new THREE.CanvasTexture(sc)})]);
+    if(gate.ax==='z'){sign.material=[new THREE.MeshStandardMaterial({map:new THREE.CanvasTexture(sc)}),new THREE.MeshStandardMaterial({map:new THREE.CanvasTexture(sc)}),mat('#2f7fd0'),mat('#2f7fd0'),mat('#2f7fd0'),mat('#2f7fd0')]}
+    sign.position.set(gate.x,2.05,gate.z);g0(sign)}
   const pr=pitchRect();if(pr){yard.P=buildPitch(pr)}
   // tree + dog house: in the strip next to the house when there is a pitch, otherwise in the far corners
-  const spots=pr?{n:[[y.minx+1,y.maxz-1],[y.maxx-1.2,y.maxz-1.1]],s:[[y.minx+1,y.minz+1],[y.maxx-1.2,y.minz+1.1]],w:[[y.maxx-1,y.minz+1],[y.maxx-1.1,y.maxz-1.2]],e:[[y.minx+1,y.minz+1],[y.minx+1.1,y.maxz-1.2]]}[s]
+  const yb=y.base||y;
+  const spots=pr?{n:[[yb.minx+1,yb.maxz-1],[yb.maxx-1.2,yb.maxz-1.1]],s:[[yb.minx+1,yb.minz+1],[yb.maxx-1.2,yb.minz+1.1]],w:[[yb.maxx-1,yb.minz+1],[yb.maxx-1.1,yb.maxz-1.2]],e:[[yb.minx+1,yb.minz+1],[yb.minx+1.1,yb.maxz-1.2]]}[s]
     :{n:[[y.minx+1,y.minz+1],[y.maxx-1.2,y.minz+1.1]],s:[[y.minx+1,y.maxz-1],[y.maxx-1.2,y.maxz-1.1]],w:[[y.minx+1,y.minz+1],[y.minx+1.1,y.maxz-1.2]],e:[[y.maxx-1,y.minz+1],[y.maxx-1.1,y.maxz-1.2]]}[s];
   const inPitch=(x,z,m)=>pr&&x>pr.minx-m&&x<pr.maxx+m&&z>pr.minz-m&&z<pr.maxz+m;
   const [tx,tz]=spots[0];
@@ -2298,6 +2351,21 @@ function buildFurniture(it){
       const claw=new THREE.Group();claw.add(cyl(0.008,0.008,0.3,'#d0d0d0',0,0.15,0,6));for(let i=0;i<3;i++){const f=box(0.012,0.09,0.012,'#bfbfbf',0,-0.03,0);f.rotation.y=i*2.09;f.translateX(0.035);f.rotation.z=0.4;claw.add(f)}
       claw.position.set(0,1.38,0);g.add(claw);g.add(box(0.14,0.05,0.12,'#2a2a2a',w/2-0.18,0.82,d/2-0.08));g.add(box(0.08,0.12,0.03,'#333',-w/2+0.18,0.55,d/2+0.01));
       it._fx={claw,sign};break;}
+    case 'hurdle':{for(const u of[-0.8,0,0.8]){for(const sv of[-1,1])g.add(box(0.05,0.5,0.05,'#f2f2f2',u,0.25,sv*(d/2-0.05)));const bar=box(0.05,0.05,d-0.08,pick(['#e84a4a','#2f7fd0','#f2c14e']),u,0.38,0);g.add(bar)}break}
+    case 'tunnel':{for(let i=0;i<10;i++){const r=new THREE.Mesh(new THREE.TorusGeometry(0.33,0.035,6,18),mat(['#e84a7a','#f2c14e','#2f7fd0','#3fb27f'][i%4]));r.rotation.y=Math.PI/2;r.position.set(-w/2+0.13+i*(w-0.26)/9,0.34,0);g.add(r)}
+      const sk=new THREE.Mesh(new THREE.CylinderGeometry(0.33,0.33,w-0.1,16,1,true),new THREE.MeshStandardMaterial({color:'#e84a7a',transparent:true,opacity:0.55,side:THREE.DoubleSide}));sk.rotation.z=Math.PI/2;sk.position.set(0,0.34,0);g.add(sk);break}
+    case 'weave':{g.add(box(w,0.03,0.12,'#ddd',0,0.015,0));for(let i=0;i<6;i++){const u=-w/2+0.25+i*(w-0.5)/5;g.add(cyl(0.02,0.02,0.9,i%2?'#f2c14e':'#ffffff',u,0.45,0,8))}break}
+    case 'aframe':{for(const sg of[-1,1]){const p=box(1.3,0.05,d,'#2f7fd0',sg*0.55,0.55,0);p.rotation.z=-sg*0.95;g.add(p);const zone=box(0.45,0.055,d+0.01,'#f2c14e',sg*1.0,0.18,0);zone.rotation.z=-sg*0.95;g.add(zone)}break}
+    case 'seesaw':{g.add(box(0.2,0.3,0.3,'#7a7f86',0,0.15,0));const plank=new THREE.Group();plank.position.set(0,0.32,0);plank.add(box(w,0.05,0.32,'#f28a2e',0,0,0));for(const sg of[-1,1])plank.add(box(0.4,0.055,0.33,'#f2c14e',sg*(w/2-0.2),0,0));g.add(plank);it._fx={plank};break}
+    case 'beam':{g.add(box(w-0.8,0.05,0.28,'#c9944a',0,0.5,0));for(const sg of[-1,1]){const r=box(0.5,0.05,0.28,'#c9944a',sg*(w/2-0.2),0.25,0);r.rotation.z=sg*0.75;g.add(r)}for(const u of[-0.8,0.8])g.add(box(0.08,0.48,0.08,'#7a5232',u,0.24,0));break}
+    case 'hoop':{for(const sv of[-1,1])g.add(cyl(0.03,0.03,1.0,'#dddddd',0,0.5,sv*0.42,8));const r=new THREE.Mesh(new THREE.TorusGeometry(0.3,0.04,8,24),mat('#e84a4a'));r.rotation.y=Math.PI/2;r.position.set(0,0.62,0);g.add(r);g.add(box(0.04,0.04,0.86,'#dddddd',0,0.95,0));break}
+    case 'jumpbox':{g.add(box(w,0.5,d,'#9a6a3e',0,0.25,0));g.add(box(w-0.1,0.02,d-0.1,'#3fb27f',0,0.51,0));break}
+    case 'tirepull':{const t=new THREE.Mesh(new THREE.TorusGeometry(0.28,0.11,8,18),mat('#2a2a2a'));t.rotation.x=Math.PI/2;t.position.set(0.4,0.11,0);g.add(t);g.add(box(0.9,0.02,0.03,'#c9a227',-0.15,0.06,0));it._fx={tire:t};break}
+    case 'springpole':{g.add(cyl(0.05,0.06,2.0,'#7a7f86',0,1.0,0,8));g.add(box(0.7,0.05,0.05,'#7a7f86',0.3,1.98,0));const rope=new THREE.Group();rope.position.set(0.62,1.95,0);rope.add(cyl(0.02,0.02,1.1,'#d9c08a',0,-0.55,0,6));rope.add(sph(0.06,'#e84a4a',0,-1.12,0));g.add(rope);g.add(box(0.5,0.04,0.5,'#555',0,0.02,0));it._fx={rope};break}
+    case 'discmachine':{g.add(box(w,0.6,d,'#3fb27f',0,0.3,0));g.add(box(w*0.8,0.18,d*0.8,'#2a2a2a',0,0.69,0));const disc=new THREE.Mesh(new THREE.CylinderGeometry(0.14,0.14,0.02,16),mat('#f2c14e'));disc.position.set(0,0.8,0);g.add(disc);it._fx={disc};break}
+    case 'track':{const tr=new THREE.Mesh(new THREE.RingGeometry(1.15,1.65,40),mat('#c8644a'));tr.rotation.x=-Math.PI/2;tr.scale.set((w/2)/1.65,(d/2)/1.65,1);tr.position.y=0.006;g.add(tr);
+      for(const rr of[1.32,1.48]){const ln=new THREE.Mesh(new THREE.RingGeometry(rr-0.012,rr+0.012,48),mat('#ffffff'));ln.rotation.x=-Math.PI/2;ln.scale.copy(tr.scale);ln.position.y=0.008;g.add(ln)}
+      const inner=new THREE.Mesh(new THREE.CircleGeometry(1.15,40),mat('#5aa86a'));inner.rotation.x=-Math.PI/2;inner.scale.copy(tr.scale);inner.position.y=0.005;g.add(inner);break}
     case 'nosework':{
       const m0=box(w,0.03,d,c,0,0.015,0);m0.castShadow=false;g.add(m0);for(let i=0;i<18;i++){const t=box(0.08,0.05,0.08,pick(['#8fd18a','#5f9a5a','#f2c14e','#e87a5a']),rand(-w/2+0.08,w/2-0.08),0.05,rand(-d/2+0.08,d/2-0.08));t.rotation.y=rand(0,3);g.add(t)}break;}
     case 'cattower':{
@@ -2477,8 +2545,8 @@ function findFree(x,z){
   return{x:0,z:0};
 }
 function findYardSpot(){
-  if(!yard)return findFree(0,0);
-  for(let i=0;i<40;i++){const x=rand(yard.minx+0.6,yard.maxx-0.6),z=rand(yard.minz+0.6,yard.maxz-0.6);if(!solids.some(b=>inBox(x,z,b,0.4)))return{x,z}}
+  if(!yard)return findFree(0,0);const R0=yard.gym&&Math.random()<0.45?yard.gym:yard;
+  for(let i=0;i<40;i++){const x=rand(R0.minx+0.6,R0.maxx-0.6),z=rand(R0.minz+0.6,R0.maxz-0.6);if(!solids.some(b=>inBox(x,z,b,0.4)))return{x,z}}
   return{x:(yard.minx+yard.maxx)/2,z:(yard.minz+yard.maxz)/2};
 }
 function makeIntruder(){
@@ -2587,6 +2655,8 @@ function steer(a,tx,tz,spd,dt){
       if(!a.thruDoor&&Math.hypot(a.pos.x-near.x,a.pos.y-near.z)>0.25){tx=near.x;tz=near.z}else{a.thruDoor=true;tx=far.x;tz=far.z;a.detour=null}}
     else a.thruDoor=false;
   }
+  if(yard&&yard.gate&&!a.thruDoor&&!inRoom(a.pos.x,a.pos.y)){const pg=inGym(a.pos.x,a.pos.y),tg=inGym(rtx,rtz);
+    if(pg!==tg){const G=yard.gate,near=pg?G.in:G.out,far=pg?G.out:G.in;if(!a.thruGate&&Math.hypot(a.pos.x-near.x,a.pos.y-near.z)>0.3){tx=near.x;tz=near.z}else{a.thruGate=true;tx=far.x;tz=far.z;a.detour=null}}else a.thruGate=false}
   if(a.detour&&!a.thruDoor){if(a.detour.t>0){a.detour.t-=dt;tx=a.detour.x;tz=a.detour.z}else a.detour=null}
   let dx=tx-a.pos.x,dz=tz-a.pos.y;let dist=Math.hypot(dx,dz);
   if(dist<0.02&&(rtx!==tx||rtz!==tz)){dist=0.03}
@@ -2613,7 +2683,7 @@ function steer(a,tx,tz,spd,dt){
 function face(a,tx,tz,dt){const want=Math.atan2(tz-a.pos.y,tx-a.pos.x);let dh=want-a.heading;while(dh>Math.PI)dh-=Math.PI*2;while(dh<-Math.PI)dh+=Math.PI*2;a.heading+=dh*Math.min(1,dt*5)}
 
 /* ======================= DOG AI ======================= */
-const STATE_KO={idle:'쉬는 중',wander:'돌아다님',toWater:'물 마시러',drink:'물 마시는 중',toFood:'밥 먹으러',eat:'밥 먹는 중',waitFood:'밥 기다림',
+const STATE_KO={tag:'술래잡기 중',idle:'쉬는 중',wander:'돌아다님',toWater:'물 마시러',drink:'물 마시는 중',toFood:'밥 먹으러',eat:'밥 먹는 중',waitFood:'밥 기다림',
   toBed:'잠자리로',sleep:'자는 중',chase:'공 쫓는 중',carry:'공 가져가는 중',toLauncher:'놀고 싶어함',waitThrow:'공 기다림',toVoice:'목소리 쪽으로',listen:'귀 기울이는 중',alert:'침입자 경계!',sit:'앉아 있음',toPotty:'화장실 가는 중',doPotty:'볼일 보는 중',toTV:'TV 보러 가는 중',watchTV:'TV 보는 중',toBoard:'보드게임 하러 가는 중',playBoard:'🎲 보드게임 중',toSt:'케어 받으러 가는 중',atSt:'케어 중',toQuiz:'퀴즈 대회 가는 중',atQuiz:'🧩 퀴즈 푸는 중',toTM:'런닝머신 가는 중',onTM:'🏃 런닝머신 운동 중',eatTreat:'간식 먹는 중',fight:'싸우는 중!',scared:'겁먹고 피함',leave:'나가는 중',soccer:'⚽ 축구 중'};
 function tmEnds(){const it=dev.treadmill.it,r=it.rot||0,dirs=[[1,0],[0,1],[-1,0],[0,-1]],[ax,az]=dirs[r];const half=FURN.treadmill.w/2;
   // dog faces the console end (+local x); it climbs on from the back end
@@ -2726,7 +2796,7 @@ function updateDog(d,dt){
   if(!cat&&!d.stray&&world.voiceActive&&!['toVoice','listen','alert','sleep','scared','leave'].includes(d.state)&&!intruderActive()){setState(d,'toVoice',20)}
   if(yard&&!sl&&!inRoom(d.pos.x,d.pos.y))d.happy=clamp(d.happy+dt*0.04);
   if(world.music.on&&!d.stray){const G=MUSIC[world.music.genre];d.happy=clamp(d.happy+dt*G.hap*(sl?0.6:1));d.stamina=clamp(d.stamina+dt*G.sta*(sl?1.5:1))}
-  const walk=0.9*Math.sqrt(d.k),run=2.6*Math.sqrt(d.k);
+  const gymK=yard&&yard.gym&&inGym(d.pos.x,d.pos.y)?1.35:1,walk=0.9*Math.sqrt(d.k)*gymK,run=2.6*Math.sqrt(d.k)*gymK; // the playground makes dogs faster
   let moving=false,emo='',sit=false,lie=false,tongue=false;
   switch(d.state){
     case 'idle':if(d.think<=0)decide(d);break;
@@ -2816,18 +2886,43 @@ function updateDog(d,dt){
       if(dd<0.3||d.think<=0){removeStray(d);return}break}
     case 'toSt':{
       const S=d.st;if(!S||!stationOk(S)){setState(d,'idle',1);break}const sp=stationSpot(S),dist=steer(d,sp.x,sp.z,walk*1.25,dt);moving=true;
-      if(dist<0.18||(d.actT>8&&dist<0.7)){const D=STDEF[S.type];if(D.start&&!D.start(d)){setState(d,'idle',1);break}setState(d,'atSt',rand(D.dur[0],D.dur[1]));d.st=S;d.stPh=Math.random()*6}
+      if(dist<0.18||(d.actT>8&&dist<0.7)){const D=STDEF[S.type];if(D.start&&!D.start(d)){setState(d,'idle',1);break}setState(d,'atSt',rand(D.dur[0],D.dur[1]));d.st=S;d.stPh=Math.random()*6;d.pathS=0}
       else if(d.think<=0)setState(d,'idle',1);break}
     case 'atSt':{
       const S=d.st;if(!S||!stationOk(S)){setState(d,'idle',1);break}const D=STDEF[S.type];
       if(d.pee>90||d.poo>90||(S.type!=='medic'&&(d.thirst>92||d.hunger>92))||intruderActive()){setState(d,'idle',0.2);break}
-      if(D.run){const f=FURN[S.type],r=S.it.rot||0,a=world.t*1.6+d.stPh,ex=(r%2?f.d:f.w)/2-0.35,ez=(r%2?f.w:f.d)/2-0.3;const tx=S.x+Math.cos(a)*ex,tz=S.z+Math.sin(a)*ez;steer(d,tx,tz,run*0.85,dt);moving=true;tongue=true;
+      if(D.path){const f=FURN[S.type],r=S.it.rot||0,th=-r*Math.PI/2,P0=D.path(d,f,(d.pathS=(d.pathS||0)+dt*run*0.8),S),sp=P0.run*run+(1-P0.run)*walk;
+        const wx=S.x+P0.u*Math.cos(th)+P0.v*Math.sin(th),wz=S.z-P0.u*Math.sin(th)+P0.v*Math.cos(th),ox=d.pos.x,oz=d.pos.y,k=Math.min(1,dt*12);d.pos.set(ox+(wx-ox)*k,oz+(wz-oz)*k);
+        const mvx=d.pos.x-ox,mvz=d.pos.y-oz;if(Math.hypot(mvx,mvz)>1e-4){const want=Math.atan2(mvz,mvx);let dh=want-d.heading;while(dh>Math.PI)dh-=Math.PI*2;while(dh<-Math.PI)dh+=Math.PI*2;d.heading+=dh*Math.min(1,dt*10)}
+        d.speed=sp;moving=true;d.lift=P0.lift||0;tongue=P0.run>0.6}
+      else if(D.run){const f=FURN[S.type],r=S.it.rot||0,a=world.t*1.6+d.stPh,ex=(r%2?f.d:f.w)/2-0.35,ez=(r%2?f.w:f.d)/2-0.3;const tx=S.x+Math.cos(a)*ex,tz=S.z+Math.sin(a)*ez;steer(d,tx,tz,run*0.85,dt);moving=true;tongue=true;
         d.lift=Math.max(0,Math.sin(a*4))*0.12} // jumps over the hurdles as it laps the course
       else if(D.swim){const f=FURN[S.type],r=S.it.rot||0,a=world.t*0.9+d.stPh,ex=(r%2?f.d:f.w)/2-0.3,ez=(r%2?f.w:f.d)/2-0.25;steer(d,S.x+Math.cos(a)*ex,S.z+Math.sin(a)*ez,walk*0.8,dt);moving=true;d.lift=0.02+Math.sin(performance.now()/300+d.id)*0.015} // paddling round the pool
       else if(D.lift!=null){d.pos.set(S.x+(D.dig?Math.sin(d.stPh)*0.2:0),S.z+(D.dig?Math.cos(d.stPh)*0.2:0));d.lift=typeof D.lift==='function'?D.lift(d):D.lift;const r=S.it.rot||0;d.heading=[Math.PI/2,Math.PI,-Math.PI/2,0][r]+Math.PI;if(D.lie)lie=true;else if(D.sit)sit=true}
       else{const sp=stationSpot(S);if(sp.face)face(d,sp.face.x,sp.face.z,dt);if(D.sit)sit=true}
       D.use(d,dt);if(D.power&&D.per)pay(S.type,dt*D.per);emo=D.emo;if(arcHold(d))d.think=Math.max(d.think,0.3);
       if(d.think<=0){D.done&&D.done(d);setState(d,'idle',rand(2,4))}break}
+    case 'tag':{
+      const T=world.tag;if(!T||!T.on||!T.players.includes(d.id)){setState(d,'idle',rand(1,3));break}
+      if(d.stamina<10||d.pee>92||d.poo>92||d.thirst>92||intruderActive()){tagLeave(d,d.stamina<10?'지쳐서':'볼일이 급해서');setState(d,'idle',rand(2,4));break}
+      const A=T.area,inA=(x,z)=>x>A.minx&&x<A.maxx&&z>A.minz&&z<A.maxz,spdK=0.85+((d.skills&&d.skills.spd)||50)/400;tongue=true;
+      if(T.freeze&&T.freeze.id===d.id&&world.t<T.freeze.until){face(d,d.pos.x+Math.cos(d.heading),d.pos.y+Math.sin(d.heading),dt);emo='😵';sit=false;break}
+      if(T.it===d.id){T.itSec[d.id]=(T.itSec[d.id]||0)+dt;emo='😈';
+        let tg=null,bd=1e9;for(const id of T.players){if(id===d.id||(T.noBack&&T.noBack.id===id&&T.noBack.from===d.id&&world.t<T.noBack.until))continue;const o=dogs.find(x=>x.id===id);if(!o)continue;const dd=Math.hypot(o.pos.x-d.pos.x,o.pos.y-d.pos.y);if(dd<bd){bd=dd;tg=o}}
+        if(!tg){steer(d,(A.minx+A.maxx)/2,(A.minz+A.maxz)/2,walk,dt);moving=true;break}
+        steer(d,tg.pos.x,tg.pos.y,run*spdK*1.12,dt);moving=true;d.stamina=clamp(d.stamina-dt*0.25);
+        if(bd<0.25+d.r+tg.r){T.it=tg.id;T.tags[d.id]=(T.tags[d.id]||0)+1;T.caught++;T.noBack={id:d.id,from:tg.id,until:world.t+0.12};T.freeze={id:tg.id,until:world.t+0.05};d.root.userData.barkPulse=1;
+          if(soundOn&&speed<=4)blip(880,0.05,0.04);if(!world.fastNow&&(T.caught<=3||Math.random()<0.25))log(`🏃 ${d.name}${josa(d.name,'이','가')} ${tg.name}${josa(tg.name,'을','를')} 잡았어요! 이제 ${tg.name}${josa(tg.name,'이','가')} 술래 😈`,'',true);if(camMode==='follow'&&T.watch)followId=tg.id}
+      }else{const it=dogs.find(x=>x.id===T.it);emo='😆';
+        if(!inA(d.pos.x,d.pos.y)){steer(d,(A.minx+A.maxx)/2,(A.minz+A.maxz)/2,run*0.8,dt);moving=true;break}
+        const dx=it?d.pos.x-it.pos.x:0,dz=it?d.pos.y-it.pos.y:0,dd=Math.hypot(dx,dz)||1;
+        if(!it||dd>4.5){if(!d.tagWp||Math.hypot(d.tagWp.x-d.pos.x,d.tagWp.z-d.pos.y)<0.4)d.tagWp={x:rand(A.minx+0.6,A.maxx-0.6),z:rand(A.minz+0.6,A.maxz-0.6)};steer(d,d.tagWp.x,d.tagWp.z,walk*1.4,dt);moving=true;d.stamina=clamp(d.stamina-dt*0.08)}
+        else{let ax=dx/dd,az=dz/dd;const look=1.6,px=d.pos.x+ax*look,pz=d.pos.y+az*look;
+          if(px<A.minx+0.5||px>A.maxx-0.5){ax=0;az=az>=0?1:-1;if(d.pos.y>A.maxz-1.2)az=-1;else if(d.pos.y<A.minz+1.2)az=1}
+          if(pz<A.minz+0.5||pz>A.maxz-0.5){az=0;ax=(ax>=0?1:-1)||1;if(d.pos.x>A.maxx-1.2)ax=-1;else if(d.pos.x<A.minx+1.2)ax=1}
+          const j=Math.sin(world.t*7+d.id)*0.5,tx=clamp(d.pos.x+(ax-az*j)*2,A.minx+0.4,A.maxx-0.4),tz=clamp(d.pos.y+(az+ax*j)*2,A.minz+0.4,A.maxz-0.4);
+          steer(d,tx,tz,run*spdK*0.9,dt);moving=true;d.stamina=clamp(d.stamina-dt*0.2)}}
+      d.happy=clamp(d.happy+dt*0.15);break}
     case 'toQuiz':{
       const Q=world.quiz;if(!Q||!Q.on||!Q.seat[d.id]){setState(d,'idle',1);break}const st=Q.seat[d.id],dist=steer(d,st.x,st.z,walk*1.3,dt);moving=true;
       if(dist<0.2||(d.actT>8&&dist<1.0))setState(d,'atQuiz',9999);break}
@@ -6619,6 +6714,18 @@ const STDEF={
     done:d=>arcadeDone(d)},
   claw:{lab:'🧸 인형 뽑기 중',dur:[2,4],front:0.42,cap:1,power:'claw',per:0.2,emo:'🤞',want:d=>(world.arcOnly||d.happy<82)&&d.age>=0.5&&world.t-(d.lastClaw??-1e9)>(world.arcOnly?60:240)&&coinOk(1000)?(world.arcOnly?0.3:0.1):0,
     start:d=>coinPay(1000,'claw'),use:(d,dt)=>{d.happy=clamp(d.happy+dt*0.4)},done:d=>clawDone(d)},
+  hurdle:gymSt('🚧 허들 넘는 중','🏃',{spd:1,rea:0.5},(d,f,s)=>{const R=f.w/2+0.4,u=pp(s,R);return {u,v:0,lift:Math.max(...[-0.8,0,0.8].map(b=>Math.max(0,1-Math.abs(u-b)/0.28)))*0.38,run:1}}),
+  tunnel:gymSt('🌈 터널 통과 중','😆',{rea:0.6,dri:0.5},(d,f,s)=>{const R=f.w/2+0.5,u=pp(s,R);return {u,v:0,lift:0,run:1,duck:Math.abs(u)<f.w/2}}),
+  weave:gymSt('🎌 위브 폴 지그재그','🌀',{dri:0.8,rea:0.5},(d,f,s)=>{const R=f.w/2+0.3,u=pp(s,R);return {u,v:Math.sin((u+f.w/2)/((f.w-0.5)/5)*Math.PI)*0.17,lift:0,run:0.7}}),
+  aframe:gymSt('🔺 A-프레임 오르는 중','💪',{sta:0.7,spd:0.4},(d,f,s)=>{const R=f.w/2+0.3,u=pp(s,R);return {u,v:0,lift:Math.max(0,1-Math.abs(u)/(f.w/2))*1.05,run:0.5}}),
+  seesaw:gymSt('⚖ 시소 건너는 중','😮',{rea:0.9},(d,f,s,S)=>{const R=f.w/2-0.1,u=pp(s,R),tl=clamp(u/R,-1,1)*0.24;if(S.it._fx&&S.it._fx.plank)S.it._fx.plank.rotation.z=-tl;return {u,v:0,lift:Math.max(0.04,0.35-u*Math.sin(tl)),run:0.3}}),
+  beam:gymSt('🪵 평균대 걷는 중','🧐',{rea:0.8},(d,f,s)=>{const R=f.w/2-0.05,u=pp(s,R),a=Math.abs(u),top=f.w/2-0.4;return {u,v:0,lift:a<top?0.52:Math.max(0,0.52*(1-(a-top)/0.4)),run:0.3}}),
+  hoop:gymSt('⭕ 점프 링 통과 중','🤸',{spd:0.6,rea:0.6},(d,f,s)=>{const u=pp(s,1.3);return {u,v:0,lift:Math.max(0,1-Math.abs(u)/0.55)*0.5,run:1}}),
+  jumpbox:gymSt('🟫 점프 박스 뛰는 중','⬆',{spd:0.8},(d,f,s)=>{const c=Math.sin(s*1.4);return {u:c>0?0:-0.85,v:0,lift:c>0?0.5+Math.max(0,Math.sin(s*5))*0.12:0,run:0.4}}),
+  tirepull:gymSt('🛞 타이어 끄는 중','😤',{sta:1.1},(d,f,s,S)=>{const u=pp(s*0.5,0.7)-0.1;if(S.it._fx&&S.it._fx.tire)S.it._fx.tire.position.x=u+0.55;return {u,v:0,lift:0,run:0.15}}),
+  springpole:gymSt('🪢 스프링 폴 매달리는 중','😬',{sta:0.8,spd:0.3},(d,f,s,S)=>{if(S.it._fx&&S.it._fx.rope)S.it._fx.rope.rotation.z=Math.sin(s*3)*0.35;return {u:0.62,v:0.25,lift:Math.max(0,Math.sin(s*2.2))*0.55,run:0.2}}),
+  discmachine:gymSt('🥏 원반 받기 중','🥏',{rea:0.8,gk:0.6},(d,f,s,S)=>{const t=pp(s,1.6)+1.6;if(S.it._fx&&S.it._fx.disc){S.it._fx.disc.rotation.y+=0.3;S.it._fx.disc.visible=t<0.5}return {u:0,v:0.6+t,lift:t>3?Math.max(0,1-Math.abs(t-3.1)/0.15)*0.45:0,run:1}}),
+  track:gymSt('🏃 트랙 도는 중','💨',{sta:1,spd:0.6},(d,f,s)=>{const a=s/((f.w+f.d)/2.2)+d.stPh;return {u:Math.cos(a)*(f.w/2-0.35),v:Math.sin(a)*(f.d/2-0.35),lift:0,run:1,face:true}},2),
   nosework:{lab:'🧠 노즈워크 중',dur:[5,10],lift:0.02,sit:true,cap:2,emo:'👃',want:d=>d.happy<85&&d.stamina>25?0.12:0,
     use:(d,dt)=>{d.happy=clamp(d.happy+dt*0.8);d.hunger=clamp(d.hunger-dt*0.4);if(d.skills)d.skills.rea=Math.min(99,(d.skills.rea||50)+dt*0.015);if(d.root&&Math.random()<dt*2)d.root.userData.barkPulse=0.4}},
   cattower:{lab:'🐈 캣타워에서 쉬는 중',dur:[8,20],lift:d=>d.species==='cat'?1.43:0.58,sit:true,cap:2,emo:'😺',want:d=>d.species==='cat'?(d.stamina<80||d.happy<85?0.35:0.1):(d.age<2&&d.happy<70?0.04:0),
@@ -6634,7 +6741,7 @@ const STDEF={
   fountain:{lab:'⛲ 분수에서 물 마시는 중',dur:[2,4],front:0.55,cap:3,emo:'💧',want:d=>d.thirst>40?0.5:d.happy<60&&!isNight()?0.06:0,
     use:(d,dt)=>{d.thirst=clamp(d.thirst-dt*12);d.happy=clamp(d.happy+dt*0.6)}},
 };
-const STATION_ORDER=['medic','petfountain','fountain','snackbar','petsofa','shade','cattower','bath','train','pool','agility','sandpit','claw','arcade','nosework','groom','toybox'];
+const STATION_ORDER=['medic','petfountain','fountain','snackbar','petsofa','shade','cattower','bath','train','pool','agility','sandpit','track','hurdle','tunnel','weave','aframe','seesaw','beam','hoop','jumpbox','tirepull','springpole','discmachine','claw','arcade','nosework','groom','toybox'];
 function stationSpot(S){const D=STDEF[S.type],r=S.it.rot||0,[fx,fz]=[[0,1],[-1,0],[0,-1],[1,0]][r];if(!D.front)return {x:S.x,z:S.z};if(D.front<0){const k=S.users;return {x:S.x+(k-1)*0.45*(fz?1:0),z:S.z+(k-1)*0.45*(fx?1:0)}}const f=FURN[S.type],half=(fx?f.w:f.d)/2;const k=S.users;return {x:S.x+fx*(half+D.front)+(fz?(k-0.5)*0.4:0),z:S.z+fz*(half+D.front)+(fx?(k-0.5)*0.4:0),face:{x:S.x,z:S.z}}}
 function stationOk(S){const D=STDEF[S.type];return !D.power||hasPower()}
 function stationFor(d){
@@ -6643,7 +6750,7 @@ function stationFor(d){
     const S=L.filter(x=>x.users<(D.cap||1)).sort((a,b)=>Math.hypot(a.x-d.pos.x,a.z-d.pos.y)-Math.hypot(b.x-d.pos.x,b.z-d.pos.y))[0];if(S)return S}
   return null;
 }
-function stationRelease(d){if(d.st){d.st.users=Math.max(0,d.st.users-1);d.st=null}}
+function stationRelease(d){if(d.st){const D=STDEF[d.st.type];if(D&&(D.path||D.lift!=null))d.lift=0;d.st.users=Math.max(0,d.st.users-1);d.st=null}}
 // station visuals (bubbles, lamp, water jets, cool air)
 function stationFx(rdt){
   if(!dev.st&&!dev.aircon)return;const t=performance.now()/1000;
@@ -6800,6 +6907,49 @@ const ARC_KEYMAP={' ':'act',ArrowUp:'act',ArrowDown:'act',Enter:'act',ArrowLeft:
 window.addEventListener('keydown',e=>{if(!ARC||ARC.over||ARC.ctrl!=='user'||$('#arcOv').hidden||/INPUT|SELECT|TEXTAREA/.test(e.target.tagName||''))return;const k=ARC_KEYMAP[e.key];if(!k)return;e.preventDefault();e.stopImmediatePropagation();if(k==='act'){if(!e.repeat)arcKeys.act=true}else arcKeys[k]=true},true);
 window.addEventListener('keyup',e=>{if(!ARC)return;const k=ARC_KEYMAP[e.key];if(k&&k!=='act'){arcKeys[k]=false;e.stopImmediatePropagation()}},true);
 
+
+/* ---------- tag (술래잡기) ---------- */
+let tagUIT=0;
+function tagArea(where){const g=yard&&yard.gym,yb=yard&&(yard.base||yard),day=!isNight();
+  if(where==='gym'&&g)return {r:g,n:'🏟 운동장'};if(where==='yard'&&yb)return {r:yb,n:'마당'};if(where==='room')return {r:{minx:-W/2+0.4,maxx:W/2-0.4,minz:-D/2+0.4,maxz:D/2-0.4},n:'집 안'};
+  if(g&&day)return {r:g,n:'🏟 운동장'};if(yb&&day)return {r:yb,n:'마당'};return {r:{minx:-W/2+0.4,maxx:W/2-0.4,minz:-D/2+0.4,maxz:D/2-0.4},n:'집 안'}}
+function tagCan(d){return boardCan(d)&&!d.fight&&d.stamina>35&&d.age>=0.5&&!['toSt','atSt','toQuiz','atQuiz','toBoard','atBoard','tm','toTm'].includes(d.state)}
+function startTag(n,where,dur,byAI){
+  if(world.tag&&world.tag.on){toast('이미 술래잡기 중이에요',true);return false}if(field||match||world.arena){toast('지금은 술래잡기를 할 수 없어요',true);return false}
+  const pool=dogs.filter(tagCan).sort(()=>Math.random()-0.5);if(pool.length<2){if(!byAI)toast('술래잡기를 할 수 있는 강아지가 2마리 이상 있어야 해요 (체력 35 이상, 깨어 있음)',true);return false}
+  const P=pool.slice(0,Math.min(n,pool.length)),ar=tagArea(where),it=pick(P);
+  world.tag={on:true,players:P.map(d=>d.id),it:it.id,t:0,dur,tags:{},itSec:{},caught:0,area:ar.r,where:ar.n,byAI:!!byAI,watch:false,noBack:null,freeze:null};
+  P.forEach(d=>{stationRelease(d);d.tagWp=null;setState(d,'tag',9999)});
+  log(`🏃 ${byAI?'🤖 ':''}술래잡기 시작! ${P.map(d=>d.name).join(', ')} · 장소: ${ar.n} · 첫 술래 😈 ${it.name}`,'good');tagUI(true);return true}
+function tagLeave(d,why){const T=world.tag;if(!T)return;T.players=T.players.filter(x=>x!==d.id);if(!world.fastNow)log(`🏃 ${d.name}${josa(d.name,'이','가')} ${why} 술래잡기에서 빠졌어요`,'',true);
+  if(T.it===d.id&&T.players.length){T.it=pick(T.players);const n=dogs.find(x=>x.id===T.it);if(n&&!world.fastNow)log(`😈 새 술래는 ${n.name}`,'',true)}}
+function endTag(why){const T=world.tag;if(!T||!T.on)return;T.on=false;const ids=Object.keys(T.itSec).map(Number).concat(T.players);const all=[...new Set(ids)].map(id=>dogs.find(d=>d.id===id)).filter(Boolean);
+  const best=all.slice().sort((a,b)=>(T.tags[b.id]||0)-(T.tags[a.id]||0))[0],longest=all.slice().sort((a,b)=>(T.itSec[b.id]||0)-(T.itSec[a.id]||0))[0];
+  for(const d of all){d.happy=clamp(d.happy+12+(best===d&&(T.tags[d.id]||0)>0?6:0));if(d.skills){d.skills.spd=Math.min(99,(d.skills.spd||40)+0.3);d.skills.sta=Math.min(99,(d.skills.sta||40)+0.3)}
+    const st=(world.tagStats=world.tagStats||{})[d.id]=world.tagStats[d.id]||{name:d.name,games:0,tags:0};st.name=d.name;st.games++;st.tags+=T.tags[d.id]||0;
+    if(d.state==='tag')setState(d,'idle',rand(2,4))}
+  world.tagLast={n:all.length,caught:T.caught,best:best&&(T.tags[best.id]||0)?`${best.name} ${T.tags[best.id]}번`:'',longest:longest?`${longest.name} ${Math.round(T.itSec[longest.id]||0)}분`:'',where:T.where};
+  log(`🏃 술래잡기 끝!${why?` (${why})`:''} 잡기 ${T.caught}번${world.tagLast.best?` · 가장 많이 잡은 강아지 🏆 ${world.tagLast.best}`:''}${world.tagLast.longest?` · 가장 오래 술래 😈 ${world.tagLast.longest}`:''} · 모두 행복도 +12, 속도·지구력 ↑`,'good');
+  world.tagCool=world.t+180;$('#tagHud').hidden=true;tagUI(true)}
+function tagStep(h){const T=world.tag;
+  if(T&&T.on){T.t+=h;T.players=T.players.filter(id=>{const d=dogs.find(x=>x.id===id);return d&&!d.dead&&d.state==='tag'});if(!T.players.includes(T.it)&&T.players.length)T.it=pick(T.players);
+    if(T.t>=T.dur)endTag();else if(T.players.length<2)endTag('같이 놀 강아지가 모자라요')}
+  else if($('#tagAuto')&&$('#tagAuto').checked&&careMode==='auto'&&!world.fastNow&&!isNight()&&world.t>(world.tagCool||0)&&!field&&!match&&!world.arena&&Math.random()<h/240){
+    const pool=dogs.filter(d=>tagCan(d)&&d.happy<88);if(pool.length>=3)startTag(Math.min(5,pool.length),'auto',60,true)}}
+function tagFx(rdt){const T=world&&world.tag,hud=$('#tagHud');if(!hud)return;
+  if(!T||!T.on||$('#sim').hidden){if(!hud.hidden)hud.hidden=true;return}
+  tagUIT-=rdt;if(tagUIT>0)return;tagUIT=0.4;const it=dogs.find(d=>d.id===T.it),left=Math.max(0,T.dur-T.t);
+  hud.hidden=false;hud.textContent=`🏃 술래잡기 · ${T.where} · 술래 😈 ${it?it.name:'-'} · 잡기 ${T.caught}번 · 남은 시간 ${Math.floor(left/60)?Math.floor(left/60)+'시간 ':''}${Math.round(left%60)}분`;
+  if(T.watch&&camMode==='follow'&&followId!==T.it)followId=T.it;tagUI()}
+function tagUI(force){if(!$('#tagList'))return;const T=world.tag,on=T&&T.on;
+  $('#tagTag').textContent=on?`${T.players.length}마리 노는 중`:'쉬는 중';$('#tagStart').hidden=!!on;$('#tagStop').hidden=!on;$('#tagWatch').disabled=!on;
+  const html=on?T.players.map(id=>{const d=dogs.find(x=>x.id===id);if(!d)return '';return `<li><b>${T.it===id?'😈':'😆'} ${esc(d.name)}${T.it===id?' (술래)':''}</b><span class="small">잡기 ${T.tags[id]||0}번 · 체력 ${Math.round(d.stamina)}</span></li>`}).join('')
+    :Object.values(world.tagStats||{}).sort((a,b)=>b.tags-a.tags).slice(0,6).map((st,i)=>`<li><b>${i===0?'🏆':'🐾'} ${esc(st.name)}</b><span class="small">${st.games}판 · 잡기 ${st.tags}번</span></li>`).join('')||'<li class="muted">아직 술래잡기를 한 적이 없어요</li>';
+  const ul=$('#tagList');if(force||ul.dataset.h!==html){ul.dataset.h=html;ul.innerHTML=html}
+  if(world.tagLast&&!on){const L=world.tagLast;$('#tagLast').textContent=`지난 판: ${L.where} · ${L.n}마리 · 잡기 ${L.caught}번${L.best?` · 🏆 ${L.best}`:''}${L.longest?` · 😈 오래 술래 ${L.longest}`:''}`}}
+$('#tagStart').onclick=()=>{ac();if(!world)return;const v=$('#tagN').value;startTag(+v,$('#tagWhere').value,+$('#tagDur').value,false)};
+$('#tagStop').onclick=()=>{endTag('그만하기')};
+$('#tagWatch').onclick=()=>{const T=world.tag;if(!T||!T.on)return;T.watch=true;if(player.spect)stopSpectate();followId=T.it;setCamMode('follow');markFollowCards()};
 /* ---------- arcade-only mode ---------- */
 let layoutPrevArc=null;
 function arcHallLayout(nA,nC){let id=1;const W=Math.max(12,nA*1.0+4,nC*1.15+5),D=10,it=[];const add=(type,x,z,rot)=>it.push({id:id++,type,x,z,rot:rot||0});
@@ -6820,6 +6970,31 @@ function startArcadeOnly(){
   log(`🕹 오락실 오픈! 게임기 ${$('#aoArc').value}대 · 인형 뽑기 ${$('#aoClaw').value}대${n?` · 강아지 ${n}마리`:''}. '🎮 오락실 · 인형 뽑기' 패널에서 직접 할 수도 있어요`,'good');
   arcUI(true);setTimeout(()=>{const p=$('#arcPanel');if(p)p.scrollIntoView({block:'nearest'})},900);
 }
+
+/* ---------- dog playground (강아지 운동장) ---------- */
+const GYM_SET=['track','hurdle','tunnel','weave','aframe','seesaw','beam','hoop','jumpbox','tirepull','springpole','discmachine'];
+function pp(s,R){const L=R*2,m=((s%(2*L))+2*L)%(2*L);return m<L?-R+m:R-(m-L)} // ping-pong distance along -R..R
+function gymSt(lab,emo,sk,path,cap){return {lab,dur:[5,10],front:0.45,cap:cap||1,emo,gym:true,path,
+  want:d=>d.stamina>45&&d.age>=0.5&&!isNight()?(inGym(d.pos.x,d.pos.y)?0.35:0.06):0,
+  use:(d,dt)=>{d.stamina=clamp(d.stamina-dt*0.35);d.happy=clamp(d.happy+dt*0.6);d.health=clamp(d.health+dt*0.03);if(d.skills)for(const k in sk)d.skills[k]=Math.min(99,(d.skills[k]||40)+dt*0.004*sk[k])},
+  done:d=>{if(!world.fastNow&&Math.random()<0.25)log(`🏟 ${d.name}${josa(d.name,'이','가')} ${lab.replace(/ 중$/,'')}를 마쳤어요 (실력 ↑)`,'',true)}}}
+function gymItems(){
+  if(!yard||!yard.gym)return [];const G=yard.gym,side=yard.side,alongX=side==='s'||side==='n',W0=alongX?G.maxx-G.minx:G.maxz-G.minz,D0=alongX?G.maxz-G.minz:G.maxx-G.minx;
+  const toW=(u,v)=>{const cu=-W0/2+u,cv=-D0/2+v;if(alongX)return {x:(G.minx+G.maxx)/2+cu,z:side==='s'?G.minz+v:G.maxz-v};return {x:side==='e'?G.minx+v:G.maxx-v,z:(G.minz+G.maxz)/2+cu}};
+  const taken=layout.items.filter(i=>!FURN[i.type].wall).map(i=>{const f=foot(i);return {minx:i.x-f.w/2-0.4,maxx:i.x+f.w/2+0.4,minz:i.z-f.d/2-0.4,maxz:i.z+f.d/2+0.4}});
+  const out=[];let id=900000,u=1.0,v=1.2,rowD=0;const mx=1.0,gap=1.0;
+  for(const t of GYM_SET.slice().sort((a,b)=>FURN[b].w-FURN[a].w)){const f=FURN[t];
+    if(u+f.w>W0-mx){u=1.0;v+=rowD+1.5;rowD=0}if(v+f.d>D0-0.6||f.w>W0-2*mx)continue;
+    const p=toW(u+f.w/2,v+f.d/2),rot=alongX?(side==='s'?0:2):(side==='e'?3:1);const fw=alongX?f.w:f.d,fd=alongX?f.d:f.w;
+    const bx={minx:p.x-fw/2,maxx:p.x+fw/2,minz:p.z-fd/2,maxz:p.z+fd/2};
+    if(!taken.some(b=>b.minx<bx.maxx&&b.maxx>bx.minx&&b.minz<bx.maxz&&b.maxz>bx.minz))out.push({id:id++,type:t,x:p.x,z:p.z,rot:alongX?0:1,gym:true});
+    u+=f.w+gap;rowD=Math.max(rowD,f.d)}
+  return out}
+function gymStep(h){
+  if(!yard||!yard.gym)return;let n=0;
+  for(const d of dogs){if(d.dead||d.stray||d.enemy||d.away||d.lion||!d.speed)continue;if(!inGym(d.pos.x,d.pos.y))continue;n++;
+    const runK=d.speed>1.6*Math.sqrt(d.k)?2:1;d.health=clamp(d.health+h*0.02*runK);d.happy=clamp(d.happy+h*0.035*runK);if(d.skills&&runK>1)d.skills.sta=Math.min(99,(d.skills.sta||40)+h*0.0015)}
+  world.gymNow=n}
 function kennelWalls(it){return []} // a dog kennel is walk-in (the opening faces forward), so it does not block movement
 
 /* ---------- home location: meadow, beach, highland, forest, desert, snow, river, island, city ---------- */
@@ -7021,7 +7196,7 @@ function careAuto(live,aH,aS,aHe){
 
 /* ======================= CONSTRUCTION during the simulation ======================= */
 // price (won) and build time (game minutes) for each piece of furniture
-const BUILD={arcade:[120000,60],claw:[100000,45],quiz:[90000,60],speaker:[45000,15],smartlight:[30000,15],thermo:[40000,20],whitenoise:[25000,10],security:[150000,60],pawwash:[70000,45],petfountain:[25000,15],nosework:[15000,10],cattower:[60000,60],petsofa:[50000,30],pool:[200000,240],shade:[40000,40],sandpit:[30000,60],solar:[300000,180],train:[80000,90],sofa:[60000,90],bed:[80000,120],table:[30000,45],shelf:[40000,60],tv:[120000,60],plant:[8000,15],dogbed:[15000,20],rug:[12000,15],
+const BUILD={track:[150000,90],hurdle:[30000,15],tunnel:[40000,15],weave:[25000,15],aframe:[60000,30],seesaw:[45000,20],beam:[35000,20],hoop:[20000,10],jumpbox:[25000,10],tirepull:[20000,10],springpole:[40000,20],discmachine:[70000,30],arcade:[120000,60],claw:[100000,45],quiz:[90000,60],speaker:[45000,15],smartlight:[30000,15],thermo:[40000,20],whitenoise:[25000,10],security:[150000,60],pawwash:[70000,45],petfountain:[25000,15],nosework:[15000,10],cattower:[60000,60],petsofa:[50000,30],pool:[200000,240],shade:[40000,40],sandpit:[30000,60],solar:[300000,180],train:[80000,90],sofa:[60000,90],bed:[80000,120],table:[30000,45],shelf:[40000,60],tv:[120000,60],plant:[8000,15],dogbed:[15000,20],rug:[12000,15],
   water:[50000,60],food:[10000,15],launcher:[45000,60],potty:[70000,90],treadmill:[90000,120],farm:[250000,360],
   bath:[120000,150],medic:[300000,240],groom:[60000,60],toybox:[20000,20],snackbar:[50000,45],kennel:[40000,60],aircon:[150000,120],purifier:[60000,30],agility:[100000,180],fountain:[80000,120]};
 let buildPick=null;
@@ -7164,7 +7339,7 @@ function loadSave(txt){
   $('#log').innerHTML='';speed=1;clearInterval(musicIv);musicIv=0;const mOn=world.music.on;world.music.on=false;if(mOn)setMusic(true);else musicUI();
   const tOn=world.tv&&world.tv.on;if(world.tv){world.tv.on=false;if(tOn&&tvs.length)setTV(true)}
   followId=dogs[0]?dogs[0].id:1;world.cardsDirty=true;buildDogCards();renderEvents();setCamMode('free');buildSpeedSeg();
-  if(world.quiz)world.quiz.on=false;world.trainQ=world.trainQ||[];ARC=null;arcPrev=new Set();arcAskD=null;$('#arcOv').hidden=true;$('#arcAsk').hidden=true;if(world.war){const ah=world.war.houses.find(x=>x.id===world.war.active);if(ah&&houseLoc(ah)!==locNow)applyLoc(houseLoc(ah))}
+  if(world.quiz)world.quiz.on=false;if(world.tag)world.tag.on=false;world.trainQ=world.trainQ||[];ARC=null;arcPrev=new Set();arcAskD=null;$('#arcOv').hidden=true;$('#arcAsk').hidden=true;if(world.war){const ah=world.war.houses.find(x=>x.id===world.war.active);if(ah&&houseLoc(ah)!==locNow)applyLoc(houseLoc(ah))}
   if(!world.ai)aiInit();if(S.careMode)applyMode(S.careMode,false);setTimeout(()=>{warUI();careUI();buildUI();boardUI()},0);
   log(`📂 저장한 게임을 불러왔어요 · ${saveSummary(S.meta)}`,'good');toast('📂 이어서 시작해요!',false,true);
   running=true;lastT=performance.now();ac();balanceStart();
@@ -7325,7 +7500,7 @@ function boardMesh(k,x,z){
 const BG_COL=['#d4473a','#2f7fd0','#2e9a6a','#f2c14e'],BG_MAX=6;let bgSeq=1,bgWatch=null;
 function bgList(){if(!world.bgs)world.bgs=[];return world.bgs}
 function boardOf(d){return bgList().find(G=>G.on&&G.seats[d.id])||null}
-function boardCan(d){return !(world.quiz&&world.quiz.on&&world.quiz.players.includes(d.id))&&!d.away&&!d.dead&&!d.stray&&!d.enemy&&!d.fight&&!d.lion&&!d.sc&&d.root.visible!==false&&d.state!=='sleep'&&d.age>=0.3&&d.pee<80&&d.thirst<80&&d.hunger<85}
+function boardCan(d){return !(world.quiz&&world.quiz.on&&world.quiz.players.includes(d.id))&&!(world.tag&&world.tag.on&&world.tag.players.includes(d.id))&&!d.away&&!d.dead&&!d.stray&&!d.enemy&&!d.fight&&!d.lion&&!d.sc&&d.root.visible!==false&&d.state!=='sleep'&&d.age>=0.3&&d.pee<80&&d.thirst<80&&d.hunger<85}
 function boardInit(G){
   const k=G.game,st={};
   if(k==='yut'||k==='ludo'){st.pos={};G.order.forEach(id=>st.pos[id]=0)}
@@ -7451,7 +7626,7 @@ function boardAuto(live){
 let lastT=performance.now(),uiT=0;
 function frame(now){
   requestAnimationFrame(frame);if(!running)return;
-  const realDt=Math.min(0.1,(now-lastT)/1000);lastT=now;musicFx(realDt);stationFx(realDt);smartFx();locFx(realDt);arcFx(realDt);camNavStep(realDt);if(!paused)autoSaveTick(realDt);
+  const realDt=Math.min(0.1,(now-lastT)/1000);lastT=now;musicFx(realDt);stationFx(realDt);smartFx();locFx(realDt);arcFx(realDt);camNavStep(realDt);tagFx(realDt);if(!paused)autoSaveTick(realDt);
   if(!$('#warMap').hidden){mapT-=realDt;if(mapT<=0){mapT=1;renderMap()}}
   if(NET.on){NET.pubT-=realDt;if(NET.pubT<=0){NET.pubT=20;netPublish()}}
   if(!$('#statOv').hidden){statT-=realDt;if(statT<=0||statQueued){statT=1;renderStats()}}
@@ -7470,7 +7645,7 @@ function frame(now){
       if(Math.floor(before/1440)!==Math.floor(world.t/1440))log(`${Math.floor(world.t/1440)+1}일차 아침이 밝았어요`);
       while(world.t>=world.nextHourT){world.nextHourT+=60;hourTick();if(world.breakLoop)break}
       world.launcherBalls=balls.filter(b=>b.state==='in').length;
-      updatePotty(h);autoManager(h);updateFarm(h);billStep(h);warStep(h);boardStep(h);climateStep(h);locStep(h);smartStep(h);buildStep(h);trainQueueStep();quizStep(h);
+      updatePotty(h);autoManager(h);updateFarm(h);billStep(h);warStep(h);boardStep(h);climateStep(h);locStep(h);smartStep(h);gymStep(h);tagStep(h);buildStep(h);trainQueueStep();quizStep(h);
       if(world.tv.on&&world.tv.offAt>0&&world.t>=world.tv.offAt){setTV(false);log('꺼짐 예약 시간이 되어 TV가 꺼졌어요')}
       if(world.music.on&&world.music.offAt>0&&world.t>=world.music.offAt){setMusic(false);log('꺼짐 예약 시간이 되어 음악이 꺼졌어요')}
       if(world.fastNow){for(const d of dogs.slice())fastAnimal(d,h)}
@@ -7795,7 +7970,7 @@ function startSim(){
   world.breedOn=$('#breedOn').checked;world.tm.speed=$('#tmSpeed').value;world.tm.auto=$('#tmAuto').checked;$('#farmCrop').value='corn';
   aiInit();
   if(NET.on)netStop(true);NET.idOf={};NET.taken=new Set();
-  bgWatch=null;$('#bgHud').hidden=true;quizWatch=false;$('#quizHud').hidden=true;ARC=null;arcPrev=new Set();arcAskD=null;$('#arcOv').hidden=true;$('#arcAsk').hidden=true;
+  bgWatch=null;$('#bgHud').hidden=true;quizWatch=false;$('#quizHud').hidden=true;$('#tagHud').hidden=true;ARC=null;arcPrev=new Set();arcAskD=null;$('#arcOv').hidden=true;$('#arcAsk').hidden=true;
   world.war=null;if($('[data-war]').checked)initWar($('[data-wardiff]').value,$('[data-warsize]').value,warCount());setTimeout(warUI,0);if(world.war&&$('[data-online]').checked)setTimeout(netStart,300);
   {const v=$('#startMoney').value;world.money=v==='inf'?Infinity:+v;world.powerOut=false;world.bill={day:Math.floor(world.t/1440),today:{},yest:{},stolen:0,incToday:0,incTotal:0}}
   followId=dogs[0]?dogs[0].id:1;

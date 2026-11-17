@@ -4832,7 +4832,7 @@ function cardList(){
   return l;
 }
 function buildDogCards(){
-  if(typeof balanceSoon==='function')balanceSoon(500);
+  if(typeof balanceSoon==='function'){const nC=dogs.filter(d=>!d.dead).length;if(nC!==buildDogCards.lastN){buildDogCards.lastN=nC;balanceSoon(800,false)}}
   const box=$('#dogCards');box.innerHTML='';world.cardsDirty=false;refreshBreed();for(const d of dogs)d.card=null;
   $('#cardBar').hidden=dogs.length<=12&&!CARDS.find;
   if(!dogs.length){box.innerHTML='<p class="small">살아 있는 동물이 없어요. 방 다시 꾸미기에서 새로 시작할 수 있어요.</p>';return}
@@ -8106,7 +8106,12 @@ let balT=0,balHover=0,BAL_ORDER=null;
 function spanFix(){}
 function balCols(){const mp=$('#mainPanels');if(!mp)return null;let c=mp.querySelectorAll(':scope>.mp-col');if(c.length<2){const A=document.createElement('div'),B=document.createElement('div');A.className=B.className='mp-col';
   const secs=[...mp.querySelectorAll(':scope>section')];mp.append(A,B);secs.forEach((x,i)=>(i%2?B:A).appendChild(x));c=[A,B]}return [...c]}
-function balanceCols(){balancePass();balancePass()}
+let balLast=0;
+function balanceCols(force){
+  // keep panels where they are unless forced (start / load / resize) or the columns are badly uneven, and never more than once every 45 s
+  if(!force){const side=$('.side-col'),g=$('.sim-grid'),cols=balCols();if(!side||!cols||innerWidth<=960)return;if(performance.now()-balLast<45000)return;
+    g.classList.add('measuring');const bs=[side,...cols].map(e=>e.getBoundingClientRect().bottom);g.classList.remove('measuring');if(Math.max(...bs)-Math.min(...bs)<600)return}
+  balLast=performance.now();balancePass();balancePass()}
 function balancePass(){
   const grid=$('.sim-grid'),side=$('.side-col'),mc=$('.main-col'),mp=$('#mainPanels');if(!grid||!side||!mp||$('#sim').hidden)return;
   const cols=balCols();const sim=$('#sim');if(sim.classList.contains('arena')||sim.classList.contains('soccer')||innerWidth<=960)return;
@@ -8129,13 +8134,13 @@ function balancePass(){
   for(const e of BAL_ORDER){if(e.hidden)continue;const c=asg.get(e);if(c===0)side.insertBefore(e,log);else cols[c-1].appendChild(e)}
   grid.classList.remove('measuring');if(Math.abs(scrollY-y0)>2)scrollTo(0,y0);
 }
-function balanceSoon(ms){clearTimeout(balT);balT=setTimeout(balanceCols,ms||250)}
+function balanceSoon(ms,force){clearTimeout(balT);balT=setTimeout(()=>balanceCols(force!==false),ms||250)}
 function balanceStart(){balanceSoon(600);setTimeout(()=>balanceSoon(10),2200)}
-addEventListener('resize',()=>balanceSoon(300));
+let balW=innerWidth;addEventListener('resize',()=>{if(Math.abs(innerWidth-balW)<40)return;balW=innerWidth;balanceSoon(300)});
 document.addEventListener('pointermove',e=>{if(e.target&&e.target.closest&&e.target.closest('.side-col,#mainPanels'))balHover=performance.now()},{passive:true});
 setInterval(()=>{if(!running||$('#sim').hidden||innerWidth<=960)return;const side=$('.side-col'),g=$('.sim-grid'),cols=balCols();if(!side||!cols)return;
   g.classList.add('measuring');const bs=[side,...cols].map(e=>e.getBoundingClientRect().bottom);g.classList.remove('measuring');
-  if(Math.max(...bs)-Math.min(...bs)>260&&performance.now()-balHover>4000)balanceCols()},3000);
+  if(Math.max(...bs)-Math.min(...bs)>600&&performance.now()-balHover>8000)balanceCols(false)},5000);
 
 $('#homeLoc').onchange=locNoteUI;locNoteUI();['#roomW','#roomD','#yardOn','#yardDepth','#yardWide'].forEach(q=>{const el=$(q);if(el)el.addEventListener('change',()=>setTimeout(locNoteUI,0))});['#presetLiving','#presetStudio'].forEach(q=>$(q).addEventListener('click',()=>setTimeout(locNoteUI,0)));
 $('#saveBtn').onclick=openSaves;$('#contBtn').onclick=openSaves;$('#saveClose').onclick=()=>{$('#saveOv').hidden=true};$('#saveExport').onclick=exportSave;

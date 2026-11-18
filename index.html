@@ -1,4 +1,4 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Wall멍하우su 홈케어</title>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>멍하우스 홈케어</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap">
@@ -24,6 +24,9 @@
 :root[data-theme="ocean"]{--bg:#e6f0f8;--surface:#fbfdff;--surface-2:#edf4fb;--ink:#13263a;--muted:#55697d;--line:#cbdbe9;--accent:#1f6fb2;--accent-ink:#fff;--ball:#e0a81e;--water:#1f8fd0;--alert:#d04a3c;--good:#2e9a6a;--warn:#cf8a1a;color-scheme:light}
 :root[data-theme="sakura"]{--bg:#fbeef2;--surface:#fffafb;--surface-2:#fcf1f4;--ink:#3a1f29;--muted:#7d5d68;--line:#efd3dc;--accent:#c4497a;--accent-ink:#fff;--ball:#e3a92a;--water:#4b9bd1;--alert:#c93b3b;--good:#3d9a63;--warn:#cf8b1d;color-scheme:light}
 :root[data-theme="sunset"]{--bg:#fbf0e6;--surface:#fffaf4;--surface-2:#fcf2e8;--ink:#33200f;--muted:#7a6250;--line:#efdcc9;--accent:#c95f1e;--accent-ink:#fff;--ball:#d9a90f;--water:#3593c7;--alert:#c4382f;--good:#4a9150;--warn:#c47c12;color-scheme:light}
+:root[data-theme="jeongol"]{--bg:#f3e9dc;--surface:#fffaf3;--surface-2:#f6ecdf;--ink:#3b2416;--muted:#7d604c;--line:#e3cfba;--accent:#b8452a;--accent-ink:#fff;--ball:#d9a441;--water:#5a8c6a;--alert:#c0392b;--good:#5b8a3c;--warn:#c9851c;color-scheme:light}
+:root[data-theme="chair68"]{--bg:#e8ecf5;--surface:#fbfcff;--surface-2:#eef1f8;--ink:#141d3a;--muted:#55607e;--line:#cdd4e6;--accent:#1e3a8a;--accent-ink:#fff;--ball:#d4a017;--water:#2f80c4;--alert:#c8333f;--good:#2f8f5b;--warn:#c98a1b;color-scheme:light}
+:root[data-theme="jeongja"]{--bg:#e4efe9;--surface:#f9fdfa;--surface-2:#eaf3ee;--ink:#14302a;--muted:#4f6b62;--line:#c4dacf;--accent:#0f7a5c;--accent-ink:#fff;--ball:#c99b2a;--water:#2a8bb0;--alert:#c4442f;--good:#2f8f4a;--warn:#c98a1b;color-scheme:light}
 :root[data-theme="midnight"]{--bg:#0f1024;--surface:#181a36;--surface-2:#1f2242;--ink:#e6e6fa;--muted:#9a9cc4;--line:#2c2f55;--accent:#8c7cf0;--accent-ink:#110c2e;--ball:#f2c94c;--water:#5bb6f0;--alert:#ff6b7a;--good:#5fd38d;--warn:#f5a945;color-scheme:dark}
 :root[data-theme="contrast"]{--bg:#000;--surface:#0a0a0a;--surface-2:#151515;--ink:#fff;--muted:#d6d6d6;--line:#8a8a8a;--accent:#ffd400;--accent-ink:#000;--ball:#ffd400;--water:#4fc3ff;--alert:#ff5a4f;--good:#3ee07a;--warn:#ffb020;color-scheme:dark}
 :root[data-theme="contrast"] .btn,:root[data-theme="contrast"] .iconbtn{border-color:#fff}
@@ -56,6 +59,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .brand i::after{content:"";position:absolute;inset:4px 10px;border-left:2px solid rgba(255,255,255,.75);border-radius:50%}
 .phase{font-size:12px;color:var(--muted);letter-spacing:.04em}
 .spacer{flex:1}
+#clockTxt{white-space:pre}#clockHol{display:inline-block;width:1.3em;text-align:center;margin-left:-4px}
 .clock{font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-size:15px;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);display:flex;gap:8px;align-items:center}
 .clock .sun{width:10px;height:10px;border-radius:50%;background:var(--ball)}
 .seg{display:flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface)}
@@ -336,6 +340,12 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
 .arc-ctl{display:grid;grid-template-columns:1fr 2fr 1fr;gap:6px}.arc-ctl .btn{min-height:44px;font-size:16px;touch-action:none;user-select:none;color:#fff;background:#2a3346;border-color:#3d4a63}.arc-ctl .btn.primary{background:#1d8a80;border-color:#1d8a80}
 .arc-btns{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}.arc-help{margin:0;font-size:11px;color:#b9c3cf;text-align:center}
 .arcask{left:50%;bottom:12px;transform:translateX(-50%);display:flex;gap:6px;align-items:center;background:rgba(14,18,28,.9);color:#fff;border-radius:999px;padding:6px 8px 6px 14px;font-size:12px;z-index:7;max-width:94%;flex-wrap:wrap;justify-content:center}.arcask[hidden]{display:none}
+.chhud{top:84px;background:rgba(70,40,10,.85)}
+.chsub{left:calc(50% - 70px);bottom:58px;transform:translateX(-50%);width:min(70%,560px);display:flex;flex-direction:column;gap:4px;z-index:6;pointer-events:none}.chsub[hidden]{display:none}
+.chsub .ln{background:rgba(20,14,6,.86);color:#fff;border-radius:12px;padding:7px 12px;font-size:14px;line-height:1.4;box-shadow:0 4px 14px rgba(0,0,0,.25);animation:chIn .35s ease}
+.chsub .ln.old{opacity:.55;font-size:12.5px}.chsub .ln b{color:#ffd23f;margin-right:6px}.chsub .ln.pr b{color:#7fe0ff}.chsub .ph{align-self:center;background:rgba(255,210,63,.92);color:#2a1d00;border-radius:999px;padding:2px 12px;font-size:12px;font-weight:700}
+@keyframes chIn{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
+.chtalk{list-style:none;margin:0;padding:0;display:grid;gap:3px;max-height:180px;overflow:auto;font-size:12.5px}.chtalk li b{color:var(--accent,#1d8a80);margin-right:4px}
 .taghud{left:50%;top:50px;transform:translateX(-50%);background:rgba(14,18,28,.85);color:#fff;border-radius:999px;padding:5px 14px;font-size:12.5px;z-index:6;white-space:nowrap;max-width:90%;overflow:hidden;text-overflow:ellipsis}.taghud[hidden]{display:none}
 .arcme{display:grid;grid-template-columns:1fr 1fr;gap:6px}.arcme select{grid-column:1/-1}.arcme small{opacity:.75;font-size:11px}
 .arclist{list-style:none;margin:0;padding:0;display:grid;gap:5px}.arclist li{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:13px;padding:6px 8px;border:1px solid var(--line);border-radius:10px}.arclist li b{flex:1 1 auto}.arclist li.muted{color:var(--muted);border-style:dashed}
@@ -589,12 +599,12 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style><style>body{margin:0} img{max-width:100%}</style></head><body>
 <header class="topbar">
-  <h1 class="brand"><i aria-hidden="true"></i>Wall멍하우su 홈케어</h1>
+  <h1 class="brand"><i aria-hidden="true"></i>멍하우스 홈케어</h1>
   <span class="phase" id="phaseLbl">1단계 · 방 꾸미기</span>
   <button class="modechip" id="modeChip" hidden title="눌러서 관리 방식 바꾸기">모두 자동화</button>
   <span class="spacer"></span>
   <div class="clock moneychip" id="moneyBox" hidden title="가계부">💰 <span id="moneyTxt">0원</span></div>
-  <div class="clock" id="clockBox" hidden><span class="sun" id="sunDot"></span><span id="clockTxt">1일차 08:00</span></div>
+  <div class="clock" id="clockBox" hidden><span class="sun" id="sunDot"></span><span id="clockTxt">01년차 001일 08:00:00 · 🐾 멍력 01년 01월 01일</span><span id="clockHol" aria-hidden="true"></span></div>
   <div class="seg" id="speedSeg" role="group" aria-label="시간 배속" hidden></div>
   <button class="iconbtn" id="pauseBtn" aria-pressed="false" hidden>⏸ 일시정지</button>
   <button class="iconbtn" id="soundBtn" aria-pressed="true" hidden>🔊 소리</button>
@@ -606,6 +616,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
   <label class="themesel">🎨<span class="sr-only">테마</span><select id="themeSel" aria-label="테마">
     <option value="system">시스템 설정</option><option value="light">☀ 라이트</option><option value="dark">🌙 다크</option>
     <option value="forest">🌲 숲</option><option value="ocean">🌊 바다</option><option value="sakura">🌸 벚꽃</option><option value="sunset">🌅 노을</option>
+    <option value="jeongol">🍄 버섯전골</option><option value="chair68">🎓 6-8 회장테마</option><option value="jeongja">🏯 성남정자 회장테마</option>
     <option value="midnight">🌌 한밤 (다크)</option><option value="contrast">⬛ 고대비</option></select></label>
 </header>
 
@@ -640,6 +651,17 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         <button class="btn" id="clearFurn">가구만 모두 지우기</button>
       </div>
       <div class="stack">
+        <h3>🏛 여러 방</h3>
+        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="roomsOn" checked> 거실 옆에 주방 · 도서관 · 연회장 · 강아지교 성당 붙이기</label>
+        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="faithOn" checked> ⛪ 강아지교 있음 (성당 · 예식 · 거룩함 · 사제)</label>
+        <div class="row2"><label class="f">🏢 층 수 (1~무한)<input type="number" id="floorN" min="1" step="1" value="1"></label>
+          <label class="f">⛪ 성당 층 수<input type="number" id="floorChurch" min="1" step="1" value="1"></label></div>
+        <label class="f">🚶 층 이동 방법<select id="floorMove"><option value="stairs" selected>🪜 계단 (건강 ↑ · 체력 ↓)</option><option value="elev">🛗 엘리베이터 (돈 ↓ · 행복도 ↑)</option><option value="auto">🧠 자동 (지치면 엘리베이터)</option></select></label>
+        <p class="small muted" id="floorNote">2층부터는 층마다 가구가 조금씩 달라요(침실·놀이방·온실·휴게실, 카페/주방, 도서관). 연회장은 1층에만 있어요. 층이 많을수록 화면이 무거워져요.</p>
+        <label class="f">강아지교 성당 크기<select id="cathSize"><option value="mid">크게 (18×24m)</option><option value="big" selected>아주 크게 (26×34m)</option><option value="huge">엄청 크게 (34×46m)</option></select></label>
+        <p class="small muted">방들은 마당 반대쪽에 붙어요. 방마다 가구가 자동으로 들어가요. 거실에선 자유롭게, 주방에선 먹고, 도서관에선 책 읽고, 연회장에선 파티하고, 성당에선 기도해요.</p>
+      </div>
+      <div class="stack">
         <h3>📍 집 위치</h3>
         <label class="f">집을 어디에 지을까요?<select id="homeLoc"><option value="meadow">🌾 초원</option><option value="beach">🏖 바닷가</option><option value="highland">⛰ 고산지대</option><option value="forest">🌲 숲속</option><option value="desert">🏜 사막</option><option value="snow">❄ 설원</option><option value="river">🏞 강가</option><option value="island">🏝 섬</option><option value="city">🏙 도시</option><option value="random">🎲 무작위</option></select></label>
         <p class="small" id="homeLocNote"></p>
@@ -652,7 +674,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
           <label class="f">마당 너비 (m)<input type="number" id="yardWide" min="0" max="160" step="1" value="16"></label>
         </div>
         <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="yardPitch" checked> 마당에 축구장 만들기</label>
-        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="yardGym"> 🏟 마당 옆에 강아지 운동장 만들기 <small class="muted">(마당 바깥쪽 끝에 붙어요)</small></label>
+        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="yardGym" checked> 🏟 마당 옆에 강아지 운동장 만들기 <small class="muted">(마당 바깥쪽 끝에 붙어요)</small></label>
         <label class="f">운동장 길이 (m, 6~60)<input type="number" id="gymDepth" min="6" max="60" step="1" value="14"></label>
         <p class="small muted">운동장엔 허들·터널·위브 폴·A-프레임·시소·평균대·점프 링·점프 박스·타이어 끌기·스프링 폴·원반 머신·달리기 트랙이 자동으로 들어가요. 운동장 안에서는 강아지들이 35% 더 빨리 움직이고, 그냥 걷거나 뛰기만 해도 건강·행복도가 올라요.</p>
         <p class="small" id="pitchInfo"></p>
@@ -678,12 +700,12 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
           <label class="modecard"><input type="radio" name="careMode" value="auto" id="modeAuto" checked><span><b>모두 자동화</b><small>밥·물 보충, 배변판·바닥 청소, 공 회수와 발사, 낮 TV, 음악까지 집이 알아서 관리해요. 나는 지켜보면 돼요.</small></span></label>
         </div>
       <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" data-autobreak> 자동화일 때 싸움을 자동으로 말리기</label>
-      <div class="row2" style="align-items:end"><label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="autoCorpsePre" data-mirror="autoCorpse"> 자동화일 때 시체 자동 치우기</label><label class="f">치울 시체<select id="corpseScopePre" data-mirror="corpseScope"><option value="all">모든 시체 (노환·병·싸움)</option><option value="fight">전투 사망만</option></select></label></div>
+      <div class="row2" style="align-items:end"><label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="autoCorpsePre" data-mirror="autoCorpse" checked> 자동화일 때 시체 자동 치우기</label><label class="f">치울 시체<select id="corpseScopePre" data-mirror="corpseScope"><option value="all">모든 시체 (노환·병·싸움)</option><option value="fight">전투 사망만</option></select></label></div>
       <div class="row2"><label class="f">치우는 때<select id="corpseDelayPre" data-mirror="corpseDelay"><option value="0">바로</option><option value="10">10분 뒤</option><option value="30">30분 뒤</option><option value="60">1시간 뒤</option></select></label></div>
       <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="aiSoccerPre" data-mirror="aiSoccer" checked> 필요하면 AI가 마당 축구 경기 열기</label>
       <label class="f">AI가 연 축구 경기는<select id="aiSoccerViewPre" data-mirror="aiSoccerView"><option value="watch">경기 보기 (관전)</option><option value="skip" selected>넘기고 결과만 보기</option></select></label>
       <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="aiEmergPre" data-mirror="aiEmerg" checked> 위급할 때 AI가 바로 대응하기</label>
-      <label class="f" style="margin-top:4px">고령화 위험 시 자동화가 강제 번식 쓰기<select id="aiFBPre" data-mirror="aiFB"><option value="off">쓰지 않기</option><option value="young">젊은 사회에도 쓰기 (항상)</option><option value="aging">고령화 사회(노령 7%) 이상이면 쓰기</option><option value="aged" selected>고령 사회(노령 14%) 이상이면 쓰기</option><option value="ultra">초고령 사회(노령 20%) 이상일 때만 쓰기</option></select></label>
+      <label class="f" style="margin-top:4px">고령화 위험 시 자동화가 강제 번식 쓰기<select id="aiFBPre" data-mirror="aiFB"><option value="off">쓰지 않기</option><option value="young">젊은 사회에도 쓰기 (항상)</option><option value="aging" selected>고령화 사회(노령 7%) 이상이면 쓰기</option><option value="aged">고령 사회(노령 14%) 이상이면 쓰기</option><option value="ultra">초고령 사회(노령 20%) 이상일 때만 쓰기</option></select></label>
       <label class="f" style="margin-top:4px">자동화 스타일<select id="aiStylePre" data-mirror="aiStyle"><option value="balance">⚖ 균형</option><option value="health">❤ 건강중시</option><option value="happy">😊 행복중시</option><option value="stamina">⚡ 체력중시</option><option value="auto">🤖 자동 (가장 부족한 것 챙기기)</option></select></label>
       <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="musicAutoPre" data-mirror="musicAuto" checked> 자동화일 때 음악 자동으로 틀기 (밤엔 자장가, 지치면 자장가, 우울하면 신나는 동요)</label>
         </div>
@@ -853,6 +875,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
           <button class="chip" data-mode="top" aria-pressed="false">위에서</button>
           <button class="chip" data-mode="follow" aria-pressed="false">동물 따라가기</button>
           <button class="chip home-only" data-mode="cam" aria-pressed="false">홈캠 시점</button>
+          <select class="chip" id="viewFloor" hidden aria-label="보는 층" style="flex:0 0 auto;width:auto;max-width:170px"></select>
           <span class="chip fastchip" id="fastChip" hidden>⏩ 빠른 계산 중 · 싸움·침입·방문 때 자동으로 x1</span>
         </div>
         <div class="ov camnav" id="camNav" aria-label="시점 이동">
@@ -901,6 +924,8 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         <div class="ov bghud" id="bgHud" hidden aria-live="off"></div>
         <div class="ov bghud qzhud" id="quizHud" hidden aria-live="off"></div>
         <div class="ov taghud" id="tagHud" hidden aria-live="off"></div>
+        <div class="ov taghud chhud" id="chHud" hidden aria-live="off"></div>
+        <div class="ov chsub" id="chSub" hidden aria-live="polite"></div>
         <div class="ov arcov" id="arcOv" hidden>
           <div class="arc-head"><b id="arcTitle"></b><span id="arcInfo"></span></div>
           <canvas id="arcCv" width="440" height="240"></canvas>
@@ -968,6 +993,28 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
       </div>
       <div class="dogs-grid" id="dogCards"></div>
       <div class="main-panels" id="mainPanels">
+      <section class="card panel home-only" id="churchPanel">
+        <div class="panel-head"><h2>⛪ 강아지교</h2><span class="tag" id="chTag">쉬는 중</span></div>
+        <p class="small" id="chToday" style="margin:0"></p>
+        <p class="small" id="chCal" style="margin:0"></p>
+        <details class="small"><summary>🎉 강아지교 기념일 (멍력, 해마다 돌아와요)</summary><ul class="chtalk" id="chHolList"></ul></details>
+        <div class="row2">
+          <label class="f">2차 예식 (하루 최대 2번)<select id="chSecond"><option value="auto" selected>🧠 자동화 두뇌가 상태 보고 결정</option><option value="on">한다</option><option value="off">안 한다</option></select></label>
+          <label class="f">예식 시간<select id="chDur"><option value="auto" selected>자동 (상태에 따라 1~3시간)</option><option value="60">1시간</option><option value="120">2시간</option><option value="180">3시간</option></select></label>
+        </div>
+        <div class="row2"><label class="f">1차(필수) 시작<select id="chT1"><option value="9">오전 9시</option><option value="10" selected>오전 10시</option><option value="11">오전 11시</option></select></label>
+          <label class="f">2차 시작<select id="chT2"><option value="15">오후 3시</option><option value="19" selected>오후 7시</option><option value="21">오후 9시</option></select></label></div>
+        <div class="row2"><button class="btn primary" id="chStart">🔔 지금 예식 시작</button><button class="btn" id="chWatch">👀 예식 관전</button></div>
+        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="chSubOn" checked> 💬 예식 대사 자막 보기 (화면 아래 자막 바)</label>
+        <ul class="chtalk" id="chTalk"></ul>
+        <h3>직업</h3>
+        <div class="kv small" id="chJobs"></div>
+        <div class="row2"><label class="f">⛪ 사제<select id="jobPriest"></select></label><label class="f">🍳 요리사<select id="jobChef"></select></label></div>
+        <label class="f">📚 사서<select id="jobLibrarian"></select></label>
+        <h3>✨ 거룩함 순위</h3>
+        <ul class="arclist" id="chHoly"></ul>
+        <p class="small muted">모든 강아지는 강아지교도예요. 예식에 참석하면 건강·체력·행복도·거룩함이 올라요. 바닥에 실수하면 −5, 싸우면 −10이에요. 거룩함 200을 넘으면 영원히 죽지 않아요(전쟁·싸움 포함, 머리 위에 후광 ✨). 새로 태어난 강아지는 0부터 시작해요.</p>
+      </section>
       <section class="card panel home-only" id="tagPanel">
         <div class="panel-head"><h2>🏃 술래잡기</h2><span class="tag" id="tagTag">쉬는 중</span></div>
         <div class="row2">
@@ -1189,7 +1236,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         <div class="row2"><button class="btn" id="corpseBtn" disabled>시체 치우기 (0구)</button><button class="btn" id="watchBtn" disabled>싸움 관전</button></div>
         <button class="btn" id="breakBtn" disabled>🧯 싸움 말리기 (5~10초)</button>
         <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" data-autobreak> 모두 자동화일 때 싸움 자동으로 말리기</label>
-        <div class="row2" style="align-items:end"><label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="autoCorpse"> 🧹 모두 자동화일 때 시체 자동 치우기</label><label class="f">치울 시체<select id="corpseScope"><option value="all">모든 시체 (노환·병·싸움)</option><option value="fight">전투 사망만</option></select></label></div>
+        <div class="row2" style="align-items:end"><label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="autoCorpse" checked> 🧹 모두 자동화일 때 시체 자동 치우기</label><label class="f">치울 시체<select id="corpseScope"><option value="all">모든 시체 (노환·병·싸움)</option><option value="fight">전투 사망만</option></select></label></div>
         <div class="row2"><label class="f">치우는 때<select id="corpseDelay"><option value="0">바로</option><option value="10">10분 뒤</option><option value="30">30분 뒤</option><option value="60">1시간 뒤</option></select></label></div>
         <h3>⏩ 시간 넘기기</h3>
         <div class="skipgrid"><button class="btn" data-skip="1">1년</button><button class="btn" data-skip="5">5년</button><button class="btn" data-skip="10">10년</button><button class="btn" data-skip="50">50년</button><button class="btn" data-skip="100">100년</button><button class="btn" data-skip="500">500년</button><button class="btn" data-skip="1000">1000년</button></div>
@@ -1229,7 +1276,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="aiSoccer" checked> ⚽ 필요하면 AI가 마당에서 축구 경기 열기</label>
         <label class="f">AI가 연 축구 경기는<select id="aiSoccerView"><option value="watch">경기 보기 (관전)</option><option value="skip" selected>넘기고 결과만 보기</option></select></label>
         <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="aiEmerg" checked> 🚨 위급할 때 바로 대응하기 (3시간 점검을 기다리지 않음)</label>
-        <label class="f">고령화 위험 시 강제 번식 도구<select id="aiFB"><option value="off">쓰지 않기</option><option value="young">젊은 사회에도 쓰기 (항상)</option><option value="aging">고령화 사회(노령 7%) 이상이면 쓰기</option><option value="aged" selected>고령 사회(노령 14%) 이상이면 쓰기</option><option value="ultra">초고령 사회(노령 20%) 이상일 때만 쓰기</option></select></label>
+        <label class="f">고령화 위험 시 강제 번식 도구<select id="aiFB"><option value="off">쓰지 않기</option><option value="young">젊은 사회에도 쓰기 (항상)</option><option value="aging" selected>고령화 사회(노령 7%) 이상이면 쓰기</option><option value="aged">고령 사회(노령 14%) 이상이면 쓰기</option><option value="ultra">초고령 사회(노령 20%) 이상일 때만 쓰기</option></select></label>
         <p class="small muted" id="aiFBNote">자동화가 강제 번식 도구를 쓰지 않아요.</p>
         <h3>행동 피드백 기록</h3>
         <ol class="ai-log" id="aiLog"><li class="muted">아직 기록이 없어요. 3시간(게임 시간)마다 평균을 보고 행동을 하나씩 고쳐요.</li></ol>
@@ -1285,6 +1332,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="schoolOn" checked> 🏫 2살 미만 강아지는 강아지 학교에 보내기 (7시 기상 · 8시 등교 · 16시 하교)</label>
         <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="workOn" checked> 💼 노령견의 절반은 회사에 출근 (9시 출근 · 18시 퇴근 · 돈과 간식을 벌어 와요)</label>
         <p class="small" id="schoolSt" style="margin:0"></p>
+        <div id="floorBox" hidden><h3>🏢 층</h3><label class="f">층 이동 방법<select id="floorMove2"><option value="stairs">🪜 계단 (건강 ↑ · 체력 ↓)</option><option value="elev">🛗 엘리베이터 (돈 ↓ · 행복도 ↑)</option><option value="auto">🧠 자동 (지치면 엘리베이터)</option></select></label><p class="small" id="floorSt" style="margin:0"></p></div>
         <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="acAuto" checked> 🤖 자동화일 때 냉난방기·공기청정기 알아서 켜고 끄기</label>
         <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="outAuto" checked> 🤖 자동화일 때 산책·병원 알아서 보내기</label>
       </section>
@@ -1594,6 +1642,25 @@ const FURN={
   springpole:{n:'🪢 스프링 폴',w:0.9,d:0.9,h:2.0,c:'#7a7f86',solid:false,yard:true,st:true},
   discmachine:{n:'🥏 원반 머신',w:0.6,d:0.6,h:0.9,c:'#3fb27f',solid:true,yard:true,st:true},
   track:{n:'🏃 달리기 트랙',w:6.0,d:3.6,h:0.02,c:'#c8644a',solid:false,yard:true,st:true},
+  stove:{n:'🍳 가스레인지',w:1.0,d:0.65,h:0.9,c:'#d9dde0',solid:true},
+  fridge:{n:'🧊 냉장고',w:0.9,d:0.75,h:1.9,c:'#eef2f4',solid:true},
+  sink:{n:'🚰 싱크대',w:1.2,d:0.65,h:0.9,c:'#cfd6da',solid:true},
+  counter:{n:'🥣 조리대',w:1.4,d:0.65,h:0.9,c:'#b98e63',solid:true},
+  diningtable:{n:'🍽 식탁',w:2.4,d:1.2,h:0.75,c:'#a0703f',solid:true,st:true},
+  bookcase:{n:'📚 큰 서가',w:2.0,d:0.45,h:2.4,c:'#6b4a2e',solid:true,st:true},
+  readdesk:{n:'📖 독서대',w:1.2,d:0.7,h:0.8,c:'#8a5a32',solid:true,st:true},
+  armchair:{n:'🪑 독서 의자',w:0.9,d:0.9,h:1.0,c:'#7a3b3b',solid:true,st:true},
+  globe:{n:'🌐 지구본',w:0.6,d:0.6,h:1.1,c:'#2f7fd0',solid:true},
+  longtable:{n:'🍷 연회 테이블',w:6.0,d:1.4,h:0.78,c:'#f4efe4',solid:true,st:true},
+  buffet:{n:'🍰 뷔페 테이블',w:2.2,d:0.8,h:0.9,c:'#f4efe4',solid:true,st:true},
+  stage:{n:'🎤 무대',w:3.2,d:1.8,h:0.35,c:'#5a2d6b',solid:false,st:true},
+  chandelier:{n:'💡 샹들리에',w:1.6,d:1.6,h:0.5,c:'#e8c76a',solid:false},
+  pew:{n:'🪑 신도석',w:3.6,d:0.7,h:0.9,c:'#7a5232',solid:true,st:true},
+  altar:{n:'🕍 제단',w:2.6,d:1.1,h:1.05,c:'#f4efe4',solid:true},
+  candle:{n:'🕯 촛대',w:0.5,d:0.5,h:1.5,c:'#c9a227',solid:true,st:true},
+  organ:{n:'🎹 파이프 오르간',w:3.0,d:1.2,h:4.5,c:'#7a5232',solid:true},
+  font:{n:'💧 성수대',w:0.7,d:0.7,h:1.0,c:'#d9d2c3',solid:true,st:true},
+  statue:{n:'🐕 강아지 성상',w:1.4,d:1.4,h:3.2,c:'#e8e2d4',solid:true},
   nosework:{n:'🧠 노즈워크 매트',w:1.0,d:0.7,h:0.05,c:'#6fa86a',solid:false,st:true},
   cattower:{n:'🐈 캣타워',w:0.7,d:0.7,h:1.6,c:'#c9a97a',solid:false,unique:true,st:true},
   petsofa:{n:'🛋 펫 소파',w:1.0,d:0.7,h:0.4,c:'#8a6fb0',solid:false,st:true},
@@ -1643,7 +1710,7 @@ const BREEDS={
 };
 const CAT_COLORS=['#c8a070','#8a96a3','#f2ece0','#3a3a3c','#e0a050','#ffffff','#9a7a5a'];
 const CAT_NAMES=['나비','치즈','루나','레오','미미','까망','냥냥','호랑','삼색이','모모','구름','라라'];
-const PUP_NAMES=['밤이','감자','호두','라떼','모카','별이','까미','솜이','탄이','달이','두리','토리','뭉치','방울','도토리','보배','사랑','코코','루루','봄이','단비','찰떡','인절미','순대','만두','콩떡','깨비','짱구','덕구','백구','누리','마루','바둑','꼬미','몽실','뽀삐','해피2','설탕','소금'];
+const PUP_NAMES=['서윤','밤이','감자','호두','라떼','모카','별이','까미','솜이','탄이','달이','두리','토리','뭉치','방울','도토리','보배','사랑','코코','루루','봄이','단비','찰떡','인절미','순대','만두','콩떡','깨비','짱구','덕구','백구','누리','마루','바둑','꼬미','몽실','뽀삐','해피2','설탕','소금'];
 const DOG_BREED_ORDER=['golden','maltese','shiba','pomeranian','jindo','border','chihuahua','greatdane'];
 const LIFE={min:15,max:20,inf:false},SKIP_SAFE=300,SKIP={unsafe:false},NAMES={dog:null,dup:'num'};
 const MAX_PETS=Infinity, FAST_SPEED=1000, YEAR_MIN=525600, STOCK_MAX=5000, SNACK_MAX=60;
@@ -1656,7 +1723,7 @@ const CROPS={
 let uid=1;
 function presetLiving(){
   // a roomier living room (12×9 m) that comes with the care furniture; the yard holds the farm, agility course and fountain
-  return {W:12,D:9,yard:{on:true,depth:14,wide:16,pitch:true},items:[
+  return {W:12,D:9,yard:{on:true,depth:14,wide:16,pitch:true,gym:true,gymD:14},rooms:{on:true,cath:'big',faith:true},items:[
     {id:uid++,type:'petdoor',wall:'e',t:0.9},
     {id:uid++,type:'rug',x:-1.5,z:0.3,rot:0},
     {id:uid++,type:'sofa',x:-1.5,z:3.9,rot:2},
@@ -1789,7 +1856,84 @@ function makePitch(r){const lx=(r.maxx-r.minx)>=(r.maxz-r.minz);const P={...r,lx
   P.goalW=Math.min(3.6,Math.max(1.8,P.wid*0.28));P.goalH=Math.min(1.2,0.7+P.wid*0.025);return P}
 const toW=(P,a,c)=>P.lx?{x:P.cx+a,z:P.cz+c}:{x:P.cx+c,z:P.cz+a};
 const fromW=(P,x,z)=>P.lx?{a:x-P.cx,c:z-P.cz}:{a:z-P.cz,c:x-P.cx};
-function extents(L=layout){const y=yardRect(L);const e={minx:-L.W/2,maxx:L.W/2,minz:-L.D/2,maxz:L.D/2};if(y){e.minx=Math.min(e.minx,y.minx);e.maxx=Math.max(e.maxx,y.maxx);e.minz=Math.min(e.minz,y.minz);e.maxz=Math.max(e.maxz,y.maxz)}return e}
+/* ---------- annex rooms: kitchen, library, banquet hall, dog church ---------- */
+const ROOM_SZ={mid:[18,24],big:[26,34],huge:[34,46]};
+function annexPlan(L=layout){
+  const FN=Math.max(1,Math.floor((L&&L.floors&&L.floors.n)||1)),roomsOn=!!(L&&L.rooms&&L.rooms.on);
+  if(!L||L.outdoor||(!roomsOn&&FN<2))return null;
+  const yb=yardBase(L),O=yb?({s:'n',n:'s',e:'w',w:'e'})[yb.side]:'n',ns=O==='n'||O==='s';
+  const Lm=ns?L.W:L.D,wp=ns?L.D/2:L.W/2,RD=8,RW=[['kitchen','🍳 주방',9],['library','📚 도서관',10],['banquet','🎉 연회장',14]],tot=RW.reduce((a,r)=>a+r[2],0);
+  const [cw,cd]=ROOM_SZ[(L.rooms&&L.rooms.cath)]||ROOM_SZ.big;
+  const map=(u,v)=>O==='n'?{x:u,z:-wp-v}:O==='s'?{x:u,z:wp+v}:O==='e'?{x:wp+v,z:u}:{x:-wp-v,z:u};
+  const rect=(u0,u1,v0,v1)=>{const a=map(u0,v0),b=map(u1,v1);return {minx:Math.min(a.x,b.x),maxx:Math.max(a.x,b.x),minz:Math.min(a.z,b.z),maxz:Math.max(a.z,b.z)}};
+  const rooms=[{key:'living',name:'🛋 거실',main:true,r:{minx:-L.W/2,maxx:L.W/2,minz:-L.D/2,maxz:L.D/2}}];
+  let u=-tot/2;if(roomsOn)for(const [k,n,w] of RW){rooms.push({key:k,name:n,u0:u,u1:u+w,v0:0,v1:RD,r:rect(u,u+w,0,RD)});u+=w}
+  const faith=roomsOn&&L.rooms.faith!==false;if(faith)rooms.push({key:'church',name:'⛪ 강아지교 성당',u0:-cw/2,u1:cw/2,v0:RD,v1:RD+cd,r:rect(-cw/2,cw/2,RD,RD+cd),cath:true});
+  const doors=[];
+  const hDoor=(a,b,c,v)=>doors.push({a,b,c,v,h:true,pa:map(c,v-0.9),pb:map(c,v+0.9)}); // on a line v=const
+  const vDoor=(a,b,uu,c)=>doors.push({a,b,c,u:uu,h:false,pa:map(uu-0.9,c),pb:map(uu+0.9,c)}); // on a line u=const
+  if(roomsOn){for(let i=1;i<=3;i++){const R=rooms[i],lo=Math.max(R.u0,-Lm/2+0.7),hi=Math.min(R.u1,Lm/2-0.7);if(hi-lo>=1.8)hDoor(0,i,(lo+hi)/2,0)}
+  for(let i=1;i<3;i++)vDoor(i,i+1,rooms[i].u1,RD/2)}
+  if(faith)for(let i=1;i<=3;i++){const R=rooms[i],lo=Math.max(R.u0,-cw/2+0.7),hi=Math.min(R.u1,cw/2-0.7);if(hi-lo>=1.8)hDoor(i,4,(lo+hi)/2,RD)}
+  doors.forEach(d=>{if(d.a===0)d.side=O});
+  // stair tower (only with 2+ floors): on a main wall that is neither the yard side nor the rooms side
+  let tower=null;const ys=yb?yb.side:null;
+  if(FN>1){const T=['n','e','s','w'].find(k=>k!==ys&&(!roomsOn||k!==O))||'n',tl=(T==='n'||T==='s')?L.W:L.D,twp=(T==='n'||T==='s')?L.D/2:L.W/2;
+    const tmap=(a,b)=>T==='n'?{x:a,z:-twp-b}:T==='s'?{x:a,z:twp+b}:T==='e'?{x:twp+b,z:a}:{x:-twp-b,z:a};
+    const wis=(L.items||[]).filter(i=>FURN[i.type]&&FURN[i.type].wall&&i.wall===T).map(i=>i.t);let ta=0;for(const c of[0,-2.6,2.6,-3.6,3.6,-1.4,1.4,-4.6,4.6]){if(Math.abs(c)>tl/2-2.4)continue;if(wis.every(t=>Math.abs(t-c)>3.2)){ta=c;break}}
+    const a0=ta-2.2,a1=ta+2.2,p0=tmap(a0,0),p1=tmap(a1,5);const idx=rooms.length;
+    rooms.push({key:'tower',name:'🪜 계단실',r:{minx:Math.min(p0.x,p1.x),maxx:Math.max(p0.x,p1.x),minz:Math.min(p0.z,p1.z),maxz:Math.max(p0.z,p1.z)},tower:true});
+    doors.push({a:0,b:idx,c:ta,side:T,tower:true,pa:tmap(ta,-0.9),pb:tmap(ta,0.9)});
+    tower={T,ta,tmap,idx,foot:tmap(ta-1.1,1.0),top:tmap(ta-1.1,4.4),elev:tmap(ta+1.25,3.45),elevIn:tmap(ta+1.25,2.3)}}
+  doors.forEach((d,i)=>d.id=i);
+  // next hop table
+  const n=rooms.length,next=[];for(let a=0;a<n;a++){next[a]=[];const prev=new Array(n).fill(-1),q=[a],seen=new Set([a]);
+    while(q.length){const x=q.shift();for(const d of doors){const y=d.a===x?d.b:d.b===x?d.a:-1;if(y<0||seen.has(y))continue;seen.add(y);prev[y]=x;q.push(y)}}
+    for(let b=0;b<n;b++){if(b===a||!seen.has(b)){next[a][b]=null;continue}let y=b;while(prev[y]!==a)y=prev[y];next[a][b]=doors.find(d=>(d.a===a&&d.b===y)||(d.b===a&&d.a===y))}}
+  const cf=Math.max(1,Math.min(FN-1||1,Math.floor((L.floors&&L.floors.church)||1)));
+  return {O,ns,map,rect,rooms,doors,next,RD,cw,cd,Lm,tot,top:RD+cd,faith,roomsOn,FN,tower,churchFloors:cf,nextF:{}};
+}
+let ANX=null;
+/* ---------- multi-floor house ---------- */
+const FH=3.25;let FLN=1,FLOOR={solids:{},groups:{},items:{},names:{}},viewFloor='auto',elevCab=null;
+function roomOnFloor(R,k){if(!R)return false;if(k===0)return true;if(R.key==='banquet')return false;if(R.key==='church')return ANX.faith&&k>=2&&k<=ANX.churchFloors;return true}
+function doorsF(k){return ANX.doors.filter(d=>roomOnFloor(ANX.rooms[d.a],k)&&roomOnFloor(ANX.rooms[d.b],k))}
+function nextOn(k){if(k===0||!ANX)return ANX.next;const key=k>=2&&k<=ANX.churchFloors?'c':k===1?'1':'u';if(ANX.nextF[key])return ANX.nextF[key];
+  const n=ANX.rooms.length,D=doorsF(k),next=[];for(let a=0;a<n;a++){next[a]=[];const prev=new Array(n).fill(-1),q=[a],seen=new Set([a]);while(q.length){const x=q.shift();for(const d of D){const y=d.a===x?d.b:d.b===x?d.a:-1;if(y<0||seen.has(y))continue;seen.add(y);prev[y]=x;q.push(y)}}
+    for(let b=0;b<n;b++){if(b===a||!seen.has(b)){next[a][b]=null;continue}let y=b;while(prev[y]!==a)y=prev[y];next[a][b]=D.find(d=>(d.a===a&&d.b===y)||(d.b===a&&d.a===y))}}return ANX.nextF[key]=next}
+function solidsOf(a){const f=a&&a.fl||0;return f?(FLOOR.solids[f]||[]):solids}
+function moveMode(a){const m=(layout.floors&&layout.floors.move)||'stairs';if(m!=='auto')return m;return a.stamina<40||(typeof isOld==='function'&&isOld(a))?'elev':'stairs'}
+function floorTravel(a,tf,spd,dt){
+  const T=ANX&&ANX.tower;if(!T){a.fl=tf;return 0}
+  if(a.transit){const X=a.transit;X.t+=dt;const p=Math.min(1,X.t/X.dur);
+    if(X.mode==='stairs'){const P0=X.up?T.foot:T.top,P1=X.up?T.top:T.foot;a.pos.set(P0.x+(P1.x-P0.x)*p,P0.z+(P1.z-P0.z)*p);a.flY=X.from+(X.to-X.from)*p;a.heading=Math.atan2(P1.z-P0.z,P1.x-P0.x);a.speed=spd*0.7}
+    else{a.pos.set(T.elev.x,T.elev.z);const e=p<0.5?2*p*p:1-Math.pow(-2*p+2,2)/2;a.flY=X.from+(X.to-X.from)*e;a.speed=0;if(elevCab)elevCab.userData.y=a.flY}
+    if(p>=1){a.fl=X.to;a.flY=null;a.transit=null}return 5+Math.abs(tf-(a.fl||0))*4}
+  const cf=a.fl||0,up=tf>cf,mode=moveMode(a),P=mode==='elev'?T.elev:(up?T.foot:T.top);
+  a.inFloorCore=true;a._tfl=cf;const dist=steer(a,P.x,P.z,spd,dt);a.inFloorCore=false;
+  if(dist<0.3){const to=mode==='elev'?tf:(up?cf+1:cf-1);a.transit={mode,from:cf,to,up,t:0,dur:mode==='elev'?0.5+0.22*Math.abs(to-cf):0.9};
+    if(mode==='stairs'){a.health=clamp(a.health+0.6);a.stamina=clamp(a.stamina-2.5);world.stairUses=(world.stairUses||0)+1}else{pay('elev',150);a.happy=clamp(a.happy+2);world.elevUses=(world.elevUses||0)+1}}
+  return dist+Math.abs(tf-cf)*4}
+function floorRoomsAt(k){return ANX?ANX.rooms.filter(R=>roomOnFloor(R,k)&&!R.tower):[]}
+function floorSpot(k,keyPref){const L=floorRoomsAt(k).filter(R=>!keyPref||R.key===keyPref);if(!L.length)return null;const R=pick(L),r=R.r,S=k?FLOOR.solids[k]||[]:solids;
+  for(let i=0;i<40;i++){const x=rand(r.minx+0.7,r.maxx-0.7),z=rand(r.minz+0.7,r.maxz-0.7);if(!S.some(b=>x>b.minx-0.35&&x<b.maxx+0.35&&z>b.minz-0.35&&z<b.maxz+0.35))return {x,z,fl:k}}return null}
+function flY(d){if(viewHidden(d))return -300;return (d.flY!=null?d.flY:(d.fl||0))*FH}
+function floorViewK(){if(FLN<2)return null;if(viewFloor==='all')return null;if(viewFloor==='auto'){if(camMode==='follow'){const d=dogs.find(x=>x.id===followId);if(d)return Math.round(d.flY!=null?d.flY:(d.fl||0))}return null}return +viewFloor}
+function viewHidden(d){const v=floorViewK();return v!=null&&(d.flY!=null?d.flY:(d.fl||0))>v+0.5}
+function applyFloorView(){const v=floorViewK();for(const k in FLOOR.groups)FLOOR.groups[k].visible=v==null||+k<=v;if(elevCab)elevCab.visible=true}
+
+function roomIdx(x,z){if(!ANX)return (x>=-W/2&&x<=W/2&&z>=-D/2&&z<=D/2)?0:-1;for(let i=0;i<ANX.rooms.length;i++){const r=ANX.rooms[i].r;if(x>=r.minx-0.06&&x<=r.maxx+0.06&&z>=r.minz-0.06&&z<=r.maxz+0.06)return i}return -1}
+function roomKey(x,z){const i=roomIdx(x,z);return i<0||!ANX?(i===0?'living':null):ANX.rooms[i].key}
+function roomOf(d){return roomKey(d.pos.x,d.pos.y)}
+function inAnnex(x,z){if(!ANX)return false;for(let i=1;i<ANX.rooms.length;i++){const r=ANX.rooms[i].r;if(x>=r.minx&&x<=r.maxx&&z>=r.minz&&z<=r.maxz)return true}return false}
+function roomRect(key){if(!ANX)return null;const R=ANX.rooms.find(r=>r.key===key);return R&&R.r}
+function spotIn(key,m){const r=roomRect(key);if(!r)return null;m=m||0.7;for(let i=0;i<40;i++){const x=rand(r.minx+m,r.maxx-m),z=rand(r.minz+m,r.maxz-m);if(!solids.some(b=>x>b.minx-0.35&&x<b.maxx+0.35&&z>b.minz-0.35&&z<b.maxz+0.35))return {x,z}}return null}
+function indoorSpot(){
+  if(FLN>1&&Math.random()<0.5){const k=1+Math.floor(Math.random()*(FLN-1)),p=floorSpot(k);if(p)return p}
+  if(ANX&&Math.random()<0.38){const k=pick(['kitchen','library','banquet','church','church','kitchen','banquet']);const p=spotIn(k);if(p)return p}
+  return findFree(rand(-W/2+0.6,W/2-0.6),rand(-D/2+0.6,D/2-0.6))}
+function roomTend(d,key,inP,outP){return roomOf(d)===key?inP:outP}
+function extents(L=layout){const y=yardRect(L);const e={minx:-L.W/2,maxx:L.W/2,minz:-L.D/2,maxz:L.D/2};if(y){e.minx=Math.min(e.minx,y.minx);e.maxx=Math.max(e.maxx,y.maxx);e.minz=Math.min(e.minz,y.minz);e.maxz=Math.max(e.maxz,y.maxz)}const ap=annexPlan(L);if(ap)for(const R of ap.rooms){e.minx=Math.min(e.minx,R.r.minx);e.maxx=Math.max(e.maxx,R.r.maxx);e.minz=Math.min(e.minz,R.r.minz);e.maxz=Math.max(e.maxz,R.r.maxz)}return e}
 
 /* ======================= SETUP EDITOR ======================= */
 const ed=$('#editor'),ex=ed.getContext('2d');
@@ -1797,7 +1941,7 @@ let tool='move',drag=null;
 const TOOLDEF=[['move','이동 · 회전'],['del','삭제'],null,
   ['sofa'],['bed'],['table'],['shelf'],['tv'],['plant'],['dogbed'],['rug'],null,
   ['water'],['food'],['launcher'],['potty'],['treadmill'],['homecam'],['door'],['window'],['petdoor'],['farm'],null,
-  ['train'],['bath'],['medic'],['quiz'],['speaker'],['smartlight'],['thermo'],['whitenoise'],['security'],['pawwash'],['petfountain'],['arcade'],['claw'],['track'],['hurdle'],['tunnel'],['weave'],['aframe'],['seesaw'],['beam'],['hoop'],['jumpbox'],['tirepull'],['springpole'],['discmachine'],['nosework'],['cattower'],['petsofa'],['pool'],['shade'],['sandpit'],['solar'],['groom'],['toybox'],['snackbar'],['kennel'],['aircon'],['purifier'],['agility'],['fountain']];
+  ['train'],['bath'],['medic'],['quiz'],['speaker'],['smartlight'],['thermo'],['whitenoise'],['security'],['pawwash'],['petfountain'],['arcade'],['claw'],['stove'],['fridge'],['sink'],['counter'],['diningtable'],['bookcase'],['readdesk'],['armchair'],['globe'],['longtable'],['buffet'],['stage'],['chandelier'],['pew'],['altar'],['candle'],['organ'],['font'],['statue'],['track'],['hurdle'],['tunnel'],['weave'],['aframe'],['seesaw'],['beam'],['hoop'],['jumpbox'],['tirepull'],['springpole'],['discmachine'],['nosework'],['cattower'],['petsofa'],['pool'],['shade'],['sandpit'],['solar'],['groom'],['toybox'],['snackbar'],['kennel'],['aircon'],['purifier'],['agility'],['fountain']];
 function buildTools(){
   const box=$('#tools');box.innerHTML='';
   for(const t of TOOLDEF){
@@ -1848,6 +1992,10 @@ function drawEditor(){
       const y=yardRect();const ns=nearStrip();if(ns){const [nx,nz]=m2p((ns.minx+ns.maxx)/2,(ns.minz+ns.maxz)/2);ex.fillStyle='#24421f';ex.fillText('마당',nx,nz)}}
     else{const yb=yr.base||yr,[bx,bz]=m2p((yb.minx+yb.maxx)/2,(yb.minz+yb.maxz)/2);ex.fillStyle='#24421f';ex.fillText('마당',bx,bz+5)}
     const pi=document.getElementById('pitchInfo');if(pi)pi.textContent=layout.yard.pitch?(pr?`축구장 크기: ${makePitch(pr).len.toFixed(0)}×${makePitch(pr).wid.toFixed(0)}m. 집 쪽 띠에는 농장·나무·개집이 들어가요.`:'마당이 작아서 축구장을 만들 수 없어요. 깊이 10m, 너비 12m 이상을 추천해요.'):'';}
+  {const ap=annexPlan();if(ap){const C={kitchen:'#e9e2d0',library:'#b98e63',banquet:'#b5555f',church:'#d9d4c7'};
+    for(const R of ap.rooms){if(R.main)continue;const [rx,rz]=m2p(R.r.minx,R.r.minz),rw=(R.r.maxx-R.r.minx)*edScale,rd=(R.r.maxz-R.r.minz)*edScale;ex.fillStyle=C[R.key];ex.fillRect(rx,rz,rw,rd);ex.strokeStyle=ink;ex.lineWidth=3;ex.strokeRect(rx,rz,rw,rd);
+      ex.fillStyle=R.key==='banquet'||R.key==='library'?'#ffffff':'#2a2a2a';ex.font=`bold ${R.cath?16:13}px "IBM Plex Sans KR",sans-serif`;ex.textAlign='center';ex.fillText(R.name+(R.cath?` ${ap.cw}×${ap.cd}m`:''),rx+rw/2,rz+rd/2+5)}
+    ex.fillStyle='#ffd23f';for(const d of ap.doors){const [px,pz]=m2p((d.pa.x+d.pb.x)/2,(d.pa.z+d.pb.z)/2);ex.beginPath();ex.arc(px,pz,Math.max(3,0.6*edScale),0,7);ex.fill()}}}
   // floor
   ex.fillStyle='#d8c3a0';ex.fillRect(x0,z0,W*edScale,D*edScale);
   ex.strokeStyle='rgba(0,0,0,.08)';ex.lineWidth=1;
@@ -1938,9 +2086,18 @@ ed.addEventListener('pointerup',()=>{
   drag=null;
 });
 function setRoom(W,D){layout.W=clamp(W,4,100);layout.D=clamp(D,4,100);$('#roomW').value=layout.W;$('#roomD').value=layout.D;layout.items.forEach(clampItem);
-  if(!layout.yard)layout.yard={on:false,depth:6,wide:0,pitch:false};$('#yardOn').checked=layout.yard.on;$('#yardDepth').value=layout.yard.depth;$('#yardWide').value=layout.yard.wide||0;$('#yardPitch').checked=!!layout.yard.pitch;$('#yardGym').checked=!!layout.yard.gym;$('#gymDepth').value=layout.yard.gymD||14;edResize()}
-$('#yardOn').addEventListener('change',e=>{layout.yard.on=e.target.checked;
+  if(!layout.yard)layout.yard={on:false,depth:6,wide:0,pitch:false};$('#yardOn').checked=layout.yard.on;$('#yardDepth').value=layout.yard.depth;$('#yardWide').value=layout.yard.wide||0;$('#yardPitch').checked=!!layout.yard.pitch;$('#yardGym').checked=!!layout.yard.gym;$('#gymDepth').value=layout.yard.gymD||14;$('#roomsOn').checked=!!(layout.rooms&&layout.rooms.on);$('#cathSize').value=(layout.rooms&&layout.rooms.cath)||'big';$('#faithOn').checked=!(layout.rooms&&layout.rooms.faith===false);$('#cathSize').disabled=!$('#faithOn').checked;{const F=layout.floors||{n:1,church:1,move:'stairs'};$('#floorN').value=F.n||1;$('#floorChurch').value=F.church||1;$('#floorMove').value=F.move||'stairs'}edResize()}
+$('#yardOn').addEventListener('change',e=>{layout.yard.on=e.target.checked;if(e.target.checked&&layout.yard.gym===undefined){layout.yard.gym=true;layout.yard.gymD=layout.yard.gymD||14;$('#yardGym').checked=true}
   if(layout.yard.on&&!layout.items.some(i=>i.type==='petdoor')){const it={id:uid++,type:'petdoor'};snapWall(it,layout.W/2,0);layout.items.push(it)}edResize()});
+$('#roomsOn').addEventListener('change',e=>{layout.rooms=layout.rooms||{cath:'big'};layout.rooms.on=e.target.checked;edResize()});
+const floorCfg=()=>{layout.floors=layout.floors||{n:1,church:1,move:'stairs'};return layout.floors};
+$('#floorN').addEventListener('change',e=>{const v=Math.max(1,Math.floor(+e.target.value||1));e.target.value=v;floorCfg().n=v;const c=$('#floorChurch');if(+c.value>v){c.value=v;floorCfg().church=v}$('#floorNote').textContent=v>40?`${v}층! 아주 높은 집이에요. 층이 많을수록 화면이 무거워져요.`:'2층부터는 층마다 가구가 조금씩 달라요(침실·놀이방·온실·휴게실, 카페/주방, 도서관). 연회장은 1층에만 있어요. 층이 많을수록 화면이 무거워져요.';edResize()});
+$('#floorChurch').addEventListener('change',e=>{const n=floorCfg().n||1;const v=clamp(Math.floor(+e.target.value||1),1,Math.max(1,n-1)||1);e.target.value=v;floorCfg().church=v});
+$('#viewFloor').addEventListener('change',e=>{viewFloor=e.target.value;applyFloorView()});
+$('#floorMove2').addEventListener('change',e=>{layout.floors=layout.floors||{n:FLN,church:1};layout.floors.move=e.target.value;$('#floorMove').value=e.target.value});
+$('#floorMove').addEventListener('change',e=>{floorCfg().move=e.target.value;if($('#floorMove2'))$('#floorMove2').value=e.target.value});
+$('#faithOn').addEventListener('change',e=>{layout.rooms=layout.rooms||{on:true,cath:'big'};layout.rooms.faith=e.target.checked;$('#cathSize').disabled=!e.target.checked;edResize()});
+$('#cathSize').addEventListener('change',e=>{layout.rooms=layout.rooms||{on:true};layout.rooms.cath=e.target.value;edResize()});
 $('#yardGym').addEventListener('change',e=>{layout.yard.gym=e.target.checked;if(!layout.yard.gymD)layout.yard.gymD=14;edResize()});
 $('#gymDepth').addEventListener('change',e=>{layout.yard.gymD=clamp(parseFloat(e.target.value)||14,6,60);e.target.value=layout.yard.gymD;edResize()});
 $('#yardDepth').addEventListener('change',e=>{layout.yard.depth=clamp(parseFloat(e.target.value)||4,2,120);e.target.value=layout.yard.depth;edResize()});
@@ -2029,7 +2186,7 @@ function arenaLayout(){
 let renderer,camRenderer,scene,mainCam,homeCam,controls;
 let W=9,D=7,solids=[],walls={},dogs=[],balls=[],intruder=null;
 let B={minx:-4.5,maxx:4.5,minz:-3.5,maxz:3.5},yard=null,tvs=[],tvLight=null;
-const inRoom=(x,z)=>x>=-W/2&&x<=W/2&&z>=-D/2&&z<=D/2;
+const inRoom=(x,z)=>(x>=-W/2&&x<=W/2&&z>=-D/2&&z<=D/2)||inAnnex(x,z);
 let dev={};            // device refs
 let world=null;        // sim state
 const matCache={};
@@ -2091,7 +2248,7 @@ let hemi,sunLight,lamp,winLight;
 function buildWorld(){
   scene=new THREE.Scene();scene.background=new THREE.Color('#1a2326');
   W=layout.W;D=layout.D;solids=[];walls={};dev={};dogs=[];balls=[];intruder=null;
-  yard=yardRect();B=extents();tvs=[];
+  yard=yardRect();ANX=annexPlan();B=extents();tvs=[];
   hemi=new THREE.HemisphereLight('#ffffff','#8a7a66',0.55);scene.add(hemi);
   sunLight=new THREE.DirectionalLight('#fff4e0',0.8);sunLight.position.set(W*0.4,9,D*0.3);sunLight.castShadow=true;
   const bcx=(B.minx+B.maxx)/2,bcz=(B.minz+B.maxz)/2;
@@ -2108,13 +2265,13 @@ function buildWorld(){
   const floor=new THREE.Mesh(new THREE.PlaneGeometry(W,D),new THREE.MeshStandardMaterial({map:ft,roughness:0.75}));
   floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;scene.add(floor);floorMesh=floor;surroundG=null;
   // walls
-  const H=out?0.45:2.6,T=0.12,wc=out?'#f4f2ea':'#e6ebec';
+  FLN=ANX?ANX.FN:1;const H=out?0.45:(FLN>1?FH:2.6),T=0.12,wc=out?'#f4f2ea':'#e6ebec';
   const mk=(k,w,d,x,z)=>{
     const g=new THREE.Group();g.position.set(x,0,z);scene.add(g);walls[k]=g;
     const along=(k==='n'||k==='s');const len=along?w:d;
     const seg=(a0,a1,y0,y1,solid)=>{const L=a1-a0,cA=(a0+a1)/2;const m=along?box(L,y1-y0,d,wc,cA,(y0+y1)/2,0):box(w,y1-y0,L,wc,0,(y0+y1)/2,cA);m.castShadow=false;g.add(m);
       if(y0<0.1){const sk=along?box(L+0.01,0.1,d+0.03,'#c8cfd1',cA,0.05,0):box(w+0.03,0.1,L+0.01,'#c8cfd1',0,0.05,cA);g.add(sk)}
-      if(solid&&yard)solids.push(along?{minx:x+a0,maxx:x+a1,minz:z-d/2,maxz:z+d/2,h:H,type:'wall'}:{minx:x-w/2,maxx:x+w/2,minz:z+a0,maxz:z+a1,h:H,type:'wall'});};
+      if(solid&&(yard||ANX))solids.push(along?{minx:x+a0,maxx:x+a1,minz:z-d/2,maxz:z+d/2,h:H,type:'wall'}:{minx:x-w/2,maxx:x+w/2,minz:z+a0,maxz:z+a1,h:H,type:'wall'});};
     if(yard&&yard.side===k){
       const c=yard.pd.t;seg(-len/2,c-DOOR_W/2,0,H,true);seg(c+DOOR_W/2,len/2,0,H,true);seg(c-DOOR_W/2,c+DOOR_W/2,DOOR_H,H,false);
       // pet door frame
@@ -2122,11 +2279,15 @@ function buildWorld(){
       const top=box(fd[0],0.08,fd[2],fr,along?c:0,DOOR_H+0.04,along?0:c);g.add(top);
       for(const s2 of[-1,1]){const p=along?box(0.06,DOOR_H,d+0.04,fr,c+s2*(DOOR_W/2+0.03),DOOR_H/2,0):box(w+0.04,DOOR_H,0.06,fr,0,DOOR_H/2,c+s2*(DOOR_W/2+0.03));g.add(p)}
       const flap=along?box(DOOR_W-0.04,DOOR_H*0.35,0.015,'#9ad0a6',c,DOOR_H-DOOR_H*0.175,0,{transparent:true,opacity:0.45}):box(0.015,DOOR_H*0.35,DOOR_W-0.04,'#9ad0a6',0,DOOR_H-DOOR_H*0.175,c,{transparent:true,opacity:0.45});g.add(flap);
-    }else seg(-len/2,len/2,0,H,false);
+    }else if(ANX&&ANX.doors.some(d=>d.a===0&&d.side===k)){const ops=ANX.doors.filter(d=>d.a===0&&d.side===k).map(d=>d.c).sort((a,b)=>a-b);let a0=-len/2;for(const c of ops){seg(a0,c-0.8,0,H,true);seg(c-0.8,c+0.8,2.2,H,false);a0=c+0.8}seg(a0,len/2,0,H,true)}
+    else seg(-len/2,len/2,0,H,!!ANX);
   };
   mk('n',W+T*2,T,0,-D/2-T/2);mk('s',W+T*2,T,0,D/2+T/2);mk('w',T,D,-W/2-T/2,0);mk('e',T,D,W/2+T/2,0);
+  if(ANX)buildAnnex();
+  buildFloors();
+  if(ANX){annexItems();ANX.priestSpot=itemSpot('altar',true)||(()=>{const p=ANX.map(0,ANX.top-2);return {x:p.x,z:p.z,fx:p.x,fz:p.z}})()}
   // items
-  for(const it of layout.items.concat(gymItems())){
+  for(const it of layout.items.concat(gymItems(),annexItems())){
     const f=FURN[it.type];
     if(f.yard&&!yard)continue;
     if(f.wall){buildWallItem(it);continue}
@@ -2376,6 +2537,29 @@ function buildFurniture(it){
     case 'track':{const tr=new THREE.Mesh(new THREE.RingGeometry(1.15,1.65,40),mat('#c8644a'));tr.rotation.x=-Math.PI/2;tr.scale.set((w/2)/1.65,(d/2)/1.65,1);tr.position.y=0.006;g.add(tr);
       for(const rr of[1.32,1.48]){const ln=new THREE.Mesh(new THREE.RingGeometry(rr-0.012,rr+0.012,48),mat('#ffffff'));ln.rotation.x=-Math.PI/2;ln.scale.copy(tr.scale);ln.position.y=0.008;g.add(ln)}
       const inner=new THREE.Mesh(new THREE.CircleGeometry(1.15,40),mat('#5aa86a'));inner.rotation.x=-Math.PI/2;inner.scale.copy(tr.scale);inner.position.y=0.005;g.add(inner);break}
+    case 'stove':{g.add(box(w,0.86,d,c,0,0.43,0));g.add(box(w-0.04,0.03,d-0.04,'#222',0,0.875,0));for(const [x,z] of[[-0.24,-0.12],[0.24,-0.12],[-0.24,0.14],[0.24,0.14]])g.add(cyl(0.1,0.1,0.02,'#555',x,0.9,z,16));g.add(box(w*0.8,0.4,0.02,'#333',0,0.45,d/2+0.005));const fl=new THREE.PointLight('#ff8a3a',0,1.5,2);fl.position.set(0,1.1,0);g.add(fl);it._fx={flame:fl};break}
+    case 'fridge':{g.add(box(w,1.9,d,c,0,0.95,0));g.add(box(w-0.02,0.02,0.01,'#aab',0,1.25,d/2+0.006));for(const y of[0.7,1.55])g.add(box(0.04,0.35,0.04,'#9aa',w/2-0.12,y,d/2+0.03));break}
+    case 'sink':{g.add(box(w,0.86,d,c,0,0.43,0));g.add(box(w*0.5,0.06,d*0.6,'#8aa4b4',0,0.86,0.02));g.add(cyl(0.02,0.02,0.3,'#c0c6ca',0,1.0,-d/2+0.12,8));g.add(box(0.03,0.03,0.22,'#c0c6ca',0,1.14,-d/2+0.22));break}
+    case 'counter':{g.add(box(w,0.86,d,c,0,0.43,0));g.add(box(w+0.02,0.04,d+0.02,'#e8e2d4',0,0.88,0));g.add(cyl(0.12,0.1,0.14,'#f2c14e',-0.3,0.97,0,14));g.add(box(0.36,0.03,0.24,'#c9944a',0.3,0.915,0));break}
+    case 'diningtable':{g.add(box(w,0.06,d,c,0,0.74,0));for(const [x,z] of[[-1,-1],[1,-1],[-1,1],[1,1]])g.add(box(0.07,0.72,0.07,'#7a5232',x*(w/2-0.1),0.36,z*(d/2-0.1)));for(let i=0;i<3;i++){g.add(cyl(0.14,0.14,0.03,'#ffffff',-0.7+i*0.7,0.78,0,16));g.add(sph(0.06,'#e8963a',-0.7+i*0.7,0.82,0))}
+      for(const sz of[-1,1])for(let i=0;i<3;i++){const x=-0.75+i*0.75;g.add(box(0.4,0.04,0.4,'#c9944a',x,0.45,sz*(d/2+0.3)));g.add(box(0.4,0.45,0.04,'#c9944a',x,0.67,sz*(d/2+0.48)))}break}
+    case 'bookcase':{g.add(box(w,2.4,d,c,0,1.2,0));for(let r=0;r<5;r++){g.add(box(w-0.08,0.03,d-0.04,'#4f3420',0,0.2+r*0.46,0.01));let x=-w/2+0.08;while(x<w/2-0.12){const bw=rand(0.05,0.11);g.add(box(bw,rand(0.26,0.38),d-0.12,pick(['#b6461f','#2f7fd0','#3fb27f','#f2c14e','#7a3b8a','#e8e2d4']),x+bw/2,0.2+r*0.46+0.17,0.04));x+=bw+0.008}}break}
+    case 'readdesk':{g.add(box(w,0.05,d,c,0,0.76,0));for(const sx of[-1,1])g.add(box(0.06,0.74,d-0.1,c,sx*(w/2-0.06),0.37,0));const bk=box(0.5,0.03,0.36,'#f4efe4',0,0.8,0);bk.rotation.x=-0.2;g.add(bk);g.add(box(0.24,0.03,0.34,'#b6461f',-0.13,0.81,0));g.add(cyl(0.03,0.05,0.4,'#c9a227',w/2-0.18,0.98,-0.15,10));g.add(sph(0.08,'#fff3c4',w/2-0.18,1.2,-0.15,{emissive:'#ffcf6a',emissiveIntensity:0.5}));break}
+    case 'armchair':{g.add(box(w,0.4,d,c,0,0.2,0));g.add(box(w,0.6,0.16,c,0,0.6,-d/2+0.08));for(const sx of[-1,1])g.add(box(0.14,0.3,d,c,sx*(w/2-0.07),0.5,0));g.add(box(w-0.3,0.08,d-0.22,'#a85a5a',0,0.44,0.05));break}
+    case 'globe':{g.add(cyl(0.18,0.22,0.06,'#6b4a2e',0,0.03,0,16));g.add(cyl(0.03,0.03,0.7,'#6b4a2e',0,0.4,0,8));const gl=sph(0.24,'#2f7fd0',0,0.85,0);g.add(gl);g.add(sph(0.245,'#3fb27f',0.05,0.88,0.03,{transparent:true,opacity:0.6}));it._fx={globe:gl};break}
+    case 'longtable':{g.add(box(w,0.06,d,c,0,0.76,0));g.add(box(w+0.04,0.3,d+0.04,'#b5555f',0,0.6,0));for(const [x,z] of[[-1,-1],[1,-1],[-1,1],[1,1]])g.add(box(0.08,0.72,0.08,'#7a5232',x*(w/2-0.15),0.36,z*(d/2-0.12)));
+      for(let i=0;i<6;i++){const x=-w/2+0.5+i*(w-1)/5;g.add(cyl(0.16,0.16,0.03,'#ffffff',x,0.8,-0.3,16));g.add(cyl(0.16,0.16,0.03,'#ffffff',x,0.8,0.3,16));g.add(cyl(0.03,0.03,0.16,'#e8c76a',x,0.88,0,8))}
+      g.add(cyl(0.22,0.18,0.2,'#e8963a',0,0.89,0,16));g.add(sph(0.1,'#f28aa8',-1.4,0.85,0));g.add(sph(0.1,'#9adf7a',1.4,0.85,0));break}
+    case 'buffet':{g.add(box(w,0.86,d,c,0,0.43,0));g.add(box(w+0.03,0.2,d+0.03,'#b5555f',0,0.75,0));for(let i=0;i<4;i++){const x=-w/2+0.3+i*(w-0.6)/3;g.add(cyl(0.18,0.18,0.04,'#ffffff',x,0.88,0,16));g.add(sph(0.09,pick(['#f2c14e','#e8963a','#f28aa8','#9adf7a']),x,0.95,0))}g.add(cyl(0.18,0.2,0.3,'#f4d7e0',0.1,1.05,-0.15,16));g.add(cyl(0.12,0.14,0.2,'#f4d7e0',0.1,1.3,-0.15,16));break}
+    case 'stage':{g.add(box(w,0.35,d,c,0,0.175,0));g.add(box(w+0.02,0.02,d+0.02,'#e8c76a',0,0.355,0));for(const sx of[-1,1]){g.add(cyl(0.02,0.02,1.6,'#333',sx*(w/2-0.2),1.15,-d/2+0.2,8));g.add(sph(0.12,'#ffd23f',sx*(w/2-0.2),1.95,-d/2+0.2,{emissive:'#ffb000',emissiveIntensity:0.8}))}g.add(cyl(0.015,0.015,1.1,'#222',0,0.9,0.3,8));g.add(sph(0.05,'#555',0,1.47,0.3));break}
+    case 'chandelier':{const hy=it.hy||2.25;g.add(cyl(0.01,0.01,Math.max(0.2,(it.hy?it.hy+0.9:2.6)-hy),'#c9a227',0,hy+0.4,0,6));g.add(cyl(0.5,0.25,0.12,'#e8c76a',0,hy,0,16));for(let i=0;i<8;i++){const a=i/8*Math.PI*2;g.add(sph(0.06,'#fff3c4',Math.cos(a)*0.55,hy+0.05,Math.sin(a)*0.55,{emissive:'#ffd76a',emissiveIntensity:0.9}))}g.add(sph(0.12,'#fff3c4',0,hy-0.14,0,{emissive:'#ffd76a',emissiveIntensity:0.9}));break}
+    case 'pew':{g.add(box(w,0.08,d*0.6,c,0,0.42,0.05));g.add(box(w,0.55,0.07,c,0,0.7,-d/2+0.06));for(const sx of[-1,1])g.add(box(0.07,0.6,d,c,sx*(w/2-0.04),0.3,0));g.add(box(w,0.04,0.12,'#5a3b22',0,0.98,-d/2+0.06));break}
+    case 'altar':{g.add(box(w,1.0,d,c,0,0.5,0));g.add(box(w+0.08,0.06,d+0.08,'#c9a227',0,1.03,0));g.add(box(w*0.8,0.7,0.02,'#b5555f',0,0.55,d/2+0.006));const paw=textSprite('🐾',{bg:'rgba(0,0,0,0)',size:0.5});paw.position.set(0,0.6,d/2+0.05);g.add(paw);g.add(box(0.5,0.05,0.36,'#f4efe4',0.5,1.08,0));g.add(box(0.24,0.06,0.34,'#7a3b3b',0.37,1.1,0));break}
+    case 'candle':{g.add(cyl(0.16,0.2,0.06,'#c9a227',0,0.03,0,12));g.add(cyl(0.035,0.035,1.1,'#c9a227',0,0.6,0,8));for(const sx of[-0.14,0,0.14]){g.add(cyl(0.03,0.03,0.22,'#f4efe4',sx,1.27,0,8));g.add(sph(0.03,'#ffd76a',sx,1.42,0,{emissive:'#ffb000',emissiveIntensity:1}))}g.add(box(0.36,0.03,0.04,'#c9a227',0,1.16,0));break}
+    case 'organ':{g.add(box(w,1.0,d,c,0,0.5,0));g.add(box(w*0.7,0.08,0.3,'#f4efe4',0,1.02,d/2-0.1));for(let i=0;i<11;i++){const x=-w/2+0.18+i*(w-0.36)/10,hh=1.6+Math.sin(i/10*Math.PI)*2.2;g.add(cyl(0.08,0.08,hh,'#d9c08a',x,1.0+hh/2,-d/2+0.25,10))}g.add(box(w,0.5,0.3,'#5a3b22',0,1.2,-d/2+0.2));break}
+    case 'font':{g.add(cyl(0.12,0.2,0.8,c,0,0.4,0,12));g.add(cyl(0.34,0.24,0.18,c,0,0.88,0,16));g.add(cyl(0.29,0.29,0.03,'#7fd3e6',0,0.96,0,16,{emissive:'#3fb2d0',emissiveIntensity:0.3}));break}
+    case 'statue':{g.add(box(w,1.0,d,'#c9c2b2',0,0.5,0));g.add(box(w+0.1,0.08,d+0.1,'#c9a227',0,1.02,0));const S0=new THREE.Group();S0.position.set(0,1.06,0);S0.scale.setScalar(1.8);buildDog(S0,'#efe9da','#d8d0bc');g.add(S0);
+      const halo=new THREE.Mesh(new THREE.TorusGeometry(0.28,0.03,8,28),mat('#ffd23f',{emissive:'#ffb000',emissiveIntensity:0.8}));halo.rotation.x=Math.PI/2;halo.position.set(0,3.0,0.25);g.add(halo);break}
     case 'nosework':{
       const m0=box(w,0.03,d,c,0,0.015,0);m0.castShadow=false;g.add(m0);for(let i=0;i<18;i++){const t=box(0.08,0.05,0.08,pick(['#8fd18a','#5f9a5a','#f2c14e','#e87a5a']),rand(-w/2+0.08,w/2-0.08),0.05,rand(-d/2+0.08,d/2-0.08));t.rotation.y=rand(0,3);g.add(t)}break;}
     case 'cattower':{
@@ -2647,8 +2831,8 @@ function blip(freq=880,dur=0.08,vol=0.08){if(!soundOn||quiet)return;const a=ac()
 /* ======================= MOVEMENT ======================= */
 function inBox(x,z,b,m){return x>b.minx-m&&x<b.maxx+m&&z>b.minz-m&&z<b.maxz+m}
 function distToBox(x,z,b){const dx=Math.max(b.minx-x,0,x-b.maxx),dz=Math.max(b.minz-z,0,z-b.maxz);return Math.hypot(dx,dz)}
-function resolve(p,r){
-  for(const b of solids){
+function resolve(p,r,SL){
+  for(const b of (SL||solids)){
     if(!inBox(p.x,p.y,b,r))continue;
     const l=p.x-(b.minx-r),R=(b.maxx+r)-p.x,t=p.y-(b.minz-r),B=(b.maxz+r)-p.y;const m=Math.min(l,R,t,B);
     if(m===l)p.x=b.minx-r;else if(m===R)p.x=b.maxx+r;else if(m===t)p.y=b.minz-r;else p.y=b.maxz+r;
@@ -2658,13 +2842,19 @@ function resolve(p,r){
 const tmpV=new THREE.Vector2();
 function steer(a,tx,tz,spd,dt){
   // returns distance to target after moving
+  if(FLN>1&&!a.inFloorCore){const tf=Math.min(FLN-1,Math.max(0,a._tfl!=null?a._tfl:0));a._tfl=null;if(a.transit||(a.fl||0)!==tf)return floorTravel(a,tf,spd,dt)}
+  a._tfl=null;const SL=solidsOf(a);
   const rtx=tx,rtz=tz;
-  if(yard&&yard.dIn){
+  if(yard&&yard.dIn&&!(a.fl>0)){
     const rp=inRoom(a.pos.x,a.pos.y),rt=inRoom(tx,tz);
     if(rp!==rt){const near=rp?yard.dIn:yard.dOut,far=rp?yard.dOut:yard.dIn;
       if(!a.thruDoor&&Math.hypot(a.pos.x-near.x,a.pos.y-near.z)>0.25){tx=near.x;tz=near.z}else{a.thruDoor=true;tx=far.x;tz=far.z;a.detour=null}}
     else a.thruDoor=false;
   }
+  if(ANX&&!a.thruDoor){const ra=roomIdx(a.pos.x,a.pos.y),rt=roomIdx(tx,tz);
+    if(ra>=0&&rt>=0&&ra!==rt){const dr=nextOn(a.fl||0)[ra][rt];if(dr){const toB=dr.a===ra,near=toB?dr.pa:dr.pb,far=toB?dr.pb:dr.pa;if(a.archId!==dr.id+'_'+ra){a.archId=dr.id+'_'+ra;a.thruArch=false}
+      if(!a.thruArch&&Math.hypot(a.pos.x-near.x,a.pos.y-near.z)>0.35){tx=near.x;tz=near.z}else{a.thruArch=true;tx=far.x;tz=far.z;a.detour=null}}}
+    else if(ra===rt)a.archId=null}
   if(yard&&yard.gate&&!a.thruDoor&&!inRoom(a.pos.x,a.pos.y)){const pg=inGym(a.pos.x,a.pos.y),tg=inGym(rtx,rtz);
     if(pg!==tg){const G=yard.gate,near=pg?G.in:G.out,far=pg?G.out:G.in;if(!a.thruGate&&Math.hypot(a.pos.x-near.x,a.pos.y-near.z)>0.3){tx=near.x;tz=near.z}else{a.thruGate=true;tx=far.x;tz=far.z;a.detour=null}}else a.thruGate=false}
   if(a.detour&&!a.thruDoor){if(a.detour.t>0){a.detour.t-=dt;tx=a.detour.x;tz=a.detour.z}else a.detour=null}
@@ -2673,7 +2863,7 @@ function steer(a,tx,tz,spd,dt){
   if(dist<0.02){a.speed=0;return dist}
   dx/=dist;dz/=dist;
   const px=a.pos.x+dx*0.55,pz=a.pos.y+dz*0.55;
-  for(const b of solids){
+  for(const b of SL){
     if(b.type==='wall'&&(a.thruDoor||Math.hypot(tx-a.pos.x,tz-a.pos.y)<1.2))continue;
     if(inBox(px,pz,b,a.r+0.08)&&!(inBox(tx,tz,b,0.5))){
       const cx=(b.minx+b.maxx)/2-a.pos.x,cz=(b.minz+b.maxz)/2-a.pos.y;const cross=dx*cz-dz*cx;
@@ -2681,7 +2871,7 @@ function steer(a,tx,tz,spd,dt){
     }
   }
   const step=Math.min(spd*dt,dist);
-  a.pos.x+=dx*step;a.pos.y+=dz*step;resolve(a.pos,a.r);a.speed=spd;
+  a.pos.x+=dx*step;a.pos.y+=dz*step;resolve(a.pos,a.r,SL);a.speed=spd;
   // heading
   const want=Math.atan2(dz,dx);let dh=want-a.heading;while(dh>Math.PI)dh-=Math.PI*2;while(dh<-Math.PI)dh+=Math.PI*2;
   a.heading+=dh*Math.min(1,dt*8);
@@ -2693,7 +2883,7 @@ function steer(a,tx,tz,spd,dt){
 function face(a,tx,tz,dt){const want=Math.atan2(tz-a.pos.y,tx-a.pos.x);let dh=want-a.heading;while(dh>Math.PI)dh-=Math.PI*2;while(dh<-Math.PI)dh+=Math.PI*2;a.heading+=dh*Math.min(1,dt*5)}
 
 /* ======================= DOG AI ======================= */
-const STATE_KO={tag:'술래잡기 중',idle:'쉬는 중',wander:'돌아다님',toWater:'물 마시러',drink:'물 마시는 중',toFood:'밥 먹으러',eat:'밥 먹는 중',waitFood:'밥 기다림',
+const STATE_KO={toChurch:'예식 가는 중',atChurch:'강아지교 예식 중',toJob:'일하러 가는 중',atJob:'일하는 중',tag:'술래잡기 중',idle:'쉬는 중',wander:'돌아다님',toWater:'물 마시러',drink:'물 마시는 중',toFood:'밥 먹으러',eat:'밥 먹는 중',waitFood:'밥 기다림',
   toBed:'잠자리로',sleep:'자는 중',chase:'공 쫓는 중',carry:'공 가져가는 중',toLauncher:'놀고 싶어함',waitThrow:'공 기다림',toVoice:'목소리 쪽으로',listen:'귀 기울이는 중',alert:'침입자 경계!',sit:'앉아 있음',toPotty:'화장실 가는 중',doPotty:'볼일 보는 중',toTV:'TV 보러 가는 중',watchTV:'TV 보는 중',toBoard:'보드게임 하러 가는 중',playBoard:'🎲 보드게임 중',toSt:'케어 받으러 가는 중',atSt:'케어 중',toQuiz:'퀴즈 대회 가는 중',atQuiz:'🧩 퀴즈 푸는 중',toTM:'런닝머신 가는 중',onTM:'🏃 런닝머신 운동 중',eatTreat:'간식 먹는 중',fight:'싸우는 중!',scared:'겁먹고 피함',leave:'나가는 중',soccer:'⚽ 축구 중'};
 function tmEnds(){const it=dev.treadmill.it,r=it.rot||0,dirs=[[1,0],[0,1],[-1,0],[0,-1]],[ax,az]=dirs[r];const half=FURN.treadmill.w/2;
   // dog faces the console end (+local x); it climbs on from the back end
@@ -2753,7 +2943,7 @@ function decide(d){
   if(cat||d.stray){
     if(world.tv.on&&tvs.length&&!night&&Math.random()<0.12){setState(d,'toTV',30);return}
     const outside=yard&&hour()>=7&&hour()<19&&Math.random()<0.3;
-    if(Math.random()<0.55){const p=outside?findYardSpot():findFree(rand(-W/2+0.6,W/2-0.6),rand(-D/2+0.6,D/2-0.6));d.target=p;setState(d,'wander',outside?30:15);return}
+    if(Math.random()<0.55){const p=outside?findYardSpot():indoorSpot();d.target=p;setState(d,'wander',outside?30:15);return}
     setState(d,Math.random()<0.6?'sit':'idle',rand(4,9));return;
   }
   if(dev.treadmill&&world.tm&&world.tm.auto&&!aiQuiet()&&hasPower()&&!world.tm.user&&d.stamina>60&&d.age>=0.5&&Math.random()<0.08){setState(d,'toTM',25);return}
@@ -2764,7 +2954,7 @@ function decide(d){
   if(r<0.18&&world.launcherBalls>0&&d.stamina>40&&!dogs.some(o=>o!==d&&(o.state==='toLauncher'||o.state==='waitThrow'))&&ballMode==='auto'&&aiBall()){setState(d,'toLauncher',20);return}
   if(world.tv.on&&tvs.length&&!night&&d.stamina>12&&Math.random()<(world.tv.ch==='dog'?0.42:0.25)){setState(d,'toTV',30);return}
   const h=hour();
-  if(r<0.65){const outside=yard&&h>=7&&h<19&&Math.random()<0.45;const p=outside?findYardSpot():findFree(rand(-W/2+0.6,W/2-0.6),rand(-D/2+0.6,D/2-0.6));d.target=p;setState(d,'wander',outside?30:15);return}
+  if(r<0.65){const outside=yard&&h>=7&&h<19&&Math.random()<0.45;const p=outside?findYardSpot():indoorSpot();d.target=p;setState(d,'wander',outside?30:15);return}
   setState(d,Math.random()<0.5?'sit':'idle',rand(3,7));
 }
 function updateDog(d,dt){
@@ -2811,7 +3001,7 @@ function updateDog(d,dt){
   switch(d.state){
     case 'idle':if(d.think<=0)decide(d);break;
     case 'sit':sit=true;if(d.think<=0)decide(d);break;
-    case 'wander':{const dist=steer(d,d.target.x,d.target.z,walk,dt);moving=true;if(dist<0.2||d.think<=0)setState(d,'idle',rand(1.5,4));break}
+    case 'wander':{d._tfl=d.target.fl||0;const dist=steer(d,d.target.x,d.target.z,walk,dt);moving=true;if(dist<0.2||d.think<=0)setState(d,'idle',rand(1.5,4));break}
     case 'toWater':{
       const t=frontOf('water',0.25);if(!t){setState(d,'idle');break}
       const dist=steer(d,t.x,t.z,d.thirst>80?run:walk*1.3,dt);moving=true;
@@ -2895,7 +3085,7 @@ function updateDog(d,dt){
       const e=d.entry||{x:0,z:0};const dd=steer(d,e.x,e.z,walk*1.4,dt);moving=true;
       if(dd<0.3||d.think<=0){removeStray(d);return}break}
     case 'toSt':{
-      const S=d.st;if(!S||!stationOk(S)){setState(d,'idle',1);break}const sp=stationSpot(S),dist=steer(d,sp.x,sp.z,walk*1.25,dt);moving=true;
+      const S=d.st;if(!S||!stationOk(S)){setState(d,'idle',1);break}const sp=stationSpot(S);d._tfl=S.fl||0;const dist=steer(d,sp.x,sp.z,walk*1.25,dt);moving=true;
       if(dist<0.18||(d.actT>8&&dist<0.7)){const D=STDEF[S.type];if(D.start&&!D.start(d)){setState(d,'idle',1);break}setState(d,'atSt',rand(D.dur[0],D.dur[1]));d.st=S;d.stPh=Math.random()*6;d.pathS=0}
       else if(d.think<=0)setState(d,'idle',1);break}
     case 'atSt':{
@@ -2912,6 +3102,20 @@ function updateDog(d,dt){
       else{const sp=stationSpot(S);if(sp.face)face(d,sp.face.x,sp.face.z,dt);if(D.sit)sit=true}
       D.use(d,dt);if(D.power&&D.per)pay(S.type,dt*D.per);emo=D.emo;if(arcHold(d))d.think=Math.max(d.think,0.3);
       if(d.think<=0){D.done&&D.done(d);setState(d,'idle',rand(2,4))}break}
+    case 'toChurch':case 'atChurch':{
+      const C=world.church;if(!C||!C.on||!C.parts.includes(d.id)){d.lift=0;setState(d,'idle',rand(1,3));break}
+      if(d.pee>90||d.poo>90||d.thirst>92||d.hunger>95){d.lift=0;setState(d,'idle',1);break}
+      const pr=d.id===C.priest,sp=pr?ANX.priestSpot:(C.seat[d.id]||ANX.priestSpot);
+      if(d.state==='toChurch'){d._tfl=sp.fl||0;const dist=steer(d,sp.x,sp.z,run*0.8,dt);moving=true;emo='⛪';if(dist<0.2||(d.actT>8&&dist<0.7)){d.pos.set(sp.x,sp.z);setState(d,'atChurch',99999)}break}
+      d.lift=pr?0:0.42;face(d,sp.fx,sp.fz,dt);sit=!pr;
+      if(d.sayUntil&&performance.now()<d.sayUntil)emo='💬';else if(pr){emo=Math.floor(world.t*2)%3===0?'🙌':'📖';if(Math.random()<dt*0.6)d.root.userData.barkPulse=0.6}else emo=Math.floor(world.t*1.5+d.id)%5===0?'🎶':'🙏';
+      const gk=C.grand?1.6:1;d.health=clamp(d.health+dt*0.025*gk);d.stamina=clamp(d.stamina+dt*0.06*gk);d.happy=clamp(d.happy+dt*0.04*gk);const g0=dt*0.07*(pr?1.4:1)*gk;holyAdd(d,g0);C.gain[d.id]=(C.gain[d.id]||0)+g0;break}
+    case 'toJob':case 'atJob':{
+      const J=d.jobSpot;if(!J||!jobHours()||(world.church&&world.church.on)){setState(d,'idle',1);break}
+      if(d.hunger>80||d.thirst>80||d.pee>85||d.poo>85||d.stamina<12){setState(d,'idle',1);break}
+      if(d.state==='toJob'){const dist=steer(d,J.x,J.z,walk,dt);moving=true;if(dist<0.2||(d.actT>8&&dist<0.7))setState(d,'atJob',rand(60,120));break}
+      face(d,J.fx,J.fz,dt);const role=d.jobRole;emo=role==='chef'?'🍳':role==='librarian'?'📚':'🙏';sit=role==='librarian';
+      jobWork(d,role,dt);if(d.think<=0)setState(d,'idle',rand(2,4));break}
     case 'tag':{
       const T=world.tag;if(!T||!T.on||!T.players.includes(d.id)){setState(d,'idle',rand(1,3));break}
       if(d.stamina<10||d.pee>92||d.poo>92||d.thirst>92||intruderActive()){tagLeave(d,d.stamina<10?'지쳐서':'볼일이 급해서');setState(d,'idle',rand(2,4));break}
@@ -2986,7 +3190,7 @@ function dogSeparation(){
   }
 }
 function animateDog(d,realDt){
-  const an=d.anim||{};d.root.position.set(d.pos.x,d.lift||0,d.pos.y);d.root.rotation.y=-d.heading;
+  const an=d.anim||{};d.root.position.set(d.pos.x,(d.lift||0)+(FLN>1?flY(d):0),d.pos.y);d.root.rotation.y=-d.heading;
   // eased speed and turn rate so gaits blend instead of snapping
   d.vs=(d.vs||0)+(d.speed-(d.vs||0))*Math.min(1,realDt*10);const spd=d.vs,sv=speedVisual();
   let dh=d.heading-(d.pHead??d.heading);while(dh>Math.PI)dh-=6.283;while(dh<-Math.PI)dh+=6.283;d.pHead=d.heading;d.turn=(d.turn||0)+((realDt>0?dh/realDt:0)-(d.turn||0))*Math.min(1,realDt*8);
@@ -3098,7 +3302,7 @@ function doBusiness(d,onPad){
   if(placed)log(`${d.name}이(가) 배변판에서 ${kinds.map(k=>k==='poo'?'똥':'오줌').join('·')}을 쌌어요`);
 }
 function accident(d){
-  doBusiness(d,false);if(d.state!=='alert')setState(d,'idle',2);
+  holyDrop(d,5,'바닥에 실수');doBusiness(d,false);if(d.state!=='alert')setState(d,'idle',2);
   log(`${d.name}이(가) 참지 못하고 바닥에 실수했어요`,'bad');toast(`${d.name}이(가) 바닥에 실수했어요. 바닥 청소를 해 주세요`,true);
 }
 const PAD_CLEAN=1; // minutes the roller takes to clean the pad (was 3)
@@ -3318,7 +3522,10 @@ function lifeStep(h){
   }
 }
 function die(x,cause){
-  if(x.dead)return;x.dead=true;
+  if(x.dead)return;
+  if(x.eternal&&x.species!=='human'){x.health=Math.max(x.health,30);x.stamina=Math.max(x.stamina,25);if(cause!=='노환'&&(!x._etLog||world.t-x._etLog>60)){x._etLog=world.t;log(`✨ ${x.name}${josa(x.name,'은','는')} 거룩함 200의 영생이라 쓰러지지 않아요`,'good',true)}
+    if(!field&&x.fight){const f=x.fight;f.A=f.A.filter(y=>y!==x);f.B=f.B.filter(y=>y!==x);x.fight=null;setState(x,'idle',2)}return}
+  x.dead=true;
   const f=x.fight;if(f){f.deaths.push(x.name);f.A=f.A.filter(y=>y!==x);f.B=f.B.filter(y=>y!==x);x.fight=null}
   if(player.ctrl===x)ctrlLost(x);
   if(x.species==='human'){
@@ -3376,6 +3583,7 @@ function startFight(a,b,cause){
   if(!FIGHT.allowed)return null;
   if(!a||!b||a.dead||b.dead||a===b||a.sc||b.sc)return null;
   if(a.fight&&b.fight)return a.fight;
+  holyDrop(a,10,'싸움');holyDrop(b,10,'싸움');
   if(b.fight){joinFight(b.fight,a,b.team==='A'?'B':'A');return b.fight}
   if(a.fight){joinFight(a.fight,b,a.team==='A'?'B':'A');return a.fight}
   if(world.fastNow){
@@ -4769,7 +4977,7 @@ function updateLight(){
   // daylight 0..1
   let day=0;if(h>=6&&h<8)day=(h-6)/2;else if(h>=8&&h<18)day=1;else if(h>=18&&h<20)day=1-(h-18)/2;
   const lampOn=(h>=17.5&&h<23)||(h>=5.5&&h<7);
-  hemi.intensity=0.12+0.5*day;sunLight.intensity=0.08+0.85*day;lamp.intensity=lampOn?0.9:0;if(field){hemi.intensity=Math.max(hemi.intensity,0.5);sunLight.intensity=Math.max(sunLight.intensity,0.45)} // battles stay visible at night
+  hemi.intensity=0.12+0.5*day;sunLight.intensity=0.08+0.85*day;lamp.intensity=lampOn?0.9:0;if(ANX&&ANX.lights)for(const L of ANX.lights)L.intensity=lampOn?L.userData.i:0;if(field){hemi.intensity=Math.max(hemi.intensity,0.5);sunLight.intensity=Math.max(sunLight.intensity,0.45)} // battles stay visible at night
   // soccer: the whole pitch stays bright day or night — at night the floodlights take over (cool white, glowing heads)
   if(match&&match.flood){const n=1-day,F=match.flood;hemi.intensity=Math.max(hemi.intensity,0.42);
     F.light.intensity=0.55*n;F.light2.intensity=0.3*n;if(F.bg0&&scene.background)scene.background.copy(F.bg0).lerp(F.night,n*0.9);F.heads.forEach(m=>{m.material.emissiveIntensity=0.15+1.6*n});F.beams.forEach(m=>{m.material.opacity=0.12*n})}
@@ -4865,7 +5073,7 @@ function syncCards(){
     const st=d.away?`${OUTINGS[d.away.kind].lab} · ${fmtClock(d.away.until)} 귀가`:world.fastNow?(d.state==='sleep'?'자는 중':'생활 중'):(d.state==='atSt'&&d.st?STDEF[d.st.type].lab:STATE_KO[d.state]||d.state);if(c.st!==st){c.st=st;R.st.textContent=st}
     const hot=!!d.fight;if(c.hot!==hot){c.hot=hot;R.st.classList.toggle('hot',hot)}
     if(CARDS.rows){const v=[d.happy,d.health,d.stamina];for(let i=0;i<3;i++){const r=Math.round(v[i]);if(c['n'+i]!==r){c['n'+i]=r;R.nums[i].textContent=r;R.nums[i].style.color=barColor(r,false)}}continue}
-    const Bd=BREEDS[d.breed],meta=`${d.sex==='f'?'♀':'♂'} ${Bd?Bd.n:''} · ${fmtAge(d.age)} · ⚽${ovr(d)}${d.stray?' · 침입 길고양이':''}${d.pregnant?` · 🤰 임신 ${Math.floor((world.t-d.pregnant.start)/1440)}일째`:''}`;
+    const Bd=BREEDS[d.breed],meta=`${d.sex==='f'?'♀':'♂'} ${Bd?Bd.n:''} · ${fmtAge(d.age)} · ⚽${ovr(d)}${d.species!=='cat'&&FAITH()?` · ✨${Math.floor(d.holy||0)}${d.eternal?' 영생':''}`:''}${d.jobRole?' · '+JOB_N[d.jobRole]:''}${FLN>1?` · 🏢${(d.fl||0)+1}층`:''}${d.stray?' · 침입 길고양이':''}${d.pregnant?` · 🤰 임신 ${Math.floor((world.t-d.pregnant.start)/1440)}일째`:''}`;
     if(c.meta!==meta){c.meta=meta;R.meta.textContent=meta}{const tt=`능력치 · ${skillLine(d)}${profTag(d)?` · 🎯 ${profTag(d)}`:''}`;if(c.tt!==tt){c.tt=tt;d.card.title=tt}}
     const vals=[d.hunger,d.thirst,Math.max(d.pee,d.poo),d.happy,d.health,d.stamina];
     for(let i=0;i<6;i++){const r=Math.round(vals[i]);if(c['n'+i]===r)continue;c['n'+i]=r;R.fills[i].style.width=r+'%';R.fills[i].style.background=barColor(r,i<3);R.nums[i].textContent=r}
@@ -4891,7 +5099,7 @@ function syncFightHud(){
 }
 function syncUI(){
   if(world.cardsDirty)buildDogCards();
-  $('#clockTxt').textContent=fmtDate(world.t);
+  {const dd=dogDate(world.t),hol=FAITH()?holidayOf(dd):null,zf=(v,n)=>String(v).padStart(n,'0'),cday=Math.floor(world.t/1440),cy=Math.floor(cday/365),txt=`${zf(cy+1,2)}년차 ${zf(cday%365+1,3)}일 ${fmtClock(world.t,true)} · 🐾 멍력 ${zf(dd.y,2)}년 ${zf(dd.m,2)}월 ${zf(dd.d,2)}일`,hic=hol?hol.n.split(' ')[0]:'';if($('#clockHol').textContent!==hic)$('#clockHol').textContent=hic;if($('#clockTxt').textContent!==txt){$('#clockTxt').textContent=txt;$('#clockBox').title=hol?`오늘은 강아지교 기념일 ${hol.n}! 5시간 대예식이 열려요`:`멍력(강아지식 달력): 시뮬레이션을 시작한 날이 1월 1일이에요${FAITH()?` · 다음 기념일 ${nextHoliday(dd).txt}`:''}`}}
   $('#camClock').textContent=`${Math.floor(world.t/1440)+1}일 ${fmtClock(world.t,true)}`;
   const pct=world.tank/world.tankCap;$('#tankFill').style.height=(pct*100)+'%';$('#tankPct').textContent=Math.round(pct*100)+'%';$('#tankMl').textContent=Math.round(world.tank)+'ml';
   $('#gauge').classList.toggle('low',pct<0.2);$('#bowlFill').style.width=(world.bowl/world.bowlCap*100)+'%';
@@ -4972,7 +5180,7 @@ function skipStep(S){
     r.age+=h/YEAR_MIN;trackGroup(r);r.happy=clamp(r.happy+(skipHappyTarget(r)-r.happy)*(1-Math.exp(-h/240)));r.health=Math.max(r.health,80);
     r.hunger=30;r.thirst=30;
     if(r.pregnant&&world.t>=r.pregnant.due)skipBirth(S,r);
-    if(r.age>=r.lifespan){recDeath(r,'노환');S.recs.splice(S.recs.indexOf(r),1);if(r.root)S.dead.push(r);S.deathN=(S.deathN||0)+1;if(NAMES.dup!=='same'||!S.recs.some(o=>o.name===r.name))S.used.delete(r.name);S.lastNames.push(`${r.name}(${Math.floor(r.age)}살)`);if(S.lastNames.length>6)S.lastNames.shift()}
+    if(r.age>=r.lifespan&&!r.eternal){recDeath(r,'노환');S.recs.splice(S.recs.indexOf(r),1);if(r.root)S.dead.push(r);S.deathN=(S.deathN||0)+1;if(NAMES.dup!=='same'||!S.recs.some(o=>o.name===r.name))S.used.delete(r.name);S.lastNames.push(`${r.name}(${Math.floor(r.age)}살)`);if(S.lastNames.length>6)S.lastNames.shift()}
   }
   if(world.breedOn){
     const ok=r=>r.age>=1&&r.happy>=80&&r.health>=60&&!r.stray;
@@ -5477,7 +5685,7 @@ function renderRates(){
 function setIll(on){ILL.on=on;$$('[data-illon]').forEach(x=>x.checked=on);$$('[data-illnote]').forEach(n=>n.textContent=on?'건강이 0이 되면 병으로 세상을 떠나요.':'건강이 0이 되어도 1로 버텨요. 싸움으로 죽거나 노환은 그대로예요.')}
 
 /* ======================= MONEY & ELECTRICITY ======================= */
-const ELEC_N={land:'🏞 땅 관리비',arcade:'🕹 오락실 (코인·전기)',claw:'🧸 인형 뽑기 (코인·전기)',speaker:'🔊 AI 스피커',smartlight:'💡 스마트 조명',whitenoise:'📻 백색소음기',security:'🚨 보안 시스템',pawwash:'🐾 발 세척기',petfountain:'💧 순환 정수기',market:'🐶 강아지 시장',build:'🔨 건설',bath:'🛁 자동 목욕기',medic:'🩺 자동 치료기',groom:'✂ 그루밍 테이블',snackbar:'🦴 자동 간식기',aircon:'❄ 냉난방기',purifier:'🌬 공기청정기',walk:'🚶 산책',vet:'🏥 동물병원',salon:'💇 애견 미용실',school:'🏫 훈련소',trade:'🛒 교류',weapons:'🎖 무기',pump:'💧 급수대 펌프',standby:'🔌 대기전력(급수대·홈캠)',launcher:'🎾 공 발사기',potty:'🚽 자동 배변판',tv:'📺 TV',music:'🎵 음악',treadmill:'🏃 런닝머신',farm:'🌱 자동화 농장',light:'💡 조명',vacuum:'🤖 로봇청소기',flood:'🏟 축구장 조명'};
+const ELEC_N={elev:'🛗 엘리베이터',land:'🏞 땅 관리비',arcade:'🕹 오락실 (코인·전기)',claw:'🧸 인형 뽑기 (코인·전기)',speaker:'🔊 AI 스피커',smartlight:'💡 스마트 조명',whitenoise:'📻 백색소음기',security:'🚨 보안 시스템',pawwash:'🐾 발 세척기',petfountain:'💧 순환 정수기',market:'🐶 강아지 시장',build:'🔨 건설',bath:'🛁 자동 목욕기',medic:'🩺 자동 치료기',groom:'✂ 그루밍 테이블',snackbar:'🦴 자동 간식기',aircon:'❄ 냉난방기',purifier:'🌬 공기청정기',walk:'🚶 산책',vet:'🏥 동물병원',salon:'💇 애견 미용실',school:'🏫 훈련소',trade:'🛒 교류',weapons:'🎖 무기',pump:'💧 급수대 펌프',standby:'🔌 대기전력(급수대·홈캠)',launcher:'🎾 공 발사기',potty:'🚽 자동 배변판',tv:'📺 TV',music:'🎵 음악',treadmill:'🏃 런닝머신',farm:'🌱 자동화 농장',light:'💡 조명',vacuum:'🤖 로봇청소기',flood:'🏟 축구장 조명'};
 const won=v=>isFinite(v)?Math.round(v).toLocaleString()+'원':'무한';
 function hasPower(){return !world||world.money>0}
 function farmCount(){return dev.farmList?dev.farmList.length:(dev.farm?1:0)}
@@ -5555,7 +5763,7 @@ const TERRAIN={plain:{n:'🌾 평지',col:'#a9cf7a'},mountain:{n:'⛰ 산악',co
   coast:{n:'🌊 해안',col:'#cfe3a5',sea:true,note:'전투함·항공모함 사용 가능'},island:{n:'🏝 섬',col:'#f0d68a',sea:true,needBoat:true,note:'전투함·항공모함이나 전투기가 있어야 갈 수 있어요'}};
 const WAR_DIFF={easy:{n:'쉬움',inc:3000,atk:0.06,me:0.3,keep:0,ai:0.8},normal:{n:'보통',inc:6000,atk:0.12,me:0.5,keep:0.35,ai:1},hard:{n:'어려움',inc:12000,atk:0.22,me:0.7,keep:0.6,ai:1.25}};
 const AI_OWNERS=['바둑이','흰둥이','누렁이','점박이','깜순이','복실이','해피','메리','쫑이','방울이','진돌이','삽살이'];
-const WAR_KEYS=['species','breed','color','sex','age','name','skills','lifespan','temper','happy','health','hunger','thirst','stamina','id','mom','dad','gen','mate','weapon','lastBirth','pregnant','lg','everBred','bredIn','fertileSeen','oid','ally','prof','know','plush','plushName','arcPlays'];
+const WAR_KEYS=['holy','eternal','species','breed','color','sex','age','name','skills','lifespan','temper','happy','health','hunger','thirst','stamina','id','mom','dad','gen','mate','weapon','lastBirth','pregnant','lg','everBred','bredIn','fertileSeen','oid','ally','prof','know','plush','plushName','arcPlays'];
 const warOn=()=>!!(world&&world.war&&world.war.on);
 const myHouses=()=>world.war.houses.filter(h=>h.owner==='me');
 const houseById=id=>world.war.houses.find(h=>h.id===id);
@@ -5695,7 +5903,7 @@ function netApply(e,nick){
   const W=world.war,h=houseById(+e.k),dead=new Set((Array.isArray(e.dead)?e.dead:[]).slice(0,200).map(Number));let killed=0;
   if(h&&h.owner==='me'){
     if(h.id===W.active){if(!W.battle)for(const d of dogs)if(!d.dead&&!d.stray&&!d.enemy&&dead.has(d.id)){die(d,'전쟁');killed++}}
-    else{const b=h.dogs.length;h.dogs=h.dogs.filter(o=>{if(dead.has(o.id)){recDeath(o,'전쟁');return false}return true});killed=b-h.dogs.length}
+    else{const b=h.dogs.length;h.dogs=h.dogs.filter(o=>{if(dead.has(o.id)&&!o.eternal){recDeath(o,'전쟁');return false}return true});killed=b-h.dogs.length}
   }
   const fin=isFinite(world.money),mh=myHouses(),kTxt=killed?` 강아지 ${killed}마리가 쓰러졌어요.`:'';
   const takeMoney=frac=>{const v=fin?Math.round(world.money*frac):0;if(v){world.money-=v;checkPower()}return v};
@@ -5817,7 +6025,7 @@ const armyPower=(list,t,fresh)=>list.reduce((a,d)=>a+unitPower(d,t,fresh),0);
 function canReach(list,terrain){if(!TERRAIN[terrain].needBoat)return true;return list.some(d=>d.weapon&&['warship','carrier','fighter'].includes(d.weapon))}
 function resolveBattle(att,def,terrain){ // abstract: returns survivors and losses (units are data objects)
   const pa=armyPower(att,terrain),pd=armyPower(def,terrain)*1.15+0.5;const pWin=pa/(pa+pd),attWin=Math.random()<clamp(pWin+rand(-0.08,0.08),0.03,0.97);
-  const ratio=attWin?pd/(pa+pd):pa/(pa+pd),cas=(list,heavy)=>{const dead=[],alive=[];for(const d of list){const pDie=clamp((heavy?0.55:0.18)*(1+ratio)/(WEAPONS[d.weapon]?Math.sqrt(WEAPONS[d.weapon].def):1),0.03,0.9);(Math.random()<pDie?dead:alive).push(d)}alive.forEach(d=>{d.stamina=clamp((d.stamina||70)-rand(20,45));d.health=clamp((d.health||80)-rand(5,25))});return {dead,alive}};
+  const ratio=attWin?pd/(pa+pd):pa/(pa+pd),cas=(list,heavy)=>{const dead=[],alive=[];for(const d of list){const pDie=clamp((heavy?0.55:0.18)*(1+ratio)/(WEAPONS[d.weapon]?Math.sqrt(WEAPONS[d.weapon].def):1),0.03,0.9);(Math.random()<pDie&&!d.eternal?dead:alive).push(d)}alive.forEach(d=>{d.stamina=clamp((d.stamina||70)-rand(20,45));d.health=clamp((d.health||80)-rand(5,25))});return {dead,alive}};
   const A=cas(att,!attWin),D=cas(def,attWin);
   return {attWin,attAlive:A.alive,attDead:A.dead,defAlive:D.alive,defDead:D.dead,pa,pd,share:attWin?armyPower(A.alive,terrain,true)/Math.max(0.01,armyPower(att,terrain,true)):0};
 }
@@ -6485,7 +6693,7 @@ function warHour(){
   for(const h of W.houses){
     if(h.id===W.active||h.online)continue;const cap=houseCap(h),over=Math.max(0,h.dogs.length-cap)/cap;
     for(const o of h.dogs){o.age+=1/8760;o.happy=clamp((o.happy||70)+(over?-1.5*Math.min(2,over*2):0.3));o.stamina=clamp((o.stamina||70)+3);o.health=clamp((o.health||80)+0.5)}
-    h.dogs=h.dogs.filter(o=>{if(o.age>=o.lifespan){if(h.owner==='me')recDeath(o,'노환');return false}return true});
+    h.dogs=h.dogs.filter(o=>{if(o.age>=o.lifespan&&!o.eternal){if(h.owner==='me')recDeath(o,'노환');return false}return true});
     if(h.owner!=='ai')continue;tradeHour(h);
     h.money+=D.inc/24;if(Math.random()<0.04)aiArm(h,0.6);
     if(h.dogs.length<cap&&Math.random()<0.008)for(let i=0;i<Math.ceil(rand(1,3));i++)h.dogs.push(randDogData(0.1));
@@ -6736,6 +6944,16 @@ const STDEF={
   springpole:gymSt('🪢 스프링 폴 매달리는 중','😬',{sta:0.8,spd:0.3},(d,f,s,S)=>{if(S.it._fx&&S.it._fx.rope)S.it._fx.rope.rotation.z=Math.sin(s*3)*0.35;return {u:0.62,v:0.25,lift:Math.max(0,Math.sin(s*2.2))*0.55,run:0.2}}),
   discmachine:gymSt('🥏 원반 받기 중','🥏',{rea:0.8,gk:0.6},(d,f,s,S)=>{const t=pp(s,1.6)+1.6;if(S.it._fx&&S.it._fx.disc){S.it._fx.disc.rotation.y+=0.3;S.it._fx.disc.visible=t<0.5}return {u:0,v:0.6+t,lift:t>3?Math.max(0,1-Math.abs(t-3.1)/0.15)*0.45:0,run:1}}),
   track:gymSt('🏃 트랙 도는 중','💨',{sta:1,spd:0.6},(d,f,s)=>{const a=s/((f.w+f.d)/2.2)+d.stPh;return {u:Math.cos(a)*(f.w/2-0.35),v:Math.sin(a)*(f.d/2-0.35),lift:0,run:1,face:true}},2),
+  diningtable:{lab:'🍽 식탁에서 밥 먹는 중',dur:[4,8],front:0.55,cap:6,emo:'😋',sit:true,want:d=>roomTend(d,'kitchen',0.5,d.hunger>55?0.18:0.02),use:(d,dt)=>{d.hunger=clamp(d.hunger-dt*0.45);d.thirst=clamp(d.thirst-dt*0.15);d.happy=clamp(d.happy+dt*0.15*(jobBusy('chef')?1.6:1))}},
+  buffet:{lab:'🍰 뷔페 먹는 중',dur:[2,4],front:0.4,cap:2,emo:'😋',want:d=>roomTend(d,'banquet',0.35,d.hunger>65?0.05:0),use:(d,dt)=>{d.hunger=clamp(d.hunger-dt*0.8);d.happy=clamp(d.happy+dt*0.25)}},
+  longtable:{lab:'🍷 연회 테이블에서 파티 중',dur:[5,10],front:0.45,cap:8,sit:true,emo:'🥳',want:d=>roomTend(d,'banquet',0.5,d.happy<60?0.06:0.015),use:(d,dt)=>{d.happy=clamp(d.happy+dt*0.5);d.hunger=clamp(d.hunger-dt*0.2)}},
+  stage:{lab:'🎤 무대에서 춤추는 중',dur:[4,8],front:0.3,cap:3,emo:'💃',want:d=>roomTend(d,'banquet',0.4,0.01),path:(d,f,s)=>{const off=((d.id%3)-1)*0.9;return {u:off+Math.sin(s*1.3)*0.25,v:Math.cos(s*0.9)*0.3,lift:0.36+Math.abs(Math.sin(s*3))*0.18,run:0.2}},use:(d,dt)=>{d.happy=clamp(d.happy+dt*0.6);d.stamina=clamp(d.stamina-dt*0.12)}},
+  readdesk:{lab:'📖 책 읽는 중',dur:[6,12],front:0.4,cap:1,sit:true,emo:'📖',want:d=>roomTend(d,'library',0.5,d.age>=0.5&&d.stamina<60?0.04:0.01),use:(d,dt)=>learnUse(d,dt,1)},
+  armchair:{lab:'🪑 독서 의자에서 책 읽는 중',dur:[8,14],front:0.35,cap:1,sit:true,emo:'📚',want:d=>roomTend(d,'library',0.45,0.01),use:(d,dt)=>{learnUse(d,dt,0.8);d.stamina=clamp(d.stamina+dt*0.05)}},
+  bookcase:{lab:'📚 책 고르는 중',dur:[2,4],front:0.45,cap:1,emo:'🔎',want:d=>roomTend(d,'library',0.3,0),use:(d,dt)=>learnUse(d,dt,0.4)},
+  candle:{lab:'🙏 기도하는 중',dur:[3,6],front:0.45,cap:2,sit:true,emo:'🙏',want:d=>roomTend(d,'church',0.45,(d.holy||0)<40?0.03:0.012),use:prayUse},
+  font:{lab:'💧 성수로 축복받는 중',dur:[1,2],front:0.4,cap:1,emo:'✨',want:d=>roomTend(d,'church',0.25,0),use:(d,dt)=>{holyAdd(d,dt*0.05);d.health=clamp(d.health+dt*0.03)}},
+  pew:{lab:'⛪ 신도석에서 묵상 중',dur:[5,10],cap:4,seat:pewSeat,sit:true,lift:0.42,emo:'😌',want:d=>roomTend(d,'church',0.4,0.01),use:prayUse},
   nosework:{lab:'🧠 노즈워크 중',dur:[5,10],lift:0.02,sit:true,cap:2,emo:'👃',want:d=>d.happy<85&&d.stamina>25?0.12:0,
     use:(d,dt)=>{d.happy=clamp(d.happy+dt*0.8);d.hunger=clamp(d.hunger-dt*0.4);if(d.skills)d.skills.rea=Math.min(99,(d.skills.rea||50)+dt*0.015);if(d.root&&Math.random()<dt*2)d.root.userData.barkPulse=0.4}},
   cattower:{lab:'🐈 캣타워에서 쉬는 중',dur:[8,20],lift:d=>d.species==='cat'?1.43:0.58,sit:true,cap:2,emo:'😺',want:d=>d.species==='cat'?(d.stamina<80||d.happy<85?0.35:0.1):(d.age<2&&d.happy<70?0.04:0),
@@ -6751,13 +6969,13 @@ const STDEF={
   fountain:{lab:'⛲ 분수에서 물 마시는 중',dur:[2,4],front:0.55,cap:3,emo:'💧',want:d=>d.thirst>40?0.5:d.happy<60&&!isNight()?0.06:0,
     use:(d,dt)=>{d.thirst=clamp(d.thirst-dt*12);d.happy=clamp(d.happy+dt*0.6)}},
 };
-const STATION_ORDER=['medic','petfountain','fountain','snackbar','petsofa','shade','cattower','bath','train','pool','agility','sandpit','track','hurdle','tunnel','weave','aframe','seesaw','beam','hoop','jumpbox','tirepull','springpole','discmachine','claw','arcade','nosework','groom','toybox'];
-function stationSpot(S){const D=STDEF[S.type],r=S.it.rot||0,[fx,fz]=[[0,1],[-1,0],[0,-1],[1,0]][r];if(!D.front)return {x:S.x,z:S.z};if(D.front<0){const k=S.users;return {x:S.x+(k-1)*0.45*(fz?1:0),z:S.z+(k-1)*0.45*(fx?1:0)}}const f=FURN[S.type],half=(fx?f.w:f.d)/2;const k=S.users;return {x:S.x+fx*(half+D.front)+(fz?(k-0.5)*0.4:0),z:S.z+fz*(half+D.front)+(fx?(k-0.5)*0.4:0),face:{x:S.x,z:S.z}}}
+const STATION_ORDER=['medic','petfountain','fountain','snackbar','diningtable','buffet','longtable','stage','readdesk','armchair','bookcase','candle','font','pew','petsofa','shade','cattower','bath','train','pool','agility','sandpit','track','hurdle','tunnel','weave','aframe','seesaw','beam','hoop','jumpbox','tirepull','springpole','discmachine','claw','arcade','nosework','groom','toybox'];
+function stationSpot(S){if(STDEF[S.type].seat)return STDEF[S.type].seat(S);const D=STDEF[S.type],r=S.it.rot||0,[fx,fz]=[[0,1],[-1,0],[0,-1],[1,0]][r];if(!D.front)return {x:S.x,z:S.z};if(D.front<0){const k=S.users;return {x:S.x+(k-1)*0.45*(fz?1:0),z:S.z+(k-1)*0.45*(fx?1:0)}}const f=FURN[S.type],half=(fx?f.w:f.d)/2;const k=S.users;return {x:S.x+fx*(half+D.front)+(fz?(k-0.5)*0.4:0),z:S.z+fz*(half+D.front)+(fx?(k-0.5)*0.4:0),face:{x:S.x,z:S.z}}}
 function stationOk(S){const D=STDEF[S.type];return !D.power||hasPower()}
 function stationFor(d){
   if(!dev.st||d.stray||d.lion||d.enemy||d.age<0.3||aiQuiet())return null;const out=yard&&!inRoom(d.pos.x,d.pos.y);
   for(const k of STATION_ORDER){const L=dev.st[k];if(!L||!L.length)continue;const D=STDEF[k],p=D.want(d);if(!p||Math.random()>p||!stationOk({type:k}))continue;
-    const S=L.filter(x=>x.users<(D.cap||1)).sort((a,b)=>Math.hypot(a.x-d.pos.x,a.z-d.pos.y)-Math.hypot(b.x-d.pos.x,b.z-d.pos.y))[0];if(S)return S}
+    const fp=x=>Math.abs((x.fl||0)-(d.fl||0))*12;const S=L.filter(x=>x.users<(D.cap||1)).sort((a,b)=>Math.hypot(a.x-d.pos.x,a.z-d.pos.y)+fp(a)-Math.hypot(b.x-d.pos.x,b.z-d.pos.y)-fp(b))[0];if(S)return S}
   return null;
 }
 function stationRelease(d){if(d.st){const D=STDEF[d.st.type];if(D&&(D.path||D.lift!=null))d.lift=0;d.st.users=Math.max(0,d.st.users-1);d.st=null}}
@@ -6919,6 +7137,132 @@ window.addEventListener('keyup',e=>{if(!ARC)return;const k=ARC_KEYMAP[e.key];if(
 
 
 
+
+function pewSeat(S){const r=S.it.rot||0,[fx,fz]=[[0,1],[-1,0],[0,-1],[1,0]][r],ax=fz?1:0,az=fx?1:0,k=S.users;return {x:S.x+ax*(k-1.5)*0.85,z:S.z+az*(k-1.5)*0.85,face:{x:S.x+fx*3,z:S.z+fz*3}}}
+function learnUse(d,dt,m){const k=(jobBusy('librarian')?2:1)*m;if(d.skills)d.skills.rea=Math.min(99,(d.skills.rea||50)+dt*0.004*k);d.know=d.know||{};const tp=['math','health','mil','potty','soccer'][(d.id+Math.floor(world.t/120))%5];d.know[tp]=Math.min(100,(d.know[tp]||0)+dt*0.02*k);d.iq=Math.min(200,(d.iq||100)+dt*0.003*k);d.happy=clamp(d.happy+dt*0.05)}
+function prayUse(d,dt){holyAdd(d,dt*0.02*(jobBusy('priest')?2:1));d.happy=clamp(d.happy+dt*0.08);d.health=clamp(d.health+dt*0.01);d.stamina=clamp(d.stamina+dt*0.03)}
+function annexItems(){
+  if(!ANX)return [];const A=ANX,O=A.O,base={n:0,s:2,e:1,w:3}[O],side={n:3,s:3,e:0,w:0}[O];
+  const rotOf=f=>f==='-v'?base:f==='+v'?(base+2)%4:f==='+u'?side:(side+2)%4;
+  const zones=doorZones(A.doors);
+  const out=[],placed=[];let id=800000;const ov=(a,b)=>a.minx<b.maxx&&a.maxx>b.minx&&a.minz<b.maxz&&a.maxz>b.minz;
+  const put=(type,u,v,f,extra,room)=>{const R=A.rooms.find(r=>r.key===room);for(const du of[0,0.8,-0.8,1.6,-1.6,2.4,-2.4,3.2,-3.2]){const p=A.map(u+du,v),it=Object.assign({id:id,type,x:p.x,z:p.z,rot:rotOf(f),anx:true},extra||{}),ft=foot(it),bx={minx:p.x-ft.w/2,maxx:p.x+ft.w/2,minz:p.z-ft.d/2,maxz:p.z+ft.d/2};
+      if(R&&(bx.minx<R.r.minx+0.05||bx.maxx>R.r.maxx-0.05||bx.minz<R.r.minz+0.05||bx.maxz>R.r.maxz-0.05))continue;if(!FURN[type].solid&&type==='chandelier'){out.push(it);id++;return it}
+      if(zones.some(z=>ov(z,bx))||placed.some(b=>ov(b,bx)))continue;out.push(it);placed.push(bx);id++;return it}return null};
+  const RD=A.RD,top=A.top,R=k=>A.rooms.find(r=>r.key===k);
+  if(A.roomsOn){const K=R('kitchen'),u0=K.u0,u1=K.u1,uc=(u0+u1)/2;put('stove',u0+1.0,RD-0.45,'-v',0,'kitchen');put('fridge',u0+2.4,RD-0.5,'-v',0,'kitchen');put('sink',u0+3.9,RD-0.45,'-v',0,'kitchen');put('counter',u0+5.5,RD-0.45,'-v',0,'kitchen');put('counter',u1-1.0,RD-0.45,'-v',0,'kitchen');put('diningtable',uc,3.6,'-v',0,'kitchen');put('plant',u1-0.5,0.5,'-v',0,'kitchen')}
+  if(A.roomsOn){const Lb=R('library'),u0=Lb.u0,u1=Lb.u1,uc=(u0+u1)/2;put('bookcase',u0+1.3,RD-0.35,'-v',0,'library');put('bookcase',u0+3.5,RD-0.35,'-v',0,'library');put('bookcase',u1-1.3,RD-0.35,'-v',0,'library');put('bookcase',u1-3.5,RD-0.35,'-v',0,'library');
+    put('readdesk',uc-2.0,3.8,'-v',0,'library');put('readdesk',uc+2.0,3.8,'-v',0,'library');put('armchair',u0+0.8,2.2,'+u',0,'library');put('armchair',u1-0.8,2.2,'-u',0,'library');put('globe',uc,5.8,'-v',0,'library');put('rug',uc,3.4,'-v',0,'library')}
+  if(A.roomsOn){const Bq=R('banquet'),u0=Bq.u0,u1=Bq.u1,uc=(u0+u1)/2;put('longtable',uc,3.9,'-v',0,'banquet');put('chandelier',uc,3.9,'-v',0,'banquet');put('stage',u0+2.0,RD-1.0,'-v',0,'banquet');put('buffet',u1-1.6,RD-0.5,'-v',0,'banquet');put('buffet',u1-0.5,2.4,'-u',0,'banquet');put('plant',u0+0.5,0.5,'-v',0,'banquet')}
+  if(A.faith){const cw=A.cw,cd=A.cd;put('statue',0,top-1.0,'-v',0,'church');put('altar',0,top-3.3,'-v',0,'church');put('candle',-2.1,top-3.3,'-v',0,'church');put('candle',2.1,top-3.3,'-v',0,'church');put('organ',cw/2-1.0,top-4.0,'-u',0,'church');
+    put('font',-3.0,RD+1.6,'-v',0,'church');put('font',3.0,RD+1.6,'-v',0,'church');
+    const per=Math.max(1,Math.min(2,Math.floor((cw/2-1.6)/3.8)));for(let v=RD+4.2;v<=top-6.6;v+=1.9)for(const sg of[-1,1])for(let j=0;j<per;j++)put('pew',sg*(1.4+1.8+j*3.8),v,'+v',0,'church');
+    for(const fr of[0.3,0.6])put('chandelier',0,RD+cd*fr,'-v',{hy:5.2},'church');put('candle',-cw/2+0.6,top-1.0,'-v',0,'church');put('candle',cw/2-0.6,top-1.0,'-v',0,'church')}
+  A.items=out;return out}
+
+function doorZones(D){return D.map(d=>{const c={x:(d.pa.x+d.pb.x)/2,z:(d.pa.z+d.pb.z)/2},px=Math.abs(d.pb.x-d.pa.x)>Math.abs(d.pb.z-d.pa.z);return px?{minx:c.x-1.7,maxx:c.x+1.7,minz:c.z-1.3,maxz:c.z+1.3}:{minx:c.x-1.3,maxx:c.x+1.3,minz:c.z-1.7,maxz:c.z+1.7}})}
+const FLOOR_THEMES=[['🛏 침실',[['dogbed',0.15,0.2,0],['dogbed',0.85,0.2,0],['dogbed',0.15,0.8,2],['dogbed',0.85,0.8,2],['bed',0.5,0.15,0],['rug',0.5,0.55,0],['plant',0.95,0.5,0],['shelf',0.05,0.5,1],['petsofa',0.5,0.85,2]]],
+  ['🧸 놀이방',[['toybox',0.2,0.2,0],['nosework',0.5,0.3,0],['cattower',0.85,0.2,0],['petsofa',0.2,0.8,2],['rug',0.55,0.6,0],['plant',0.92,0.85,0],['toybox',0.8,0.8,2]]],
+  ['🌿 온실',[['plant',0.1,0.15,0],['plant',0.3,0.12,0],['plant',0.7,0.12,0],['plant',0.9,0.15,0],['plant',0.1,0.85,0],['plant',0.9,0.85,0],['petfountain',0.5,0.15,0],['petsofa',0.5,0.6,0],['rug',0.5,0.6,0]]],
+  ['📺 휴게실',[['sofa',0.5,0.8,2],['tv',0.5,0.12,0],['rug',0.5,0.5,0],['table',0.5,0.5,0],['snackbar',0.12,0.2,1],['plant',0.9,0.15,0],['petsofa',0.88,0.75,3]]]];
+function floorItems(k){
+  const A=ANX,out=[],placed=[],zones=doorZones(doorsF(k));let id=900000+k*1000;const ov=(a,b)=>a.minx<b.maxx&&a.maxx>b.minx&&a.minz<b.maxz&&a.maxz>b.minz;const names={};
+  const tryPut=(it,R)=>{const ft=foot(it),bx={minx:it.x-ft.w/2,maxx:it.x+ft.w/2,minz:it.z-ft.d/2,maxz:it.z+ft.d/2};if(bx.minx<R.minx+0.05||bx.maxx>R.maxx-0.05||bx.minz<R.minz+0.05||bx.maxz>R.maxz-0.05)return false;
+    if(it.type!=='chandelier'&&it.type!=='rug'&&(zones.some(z=>ov(z,bx))||placed.some(b=>ov(b,bx))))return false;out.push(it);if(it.type!=='rug'&&it.type!=='chandelier')placed.push(bx);id++;return true};
+  const putW=(type,x,z,rot,R)=>{for(const [dx,dz] of[[0,0],[0.8,0],[-0.8,0],[0,0.8],[0,-0.8],[1.6,0],[-1.6,0],[0,1.6],[0,-1.6]]){if(tryPut({id,type,x:x+dx,z:z+dz,rot,fl:k},R))return true}return false};
+  // main room theme
+  const th=FLOOR_THEMES[(k-1)%FLOOR_THEMES.length],M={minx:-W/2,maxx:W/2,minz:-D/2,maxz:D/2};names.living=th[0];
+  for(const [t,fx,fz,r] of th[1])putW(t,M.minx+0.8+(M.maxx-M.minx-1.6)*fx,M.minz+0.8+(M.maxz-M.minz-1.6)*fz,r,M);
+  if(A.roomsOn){const base={n:0,s:2,e:1,w:3}[A.O],rotOf=f=>f==='-v'?base:f==='+v'?(base+2)%4:f==='+u'?{n:3,s:3,e:0,w:0}[A.O]:({n:3,s:3,e:0,w:0}[A.O]+2)%4;
+    const put=(type,u,v,f,R,extra)=>{for(const du of[0,0.8,-0.8,1.6,-1.6,2.4,-2.4]){const p=A.map(u+du,v);if(tryPut(Object.assign({id,type,x:p.x,z:p.z,rot:rotOf(f),fl:k},extra||{}),R.r))return true}return false};
+    const K=A.rooms.find(r=>r.key==='kitchen'),Lb=A.rooms.find(r=>r.key==='library'),RD=A.RD;
+    if(k%2===1){names.kitchen='☕ 카페';const uc=(K.u0+K.u1)/2;put('counter',K.u0+1.0,RD-0.45,'-v',K);put('counter',K.u0+2.6,RD-0.45,'-v',K);put('fridge',K.u1-1.0,RD-0.5,'-v',K);put('diningtable',uc,2.4,'-v',K);put('diningtable',uc,5.0,'-v',K);put('plant',K.u1-0.5,0.5,'-v',K)}
+    else{names.kitchen='🍳 주방';const uc=(K.u0+K.u1)/2;put('stove',K.u0+1.0,RD-0.45,'-v',K);put('fridge',K.u0+2.4,RD-0.5,'-v',K);put('sink',K.u0+3.9,RD-0.45,'-v',K);put('diningtable',uc,3.6,'-v',K)}
+    names.library='📚 도서관';{const uc=(Lb.u0+Lb.u1)/2;for(const du of[-3.6,-1.3,1.3,3.6])put('bookcase',uc+du,RD-0.35,'-v',Lb);put('readdesk',uc-2,3.8,'-v',Lb);put('readdesk',uc+2,3.8,'-v',Lb);put('armchair',Lb.u0+0.8,2.2,'+u',Lb);put('armchair',Lb.u1-0.8,2.2,'-u',Lb);put('globe',uc,5.8,'-v',Lb)}
+    const C=A.rooms.find(r=>r.key==='church');if(C&&roomOnFloor(C,k)){names.church='⛪ 성당';const top=A.top,cw=A.cw;put('candle',-2.1,top-1.2,'-v',C);put('candle',2.1,top-1.2,'-v',C);put('statue',0,top-1.0,'-v',C);
+      const per=Math.max(1,Math.min(2,Math.floor((cw/2-1.6)/3.8)));for(let v=RD+3;v<=top-4.5;v+=1.9)for(const sg of[-1,1])for(let j=0;j<per;j++)put('pew',sg*(1.4+1.8+j*3.8),v,'+v',C);put('chandelier',0,RD+A.cd*0.5,'-v',C,{hy:2.6})}}
+  FLOOR.names[k]=names;return out}
+function buildFloorWalls(k,build,G,SL,H){
+  const A=ANX,pres=A.rooms.map((R,i)=>roomOnFloor(R,k)?i:-1).filter(i=>i>=0),D=doorsF(k),T=0.14,DW=1.6,col='#e6ebec';
+  const wall=(o,at,a,b,y0,y1,solid)=>{if(b-a<0.02)return;const L=b-a,c=(a+b)/2,m=o==='h'?box(L+T,y1-y0,T,col,c,(y0+y1)/2,at):box(T,y1-y0,L+T,col,at,(y0+y1)/2,c);m.castShadow=false;G.add(m);if(solid)SL.push(o==='h'?{minx:a,maxx:b,minz:at-T/2,maxz:at+T/2,h:y1,type:'wall'}:{minx:at-T/2,maxx:at+T/2,minz:a,maxz:b,h:y1,type:'wall'})};
+  const edges=r=>[['h',r.minz,r.minx,r.maxx],['h',r.maxz,r.minx,r.maxx],['v',r.minx,r.minz,r.maxz],['v',r.maxx,r.minz,r.maxz]];
+  for(const i of build){const r=A.rooms[i].r;for(const [o,at,a,b] of edges(r)){const shared=[];
+      for(const j of pres){if(j===i)continue;for(const [o2,at2,a2,b2] of edges(A.rooms[j].r)){if(o2!==o||Math.abs(at2-at)>0.06)continue;const lo=Math.max(a,a2),hi=Math.min(b,b2);if(hi-lo>0.05)shared.push([lo,hi,j])}}
+      shared.sort((p,q)=>p[0]-q[0]);let cur=a;
+      for(const [lo,hi,j] of shared){if(lo>cur)wall(o,at,cur,lo,0,H,true);
+        if(i<j){const ops=D.filter(d=>((d.a===i&&d.b===j)||(d.a===j&&d.b===i))).map(d=>{const m={x:(d.pa.x+d.pb.x)/2,z:(d.pa.z+d.pb.z)/2};return o==='h'?(Math.abs(m.z-at)<0.3?m.x:null):(Math.abs(m.x-at)<0.3?m.z:null)}).filter(c=>c!=null&&c>lo&&c<hi).sort((p,q)=>p-q);
+          let c0=lo;for(const c of ops){wall(o,at,c0,c-DW/2,0,H,true);wall(o,at,c-DW/2,c+DW/2,2.2,H,false);c0=c+DW/2}wall(o,at,c0,hi,0,H,true)}
+        cur=Math.max(cur,hi)}
+      if(cur<b)wall(o,at,cur,b,0,H,true)}}}
+function buildStairs(G,k,top){const T=ANX.tower,tm=T.tmap,ta=T.ta;
+  const f0=tm(ta-1.1,1.0),f1=tm(ta-1.1,4.6),len=Math.hypot(f1.x-f0.x,f1.z-f0.z),cx=(f0.x+f1.x)/2,cz=(f0.z+f1.z)/2,ang=Math.atan2(f1.z-f0.z,f1.x-f0.x);
+  if(!top){const steps=10;for(let i=0;i<steps;i++){const t=(i+0.5)/steps,st=box(len/steps+0.02,0.08,1.6,'#b98e63',f0.x+(f1.x-f0.x)*t,FH*t,f0.z+(f1.z-f0.z)*t);st.rotation.y=-ang;G.add(st)}
+    const rail=box(len,0.05,0.05,'#7a7f86',cx,FH/2+0.85,cz);rail.rotation.y=-ang;rail.rotation.z=Math.atan2(FH,len)*(Math.cos(ang)>=0?1:-1);G.add(rail)}
+  const e=T.elev;for(const [dx,dz] of[[-0.75,-0.75],[0.75,-0.75],[-0.75,0.75],[0.75,0.75]])G.add(box(0.06,FH,0.06,'#9aa4ad',e.x+dx,FH/2,e.z+dz));
+  const lb=textSprite(`${k+1}층`,{size:0.38,bg:'rgba(47,127,208,.85)'});const dp=tm(ta,0.2);lb.position.set(dp.x,2.5,dp.z);G.add(lb)}
+function buildFloors(){
+  FLOOR={solids:{},groups:{},items:{},names:{}};if(!ANX||FLN<2)return;const T=ANX.tower;
+  // ground: stair tower walls + stairs + elevator cabin
+  {const G=new THREE.Group();scene.add(G);buildFloorWalls(0,[T.idx],G,solids,FH);buildStairs(G,0,false);const r=ANX.rooms[T.idx].r,fl=new THREE.Mesh(new THREE.PlaneGeometry(r.maxx-r.minx,r.maxz-r.minz),mat('#bfc4c8'));fl.rotation.x=-Math.PI/2;fl.position.set((r.minx+r.maxx)/2,0.003,(r.minz+r.maxz)/2);G.add(fl)
+    const cab=new THREE.Group();cab.add(box(1.4,0.06,1.4,'#c9a227',0,0.03,0));for(const [dx,dz] of[[-0.68,0],[0.68,0]])cab.add(box(0.04,2.1,1.4,'#dfe7ee',dx,1.05,dz,{transparent:true,opacity:0.45}));cab.add(box(1.4,0.06,1.4,'#c9a227',0,2.12,0));cab.position.set(T.elev.x,0,T.elev.z);cab.userData.y=0;scene.add(cab);elevCab=cab}
+  const tex={living:floorTexture()};
+  for(let k=1;k<FLN;k++){const G=new THREE.Group();G.position.y=k*FH;scene.add(G);FLOOR.groups[k]=G;const SL=FLOOR.solids[k]=[];
+    const pres=ANX.rooms.map((R,i)=>roomOnFloor(R,k)?i:-1).filter(i=>i>=0);
+    for(const i of pres){const R=ANX.rooms[i],r=R.r,t=R.main?tex.living:R.tower?null:roomFloorTex(R.key);if(t&&!R.main)t.repeat.set((r.maxx-r.minx)/4,(r.maxz-r.minz)/4);
+      const pl=new THREE.Mesh(new THREE.BoxGeometry(r.maxx-r.minx,0.12,r.maxz-r.minz),t?new THREE.MeshStandardMaterial({map:t,roughness:0.8}):mat('#bfc4c8'));pl.position.set((r.minx+r.maxx)/2,-0.05,(r.minz+r.maxz)/2);pl.receiveShadow=true;G.add(pl)}
+    if(tex.living)tex.living.repeat.set(W/2.5,D/2.5);
+    buildFloorWalls(k,pres,G,SL,FH);buildStairs(G,k,k===FLN-1);
+    const items=FLOOR.items[k]=floorItems(k);
+    for(const it of items){const f=FURN[it.type];const g=buildFurniture(it);g.position.set(it.x,0,it.z);g.rotation.y=-(it.rot||0)*Math.PI/2;G.add(g);const ft=foot(it),bx={minx:it.x-ft.w/2,maxx:it.x+ft.w/2,minz:it.z-ft.d/2,maxz:it.z+ft.d/2,h:f.h,type:it.type};
+      if(f.solid)SL.push(bx);if(f.st&&STDEF[it.type])((dev.st=dev.st||{})[it.type]=dev.st[it.type]||[]).push({type:it.type,it,x:it.x,z:it.z,users:0,box:bx,g,fl:k})}
+    const nm=FLOOR.names[k]||{};for(const i of pres){const R=ANX.rooms[i];if(R.tower)continue;const r=R.r,label=`${k+1}층 · ${R.main?nm.living:nm[R.key]||R.name}`;const lb=textSprite(label,{size:R.cath?0.6:0.4});lb.position.set((r.minx+r.maxx)/2,2.9,(r.minz+r.maxz)/2);G.add(lb)}}
+  // a flat roof over the top floor's edge is left open (dollhouse view)
+  controls.maxDistance=Math.max(controls.maxDistance,FLN*FH*2.6);mainCam.far=Math.max(mainCam.far,FLN*FH*5);mainCam.updateProjectionMatrix();
+  buildViewFloorUI();applyFloorView()}
+function buildViewFloorUI(){const sel=$('#viewFloor');if(!sel)return;sel.hidden=FLN<2;if(FLN<2)return;const o=['<option value="auto">🏢 층 보기: 자동</option>','<option value="all">전체 층</option>'];for(let k=0;k<FLN;k++)o.push(`<option value="${k}">${k+1}층까지</option>`);sel.innerHTML=o.join('');sel.value=viewFloor==='auto'||viewFloor==='all'?viewFloor:String(Math.min(+viewFloor,FLN-1))}
+function floorStep(h){if(FLN<2||!world)return;
+  for(const d of dogs){if(d.dead)continue;if(d.away||d.fight||d.sc||d.root.visible===false){if(d.fl){d.fl=0;d.flY=null;d.transit=null}continue}
+    if(d.fl>0&&!d.transit){if(d.fl>=FLN){d.fl=0;continue}const ok=floorRoomsAt(d.fl).some(R=>d.pos.x>=R.r.minx-0.1&&d.pos.x<=R.r.maxx+0.1&&d.pos.y>=R.r.minz-0.1&&d.pos.y<=R.r.maxz+0.1)||(ANX.tower&&inBox(d.pos.x,d.pos.y,ANX.rooms[ANX.tower.idx].r,0.1));if(!ok){d.fl=0;d.flY=null}}}
+  if(elevCab){const ty=(elevCab.userData.y||0)*FH;elevCab.position.y+=(ty-elevCab.position.y)*0.3;if(!dogs.some(d=>d.transit&&d.transit.mode==='elev'))elevCab.userData.y=Math.max(0,(elevCab.userData.y||0)-h*0.5)}
+  applyFloorView()}
+function roomFloorTex(k){const c=document.createElement('canvas');c.width=c.height=256;const g=c.getContext('2d');
+  if(k==='kitchen'){for(let y=0;y<8;y++)for(let x=0;x<8;x++){g.fillStyle=(x+y)%2?'#e9e2d0':'#cfc6b0';g.fillRect(x*32,y*32,32,32)}}
+  else if(k==='library'){for(let i=0;i<8;i++){g.fillStyle=['#7a5232','#6e4a2c','#835a38','#6a4628'][i%4];g.fillRect(0,i*32,256,32);g.fillStyle='rgba(0,0,0,.25)';g.fillRect(0,i*32,256,2)}}
+  else if(k==='banquet'){g.fillStyle='#8f2f3a';g.fillRect(0,0,256,256);g.strokeStyle='#c9a227';g.lineWidth=3;for(let i=0;i<4;i++){g.strokeRect(16+i*64,16,32,224)}g.fillStyle='rgba(255,215,106,.15)';for(let i=0;i<40;i++)g.fillRect(rand(0,256),rand(0,256),3,3)}
+  else{for(let y=0;y<4;y++)for(let x=0;x<4;x++){g.fillStyle=['#d9d2c3','#cfc7b6','#e2dccd'][(x*3+y)%3];g.fillRect(x*64,y*64,64,64);g.strokeStyle='rgba(0,0,0,.12)';g.strokeRect(x*64,y*64,64,64)}}
+  const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;return t}
+function buildAnnex(){
+  const A=ANX,T=0.14,H1=FLN>1?FH:2.6,HC=6.5,DW=1.6;A.lights=[];
+  for(const R of A.rooms){if(R.main)continue;const r=R.r,rw=r.maxx-r.minx,rd=r.maxz-r.minz,t=roomFloorTex(R.key);t.repeat.set(rw/(R.key==='kitchen'?2.4:4),rd/(R.key==='kitchen'?2.4:4));
+    const fl=new THREE.Mesh(new THREE.PlaneGeometry(rw,rd),new THREE.MeshStandardMaterial({map:t,roughness:0.8}));fl.rotation.x=-Math.PI/2;fl.position.set((r.minx+r.maxx)/2,0.002,(r.minz+r.maxz)/2);fl.receiveShadow=true;scene.add(fl);
+    const lb=textSprite((FLN>1&&!R.tower?'1층 · ':'')+R.name,{size:R.cath?0.7:0.42});lb.position.set((r.minx+r.maxx)/2,R.cath?7.4:(FLN>1?2.9:3.2),(r.minz+r.maxz)/2);scene.add(lb)}
+  // church aisle carpet
+  if(A.faith){const c0=A.map(0,A.RD+0.3),c1=A.map(0,A.top-4.6),cx=(c0.x+c1.x)/2,cz=(c0.z+c1.z)/2,L=Math.hypot(c1.x-c0.x,c1.z-c0.z);scene.add(A.ns?box(2.2,0.01,L,'#9a2f3a',cx,0.006,cz):box(L,0.01,2.2,'#9a2f3a',cx,0.006,cz))}
+  const wseg=(p0,p1,y0,y1,solid,col)=>{const cx=(p0.x+p1.x)/2,cz=(p0.z+p1.z)/2,lx=Math.abs(p1.x-p0.x),lz=Math.abs(p1.z-p0.z);if(lx<0.01&&lz<0.01)return;const alongX=lx>=lz,L=alongX?lx:lz;
+    const m=alongX?box(L+T,y1-y0,T,col,cx,(y0+y1)/2,cz):box(T,y1-y0,L+T,col,cx,(y0+y1)/2,cz);m.castShadow=false;scene.add(m);
+    if(solid)solids.push(alongX?{minx:cx-L/2,maxx:cx+L/2,minz:cz-T/2,maxz:cz+T/2,h:y1,type:'wall'}:{minx:cx-T/2,maxx:cx+T/2,minz:cz-L/2,maxz:cz+L/2,h:y1,type:'wall'})};
+  const hLine=(u0,u1,v,hf,ops)=>{const cuts=[u0];(ops||[]).sort((a,b)=>a-b).forEach(c=>{cuts.push(c-DW/2,c+DW/2)});cuts.push(u1);for(const b of[-A.cw/2,A.cw/2])if(b>u0&&b<u1)cuts.push(b);
+    const pts=[...new Set(cuts)].sort((a,b)=>a-b);for(let i=0;i<pts.length-1;i++){const a=pts[i],b=pts[i+1],m=(a+b)/2,H=hf(m),col=H>3?'#d9d2c3':'#e6ebec',isOp=(ops||[]).some(c=>Math.abs(m-c)<DW/2-1e-6);
+      if(isOp)wseg(A.map(a,v),A.map(b,v),2.2,H,false,col);else wseg(A.map(a,v),A.map(b,v),0,H,true,col)}};
+  const vLine=(uu,v0,v1,H,ops)=>{const cuts=[v0];(ops||[]).forEach(c=>cuts.push(c-DW/2,c+DW/2));cuts.push(v1);const pts=[...new Set(cuts)].sort((a,b)=>a-b),col=H>3?'#d9d2c3':'#e6ebec';
+    for(let i=0;i<pts.length-1;i++){const a=pts[i],b=pts[i+1],m=(a+b)/2,isOp=(ops||[]).some(c=>Math.abs(m-c)<DW/2-1e-6);if(isOp)wseg(A.map(uu,a),A.map(uu,b),2.2,H,false,col);else wseg(A.map(uu,a),A.map(uu,b),0,H,true,col)}};
+  const tot=A.tot,Lm=A.Lm,RD=A.RD,cw=A.cw,top=A.top;
+  if(A.roomsOn){if(tot/2>Lm/2+0.1){hLine(-tot/2,-Lm/2-0.07,0,()=>H1);hLine(Lm/2+0.07,tot/2,0,()=>H1)}
+  if(!A.faith)hLine(-tot/2,tot/2,RD,()=>H1);
+  else{const span=Math.max(tot/2,cw/2);hLine(-span,span,RD,u=>Math.abs(u)<cw/2?HC:H1,A.doors.filter(d=>d.h&&d.v===RD).map(d=>d.c));
+  hLine(-cw/2,cw/2,top,()=>HC)}
+  vLine(-tot/2,0,RD,H1);vLine(tot/2,0,RD,H1);for(const d of A.doors.filter(d=>d.h===false))vLine(d.u,0,RD,H1,[d.c]);}
+  if(A.faith){vLine(-cw/2,RD,top,HC);vLine(cw/2,RD,top,HC);
+  // stained glass on the church side walls
+  const cols=['#e84a4a','#2f7fd0','#f2c14e','#3fb27f','#9a5ad8','#ff8a3a'];let ci=0;
+  for(let v=RD+3;v<=top-3;v+=4)for(const sg of[-1,1]){const p=A.map(sg*(cw/2-0.09),v),alongX=!A.ns;const gl=alongX?box(1.6,2.4,0.03,cols[ci%6],p.x,4.0,p.z,{emissive:cols[ci%6],emissiveIntensity:0.35,transparent:true,opacity:0.85}):box(0.03,2.4,1.6,cols[ci%6],p.x,4.0,p.z,{emissive:cols[ci%6],emissiveIntensity:0.35,transparent:true,opacity:0.85});gl.castShadow=false;scene.add(gl);ci++}
+  {const p=A.map(0,top-0.09),alongX=A.ns;const rose=new THREE.Mesh(new THREE.CircleGeometry(1.3,24),new THREE.MeshStandardMaterial({color:'#9a5ad8',emissive:'#5a2d9a',emissiveIntensity:0.5,side:THREE.DoubleSide}));rose.position.set(p.x,5.2,p.z);if(!alongX)rose.rotation.y=Math.PI/2;scene.add(rose)}
+  // bell tower outside the far wall
+  {const p=A.map(0,top+2.3);scene.add(box(4,10,4,'#cfc7b6',p.x,5,p.z));const sp=new THREE.Mesh(new THREE.ConeGeometry(2.9,5,4),mat('#5a6b7d'));sp.position.set(p.x,12.5,p.z);sp.rotation.y=Math.PI/4;scene.add(sp);
+    const bell=new THREE.Mesh(new THREE.CylinderGeometry(0.35,0.7,0.9,16,1,true),mat('#c9a227',{side:THREE.DoubleSide}));bell.position.set(p.x,8.6,p.z);scene.add(bell);A.bell=bell;const em=textSprite('🐾',{bg:'rgba(0,0,0,0)',size:1.4});em.position.set(p.x,15.6,p.z);scene.add(em)}
+  }
+  for(const [k,i,y] of(A.faith?[['church',1.1,5.6],['banquet',0.8,2.4]]:A.roomsOn?[['banquet',0.8,2.4]]:[])){const r=roomRect(k),L=new THREE.PointLight(k==='church'?'#ffe2a8':'#ffd9a0',0,k==='church'?Math.max(A.cw,A.cd)*1.1:12,1.4);L.position.set((r.minx+r.maxx)/2,y,(r.minz+r.maxz)/2);L.userData.i=i;scene.add(L);A.lights.push(L)}
+}
 /* ---------- dog school (under 2) & senior dogs at work ---------- */
 function schoolOk(d){return d.species!=='cat'&&!d.dead&&!d.stray&&!d.enemy&&!d.lion&&!d.sc&&!d.fight&&!d.away&&d.age>=0.25&&d.age<2&&d.root.visible!==false&&!(world.quiz&&world.quiz.on&&world.quiz.players.includes(d.id))&&!(world.arena)}
 function workOk(d){return d.species!=='cat'&&!d.dead&&!d.stray&&!d.enemy&&!d.lion&&!d.sc&&!d.fight&&!d.away&&d.age>=1&&isOld(d)&&d.health>30&&d.root.visible!==false&&!(world.quiz&&world.quiz.on&&world.quiz.players.includes(d.id))}
@@ -6948,7 +7292,9 @@ function workBack(d){const sk=d.skills?Object.values(d.skills).reduce((a,b)=>a+b
   d.workDays=(d.workDays||0)+1;d.stamina=clamp(d.stamina-20);d.happy=clamp(d.happy+5);d.hunger=clamp(d.hunger+10);earn(pay0);world.workEarned=(world.workEarned||0)+pay0;
   const got=Math.max(0,Math.min(sn,SNACK_MAX-(world.snacks||0)));world.snacks=(world.snacks||0)+got;world.workSnacks=(world.workSnacks||0)+got;
   log(`💼 ${d.name}${josa(d.name,'이','가')} 퇴근했어요 · 💰 +${won(pay0)}${got?` · 🍪 간식 ${got}개`:''} (${d.workDays}일째 근무)`,'good')}
-function schoolUI(){const el=$('#schoolSt');if(!el||!world)return;const st=dogs.filter(d=>!d.dead&&d.away&&d.away.kind==='kschool').length,wk=dogs.filter(d=>!d.dead&&d.away&&d.away.kind==='work').length,
+function floorUI(){const box=$('#floorBox');if(!box)return;box.hidden=FLN<2;if(FLN<2)return;const sel=$('#floorMove2'),m=(layout.floors&&layout.floors.move)||'stairs';if(document.activeElement!==sel&&sel.value!==m)sel.value=m;
+  const cnt={};for(const d of dogs)if(!d.dead&&!d.away&&!d.stray)cnt[d.fl||0]=(cnt[d.fl||0]||0)+1;const t=`${FLN}층 집 · `+Object.keys(cnt).sort((a,b)=>a-b).map(k=>`${+k+1}층 ${cnt[k]}마리`).join(' · ')+` · 계단 ${world.stairUses||0}번 · 엘리베이터 ${world.elevUses||0}번`;if($('#floorSt').textContent!==t)$('#floorSt').textContent=t}
+function schoolUI(){floorUI();const el=$('#schoolSt');if(!el||!world)return;const st=dogs.filter(d=>!d.dead&&d.away&&d.away.kind==='kschool').length,wk=dogs.filter(d=>!d.dead&&d.away&&d.away.kind==='work').length,
   kids=dogs.filter(d=>!d.dead&&!d.stray&&d.species!=='cat'&&d.age>=0.25&&d.age<2).length,old=dogs.filter(d=>!d.dead&&!d.stray&&d.species!=='cat'&&d.age>=1&&isOld(d)).length;
   const t=`🏫 학생 ${kids}마리 (지금 수업 ${st}) · 💼 노령견 ${old}마리 중 직장인 ${Math.ceil(old/2)} (지금 근무 ${wk}) · 번 돈 ${won(world.workEarned||0)} · 간식 ${world.workSnacks||0}개`;if(el.textContent!==t)el.textContent=t}
 /* ---------- house expansion (집 확장공사) ---------- */
@@ -6986,6 +7332,143 @@ function exFinish(){const E=world.expand;if(!E)return;world.expand=null;if(exG){
   const sp=speed;loadSave(JSON.stringify(S,saveRep),{rebuild:true});speed=sp;buildSpeedSeg&&buildSpeedSeg();
   log(`🏠 집 확장공사 완료! ${E.label}${E.dy?` → 마당 깊이 ${layout.yard.depth}m`:` → 방 ${layout.W}×${layout.D}m`}`,'good');toast(`🏠 확장공사 완료! ${E.label}`,false,true);if(soundOn){blip(660,0.1,0.06);setTimeout(()=>blip(990,0.15,0.06),120)}}
 $('#exKind').onchange=exUI;$('#exAmt').onchange=exUI;$('#exGo').onclick=()=>{ac();exStart()};$('#exCancel').onclick=()=>exCancel();
+
+/* ---------- dog religion (강아지교): holiness, jobs, ceremonies ---------- */
+const JOB_N={priest:'⛪ 사제',chef:'🍳 요리사',librarian:'📚 사서'};
+function FAITH(){return !!(ANX&&ANX.faith)}
+function holyOk(d){return FAITH()&&d&&d.species!=='cat'&&d.species!=='human'&&d.species!=='lion'&&!d.stray&&!d.enemy}
+function haloOn(d){if(d.halo||!d.root)return;const h=new THREE.Mesh(new THREE.TorusGeometry(0.14,0.022,8,24),mat('#ffd23f',{emissive:'#ffb000',emissiveIntensity:0.9}));h.rotation.x=Math.PI/2;h.position.set(0,0.9,0);d.root.add(h);d.halo=h}
+function holyAdd(d,v){if(!holyOk(d))return;d.holy=Math.min(250,Math.max(0,(d.holy||0)+v));if(!d.eternal&&d.holy>=200){d.eternal=true;haloOn(d);log(`✨✨ ${d.name}${josa(d.name,'이','가')} 거룩함 200을 달성해 영생을 얻었어요! 이제 전쟁·싸움에서도 죽지 않아요`,'good');toast(`✨ ${d.name} 영생 달성!`,false,true);if(soundOn){blip(784,0.15,0.06);setTimeout(()=>blip(1175,0.3,0.06),160)}}}
+function holyDrop(d,v,why){if(!holyOk(d)||!world)return;const b=d.holy||0;d.holy=Math.max(0,b-v);if(b>0&&!world.fastNow&&Math.random()<0.5)log(`📉 ${d.name} 거룩함 −${Math.min(v,Math.round(b))} (${why})`,'',true)}
+function jobHours(){const hr=hour();return hr>=9&&hr<17}
+function jobBusy(role){const id=world.jobs&&world.jobs[role];if(id==null)return false;const d=dogs.find(x=>x.id===id);return !!d&&d.state==='atJob'}
+function itemSpot(type,back){if(!ANX||!ANX.items)return null;const it=ANX.items.find(i=>i.type===type);if(!it)return null;const [fx,fz]=[[0,1],[-1,0],[0,-1],[1,0]][it.rot||0],f=foot(it),half=(fx?f.w:f.d)/2,k=back?-(half+0.55):(half+0.45);
+  return back?{x:it.x+fx*k,z:it.z+fz*k,fx:it.x+fx*4,fz:it.z+fz*4}:{x:it.x+fx*k,z:it.z+fz*k,fx:it.x,fz:it.z}}
+function churchSeats(){if(!ANX||!ANX.items)return [];const al=ANX.items.find(i=>i.type==='altar'),seats=[];
+  for(const it of ANX.items){if(it.type!=='pew')continue;const [fx,fz]=[[0,1],[-1,0],[0,-1],[1,0]][it.rot||0],ax=fz?1:0,az=fx?1:0;for(let k=0;k<4;k++)seats.push({x:it.x+ax*(k-1.5)*0.85,z:it.z+az*(k-1.5)*0.85,fx:it.x+ax*(k-1.5)*0.85+fx*6,fz:it.z+az*(k-1.5)*0.85+fz*6})}
+  for(const k in FLOOR.items)for(const it of FLOOR.items[k]){if(it.type!=='pew')continue;const [fx,fz]=[[0,1],[-1,0],[0,-1],[1,0]][it.rot||0],ax=fz?1:0,az=fx?1:0;for(let q=0;q<4;q++)seats.push({x:it.x+ax*(q-1.5)*0.85,z:it.z+az*(q-1.5)*0.85,fx:it.x+ax*(q-1.5)*0.85+fx*6,fz:it.z+az*(q-1.5)*0.85+fz*6,fl:+k})}
+  if(al)seats.sort((a,b)=>((a.fl||0)-(b.fl||0))*1000+Math.hypot(a.x-al.x,a.z-al.z)-Math.hypot(b.x-al.x,b.z-al.z));return seats}
+function churchEligible(d){return holyOk(d)&&!d.dead&&!d.away&&!d.sc&&!d.fight&&!d.lion&&d.root.visible!==false}
+function assignJobs(){if(!ANX)return;const J=world.jobs=world.jobs||{},pickSel={priest:$('#jobPriest'),chef:$('#jobChef'),librarian:$('#jobLibrarian')};
+  const adults=dogs.filter(d=>d.species!=='cat'&&!d.stray&&!d.enemy&&!d.lion&&!d.dead&&d.age>=2&&!(d.job==='work'));const used=new Set();
+  for(const role of['priest','chef','librarian']){if(role==='priest'&&!FAITH()){J.priest=null;continue}const sel=pickSel[role],v=sel&&sel.value;let id=null;
+    if(v&&v!=='auto'&&v!=='none'){const d=dogs.find(x=>x.id===+v&&!x.dead);if(d)id=d.id}
+    else if(v!=='none'){const pool=adults.filter(d=>!used.has(d.id));const best=role==='priest'?pool.sort((a,b)=>(b.holy||0)-(a.holy||0))[0]:role==='librarian'?pool.sort((a,b)=>((b.skills&&b.skills.rea)||0)-((a.skills&&a.skills.rea)||0))[0]:pool.sort((a,b)=>(b.health+b.stamina)-(a.health+a.stamina))[0];if(best)id=best.id}
+    if(id!=null)used.add(id);J[role]=id}
+  for(const d of dogs){const r=Object.keys(J).find(k=>J[k]===d.id);d.jobRole=r||null}}
+function jobStep(h){
+  if(!world||!ANX||field||match||world.arena)return;const day=Math.floor(world.t/1440);if(world.jobDay!==day||!world.jobs){world.jobDay=day;assignJobs()}
+  if(!jobHours()||(world.church&&world.church.on))return;
+  for(const role of(FAITH()?['chef','librarian','priest']:['chef','librarian'])){const id=world.jobs[role];if(id==null)continue;const d=dogs.find(x=>x.id===id);if(!d||d.dead||d.away||d.fight||d.sc)continue;
+    if(['toJob','atJob','toChurch','atChurch','toPotty','doPotty','tag','toQuiz','atQuiz','eat','drink','toEat','toDrink'].includes(d.state)||d.hunger>75||d.thirst>75||d.pee>80||d.poo>80||d.stamina<20)continue;
+    if(d.state==='sleep'&&hour()<9.2){setState(d,'idle',1)}if(d.state==='sleep')continue;
+    if(d.state!=='idle'&&d.state!=='wander'&&d.state!=='sit'&&d.state!=='atSt'&&d.state!=='toSt')continue;
+    const sp=role==='chef'?itemSpot('stove'):role==='librarian'?itemSpot('readdesk'):itemSpot('altar',true);if(!sp)continue;d.jobSpot=sp;d.jobRole=role;boardLeave(d);setState(d,'toJob',60)}}
+function jobWork(d,role,dt){
+  if(role==='chef'){world.chefT=(world.chefT||0)+dt;if(world.chefT>=45){world.chefT=0;const got=Math.min(2,SNACK_MAX-(world.snacks||0));if(got>0){world.snacks=(world.snacks||0)+got;if(!world.fastNow&&Math.random()<0.4)log(`🍳 요리사 ${d.name}${josa(d.name,'이','가')} 간식 ${got}개를 만들었어요`,'',true)}}
+    const st=ANX.items.find(i=>i.type==='stove');if(st&&st._g){}}
+  else if(role==='librarian'){d.skills&&(d.skills.rea=Math.min(99,(d.skills.rea||50)+dt*0.003));world.libT=(world.libT||0)+dt;if(world.libT>=90){world.libT=0;const t=pick(dogs.filter(x=>holyOk(x)&&!x.dead&&!x.away));if(t){t.know=t.know||{};const tp=pick(['math','health','mil','potty','soccer']);t.know[tp]=Math.min(100,(t.know[tp]||0)+3);if(!world.fastNow&&Math.random()<0.4)log(`📚 사서 ${d.name}${josa(d.name,'이','가')} ${t.name}에게 책을 추천했어요 (지식 +3)`,'',true)}}}
+  else{holyAdd(d,dt*0.05);d.happy=clamp(d.happy+dt*0.03)}}
+function churchDur(){const v=$('#chDur')?$('#chDur').value:'auto';if(v!=='auto')return +v;const L=dogs.filter(d=>holyOk(d)&&!d.dead);if(!L.length)return 60;const avg=k=>L.reduce((a,d)=>a+d[k],0)/L.length;
+  const def=(100-avg('health'))+(100-avg('happy'))+(100-avg('stamina'));return clamp(Math.round((60+def*0.9)/30)*30,60,180)}
+function churchBrain(){const L=dogs.filter(d=>holyOk(d)&&!d.dead);if(!L.length)return [false,'강아지가 없어요'];const avg=k=>L.reduce((a,d)=>a+d[k],0)/L.length;
+  if(avg('health')<75)return [true,`평균 건강이 ${Math.round(avg('health'))}로 낮아요`];if(avg('stamina')<60)return [true,`평균 체력이 ${Math.round(avg('stamina'))}로 낮아요`];if(avg('happy')<65)return [true,`평균 행복도가 ${Math.round(avg('happy'))}로 낮아요`];
+  const near=L.filter(d=>!d.eternal&&(d.holy||0)>=170);if(near.length)return [true,`${near[0].name}${josa(near[0].name,'이','가')} 영생(200)에 가까워요`];const low=L.filter(d=>(d.holy||0)<20).length;if(low>=L.length/2)return [true,'거룩함이 낮은 강아지가 많아요'];
+  return [false,'모두 건강하고 행복해요']}
+function startChurch(kind,manual){
+  if(!FAITH()){toast('강아지교 성당이 없어요 (방 꾸미기에서 여러 방을 켜 주세요)',true);return false}if(field||match||world.arena){if(manual)toast('지금은 예식을 할 수 없어요',true);return false}
+  const C=world.church;if(C.on){if(manual)toast('이미 예식 중이에요',true);return false}if(C.count>=2){if(manual)toast('예식은 하루에 최대 2번이에요',true);return false}
+  const parts=dogs.filter(churchEligible);if(!parts.length){if(manual)toast('예식에 올 수 있는 강아지가 없어요',true);return false}
+  let pr=world.jobs&&world.jobs.priest!=null?dogs.find(d=>d.id===world.jobs.priest&&parts.includes(d)):null;if(!pr)pr=parts.filter(d=>d.age>=1).sort((a,b)=>(b.holy||0)-(a.holy||0))[0]||parts[0];
+  const seats=churchSeats(),seat={};let i=0;for(const d of parts.slice().sort((a,b)=>(b.holy||0)-(a.holy||0))){if(d===pr)continue;const sp=seats[i++];if(sp)seat[d.id]=sp;else seat[d.id]=spotIn('church')?Object.assign(spotIn('church'),{fx:ANX.priestSpot.x,fz:ANX.priestSpot.z}):ANX.priestSpot}
+  const hol=!manual&&kind==='1차(필수)'?holidayOf(dogDate(world.t)):null;if(hol)kind=`${hol.n} 대예식`;const dur=hol?300:churchDur();Object.assign(C,{grand:!!hol,holiday:hol,on:true,kind,t:0,dur,parts:parts.map(d=>d.id),priest:pr.id,seat,gain:{},start:world.t,watch:false});C.count++;
+  for(const d of parts){boardLeave(d);if(world.tag&&world.tag.on&&world.tag.players.includes(d.id))tagLeave(d,'예식에 가느라');stationRelease(d);d.lift=0;setState(d,'toChurch',99999)}
+  if(hol){churchDeco(true);log(`🎉 오늘은 강아지교 기념일 「${hol.n}」! ${hol.w}. 5시간 동안 성대한 대예식을 열어요`,'good');toast(`🎉 ${hol.n} 대예식!`,false,true)}
+  log(`🔔 강아지교 ${hol?kind:kind+' 예식'} 시작! 사제 ${pr.name} · ${parts.length}마리 참석 · 약 ${fmtDur(dur)}`,'good');if(soundOn){blip(392,0.5,0.07);setTimeout(()=>blip(392,0.5,0.07),700)}if(ANX.bell)ANX.bell.userData.ring=3;churchUI(true);return true}
+function endChurch(why){const C=world.church;if(!C||!C.on)return;C.on=false;const ps=C.parts.map(id=>dogs.find(d=>d.id===id)).filter(Boolean);
+  for(const d of ps){d.lift=0;if(d.state==='toChurch'||d.state==='atChurch')setState(d,'idle',rand(2,4))}
+  const g=Object.values(C.gain),avg=g.length?g.reduce((a,b)=>a+b,0)/g.length:0;C.last={kind:C.kind,n:ps.length,avg,at:world.t};
+  if(C.grand){churchDeco(false);for(const d of ps){d.happy=clamp(d.happy+15);d.hunger=Math.min(d.hunger,20)}log(`🍖 ${C.holiday?C.holiday.n:'기념일'} 잔치! 예식이 끝나고 모두 배불리 먹었어요 (행복도 +15)`,'good');world.holidaysDone=(world.holidaysDone||0)+1;C.grand=false}
+  $('#chSub').hidden=true;
+  log(`⛪ 강아지교 ${/대예식$/.test(C.kind)?C.kind:C.kind+' 예식'}이 끝났어요${why?` (${why})`:''} · ${ps.length}마리 · 거룩함 평균 +${avg.toFixed(1)} · 건강·체력·행복도 ↑`,'good');$('#chHud').hidden=true;churchUI(true)}
+function churchStep(h){
+  if(!world)return;if(!world.holyInit&&FAITH()){world.holyInit=true;for(const d of dogs)if(holyOk(d)&&d.holy==null)d.holy=Math.round(rand(5,30))}
+  if(!FAITH()||field||match||world.arena)return;const day=Math.floor(world.t/1440),hr=hour();const C=world.church=world.church||{day:-1,count:0,on:false};
+  if(C.day!==day&&!C.on){C.day=day;C.count=0;C.decided=null}
+  if(C.on){C.t+=h;for(const id of C.parts){const d=dogs.find(x=>x.id===id);if(!d||d.dead)continue;if(d.state!=='toChurch'&&d.state!=='atChurch'&&churchEligible(d)&&['idle','wander','sit','sleep','atSt','toSt'].includes(d.state)&&d.pee<80&&d.poo<80&&d.thirst<85){stationRelease(d);setState(d,'toChurch',99999)}}
+    if(C.t>=C.dur)endChurch();return}
+  const t1=+($('#chT1')?$('#chT1').value:10),t2=+($('#chT2')?$('#chT2').value:19);
+  if(C.count===0&&hr>=t1&&hr<22)startChurch('1차(필수)');
+  else if(C.count===1&&hr>=t2&&hr<23.5&&!C.decided){const m=$('#chSecond')?$('#chSecond').value:'auto';let yes,why;if(m==='on'){yes=true;why='주인이 정했어요'}else if(m==='off'){yes=false;why='주인이 정했어요'}else{[yes,why]=churchBrain();why='🧠 '+why}
+    C.decided=yes?'yes':'no';log(`⛪ 오늘 2차 예식: ${yes?'해요':'안 해요'} (${why})`,'',true);if(yes)startChurch('2차')}}
+let chUIT=0,organT=0;
+function churchFx(rdt){
+  if(!world)return;for(const d of dogs)if(d.eternal&&!d.halo&&!d.dead)haloOn(d);
+  if(chDeco){const t=performance.now()/1000;chDeco.children.forEach(o=>{if(o.userData.ph!=null)o.material.emissiveIntensity=0.5+Math.abs(Math.sin(t*2+o.userData.ph))*0.8})}
+  if(ANX&&ANX.bell){const b=ANX.bell;if(b.userData.ring>0){b.userData.ring-=rdt;b.rotation.z=Math.sin(performance.now()/120)*0.35}else b.rotation.z*=0.9}
+  const C=world.church,hud=$('#chHud');if(!hud)return;
+  if(!C||!C.on||$('#sim').hidden){if(!hud.hidden)hud.hidden=true}else{
+    organT-=rdt;if(organT<=0&&soundOn&&speed<=4){organT=1.4;const sc=[262,294,330,392,440,523];blip(pick(sc),0.9,0.03)}
+    chUIT-=rdt;if(chUIT<=0){chUIT=0.5;const pr=dogs.find(d=>d.id===C.priest),here=C.parts.filter(id=>{const d=dogs.find(x=>x.id===id);return d&&d.state==='atChurch'}).length,left=Math.max(0,C.dur-C.t);
+      hud.hidden=false;hud.textContent=`⛪ 강아지교 ${C.grand?C.kind:C.kind+' 예식'} · 사제 ${pr?pr.name:'-'} · 자리에 앉은 강아지 ${here}/${C.parts.length} · 남은 시간 ${fmtDur(Math.ceil(left))}`;churchUI()}}
+  if(chUIT<=0){chUIT=1;churchUI()}}
+function jobOpts(sel,cur){if(!sel)return;const L=dogs.filter(d=>holyOk(d)&&!d.dead&&d.age>=1);const html=`<option value="auto">🧠 자동</option><option value="none">없음</option>`+L.map(d=>`<option value="${d.id}">${esc(d.name)} (✨${Math.floor(d.holy||0)})</option>`).join('');if(sel.dataset.h!==html){const v=sel.value||cur||'auto';sel.dataset.h=html;sel.innerHTML=html;sel.value=[...sel.options].some(o=>o.value===v)?v:'auto'}}
+function churchUI(force){if(!world||!$('#chHoly'))return;holidayUI();const C=world.church||{},on=!!C.on;{const hide=!FAITH()&&!ANX;}$('#churchPanel').hidden=!FAITH();
+  $('#chTag').textContent=!ANX?'성당이 없어요':on?'예식 중':'쉬는 중';$('#chStart').disabled=!ANX||on||(C.count||0)>=2;$('#chWatch').disabled=!ANX;
+  const t1=$('#chT1').value,t2=$('#chT2').value;$('#chToday').textContent=!ANX?'방 꾸미기에서 "여러 방"을 켜면 강아지교 성당이 생겨요.':`오늘 예식 ${C.count||0}/2번 · 1차(필수) ${t1}시 ${C.count>=1?'✓':'예정'} · 2차 ${t2}시 ${C.decided==='yes'||C.count>=2?'✓ 함':C.decided==='no'?'안 함':'결정 전'}${C.last?` · 지난 예식 ${C.last.n}마리, 거룩함 평균 +${C.last.avg.toFixed(1)}`:''}`;
+  jobOpts($('#jobPriest'));jobOpts($('#jobChef'));jobOpts($('#jobLibrarian'));
+  const J=world.jobs||{},jh=['priest','chef','librarian'].map(r=>{const d=dogs.find(x=>x.id===J[r]);return `<span>${JOB_N[r]}</span><b>${d?esc(d.name)+(d.state==='atJob'?' (일하는 중)':''):'-'}</b>`}).join('');if($('#chJobs').dataset.h!==jh){$('#chJobs').dataset.h=jh;$('#chJobs').innerHTML=jh}
+  const L=dogs.filter(d=>holyOk(d)&&!d.dead).sort((a,b)=>(b.holy||0)-(a.holy||0)).slice(0,8),html=L.map((d,i)=>`<li><b>${d.eternal?'✨':i===0?'🏆':'🐾'} ${esc(d.name)}</b><span class="small">거룩함 ${Math.floor(d.holy||0)}${d.eternal?' · 영생':` / 200 (${Math.floor((d.holy||0)/2)}%)`}</span></li>`).join('')||'<li class="muted">강아지가 없어요</li>';
+  const ul=$('#chHoly');if(force||ul.dataset.h!==html){ul.dataset.h=html;ul.innerHTML=html}}
+$('#chStart').onclick=()=>{ac();if(world)startChurch('특별',true)};
+$('#chWatch').onclick=()=>{if(!ANX)return;const al=ANX.items&&ANX.items.find(i=>i.type==='altar'),c0=ANX.map(0,ANX.RD+2);if(player.spect)stopSpectate();setCamMode('free');const tx=al?al.x:c0.x,tz=al?al.z:c0.z;controls.target.set(tx,1,tz);mainCam.position.set(c0.x+(tx-c0.x)*0.05,ANX.cw*0.45+4,c0.z+(tz-c0.z)*0.05);controls.update();if(world.church)world.church.watch=true;$('#chSubOn').checked=true;chSubDraw()};
+['#jobPriest','#jobChef','#jobLibrarian'].forEach(q=>$(q).addEventListener('change',()=>{if(world){assignJobs();churchUI(true)}}));
+
+
+/* ---------- dog calendar (멍력) & yearly holidays ---------- */
+const DOG_MONTHS=[31,28,31,30,31,30,31,31,30,31,30,31];
+const DOG_HOLIDAYS=[{m:1,d:1,n:'🎊 새해 꼬리 축제',w:'새해를 맞아 꼬리를 힘차게 흔들어요'},{m:3,d:14,n:'🦴 뼈다귀 감사절',w:'뼈다귀와 간식에 감사해요'},{m:5,d:5,n:'🐶 강아지의 날',w:'모든 강아지를 축복해요'},{m:7,d:7,n:'🌊 첫 산책 기념일',w:'처음 산책 나간 날을 기억해요'},{m:9,d:9,n:'🐾 거룩한 발바닥 축일',w:'발바닥 도장을 찍으며 서로를 축복해요'},{m:12,d:25,n:'✨ 성스러운 꼬리의 날',w:'한 해 동안 함께해 준 서로에게 감사해요'}];
+function dogDate(t){const day=Math.floor((t||0)/1440),y=Math.floor(day/365)+1;let r=((day%365)+365)%365,m=0;while(r>=DOG_MONTHS[m]){r-=DOG_MONTHS[m];m++}return {y,m:m+1,d:r+1,day}}
+function holidayOf(dd){return DOG_HOLIDAYS.find(h=>h.m===dd.m&&h.d===dd.d)||null}
+function doyOf(m,d){let n=0;for(let i=0;i<m-1;i++)n+=DOG_MONTHS[i];return n+d-1}
+function nextHoliday(dd){const cur=doyOf(dd.m,dd.d);let best=null,bd=1e9;for(const h of DOG_HOLIDAYS){let k=doyOf(h.m,h.d)-cur;if(k<=0)k+=365;if(k<bd){bd=k;best=h}}return {h:best,days:bd,txt:`${best.n} (${best.m}월 ${best.d}일, ${bd}일 뒤)`}}
+let chDeco=null;
+function churchDeco(on){if(chDeco){scene.remove(chDeco);chDeco=null}if(!on||!ANX||!ANX.faith)return;const G=new THREE.Group();scene.add(G);chDeco=G;const A=ANX,cols=['#e84a4a','#f2c14e','#3fb27f','#2f7fd0','#ff8a3a','#c9a0f0'];
+  for(let v=A.RD+1.5;v<=A.top-1.5;v+=1.2){for(const sg of[-1,1]){const p=A.map(sg*(A.cw/2-0.3),v);const fl=new THREE.Mesh(new THREE.ConeGeometry(0.22,0.4,3),mat(cols[Math.floor(v)%6],{emissive:cols[Math.floor(v)%6],emissiveIntensity:0.4}));fl.position.set(p.x,4.6,p.z);fl.rotation.x=Math.PI;G.add(fl)}}
+  for(let i=0;i<14;i++){const p=A.map(rand(-A.cw/2+1,A.cw/2-1),rand(A.RD+1,A.top-1));const lan=sph(0.18,cols[i%6],p.x,rand(3.6,5.6),p.z,{emissive:cols[i%6],emissiveIntensity:0.9});lan.castShadow=false;lan.userData.ph=Math.random()*6;G.add(lan)}
+  const al=A.items&&A.items.find(i=>i.type==='altar');if(al){for(const sg of[-1,1]){const p={x:al.x+(A.ns?sg*1.8:0),z:al.z+(A.ns?0:sg*1.8)};G.add(cyl(0.05,0.05,2.4,'#c9a227',p.x,1.2,p.z,8));const fw=textSprite('🌸',{bg:'rgba(0,0,0,0)',size:0.6});fw.position.set(p.x,2.6,p.z);G.add(fw)}}
+  const ban=textSprite('🎉 '+(world.church&&world.church.holiday?world.church.holiday.n:'기념일'),{size:1.1,bg:'rgba(181,85,95,.9)'});const bp=A.map(0,A.top-0.6);ban.position.set(bp.x,6.0,bp.z);G.add(ban)}
+function holidayUI(){if(!world||!$('#chCal'))return;const dd=dogDate(world.t),h=holidayOf(dd),nx=nextHoliday(dd);const t=`🐾 오늘은 멍력 ${dd.y}년 ${dd.m}월 ${dd.d}일${h?` · 🎉 ${h.n}! (5시간 대예식)`:''} · 다음 기념일 ${nx.txt}`;if($('#chCal').textContent!==t)$('#chCal').textContent=t;
+  const html=DOG_HOLIDAYS.map(x=>`<li><b>${x.m}월 ${x.d}일</b>${esc(x.n)} — ${esc(x.w)}</li>`).join('');const ul=$('#chHolList');if(ul.dataset.h!==html){ul.dataset.h=html;ul.innerHTML=html}}
+/* ---------- ceremony dialogue (priest & congregation lines, shown as a subtitle bar) ---------- */
+const CH_PHASES=[[0,'🚪 입장'],[0.1,'🎶 찬양'],[0.3,'📖 말씀'],[0.6,'🙏 기도'],[0.8,'✨ 축복'],[0.95,'🔔 폐식']];
+const CH_LINES={
+  '🚪 입장':{p:['멍멍, 형제자매 여러분! 오늘도 꼬리를 흔들며 모여 주셔서 고맙습니다.','자리에 앉아 주세요. 발바닥은 가지런히, 꼬리는 살랑살랑.','오늘 이 자리에 {n}마리가 함께했어요. 모두 환영합니다!','늦게 온 친구도 괜찮아요. 강아지교의 문은 언제나 열려 있답니다.'],c:['멍! 안녕하세요, 사제님!','꼬리 흔들며 왔어요~','오늘도 잘 부탁드려요, 멍!','자리 찾았어요! 여기 따뜻하네요.']},
+  '🎶 찬양':{p:['다 함께 노래해요. "오늘도 산책 감사해요"!','목소리를 모아 주세요. 하울링도 좋아요!','오르간 소리에 맞춰 꼬리를 흔들어 볼까요?'],c:['🎶 오늘도~ 산책~ 감사해요~ 🎶','🎶 간식은~ 나누면~ 두 배~ 🎶','아우우우~ 🎵','🎶 배변판은~ 우리의~ 친구~ 🎶','🎶 멍멍멍~ 사랑해요~ 🎶']},
+  '📖 말씀':{p:['오늘의 말씀입니다. "간식은 나누면 두 배가 되고, 싸움은 나누면 반이 된다."','"배변판을 지키는 강아지에게 거룩함이 함께하리라."','"이웃 강아지의 냄새를 반갑게 맡아 주어라."','"공을 물어 왔으면 다시 놓아 주어라. 그래야 또 던져 준다."','"주인이 바쁠 때는 조용히 기다려라. 산책은 반드시 온다."','"꼬리를 흔드는 자, 마음도 따뜻하리라."','{name}{이} 요즘 배변판을 아주 잘 써요. 모두 본받아요!'],c:['멍멍, 명심할게요!','오늘 말씀 너무 좋아요…','저 어제 싸웠는데… 반성해요 🥺','간식 나눠 먹을게요!','배변판 꼭 쓸게요!','(꼬리를 천천히 흔든다)']},
+  '🙏 기도':{p:['발바닥을 모아 기도해요. 아픈 친구가 낫기를.','학교 간 친구들, 회사 간 어르신들이 무사히 돌아오기를.','우리 집에 평화와 간식이 가득하기를.','{name}{이} 건강해지기를 함께 기도해요.'],c:['(조용히 눈을 감는다)','…낑, 모두 건강하게 해 주세요.','오늘 밥 맛있게 먹게 해 주세요.','싸우지 않게 해 주세요.','주인님도 건강하게 해 주세요.']},
+  '✨ 축복':{p:['{name}에게 축복을! 거룩함이 함께하길.','오늘 참석한 모든 강아지에게 축복을! 건강과 체력이 가득하길.','{eternal}','거룩함이 높은 {name}, 영생까지 {left} 남았어요. 힘내요!'],c:['고맙습니다, 멍!','몸이 가벼워졌어요!','꼬리에 힘이 생겼어요!','✨ 반짝반짝해요!']},
+  '🔔 폐식':{p:['오늘 예식은 여기까지예요. 서로 사이좋게 지내요!','이제 가서 맛있게 먹고, 즐겁게 놀아요. 멍멍!','다음 예식에서 또 만나요. 꼬리를 흔들며 안녕!'],c:['멍! 다음에 또 올게요!','고맙습니다, 사제님!','오늘 너무 좋았어요~','산책 가고 싶다!']}};
+let chTalkT=0,chTalkTurn=0;const chLog=[];
+function chPhase(C){const f=C.t/Math.max(1,C.dur);let ph=CH_PHASES[0][1];for(const [a,n] of CH_PHASES)if(f>=a)ph=n;return ph}
+function chFill(t,C,sp){const P=C.parts.map(id=>dogs.find(d=>d.id===id)).filter(Boolean),pick1=P.filter(d=>d.id!==C.priest),nm=(pick1.length?pick(pick1):P[0]||{name:'친구'}).name;
+  const top=P.filter(d=>!d.eternal).sort((a,b)=>(b.holy||0)-(a.holy||0))[0],et=P.filter(d=>d.eternal);
+  if(t==='{eternal}')t=et.length?`영생을 얻은 ${et.map(d=>d.name).join(', ')}! 늘 우리와 함께해요.`:'언젠가 거룩함 200에 닿는 친구가 나오길 기도해요.';
+  if(t.includes('{left}')){if(!top)return '모두에게 거룩함이 함께하길.';t=t.replace('{name}',top.name).replace('{left}',`${Math.max(0,Math.ceil(200-(top.holy||0)))}점`)}
+  return t.replace('{n}',P.length).replace('{name}{이}',nm+josa(nm,'이','가')).replace(/\{name\}/g,nm)}
+function chSay(C){const ph=chPhase(C),L0=CH_LINES[ph];if(!L0)return;const L=C.grand&&C.holiday?{p:L0.p.concat([`오늘은 ${C.holiday.n}! ${C.holiday.w}.`,`${C.holiday.n}을(를) 맞아 ${'{n}'}마리가 모두 모였어요. 정말 성대하네요!`,'1년에 한 번뿐인 날이에요. 오늘은 마음껏 축하해요!']),c:L0.c.concat(['🎉 축하해요~ 멍멍!','🎶 꼬리 흔들어~ 축제다~ 🎶','오늘 잔치 음식 기대돼요!','1년 동안 기다렸어요!'])}:L0;const pr=dogs.find(d=>d.id===C.priest);chTalkTurn++;
+  let who,txt;const seated=C.parts.map(id=>dogs.find(d=>d.id===id)).filter(d=>d&&d.id!==C.priest&&d.state==='atChurch');
+  if(chTalkTurn%2===1||!seated.length){who=pr;txt=chFill(pick(L.p),C)}else{who=pick(seated);txt=chFill(pick(L.c),C)}
+  if(!who)return;who.sayUntil=performance.now()+3500;if(who.root)who.root.userData.barkPulse=0.7;
+  chLog.push({ph,who:who.name,pr:who.id===C.priest,txt});while(chLog.length>40)chLog.shift();if(soundOn&&speed<=4)blip(who.id===C.priest?330:520,0.06,0.025);chSubDraw();chTalkUI()}
+function chSubDraw(){const el=$('#chSub');if(!el)return;const C=world&&world.church,show=C&&C.on&&$('#chSubOn').checked&&!$('#sim').hidden;el.hidden=!show;if(!show)return;
+  const last=chLog.slice(-3);el.innerHTML=`<span class="ph">${esc(chPhase(C))}</span>`+last.map((l,i)=>`<div class="ln${l.pr?' pr':''}${i<last.length-1?' old':''}"><b>${l.pr?'⛪ 사제 ':''}${esc(l.who)}</b>${esc(l.txt)}</div>`).join('')}
+function chTalkUI(){const ul=$('#chTalk');if(!ul)return;const html=chLog.slice(-8).reverse().map(l=>`<li><b>${l.pr?'⛪':'🐾'} ${esc(l.who)}</b>${esc(l.txt)}</li>`).join('')||'<li class="muted">예식이 시작되면 사제와 교도들의 대사가 여기에 남아요</li>';if(ul.dataset.h!==html){ul.dataset.h=html;ul.innerHTML=html}}
+function chTalkFx(rdt){const C=world&&world.church;if(!C||!C.on){if($('#chSub')&&!$('#chSub').hidden)$('#chSub').hidden=true;return}
+  if(C.talkStart!==C.start){C.talkStart=C.start;chLog.length=0;chTalkTurn=0;chTalkT=0.5}
+  const anySeated=C.parts.some(id=>{const d=dogs.find(x=>x.id===id);return d&&d.state==='atChurch'});if(!anySeated)return;
+  chTalkT-=rdt;if(chTalkT<=0){chTalkT=chTalkTurn%2===0?4.2:3.2;chSay(C)}}
+$('#chSubOn').addEventListener('change',()=>chSubDraw());
 /* ---------- tag (술래잡기) ---------- */
 let tagUIT=0;
 function tagArea(where){const g=yard&&yard.gym,yb=yard&&(yard.base||yard),day=!isNight();
@@ -7276,7 +7759,7 @@ function careAuto(live,aH,aS,aHe){
 
 /* ======================= CONSTRUCTION during the simulation ======================= */
 // price (won) and build time (game minutes) for each piece of furniture
-const BUILD={track:[150000,90],hurdle:[30000,15],tunnel:[40000,15],weave:[25000,15],aframe:[60000,30],seesaw:[45000,20],beam:[35000,20],hoop:[20000,10],jumpbox:[25000,10],tirepull:[20000,10],springpole:[40000,20],discmachine:[70000,30],arcade:[120000,60],claw:[100000,45],quiz:[90000,60],speaker:[45000,15],smartlight:[30000,15],thermo:[40000,20],whitenoise:[25000,10],security:[150000,60],pawwash:[70000,45],petfountain:[25000,15],nosework:[15000,10],cattower:[60000,60],petsofa:[50000,30],pool:[200000,240],shade:[40000,40],sandpit:[30000,60],solar:[300000,180],train:[80000,90],sofa:[60000,90],bed:[80000,120],table:[30000,45],shelf:[40000,60],tv:[120000,60],plant:[8000,15],dogbed:[15000,20],rug:[12000,15],
+const BUILD={stove:[60000,20],fridge:[90000,20],sink:[50000,20],counter:[40000,15],diningtable:[50000,20],bookcase:[45000,20],readdesk:[30000,15],armchair:[40000,15],globe:[20000,5],longtable:[120000,40],buffet:[60000,20],stage:[90000,40],chandelier:[70000,20],pew:[40000,20],altar:[150000,60],candle:[15000,5],organ:[300000,120],font:[50000,20],statue:[250000,120],track:[150000,90],hurdle:[30000,15],tunnel:[40000,15],weave:[25000,15],aframe:[60000,30],seesaw:[45000,20],beam:[35000,20],hoop:[20000,10],jumpbox:[25000,10],tirepull:[20000,10],springpole:[40000,20],discmachine:[70000,30],arcade:[120000,60],claw:[100000,45],quiz:[90000,60],speaker:[45000,15],smartlight:[30000,15],thermo:[40000,20],whitenoise:[25000,10],security:[150000,60],pawwash:[70000,45],petfountain:[25000,15],nosework:[15000,10],cattower:[60000,60],petsofa:[50000,30],pool:[200000,240],shade:[40000,40],sandpit:[30000,60],solar:[300000,180],train:[80000,90],sofa:[60000,90],bed:[80000,120],table:[30000,45],shelf:[40000,60],tv:[120000,60],plant:[8000,15],dogbed:[15000,20],rug:[12000,15],
   water:[50000,60],food:[10000,15],launcher:[45000,60],potty:[70000,90],treadmill:[90000,120],farm:[250000,360],
   bath:[120000,150],medic:[300000,240],groom:[60000,60],toybox:[20000,20],snackbar:[50000,45],kennel:[40000,60],aircon:[150000,120],purifier:[60000,30],agility:[100000,180],fountain:[80000,120]};
 let buildPick=null;
@@ -7378,7 +7861,7 @@ function makeSave(){
   if(w.war){w.war.battle=null;w.war.pendingFight=null}
   w.builds=(world.builds||[]).map(b=>({type:b.type,x:b.x,z:b.z,rot:b.rot,start:b.start,end:b.end,cost:b.cost,box:plainData(b.box,1)}));
   const L=plainData(layout,1);
-  return {v:SAVE_V,app:'Wall멍하우su 홈케어',at:Date.now(),careMode,layout:L,world:w,dogs:dogs.filter(d=>!d.dead&&!d.enemy&&!d.lion&&!(d.stray&&!d.away)).map(animalData),
+  return {v:SAVE_V,app:'멍하우스 홈케어',at:Date.now(),careMode,layout:L,world:w,dogs:dogs.filter(d=>!d.dead&&!d.enemy&&!d.lion&&!(d.stray&&!d.away)).map(animalData),
     meta:{t:world.t,n:dogs.filter(d=>!d.dead&&!d.stray&&!d.enemy).length,money:isFinite(world.money)?world.money:'무한',war:!!world.war,houses:world.war?world.war.houses.filter(h=>h.owner==='me').length:0}};
 }
 function saveSummary(m){if(!m)return '비어 있음';return `${fmtDate(m.t)} · 동물 ${m.n}마리 · ${m.money==='무한'?'돈 무한':won(m.money)}${m.war?` · 내 집 ${m.houses}곳`:''}`}
@@ -7392,14 +7875,14 @@ function saveTo(slot,quiet){
 }
 async function exportSave(){
   const why=saveBlocked();if(why){toast(`💾 ${why}`,true);return}
-  const txt=JSON.stringify(makeSave(),saveRep),name=`Wall멍하우su_저장_${Math.floor(world.t/1440)+1}일차.json`,blob=new Blob([txt],{type:'application/json'});
+  const txt=JSON.stringify(makeSave(),saveRep),name=`멍하우스_저장_${Math.floor(world.t/1440)+1}일차.json`,blob=new Blob([txt],{type:'application/json'});
   if(downloadsApi){try{await downloadsApi.save({filename:name,data:blob});toast('📤 저장 파일을 내보냈어요');return}catch(err){if(err&&err.code==='declined')return}}
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);toast('📤 저장 파일을 내보냈어요');
 }
 function loadFromSlot(slot){const txt=lsGet('mh_save_'+slot);if(!txt){toast('그 칸은 비어 있어요',true);return}loadSave(txt)}
 function loadSave(txt,opt){opt=opt||{};
   let S;try{S=JSON.parse(txt,saveRev)}catch(e){toast('저장 파일을 읽을 수 없어요',true);return}
-  if(!S||S.app!=='Wall멍하우su 홈케어'||!S.world||!S.layout||!Array.isArray(S.dogs)){toast('Wall멍하우su 저장 파일이 아니에요',true);return}
+  if(!S||S.app!=='멍하우스 홈케어'||!S.world||!S.layout||!Array.isArray(S.dogs)){toast('멍하우스 저장 파일이 아니에요',true);return}
   if(match)cleanupMatch(true);if(NET.on)netStop(true);NET.idOf={};NET.taken=new Set();bgWatch=null;$('#bgHud').hidden=true;
   layout=S.layout;arenaConf=null;$('#sim').classList.remove('arena','soccer');$('#arenaRes').hidden=true;
   $('#setup').hidden=true;$('#sim').hidden=false;$('#saveOv').hidden=true;
@@ -7419,7 +7902,7 @@ function loadSave(txt,opt){opt=opt||{};
   if(!opt.rebuild)$('#log').innerHTML='';speed=1;clearInterval(musicIv);musicIv=0;const mOn=world.music.on;world.music.on=false;if(mOn)setMusic(true);else musicUI();
   const tOn=world.tv&&world.tv.on;if(world.tv){world.tv.on=false;if(tOn&&tvs.length)setTV(true)}
   followId=dogs[0]?dogs[0].id:1;world.cardsDirty=true;buildDogCards();renderEvents();setCamMode('free');buildSpeedSeg();
-  if(world.quiz)world.quiz.on=false;if(world.tag)world.tag.on=false;world.trainQ=world.trainQ||[];ARC=null;arcPrev=new Set();arcAskD=null;$('#arcOv').hidden=true;$('#arcAsk').hidden=true;if(world.war){const ah=world.war.houses.find(x=>x.id===world.war.active);if(ah&&houseLoc(ah)!==locNow)applyLoc(houseLoc(ah))}
+  chDeco=null;if(world.quiz)world.quiz.on=false;if(world.tag)world.tag.on=false;if(world.church){world.church.on=false;world.church.grand=false}for(const d of dogs){if(['toChurch','atChurch','toJob','atJob'].includes(d.state)){d.state='idle';d.lift=0}if(d.transit){d.transit=null;d.flY=null}if((d.fl||0)>=FLN)d.fl=0}world.trainQ=world.trainQ||[];ARC=null;arcPrev=new Set();arcAskD=null;$('#arcOv').hidden=true;$('#arcAsk').hidden=true;if(world.war){const ah=world.war.houses.find(x=>x.id===world.war.active);if(ah&&houseLoc(ah)!==locNow)applyLoc(houseLoc(ah))}
   if(!world.ai)aiInit();if(S.careMode)applyMode(S.careMode,false);setTimeout(()=>{warUI();careUI();buildUI();boardUI()},0);
   if(!opt.rebuild){log(`📂 저장한 게임을 불러왔어요 · ${saveSummary(S.meta)}`,'good');toast('📂 이어서 시작해요!',false,true)}exG=null;if(world.expand)setTimeout(exFx,0);
   running=true;lastT=performance.now();ac();balanceStart();
@@ -7706,7 +8189,7 @@ function boardAuto(live){
 let lastT=performance.now(),uiT=0;
 function frame(now){
   requestAnimationFrame(frame);if(!running)return;
-  const realDt=Math.min(0.1,(now-lastT)/1000);lastT=now;musicFx(realDt);stationFx(realDt);smartFx();locFx(realDt);arcFx(realDt);camNavStep(realDt);tagFx(realDt);if(!paused)autoSaveTick(realDt);
+  const realDt=Math.min(0.1,(now-lastT)/1000);lastT=now;musicFx(realDt);stationFx(realDt);smartFx();locFx(realDt);arcFx(realDt);camNavStep(realDt);tagFx(realDt);churchFx(realDt);chTalkFx(realDt);if(!paused)autoSaveTick(realDt);
   if(!$('#warMap').hidden){mapT-=realDt;if(mapT<=0){mapT=1;renderMap()}}
   if(NET.on){NET.pubT-=realDt;if(NET.pubT<=0){NET.pubT=20;netPublish()}}
   if(!$('#statOv').hidden){statT-=realDt;if(statT<=0||statQueued){statT=1;renderStats()}}
@@ -7725,7 +8208,7 @@ function frame(now){
       if(Math.floor(before/1440)!==Math.floor(world.t/1440))log(`${Math.floor(world.t/1440)+1}일차 아침이 밝았어요`);
       while(world.t>=world.nextHourT){world.nextHourT+=60;hourTick();if(world.breakLoop)break}
       world.launcherBalls=balls.filter(b=>b.state==='in').length;
-      updatePotty(h);autoManager(h);updateFarm(h);billStep(h);warStep(h);boardStep(h);climateStep(h);locStep(h);smartStep(h);gymStep(h);tagStep(h);schoolStep(h);exStep(h);buildStep(h);trainQueueStep();quizStep(h);
+      updatePotty(h);autoManager(h);updateFarm(h);billStep(h);warStep(h);boardStep(h);climateStep(h);locStep(h);smartStep(h);gymStep(h);tagStep(h);schoolStep(h);exStep(h);churchStep(h);jobStep(h);floorStep(h);buildStep(h);trainQueueStep();quizStep(h);
       if(world.tv.on&&world.tv.offAt>0&&world.t>=world.tv.offAt){setTV(false);log('꺼짐 예약 시간이 되어 TV가 꺼졌어요')}
       if(world.music.on&&world.music.offAt>0&&world.t>=world.music.offAt){setMusic(false);log('꺼짐 예약 시간이 되어 음악이 꺼졌어요')}
       if(world.fastNow){for(const d of dogs.slice())fastAnimal(d,h)}
@@ -7766,7 +8249,7 @@ function buildSpeedSeg(){
 }
 $('#pauseBtn').onclick=e=>{paused=!paused;e.currentTarget.setAttribute('aria-pressed',String(paused));e.currentTarget.textContent=paused?'▶ 계속':'⏸ 일시정지'};
 $('#soundBtn').onclick=e=>{soundOn=!soundOn;e.currentTarget.setAttribute('aria-pressed',String(soundOn));e.currentTarget.textContent=soundOn?'🔊 소리':'🔈 소리 끔';if(world)musicUI()};
-$$('#camModes .chip').forEach(b=>b.onclick=()=>{if(player.spect){player.prevCam=b.dataset.mode;stopSpectate()}setCamMode(b.dataset.mode);markFollowCards()});
+$$('#camModes .chip[data-mode]').forEach(b=>b.onclick=()=>{if(player.spect){player.prevCam=b.dataset.mode;stopSpectate()}setCamMode(b.dataset.mode);markFollowCards()});
 $$('.dpad [data-cam]').forEach(b=>{
   const k=b.dataset.cam;const on=e=>{e.preventDefault();camKeys[k]=true;$('#camTrack').checked=false};const off=()=>{camKeys[k]=false};
   b.addEventListener('pointerdown',on);b.addEventListener('pointerup',off);b.addEventListener('pointerleave',off);b.addEventListener('pointercancel',off);
@@ -8021,7 +8504,7 @@ function addRecording(blob,secs){
   it.innerHTML=`<video src="${url}" controls playsinline></video><div class="meta"><span>녹화 ${recN} · ${Math.round(secs)}초 · ${when}</span></div>`;
   const meta=it.querySelector('.meta');
   if(downloadsApi){const b=document.createElement('button');b.className='btn';b.textContent='저장';b.style.padding='3px 8px';
-    b.onclick=async()=>{try{await downloadsApi.save({filename:`Wall멍하우su_녹화_${recN}.webm`,data:blob});toast('녹화 파일을 저장했어요')}catch(err){if(err&&err.code==='declined')return;if(['unavailable','not_granted','capability_disabled','capability_removed'].includes(err&&err.code)){b.remove();toast('이 화면에서는 저장할 수 없어요. 페이지 안에서 다시 볼 수 있어요',true)}else toast('저장하지 못했어요. 잠시 뒤 다시 눌러 주세요',true)}};meta.appendChild(b)}
+    b.onclick=async()=>{try{await downloadsApi.save({filename:`멍하우스_녹화_${recN}.webm`,data:blob});toast('녹화 파일을 저장했어요')}catch(err){if(err&&err.code==='declined')return;if(['unavailable','not_granted','capability_disabled','capability_removed'].includes(err&&err.code)){b.remove();toast('이 화면에서는 저장할 수 없어요. 페이지 안에서 다시 볼 수 있어요',true)}else toast('저장하지 못했어요. 잠시 뒤 다시 눌러 주세요',true)}};meta.appendChild(b)}
   const del=document.createElement('button');del.className='btn';del.textContent='삭제';del.style.padding='3px 8px';del.onclick=()=>{URL.revokeObjectURL(url);it.remove()};meta.appendChild(del);
   $('#recStrip').prepend(it);log(`녹화 ${recN}을(를) 저장 목록에 추가했어요 (${Math.round(secs)}초)`,'good');
 }
@@ -8050,7 +8533,7 @@ function startSim(){
   world.breedOn=$('#breedOn').checked;world.tm.speed=$('#tmSpeed').value;world.tm.auto=$('#tmAuto').checked;$('#farmCrop').value='corn';
   aiInit();
   if(NET.on)netStop(true);NET.idOf={};NET.taken=new Set();
-  bgWatch=null;$('#bgHud').hidden=true;quizWatch=false;$('#quizHud').hidden=true;$('#tagHud').hidden=true;ARC=null;arcPrev=new Set();arcAskD=null;$('#arcOv').hidden=true;$('#arcAsk').hidden=true;
+  bgWatch=null;$('#bgHud').hidden=true;quizWatch=false;$('#quizHud').hidden=true;$('#tagHud').hidden=true;$('#chHud').hidden=true;chDeco=null;ARC=null;arcPrev=new Set();arcAskD=null;$('#arcOv').hidden=true;$('#arcAsk').hidden=true;
   world.war=null;if($('[data-war]').checked)initWar($('[data-wardiff]').value,$('[data-warsize]').value,warCount());setTimeout(warUI,0);if(world.war&&$('[data-online]').checked)setTimeout(netStart,300);
   {const v=$('#startMoney').value;world.money=v==='inf'?Infinity:+v;world.powerOut=false;world.bill={day:Math.floor(world.t/1440),today:{},yest:{},stolen:0,incToday:0,incTotal:0}}
   followId=dogs[0]?dogs[0].id:1;

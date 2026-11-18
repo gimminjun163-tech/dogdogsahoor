@@ -1,4 +1,4 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>멍하우스 홈케어</title>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>멍하우su 홈케어</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap">
@@ -599,12 +599,12 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style><style>body{margin:0} img{max-width:100%}</style></head><body>
 <header class="topbar">
-  <h1 class="brand"><i aria-hidden="true"></i>멍하우스 홈케어</h1>
+  <h1 class="brand"><i aria-hidden="true"></i>멍하우su 홈케어</h1>
   <span class="phase" id="phaseLbl">1단계 · 방 꾸미기</span>
   <button class="modechip" id="modeChip" hidden title="눌러서 관리 방식 바꾸기">모두 자동화</button>
   <span class="spacer"></span>
   <div class="clock moneychip" id="moneyBox" hidden title="가계부">💰 <span id="moneyTxt">0원</span></div>
-  <div class="clock" id="clockBox" hidden><span class="sun" id="sunDot"></span><span id="clockTxt">01년차 001일 08:00:00 · 🐾 멍력 01년 01월 01일</span><span id="clockHol" aria-hidden="true"></span></div>
+  <div class="clock" id="clockBox" hidden><span class="sun" id="sunDot"></span><span id="clockTxt">01년차 001일 08:00:00 · 🐾 멍력 01년 01월 01일(월)</span><span id="clockHol" aria-hidden="true"></span></div>
   <div class="seg" id="speedSeg" role="group" aria-label="시간 배속" hidden></div>
   <button class="iconbtn" id="pauseBtn" aria-pressed="false" hidden>⏸ 일시정지</button>
   <button class="iconbtn" id="soundBtn" aria-pressed="true" hidden>🔊 소리</button>
@@ -5099,7 +5099,7 @@ function syncFightHud(){
 }
 function syncUI(){
   if(world.cardsDirty)buildDogCards();
-  {const dd=dogDate(world.t),hol=FAITH()?holidayOf(dd):null,zf=(v,n)=>String(v).padStart(n,'0'),cday=Math.floor(world.t/1440),cy=Math.floor(cday/365),txt=`${zf(cy+1,2)}년차 ${zf(cday%365+1,3)}일 ${fmtClock(world.t,true)} · 🐾 멍력 ${zf(dd.y,2)}년 ${zf(dd.m,2)}월 ${zf(dd.d,2)}일`,hic=hol?hol.n.split(' ')[0]:'';if($('#clockHol').textContent!==hic)$('#clockHol').textContent=hic;if($('#clockTxt').textContent!==txt){$('#clockTxt').textContent=txt;$('#clockBox').title=hol?`오늘은 강아지교 기념일 ${hol.n}! 5시간 대예식이 열려요`:`멍력(강아지식 달력): 시뮬레이션을 시작한 날이 1월 1일이에요${FAITH()?` · 다음 기념일 ${nextHoliday(dd).txt}`:''}`}}
+  {holidayWarn();const dd=dogDate(world.t),hol=FAITH()?holidayOf(dd):null,zf=(v,n)=>String(v).padStart(n,'0'),cday=Math.floor(world.t/1440),cy=Math.floor(cday/365),txt=`${zf(cy+1,2)}년차 ${zf(cday%365+1,3)}일 ${fmtClock(world.t,true)} · 🐾 멍력 ${zf(dd.y,2)}년 ${zf(dd.m,2)}월 ${zf(dd.d,2)}일(${DOG_WD[dd.wd]})`,hic=hol?hol.n.split(' ')[0]:'';if($('#clockHol').textContent!==hic)$('#clockHol').textContent=hic;if($('#clockTxt').textContent!==txt){$('#clockTxt').textContent=txt;$('#clockBox').title=hol?`오늘은 강아지교 기념일 ${hol.n}! 5시간 대예식이 열려요`:`멍력(강아지식 달력): 시뮬레이션을 시작한 날이 1월 1일이에요${FAITH()?` · 다음 기념일 ${nextHoliday(dd).txt}`:''}`}}
   $('#camClock').textContent=`${Math.floor(world.t/1440)+1}일 ${fmtClock(world.t,true)}`;
   const pct=world.tank/world.tankCap;$('#tankFill').style.height=(pct*100)+'%';$('#tankPct').textContent=Math.round(pct*100)+'%';$('#tankMl').textContent=Math.round(world.tank)+'ml';
   $('#gauge').classList.toggle('low',pct<0.2);$('#bowlFill').style.width=(world.bowl/world.bowlCap*100)+'%';
@@ -7388,7 +7388,7 @@ function startChurch(kind,manual){
 function endChurch(why){const C=world.church;if(!C||!C.on)return;C.on=false;const ps=C.parts.map(id=>dogs.find(d=>d.id===id)).filter(Boolean);
   for(const d of ps){d.lift=0;if(d.state==='toChurch'||d.state==='atChurch')setState(d,'idle',rand(2,4))}
   const g=Object.values(C.gain),avg=g.length?g.reduce((a,b)=>a+b,0)/g.length:0;C.last={kind:C.kind,n:ps.length,avg,at:world.t};
-  if(C.grand){churchDeco(false);for(const d of ps){d.happy=clamp(d.happy+15);d.hunger=Math.min(d.hunger,20)}log(`🍖 ${C.holiday?C.holiday.n:'기념일'} 잔치! 예식이 끝나고 모두 배불리 먹었어요 (행복도 +15)`,'good');world.holidaysDone=(world.holidaysDone||0)+1;C.grand=false}
+  if(C.grand){churchDeco(false);for(const d of ps){d.happy=clamp(d.happy+15);d.hunger=Math.min(d.hunger,20)}log(`🍖 ${C.holiday?C.holiday.n:'기념일'} 잔치! 예식이 끝나고 모두 배불리 먹었어요 (행복도 +15)`,'good');world.holidaysDone=(world.holidaysDone||0)+1;if(C.holiday&&C.holiday.monthly){const add=Math.max(0,Math.min(SNACK_MAX-world.snacks,30+ps.length*3));world.snacks+=add;log(`🍪 간식 대량제조 완료! 간식 ${add}개를 만들었어요 (지금 ${world.snacks}개)`,'good')}C.grand=false}
   $('#chSub').hidden=true;
   log(`⛪ 강아지교 ${/대예식$/.test(C.kind)?C.kind:C.kind+' 예식'}이 끝났어요${why?` (${why})`:''} · ${ps.length}마리 · 거룩함 평균 +${avg.toFixed(1)} · 건강·체력·행복도 ↑`,'good');$('#chHud').hidden=true;churchUI(true)}
 function churchStep(h){
@@ -7428,18 +7428,22 @@ $('#chWatch').onclick=()=>{if(!ANX)return;const al=ANX.items&&ANX.items.find(i=>
 /* ---------- dog calendar (멍력) & yearly holidays ---------- */
 const DOG_MONTHS=[31,28,31,30,31,30,31,31,30,31,30,31];
 const DOG_HOLIDAYS=[{m:1,d:1,n:'🎊 새해 꼬리 축제',w:'새해를 맞아 꼬리를 힘차게 흔들어요'},{m:3,d:14,n:'🦴 뼈다귀 감사절',w:'뼈다귀와 간식에 감사해요'},{m:5,d:5,n:'🐶 강아지의 날',w:'모든 강아지를 축복해요'},{m:7,d:7,n:'🌊 첫 산책 기념일',w:'처음 산책 나간 날을 기억해요'},{m:9,d:9,n:'🐾 거룩한 발바닥 축일',w:'발바닥 도장을 찍으며 서로를 축복해요'},{m:12,d:25,n:'✨ 성스러운 꼬리의 날',w:'한 해 동안 함께해 준 서로에게 감사해요'}];
-function dogDate(t){const day=Math.floor((t||0)/1440),y=Math.floor(day/365)+1;let r=((day%365)+365)%365,m=0;while(r>=DOG_MONTHS[m]){r-=DOG_MONTHS[m];m++}return {y,m:m+1,d:r+1,day}}
-function holidayOf(dd){return DOG_HOLIDAYS.find(h=>h.m===dd.m&&h.d===dd.d)||null}
+const DOG_WD=['월','화','수','목','금','토','일'];// 멍력 1년 1월 1일 = 월요일
+const SNACK_HOL={monthly:true,n:'🍪 간식 대량제조 기념일',w:'매달 셋째 주 목요일, 다 함께 간식을 잔뜩 만들어요 (끝나면 간식 창고가 가득 차요)'};
+function dogDate(t){const day=Math.floor((t||0)/1440),y=Math.floor(day/365)+1;let r=((day%365)+365)%365,m=0;while(r>=DOG_MONTHS[m]){r-=DOG_MONTHS[m];m++}return {y,m:m+1,d:r+1,day,wd:((day%7)+7)%7}}
+function thirdThu(dd){const w1=(((dd.day-(dd.d-1))%7)+7)%7;return 1+((3-w1+7)%7)+14}
+function holidayOf(dd){return DOG_HOLIDAYS.find(h=>h.m===dd.m&&h.d===dd.d)||(dd.d===thirdThu(dd)?SNACK_HOL:null)}
+function holidayWarn(){if(!world||!FAITH())return;const day=Math.floor(world.t/1440);if(world.holWarn===day)return;world.holWarn=day;const tm=dogDate((day+1)*1440),h=holidayOf(tm);if(!h)return;const msg=`📣 내일(${tm.m}월 ${tm.d}일 ${DOG_WD[tm.wd]}요일)은 ${h.n}! 오전 예식이 5시간 대예식으로 열려요`;toast(msg,false,true);log(msg,'good')}
 function doyOf(m,d){let n=0;for(let i=0;i<m-1;i++)n+=DOG_MONTHS[i];return n+d-1}
-function nextHoliday(dd){const cur=doyOf(dd.m,dd.d);let best=null,bd=1e9;for(const h of DOG_HOLIDAYS){let k=doyOf(h.m,h.d)-cur;if(k<=0)k+=365;if(k<bd){bd=k;best=h}}return {h:best,days:bd,txt:`${best.n} (${best.m}월 ${best.d}일, ${bd}일 뒤)`}}
+function nextHoliday(dd){for(let k=1;k<=366;k++){const x=dogDate((dd.day+k)*1440),h=holidayOf(x);if(h)return {h,days:k,txt:`${h.n} (${x.m}월 ${x.d}일 ${DOG_WD[x.wd]}요일, ${k}일 뒤)`}}return {h:null,days:0,txt:'-'}}
 let chDeco=null;
 function churchDeco(on){if(chDeco){scene.remove(chDeco);chDeco=null}if(!on||!ANX||!ANX.faith)return;const G=new THREE.Group();scene.add(G);chDeco=G;const A=ANX,cols=['#e84a4a','#f2c14e','#3fb27f','#2f7fd0','#ff8a3a','#c9a0f0'];
   for(let v=A.RD+1.5;v<=A.top-1.5;v+=1.2){for(const sg of[-1,1]){const p=A.map(sg*(A.cw/2-0.3),v);const fl=new THREE.Mesh(new THREE.ConeGeometry(0.22,0.4,3),mat(cols[Math.floor(v)%6],{emissive:cols[Math.floor(v)%6],emissiveIntensity:0.4}));fl.position.set(p.x,4.6,p.z);fl.rotation.x=Math.PI;G.add(fl)}}
   for(let i=0;i<14;i++){const p=A.map(rand(-A.cw/2+1,A.cw/2-1),rand(A.RD+1,A.top-1));const lan=sph(0.18,cols[i%6],p.x,rand(3.6,5.6),p.z,{emissive:cols[i%6],emissiveIntensity:0.9});lan.castShadow=false;lan.userData.ph=Math.random()*6;G.add(lan)}
   const al=A.items&&A.items.find(i=>i.type==='altar');if(al){for(const sg of[-1,1]){const p={x:al.x+(A.ns?sg*1.8:0),z:al.z+(A.ns?0:sg*1.8)};G.add(cyl(0.05,0.05,2.4,'#c9a227',p.x,1.2,p.z,8));const fw=textSprite('🌸',{bg:'rgba(0,0,0,0)',size:0.6});fw.position.set(p.x,2.6,p.z);G.add(fw)}}
   const ban=textSprite('🎉 '+(world.church&&world.church.holiday?world.church.holiday.n:'기념일'),{size:1.1,bg:'rgba(181,85,95,.9)'});const bp=A.map(0,A.top-0.6);ban.position.set(bp.x,6.0,bp.z);G.add(ban)}
-function holidayUI(){if(!world||!$('#chCal'))return;const dd=dogDate(world.t),h=holidayOf(dd),nx=nextHoliday(dd);const t=`🐾 오늘은 멍력 ${dd.y}년 ${dd.m}월 ${dd.d}일${h?` · 🎉 ${h.n}! (5시간 대예식)`:''} · 다음 기념일 ${nx.txt}`;if($('#chCal').textContent!==t)$('#chCal').textContent=t;
-  const html=DOG_HOLIDAYS.map(x=>`<li><b>${x.m}월 ${x.d}일</b>${esc(x.n)} — ${esc(x.w)}</li>`).join('');const ul=$('#chHolList');if(ul.dataset.h!==html){ul.dataset.h=html;ul.innerHTML=html}}
+function holidayUI(){if(!world||!$('#chCal'))return;const dd=dogDate(world.t),h=holidayOf(dd),nx=nextHoliday(dd);const t=`🐾 오늘은 멍력 ${dd.y}년 ${dd.m}월 ${dd.d}일 ${DOG_WD[dd.wd]}요일${h?` · 🎉 ${h.n}! (5시간 대예식)`:''} · 다음 기념일 ${nx.txt}`;if($('#chCal').textContent!==t)$('#chCal').textContent=t;
+  const html=DOG_HOLIDAYS.map(x=>`<li><b>${x.m}월 ${x.d}일</b>${esc(x.n)} — ${esc(x.w)}</li>`).join('')+`<li><b>매달 셋째 목요일</b>${esc(SNACK_HOL.n)} — ${esc(SNACK_HOL.w)}</li>`;const ul=$('#chHolList');if(ul.dataset.h!==html){ul.dataset.h=html;ul.innerHTML=html}}
 /* ---------- ceremony dialogue (priest & congregation lines, shown as a subtitle bar) ---------- */
 const CH_PHASES=[[0,'🚪 입장'],[0.1,'🎶 찬양'],[0.3,'📖 말씀'],[0.6,'🙏 기도'],[0.8,'✨ 축복'],[0.95,'🔔 폐식']];
 const CH_LINES={
@@ -7861,7 +7865,7 @@ function makeSave(){
   if(w.war){w.war.battle=null;w.war.pendingFight=null}
   w.builds=(world.builds||[]).map(b=>({type:b.type,x:b.x,z:b.z,rot:b.rot,start:b.start,end:b.end,cost:b.cost,box:plainData(b.box,1)}));
   const L=plainData(layout,1);
-  return {v:SAVE_V,app:'멍하우스 홈케어',at:Date.now(),careMode,layout:L,world:w,dogs:dogs.filter(d=>!d.dead&&!d.enemy&&!d.lion&&!(d.stray&&!d.away)).map(animalData),
+  return {v:SAVE_V,app:'멍하우su 홈케어',at:Date.now(),careMode,layout:L,world:w,dogs:dogs.filter(d=>!d.dead&&!d.enemy&&!d.lion&&!(d.stray&&!d.away)).map(animalData),
     meta:{t:world.t,n:dogs.filter(d=>!d.dead&&!d.stray&&!d.enemy).length,money:isFinite(world.money)?world.money:'무한',war:!!world.war,houses:world.war?world.war.houses.filter(h=>h.owner==='me').length:0}};
 }
 function saveSummary(m){if(!m)return '비어 있음';return `${fmtDate(m.t)} · 동물 ${m.n}마리 · ${m.money==='무한'?'돈 무한':won(m.money)}${m.war?` · 내 집 ${m.houses}곳`:''}`}
@@ -7875,14 +7879,14 @@ function saveTo(slot,quiet){
 }
 async function exportSave(){
   const why=saveBlocked();if(why){toast(`💾 ${why}`,true);return}
-  const txt=JSON.stringify(makeSave(),saveRep),name=`멍하우스_저장_${Math.floor(world.t/1440)+1}일차.json`,blob=new Blob([txt],{type:'application/json'});
+  const txt=JSON.stringify(makeSave(),saveRep),name=`멍하우su_저장_${Math.floor(world.t/1440)+1}일차.json`,blob=new Blob([txt],{type:'application/json'});
   if(downloadsApi){try{await downloadsApi.save({filename:name,data:blob});toast('📤 저장 파일을 내보냈어요');return}catch(err){if(err&&err.code==='declined')return}}
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);toast('📤 저장 파일을 내보냈어요');
 }
 function loadFromSlot(slot){const txt=lsGet('mh_save_'+slot);if(!txt){toast('그 칸은 비어 있어요',true);return}loadSave(txt)}
 function loadSave(txt,opt){opt=opt||{};
   let S;try{S=JSON.parse(txt,saveRev)}catch(e){toast('저장 파일을 읽을 수 없어요',true);return}
-  if(!S||S.app!=='멍하우스 홈케어'||!S.world||!S.layout||!Array.isArray(S.dogs)){toast('멍하우스 저장 파일이 아니에요',true);return}
+  if(!S||S.app!=='멍하우su 홈케어'&&S.app!=='멍하우스 홈케어'||!S.world||!S.layout||!Array.isArray(S.dogs)){toast('멍하우su 저장 파일이 아니에요',true);return}
   if(match)cleanupMatch(true);if(NET.on)netStop(true);NET.idOf={};NET.taken=new Set();bgWatch=null;$('#bgHud').hidden=true;
   layout=S.layout;arenaConf=null;$('#sim').classList.remove('arena','soccer');$('#arenaRes').hidden=true;
   $('#setup').hidden=true;$('#sim').hidden=false;$('#saveOv').hidden=true;
@@ -8504,7 +8508,7 @@ function addRecording(blob,secs){
   it.innerHTML=`<video src="${url}" controls playsinline></video><div class="meta"><span>녹화 ${recN} · ${Math.round(secs)}초 · ${when}</span></div>`;
   const meta=it.querySelector('.meta');
   if(downloadsApi){const b=document.createElement('button');b.className='btn';b.textContent='저장';b.style.padding='3px 8px';
-    b.onclick=async()=>{try{await downloadsApi.save({filename:`멍하우스_녹화_${recN}.webm`,data:blob});toast('녹화 파일을 저장했어요')}catch(err){if(err&&err.code==='declined')return;if(['unavailable','not_granted','capability_disabled','capability_removed'].includes(err&&err.code)){b.remove();toast('이 화면에서는 저장할 수 없어요. 페이지 안에서 다시 볼 수 있어요',true)}else toast('저장하지 못했어요. 잠시 뒤 다시 눌러 주세요',true)}};meta.appendChild(b)}
+    b.onclick=async()=>{try{await downloadsApi.save({filename:`멍하우su_녹화_${recN}.webm`,data:blob});toast('녹화 파일을 저장했어요')}catch(err){if(err&&err.code==='declined')return;if(['unavailable','not_granted','capability_disabled','capability_removed'].includes(err&&err.code)){b.remove();toast('이 화면에서는 저장할 수 없어요. 페이지 안에서 다시 볼 수 있어요',true)}else toast('저장하지 못했어요. 잠시 뒤 다시 눌러 주세요',true)}};meta.appendChild(b)}
   const del=document.createElement('button');del.className='btn';del.textContent='삭제';del.style.padding='3px 8px';del.onclick=()=>{URL.revokeObjectURL(url);it.remove()};meta.appendChild(del);
   $('#recStrip').prepend(it);log(`녹화 ${recN}을(를) 저장 목록에 추가했어요 (${Math.round(secs)}초)`,'good');
 }

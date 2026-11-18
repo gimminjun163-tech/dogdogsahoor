@@ -1,4 +1,4 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>멍하우스 홈케어</title>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Wall멍하우su 홈케어</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap">
@@ -589,7 +589,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style><style>body{margin:0} img{max-width:100%}</style></head><body>
 <header class="topbar">
-  <h1 class="brand"><i aria-hidden="true"></i>멍하우스 홈케어</h1>
+  <h1 class="brand"><i aria-hidden="true"></i>Wall멍하우su 홈케어</h1>
   <span class="phase" id="phaseLbl">1단계 · 방 꾸미기</span>
   <button class="modechip" id="modeChip" hidden title="눌러서 관리 방식 바꾸기">모두 자동화</button>
   <span class="spacer"></span>
@@ -7378,7 +7378,7 @@ function makeSave(){
   if(w.war){w.war.battle=null;w.war.pendingFight=null}
   w.builds=(world.builds||[]).map(b=>({type:b.type,x:b.x,z:b.z,rot:b.rot,start:b.start,end:b.end,cost:b.cost,box:plainData(b.box,1)}));
   const L=plainData(layout,1);
-  return {v:SAVE_V,app:'멍하우스 홈케어',at:Date.now(),careMode,layout:L,world:w,dogs:dogs.filter(d=>!d.dead&&!d.enemy&&!d.lion&&!(d.stray&&!d.away)).map(animalData),
+  return {v:SAVE_V,app:'Wall멍하우su 홈케어',at:Date.now(),careMode,layout:L,world:w,dogs:dogs.filter(d=>!d.dead&&!d.enemy&&!d.lion&&!(d.stray&&!d.away)).map(animalData),
     meta:{t:world.t,n:dogs.filter(d=>!d.dead&&!d.stray&&!d.enemy).length,money:isFinite(world.money)?world.money:'무한',war:!!world.war,houses:world.war?world.war.houses.filter(h=>h.owner==='me').length:0}};
 }
 function saveSummary(m){if(!m)return '비어 있음';return `${fmtDate(m.t)} · 동물 ${m.n}마리 · ${m.money==='무한'?'돈 무한':won(m.money)}${m.war?` · 내 집 ${m.houses}곳`:''}`}
@@ -7392,14 +7392,14 @@ function saveTo(slot,quiet){
 }
 async function exportSave(){
   const why=saveBlocked();if(why){toast(`💾 ${why}`,true);return}
-  const txt=JSON.stringify(makeSave(),saveRep),name=`멍하우스_저장_${Math.floor(world.t/1440)+1}일차.json`,blob=new Blob([txt],{type:'application/json'});
+  const txt=JSON.stringify(makeSave(),saveRep),name=`Wall멍하우su_저장_${Math.floor(world.t/1440)+1}일차.json`,blob=new Blob([txt],{type:'application/json'});
   if(downloadsApi){try{await downloadsApi.save({filename:name,data:blob});toast('📤 저장 파일을 내보냈어요');return}catch(err){if(err&&err.code==='declined')return}}
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);toast('📤 저장 파일을 내보냈어요');
 }
 function loadFromSlot(slot){const txt=lsGet('mh_save_'+slot);if(!txt){toast('그 칸은 비어 있어요',true);return}loadSave(txt)}
 function loadSave(txt,opt){opt=opt||{};
   let S;try{S=JSON.parse(txt,saveRev)}catch(e){toast('저장 파일을 읽을 수 없어요',true);return}
-  if(!S||S.app!=='멍하우스 홈케어'||!S.world||!S.layout||!Array.isArray(S.dogs)){toast('멍하우스 저장 파일이 아니에요',true);return}
+  if(!S||S.app!=='Wall멍하우su 홈케어'||!S.world||!S.layout||!Array.isArray(S.dogs)){toast('Wall멍하우su 저장 파일이 아니에요',true);return}
   if(match)cleanupMatch(true);if(NET.on)netStop(true);NET.idOf={};NET.taken=new Set();bgWatch=null;$('#bgHud').hidden=true;
   layout=S.layout;arenaConf=null;$('#sim').classList.remove('arena','soccer');$('#arenaRes').hidden=true;
   $('#setup').hidden=true;$('#sim').hidden=false;$('#saveOv').hidden=true;
@@ -8021,7 +8021,7 @@ function addRecording(blob,secs){
   it.innerHTML=`<video src="${url}" controls playsinline></video><div class="meta"><span>녹화 ${recN} · ${Math.round(secs)}초 · ${when}</span></div>`;
   const meta=it.querySelector('.meta');
   if(downloadsApi){const b=document.createElement('button');b.className='btn';b.textContent='저장';b.style.padding='3px 8px';
-    b.onclick=async()=>{try{await downloadsApi.save({filename:`멍하우스_녹화_${recN}.webm`,data:blob});toast('녹화 파일을 저장했어요')}catch(err){if(err&&err.code==='declined')return;if(['unavailable','not_granted','capability_disabled','capability_removed'].includes(err&&err.code)){b.remove();toast('이 화면에서는 저장할 수 없어요. 페이지 안에서 다시 볼 수 있어요',true)}else toast('저장하지 못했어요. 잠시 뒤 다시 눌러 주세요',true)}};meta.appendChild(b)}
+    b.onclick=async()=>{try{await downloadsApi.save({filename:`Wall멍하우su_녹화_${recN}.webm`,data:blob});toast('녹화 파일을 저장했어요')}catch(err){if(err&&err.code==='declined')return;if(['unavailable','not_granted','capability_disabled','capability_removed'].includes(err&&err.code)){b.remove();toast('이 화면에서는 저장할 수 없어요. 페이지 안에서 다시 볼 수 있어요',true)}else toast('저장하지 못했어요. 잠시 뒤 다시 눌러 주세요',true)}};meta.appendChild(b)}
   const del=document.createElement('button');del.className='btn';del.textContent='삭제';del.style.padding='3px 8px';del.onclick=()=>{URL.revokeObjectURL(url);it.remove()};meta.appendChild(del);
   $('#recStrip').prepend(it);log(`녹화 ${recN}을(를) 저장 목록에 추가했어요 (${Math.round(secs)}초)`,'good');
 }

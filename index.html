@@ -345,6 +345,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
 .chsub .ln{background:rgba(20,14,6,.86);color:#fff;border-radius:12px;padding:7px 12px;font-size:14px;line-height:1.4;box-shadow:0 4px 14px rgba(0,0,0,.25);animation:chIn .35s ease}
 .chsub .ln.old{opacity:.55;font-size:12.5px}.chsub .ln b{color:#ffd23f;margin-right:6px}.chsub .ln.pr b{color:#7fe0ff}.chsub .ph{align-self:center;background:rgba(255,210,63,.92);color:#2a1d00;border-radius:999px;padding:2px 12px;font-size:12px;font-weight:700}
 @keyframes chIn{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
+.chorder{margin:4px 0 6px;padding-left:22px;display:grid;gap:2px;font-size:12.5px}.chorder li.now{font-weight:700;color:var(--accent)}.chorder li.done{color:var(--muted);text-decoration:line-through}.chorder li span{color:var(--muted);font-weight:400;margin-left:4px}
 .chtalk{list-style:none;margin:0;padding:0;display:grid;gap:3px;max-height:180px;overflow:auto;font-size:12.5px}.chtalk li b{color:var(--accent,#1d8a80);margin-right:4px}
 .taghud{left:50%;top:50px;transform:translateX(-50%);background:rgba(14,18,28,.85);color:#fff;border-radius:999px;padding:5px 14px;font-size:12.5px;z-index:6;white-space:nowrap;max-width:90%;overflow:hidden;text-overflow:ellipsis}.taghud[hidden]{display:none}
 .arcme{display:grid;grid-template-columns:1fr 1fr;gap:6px}.arcme select{grid-column:1/-1}.arcme small{opacity:.75;font-size:11px}
@@ -375,6 +376,8 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
 .dogrow .st{font-size:10px;color:var(--muted);white-space:nowrap;max-width:90px;overflow:hidden;text-overflow:ellipsis}
 .dogrow .st.hot{color:var(--alert);font-weight:700}
 .dogrow b{text-align:right;font-variant-numeric:tabular-nums}
+.dogrow.holy{grid-template-columns:12px minmax(40px,1fr) auto repeat(3,26px) 40px;gap:5px}.dogrow.holy .st{max-width:52px}.dogrow b.hl{color:#b8901c;font-size:11px;white-space:nowrap}
+.bar.holybar{grid-template-columns:44px 1fr 40px}.bar.holybar b{color:#b8901c}
 .dogrow .dot{width:10px;height:10px;border-radius:50%;border:1px solid rgba(0,0,0,.25)}
 .dogcard{padding:10px 12px;display:grid;gap:6px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
 .dogcard[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
@@ -654,6 +657,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
         <h3>🏛 여러 방</h3>
         <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="roomsOn" checked> 거실 옆에 주방 · 도서관 · 연회장 · 강아지교 성당 붙이기</label>
         <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="faithOn" checked> ⛪ 강아지교 있음 (성당 · 예식 · 거룩함 · 사제)</label>
+        <label class="f">✨ 영생에 필요한 거룩함<input type="number" id="holyGoalPre" data-mirror="holyGoal" min="1" step="1" placeholder="2000"></label>
         <div class="row2"><label class="f">🏢 층 수 (1~무한)<input type="number" id="floorN" min="1" step="1" value="1"></label>
           <label class="f">⛪ 성당 층 수<input type="number" id="floorChurch" min="1" step="1" value="1"></label></div>
         <label class="f">🚶 층 이동 방법<select id="floorMove"><option value="stairs" selected>🪜 계단 (건강 ↑ · 체력 ↓)</option><option value="elev">🛗 엘리베이터 (돈 ↓ · 행복도 ↑)</option><option value="auto">🧠 자동 (지치면 엘리베이터)</option></select></label>
@@ -986,7 +990,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
       <div class="rec-strip" id="recStrip"></div>
       <div class="cardbar" id="cardBar">
         <label>보기<select id="cardMode"><option value="auto">자동 (많으면 간단 표)</option><option value="card">카드</option><option value="row">간단 표</option></select></label>
-        <label>정렬<select id="cardSort"><option value="none">기본</option><option value="happy">행복도 낮은 순</option><option value="health">건강 낮은 순</option><option value="stamina">체력 낮은 순</option><option value="age">나이 많은 순</option><option value="name">이름순</option></select></label>
+        <label>정렬<select id="cardSort"><option value="none">기본</option><option value="happy">행복도 낮은 순</option><option value="health">건강 낮은 순</option><option value="stamina">체력 낮은 순</option><option value="age">나이 많은 순</option><option value="holy">✨ 거룩함 높은 순</option><option value="name">이름순</option></select></label>
         <input id="cardFind" placeholder="이름 찾기" aria-label="이름 찾기" maxlength="12">
         <span class="pager"><button class="chip" id="cardPrev" aria-label="이전 쪽">◀</button><b id="cardPage">1 / 1</b><button class="chip" id="cardNext" aria-label="다음 쪽">▶</button></span>
         <span class="small muted" id="cardCount"></span>
@@ -1006,14 +1010,16 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
           <label class="f">2차 시작<select id="chT2"><option value="15">오후 3시</option><option value="19" selected>오후 7시</option><option value="21">오후 9시</option></select></label></div>
         <div class="row2"><button class="btn primary" id="chStart">🔔 지금 예식 시작</button><button class="btn" id="chWatch">👀 예식 관전</button></div>
         <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="chSubOn" checked> 💬 예식 대사 자막 보기 (화면 아래 자막 바)</label>
+        <details class="small" open><summary>📜 예식 순서 (절차)</summary><ol class="chorder" id="chOrder"></ol></details>
         <ul class="chtalk" id="chTalk"></ul>
         <h3>직업</h3>
         <div class="kv small" id="chJobs"></div>
         <div class="row2"><label class="f">⛪ 사제<select id="jobPriest"></select></label><label class="f">🍳 요리사<select id="jobChef"></select></label></div>
         <label class="f">📚 사서<select id="jobLibrarian"></select></label>
         <h3>✨ 거룩함 순위</h3>
+        <label class="f">✨ 영생에 필요한 거룩함 (비우면 2000)<input type="number" id="holyGoal" min="1" step="1" placeholder="2000"></label>
         <ul class="arclist" id="chHoly"></ul>
-        <p class="small muted">모든 강아지는 강아지교도예요. 예식에 참석하면 건강·체력·행복도·거룩함이 올라요. 바닥에 실수하면 −5, 싸우면 −10이에요. 거룩함 200을 넘으면 영원히 죽지 않아요(전쟁·싸움 포함, 머리 위에 후광 ✨). 새로 태어난 강아지는 0부터 시작해요.</p>
+        <p class="small muted">모든 강아지는 강아지교도예요. 예식에 참석하면 건강·체력·행복도·거룩함이 올라요. 바닥에 실수하면 −5, 싸우면 −10이에요. 거룩함이 목표(기본 2000, 위에서 바꿀 수 있어요)에 닿으면 영원히 죽지 않아요(전쟁·싸움 포함, 머리 위에 후광 ✨). 새로 태어난 강아지는 0부터 시작해요.</p>
       </section>
       <section class="card panel home-only" id="tagPanel">
         <div class="panel-head"><h2>🏃 술래잡기</h2><span class="tag" id="tagTag">쉬는 중</span></div>
@@ -1728,7 +1734,8 @@ function presetLiving(){
     {id:uid++,type:'rug',x:-1.5,z:0.3,rot:0},
     {id:uid++,type:'sofa',x:-1.5,z:3.9,rot:2},
     {id:uid++,type:'tv',x:-1.5,z:-4.2,rot:0},
-    {id:uid++,type:'table',x:3.0,z:2.2,rot:0},
+    {id:uid++,type:'table',x:-1.5,z:2.2,rot:0},
+    {id:uid++,type:'bed',x:3.3,z:2.5,rot:0},
     {id:uid++,type:'shelf',x:5.75,z:-1.6,rot:1},
     {id:uid++,type:'plant',x:-5.6,z:-4.1,rot:0},
     {id:uid++,type:'dogbed',x:-5.3,z:2.3,rot:0},
@@ -3107,9 +3114,24 @@ function updateDog(d,dt){
       if(d.pee>90||d.poo>90||d.thirst>92||d.hunger>95){d.lift=0;setState(d,'idle',1);break}
       const pr=d.id===C.priest,sp=pr?ANX.priestSpot:(C.seat[d.id]||ANX.priestSpot);
       if(d.state==='toChurch'){d._tfl=sp.fl||0;const dist=steer(d,sp.x,sp.z,run*0.8,dt);moving=true;emo='⛪';if(dist<0.2||(d.actT>8&&dist<0.7)){d.pos.set(sp.x,sp.z);setState(d,'atChurch',99999)}break}
-      d.lift=pr?0:0.42;face(d,sp.fx,sp.fz,dt);sit=!pr;
-      if(d.sayUntil&&performance.now()<d.sayUntil)emo='💬';else if(pr){emo=Math.floor(world.t*2)%3===0?'🙌':'📖';if(Math.random()<dt*0.6)d.root.userData.barkPulse=0.6}else emo=Math.floor(world.t*1.5+d.id)%5===0?'🎶':'🙏';
-      const gk=C.grand?1.6:1;d.health=clamp(d.health+dt*0.025*gk);d.stamina=clamp(d.stamina+dt*0.06*gk);d.happy=clamp(d.happy+dt*0.04*gk);const g0=dt*0.07*(pr?1.4:1)*gk;holyAdd(d,g0);C.gain[d.id]=(C.gain[d.id]||0)+g0;break}
+      const st=chStep(C),sn=st.s.n,q=C.parts.filter(id=>id!==C.priest),turn=q.length?q[Math.min(q.length-1,Math.floor(st.f*q.length))]:null,now=performance.now();
+      let tx=sp.x,tz=sp.z,offer=false;
+      const k0=q.findIndex(id=>!C.offered[id]),turnO=sn==='🦴 봉헌'?q[Math.max(Math.min(q.length-1,Math.floor(st.f*q.length)),k0<0?q.length:k0)]:null;
+      if(!pr&&sn==='🦴 봉헌'&&turnO===d.id&&(sp.fl||0)===(ANX.priestSpot.fl||0)){const o=itemSpot('altar',false);if(o){tx=o.x;tz=o.z;offer=true}}
+      const away=Math.hypot(d.pos.x-tx,d.pos.y-tz);
+      if(away>0.18){d.lift=0;d._tfl=sp.fl||0;steer(d,tx,tz,run*0.7,dt);moving=true;emo=offer?'🦴':'⛪';break}
+      d.pos.set(tx,tz);
+      if(offer){face(d,ANX.priestSpot.x,ANX.priestSpot.z,dt);d.lift=0;sit=true;emo='🦴';if(!C.offered[d.id]){C.offered[d.id]=1;holyAdd(d,1.5);C.gain[d.id]=(C.gain[d.id]||0)+1.5;d.root.userData.barkPulse=0.7}}
+      else{d.lift=pr?0:0.42;let fx=sp.fx,fz=sp.fz;
+        if(pr){if(sn==='✨ 축복'&&turn!=null){const t=dogs.find(x=>x.id===turn);if(t){fx=t.pos.x;fz=t.pos.y}}else if(sn==='🦴 봉헌'){const o=itemSpot('altar',false);if(o){fx=o.x;fz=o.z}}}
+        else if(sn==='🤝 평화의 인사'){const k=q.indexOf(d.id),nb=dogs.find(x=>x.id===q[k%2?k-1:Math.min(q.length-1,k+1)]);if(nb&&nb!==d){fx=nb.pos.x;fz=nb.pos.y}}
+        face(d,fx,fz,dt);
+        if(!pr){if(sn==='🎶 찬양'||sn==='🎉 기념 선포'||sn==='🍪 간식 빚기')d.lift=0.42+Math.abs(Math.sin(now/260+d.id))*0.06;else if(sn==='🙏 기도')lie=true;else sit=true}
+        const E={'🔔 타종·입장':['🔔','⛪'],'🕯 촛불 점화':['🕯','🕯'],'🎉 기념 선포':['📜','🎉'],'🎶 찬양':['🎵','🎶'],'📖 말씀':['📖','👂'],'🙏 기도':['🙏','🙏'],'🦴 봉헌':['🙌','👀'],'✨ 축복':['🙌','🙏'],'🍪 간식 빚기':['🍪','🍪'],'🤝 평화의 인사':['🕊','💕'],'🔔 폐식·퇴장':['🔔','👋']}[sn]||['📖','🙏'];
+        if(d.sayUntil&&now<d.sayUntil)emo='💬';else if(!pr&&sn==='✨ 축복'&&turn===d.id){emo='✨';if(Math.random()<dt*0.8)d.root.userData.barkPulse=0.5}else emo=E[pr?0:1];
+        if(pr&&Math.random()<dt*0.6)d.root.userData.barkPulse=0.6}
+      const M={'🔔 타종·입장':[0.5,0.5,0.5,0.5],'🔔 폐식·퇴장':[0.5,0.5,0.5,0.5],'🎶 찬양':[1,1,1.7,1],'🎉 기념 선포':[1,1,1.6,1.1],'📖 말씀':[1,1,1,1.5],'🙏 기도':[1.7,1.2,1,1.2],'✨ 축복':[1.1,1,1,turn===d.id?4:1],'🍪 간식 빚기':[1,0.8,1.5,1],'🤝 평화의 인사':[1,1,1.7,1]}[sn]||[1,1,1,1];
+      const gk=C.grand?1.6:1;d.health=clamp(d.health+dt*0.025*gk*M[0]);d.stamina=clamp(d.stamina+dt*0.06*gk*M[1]);d.happy=clamp(d.happy+dt*0.04*gk*M[2]);const g0=dt*0.07*(pr?1.4:1)*gk*M[3];holyAdd(d,g0);C.gain[d.id]=(C.gain[d.id]||0)+g0;break}
     case 'toJob':case 'atJob':{
       const J=d.jobSpot;if(!J||!jobHours()||(world.church&&world.church.on)){setState(d,'idle',1);break}
       if(d.hunger>80||d.thirst>80||d.pee>85||d.poo>85||d.stamina<12){setState(d,'idle',1);break}
@@ -3523,7 +3545,7 @@ function lifeStep(h){
 }
 function die(x,cause){
   if(x.dead)return;
-  if(x.eternal&&x.species!=='human'){x.health=Math.max(x.health,30);x.stamina=Math.max(x.stamina,25);if(cause!=='노환'&&(!x._etLog||world.t-x._etLog>60)){x._etLog=world.t;log(`✨ ${x.name}${josa(x.name,'은','는')} 거룩함 200의 영생이라 쓰러지지 않아요`,'good',true)}
+  if(x.eternal&&x.species!=='human'){x.health=Math.max(x.health,30);x.stamina=Math.max(x.stamina,25);if(cause!=='노환'&&(!x._etLog||world.t-x._etLog>60)){x._etLog=world.t;log(`✨ ${x.name}${josa(x.name,'은','는')} 거룩함 ${HOLY_GOAL()}의 영생이라 쓰러지지 않아요`,'good',true)}
     if(!field&&x.fight){const f=x.fight;f.A=f.A.filter(y=>y!==x);f.B=f.B.filter(y=>y!==x);x.fight=null;setState(x,'idle',2)}return}
   x.dead=true;
   const f=x.fight;if(f){f.deaths.push(x.name);f.A=f.A.filter(y=>y!==x);f.B=f.B.filter(y=>y!==x);x.fight=null}
@@ -5036,7 +5058,7 @@ function markFollowCards(){$$('#dogCards [data-id]').forEach(c=>c.setAttribute('
 const CARDS={page:0,mode:'auto',sort:'none',find:'',vis:true,sortT:0};
 function cardList(){
   let l=dogs.slice();const q=CARDS.find.trim();if(q)l=l.filter(d=>String(d.name).includes(q));
-  const k=CARDS.sort;if(k==='name')l.sort((a,b)=>String(a.name).localeCompare(String(b.name),'ko'));else if(k==='age')l.sort((a,b)=>b.age-a.age);else if(k!=='none')l.sort((a,b)=>a[k]-b[k]);
+  const k=CARDS.sort;if(k==='name')l.sort((a,b)=>String(a.name).localeCompare(String(b.name),'ko'));else if(k==='age')l.sort((a,b)=>b.age-a.age);else if(k==='holy')l.sort((a,b)=>(b.holy||0)-(a.holy||0));else if(k!=='none')l.sort((a,b)=>a[k]-b[k]);
   return l;
 }
 function buildDogCards(){
@@ -5047,18 +5069,18 @@ function buildDogCards(){
   const list=cardList(),rows=CARDS.mode==='row'||(CARDS.mode==='auto'&&list.length>30),per=rows?60:24,pages=Math.max(1,Math.ceil(list.length/per));
   CARDS.page=clamp(CARDS.page,0,pages-1);CARDS.rows=rows;CARDS.sortT=3;box.classList.toggle('rows',rows);
   $('#cardPage').textContent=`${CARDS.page+1} / ${pages}`;$('#cardPrev').disabled=CARDS.page<=0;$('#cardNext').disabled=CARDS.page>=pages-1;
-  $('#cardCount').textContent=`${list.length}마리${CARDS.find?` (전체 ${dogs.length})`:''}${rows?' · 숫자는 행복 · 건강 · 체력':''}`;
+  $('#cardCount').textContent=`${list.length}마리${CARDS.find?` (전체 ${dogs.length})`:''}${rows?` · 숫자는 행복 · 건강 · 체력${FAITH()?' · 거룩함':''}`:''}`;
   if(!list.length){box.innerHTML='<p class="small">찾는 이름의 동물이 없어요.</p>';return}
   const frag=document.createDocumentFragment();
   list.slice(CARDS.page*per,(CARDS.page+1)*per).forEach(d=>{
     const b=document.createElement('button');b.dataset.id=d.id;
-    if(rows){b.className='dogrow';b.innerHTML=`<span class="dot" style="background:${d.color}"></span><span class="nm"></span><span class="st"></span><b></b><b></b><b></b>`;
-      const bs=b.querySelectorAll('b');d.cardR={st:b.querySelector('.st'),nums:[bs[0],bs[1],bs[2]],c:{}}}
+    if(rows){const hf=FAITH()&&d.species!=='cat';b.className='dogrow'+(FAITH()?' holy':'');b.innerHTML=`<span class="dot" style="background:${d.color}"></span><span class="nm"></span><span class="st"></span><b></b><b></b><b></b>${FAITH()?'<b class="hl"></b>':''}`;
+      const bs=b.querySelectorAll('b');d.cardR={st:b.querySelector('.st'),nums:[bs[0],bs[1],bs[2]],holyN:hf?bs[3]:null,c:{}}}
     else{b.className='dogcard'+(d.stray?' stray':'');
       b.innerHTML=`<div class="top"><span class="dot${d.species==='cat'?' cat':''}" style="background:${d.color}"></span><span class="nm"></span><span class="st"></span></div>
       <div class="meta2"></div>
-      <div class="bars">${['배고픔','목마름','배변','행복도','건강','체력'].map(l=>`<div class="bar"><span>${l}</span><span class="t"><span></span></span><b>0</b></div>`).join('')}</div>`;
-      d.cardR={st:b.querySelector('.st'),meta:b.querySelector('.meta2'),fills:[...b.querySelectorAll('.bar .t span')],nums:[...b.querySelectorAll('.bar b')],c:{}}}
+      <div class="bars">${['배고픔','목마름','배변','행복도','건강','체력'].map(l=>`<div class="bar"><span>${l}</span><span class="t"><span></span></span><b>0</b></div>`).join('')}${FAITH()&&d.species!=='cat'?'<div class="bar holybar"><span>거룩함</span><span class="t"><span></span></span><b>0</b></div>':''}</div>`;
+      const hb=b.querySelector('.holybar');d.cardR={st:b.querySelector('.st'),meta:b.querySelector('.meta2'),fills:[...b.querySelectorAll('.bar:not(.holybar) .t span')],nums:[...b.querySelectorAll('.bar:not(.holybar) b')],holyF:hb&&hb.querySelector('.t span'),holyN:hb&&hb.querySelector('b'),holyBar:hb,c:{}}}
     b.querySelector('.nm').textContent=d.name;
     b.onclick=()=>{if(player.spect)stopSpectate();followId=d.id;setCamMode('follow');markFollowCards()};
     frag.appendChild(b);d.card=b;
@@ -5072,8 +5094,9 @@ function syncCards(){
   for(const d of dogs){if(!d.card)continue;const R=d.cardR,c=R.c;
     const st=d.away?`${OUTINGS[d.away.kind].lab} · ${fmtClock(d.away.until)} 귀가`:world.fastNow?(d.state==='sleep'?'자는 중':'생활 중'):(d.state==='atSt'&&d.st?STDEF[d.st.type].lab:STATE_KO[d.state]||d.state);if(c.st!==st){c.st=st;R.st.textContent=st}
     const hot=!!d.fight;if(c.hot!==hot){c.hot=hot;R.st.classList.toggle('hot',hot)}
+    if(R.holyN){const G=HOLY_GOAL(),hv=Math.floor(d.holy||0),key=hv+'|'+G+'|'+!!d.eternal;if(c.holy!==key){c.holy=key;R.holyN.textContent=d.eternal?'✨'+hv:hv;R.holyN.title=`거룩함 ${hv} / ${G}${d.eternal?' · 영생':''}`;if(R.holyF){R.holyF.style.width=(d.eternal?100:Math.min(100,hv/G*100))+'%';R.holyF.style.background=d.eternal?'linear-gradient(90deg,#f2c94c,#c9a0f0)':'#c9a227'}if(R.holyBar)R.holyBar.title=R.holyN.title}}
     if(CARDS.rows){const v=[d.happy,d.health,d.stamina];for(let i=0;i<3;i++){const r=Math.round(v[i]);if(c['n'+i]!==r){c['n'+i]=r;R.nums[i].textContent=r;R.nums[i].style.color=barColor(r,false)}}continue}
-    const Bd=BREEDS[d.breed],meta=`${d.sex==='f'?'♀':'♂'} ${Bd?Bd.n:''} · ${fmtAge(d.age)} · ⚽${ovr(d)}${d.species!=='cat'&&FAITH()?` · ✨${Math.floor(d.holy||0)}${d.eternal?' 영생':''}`:''}${d.jobRole?' · '+JOB_N[d.jobRole]:''}${FLN>1?` · 🏢${(d.fl||0)+1}층`:''}${d.stray?' · 침입 길고양이':''}${d.pregnant?` · 🤰 임신 ${Math.floor((world.t-d.pregnant.start)/1440)}일째`:''}`;
+    const Bd=BREEDS[d.breed],meta=`${d.sex==='f'?'♀':'♂'} ${Bd?Bd.n:''} · ${fmtAge(d.age)} · ⚽${ovr(d)}${d.species!=='cat'&&FAITH()&&d.eternal?' · ✨ 영생':''}${d.jobRole?' · '+JOB_N[d.jobRole]:''}${FLN>1?` · 🏢${(d.fl||0)+1}층`:''}${d.stray?' · 침입 길고양이':''}${d.pregnant?` · 🤰 임신 ${Math.floor((world.t-d.pregnant.start)/1440)}일째`:''}`;
     if(c.meta!==meta){c.meta=meta;R.meta.textContent=meta}{const tt=`능력치 · ${skillLine(d)}${profTag(d)?` · 🎯 ${profTag(d)}`:''}`;if(c.tt!==tt){c.tt=tt;d.card.title=tt}}
     const vals=[d.hunger,d.thirst,Math.max(d.pee,d.poo),d.happy,d.health,d.stamina];
     for(let i=0;i<6;i++){const r=Math.round(vals[i]);if(c['n'+i]===r)continue;c['n'+i]=r;R.fills[i].style.width=r+'%';R.fills[i].style.background=barColor(r,i<3);R.nums[i].textContent=r}
@@ -7150,7 +7173,7 @@ function annexItems(){
       if(R&&(bx.minx<R.r.minx+0.05||bx.maxx>R.r.maxx-0.05||bx.minz<R.r.minz+0.05||bx.maxz>R.r.maxz-0.05))continue;if(!FURN[type].solid&&type==='chandelier'){out.push(it);id++;return it}
       if(zones.some(z=>ov(z,bx))||placed.some(b=>ov(b,bx)))continue;out.push(it);placed.push(bx);id++;return it}return null};
   const RD=A.RD,top=A.top,R=k=>A.rooms.find(r=>r.key===k);
-  if(A.roomsOn){const K=R('kitchen'),u0=K.u0,u1=K.u1,uc=(u0+u1)/2;put('stove',u0+1.0,RD-0.45,'-v',0,'kitchen');put('fridge',u0+2.4,RD-0.5,'-v',0,'kitchen');put('sink',u0+3.9,RD-0.45,'-v',0,'kitchen');put('counter',u0+5.5,RD-0.45,'-v',0,'kitchen');put('counter',u1-1.0,RD-0.45,'-v',0,'kitchen');put('diningtable',uc,3.6,'-v',0,'kitchen');put('plant',u1-0.5,0.5,'-v',0,'kitchen')}
+  if(A.roomsOn){const K=R('kitchen'),u0=K.u0,u1=K.u1,uc=(u0+u1)/2;put('stove',u0+1.0,RD-0.45,'-v',0,'kitchen');put('fridge',u0+2.4,RD-0.5,'-v',0,'kitchen');put('sink',u0+3.9,RD-0.45,'-v',0,'kitchen');put('counter',u0+5.5,RD-0.45,'-v',0,'kitchen');put('counter',u1-1.0,RD-0.45,'-v',0,'kitchen');if(!out.some(i=>i.type==='counter'))for(const [u,v,f] of [[u0+0.45,RD-2.2,'+u'],[u1-0.45,RD-2.2,'-u'],[uc+2.4,3.6,'-v'],[uc-2.4,3.6,'-v'],[u0+0.45,1.6,'+u'],[u1-0.45,1.6,'-u'],[uc,1.2,'-v']])if(put('counter',u,v,f,0,'kitchen'))break;put('diningtable',uc,3.6,'-v',0,'kitchen');put('plant',u1-0.5,0.5,'-v',0,'kitchen')}
   if(A.roomsOn){const Lb=R('library'),u0=Lb.u0,u1=Lb.u1,uc=(u0+u1)/2;put('bookcase',u0+1.3,RD-0.35,'-v',0,'library');put('bookcase',u0+3.5,RD-0.35,'-v',0,'library');put('bookcase',u1-1.3,RD-0.35,'-v',0,'library');put('bookcase',u1-3.5,RD-0.35,'-v',0,'library');
     put('readdesk',uc-2.0,3.8,'-v',0,'library');put('readdesk',uc+2.0,3.8,'-v',0,'library');put('armchair',u0+0.8,2.2,'+u',0,'library');put('armchair',u1-0.8,2.2,'-u',0,'library');put('globe',uc,5.8,'-v',0,'library');put('rug',uc,3.4,'-v',0,'library')}
   if(A.roomsOn){const Bq=R('banquet'),u0=Bq.u0,u1=Bq.u1,uc=(u0+u1)/2;put('longtable',uc,3.9,'-v',0,'banquet');put('chandelier',uc,3.9,'-v',0,'banquet');put('stage',u0+2.0,RD-1.0,'-v',0,'banquet');put('buffet',u1-1.6,RD-0.5,'-v',0,'banquet');put('buffet',u1-0.5,2.4,'-u',0,'banquet');put('plant',u0+0.5,0.5,'-v',0,'banquet')}
@@ -7338,7 +7361,9 @@ const JOB_N={priest:'⛪ 사제',chef:'🍳 요리사',librarian:'📚 사서'};
 function FAITH(){return !!(ANX&&ANX.faith)}
 function holyOk(d){return FAITH()&&d&&d.species!=='cat'&&d.species!=='human'&&d.species!=='lion'&&!d.stray&&!d.enemy}
 function haloOn(d){if(d.halo||!d.root)return;const h=new THREE.Mesh(new THREE.TorusGeometry(0.14,0.022,8,24),mat('#ffd23f',{emissive:'#ffb000',emissiveIntensity:0.9}));h.rotation.x=Math.PI/2;h.position.set(0,0.9,0);d.root.add(h);d.halo=h}
-function holyAdd(d,v){if(!holyOk(d))return;d.holy=Math.min(250,Math.max(0,(d.holy||0)+v));if(!d.eternal&&d.holy>=200){d.eternal=true;haloOn(d);log(`✨✨ ${d.name}${josa(d.name,'이','가')} 거룩함 200을 달성해 영생을 얻었어요! 이제 전쟁·싸움에서도 죽지 않아요`,'good');toast(`✨ ${d.name} 영생 달성!`,false,true);if(soundOn){blip(784,0.15,0.06);setTimeout(()=>blip(1175,0.3,0.06),160)}}}
+function HOLY_GOAL(){const el=document.getElementById('holyGoal'),v=el?parseInt(el.value,10):NaN;return v>0?v:(world&&world.holyGoal>0?world.holyGoal:2000)}
+$('#holyGoal').addEventListener('change',e=>{const v=parseInt(e.target.value,10);if(!(v>0))e.target.value='';if($('#holyGoalPre'))$('#holyGoalPre').value=e.target.value;if(world){world.holyGoal=v>0?v:null;const G=HOLY_GOAL();for(const d of dogs)if(!d.eternal&&(d.holy||0)>=G)holyAdd(d,0);churchUI(true);log(`✨ 영생에 필요한 거룩함을 ${G}(으)로 정했어요`,'',true)}});
+function holyAdd(d,v){if(!holyOk(d))return;const G=HOLY_GOAL();d.holy=Math.min(Math.round(G*1.25),Math.max(0,(d.holy||0)+v));if(!d.eternal&&d.holy>=G){d.eternal=true;haloOn(d);log(`✨✨ ${d.name}${josa(d.name,'이','가')} 거룩함 ${G}을(를) 달성해 영생을 얻었어요! 이제 전쟁·싸움에서도 죽지 않아요`,'good');toast(`✨ ${d.name} 영생 달성!`,false,true);if(soundOn){blip(784,0.15,0.06);setTimeout(()=>blip(1175,0.3,0.06),160)}}}
 function holyDrop(d,v,why){if(!holyOk(d)||!world)return;const b=d.holy||0;d.holy=Math.max(0,b-v);if(b>0&&!world.fastNow&&Math.random()<0.5)log(`📉 ${d.name} 거룩함 −${Math.min(v,Math.round(b))} (${why})`,'',true)}
 function jobHours(){const hr=hour();return hr>=9&&hr<17}
 function jobBusy(role){const id=world.jobs&&world.jobs[role];if(id==null)return false;const d=dogs.find(x=>x.id===id);return !!d&&d.state==='atJob'}
@@ -7373,7 +7398,7 @@ function churchDur(){const v=$('#chDur')?$('#chDur').value:'auto';if(v!=='auto')
   const def=(100-avg('health'))+(100-avg('happy'))+(100-avg('stamina'));return clamp(Math.round((60+def*0.9)/30)*30,60,180)}
 function churchBrain(){const L=dogs.filter(d=>holyOk(d)&&!d.dead);if(!L.length)return [false,'강아지가 없어요'];const avg=k=>L.reduce((a,d)=>a+d[k],0)/L.length;
   if(avg('health')<75)return [true,`평균 건강이 ${Math.round(avg('health'))}로 낮아요`];if(avg('stamina')<60)return [true,`평균 체력이 ${Math.round(avg('stamina'))}로 낮아요`];if(avg('happy')<65)return [true,`평균 행복도가 ${Math.round(avg('happy'))}로 낮아요`];
-  const near=L.filter(d=>!d.eternal&&(d.holy||0)>=170);if(near.length)return [true,`${near[0].name}${josa(near[0].name,'이','가')} 영생(200)에 가까워요`];const low=L.filter(d=>(d.holy||0)<20).length;if(low>=L.length/2)return [true,'거룩함이 낮은 강아지가 많아요'];
+  const near=L.filter(d=>!d.eternal&&(d.holy||0)>=HOLY_GOAL()*0.85);if(near.length)return [true,`${near[0].name}${josa(near[0].name,'이','가')} 영생(${HOLY_GOAL()})에 가까워요`];const low=L.filter(d=>(d.holy||0)<20).length;if(low>=L.length/2)return [true,'거룩함이 낮은 강아지가 많아요'];
   return [false,'모두 건강하고 행복해요']}
 function startChurch(kind,manual){
   if(!FAITH()){toast('강아지교 성당이 없어요 (방 꾸미기에서 여러 방을 켜 주세요)',true);return false}if(field||match||world.arena){if(manual)toast('지금은 예식을 할 수 없어요',true);return false}
@@ -7381,7 +7406,7 @@ function startChurch(kind,manual){
   const parts=dogs.filter(churchEligible);if(!parts.length){if(manual)toast('예식에 올 수 있는 강아지가 없어요',true);return false}
   let pr=world.jobs&&world.jobs.priest!=null?dogs.find(d=>d.id===world.jobs.priest&&parts.includes(d)):null;if(!pr)pr=parts.filter(d=>d.age>=1).sort((a,b)=>(b.holy||0)-(a.holy||0))[0]||parts[0];
   const seats=churchSeats(),seat={};let i=0;for(const d of parts.slice().sort((a,b)=>(b.holy||0)-(a.holy||0))){if(d===pr)continue;const sp=seats[i++];if(sp)seat[d.id]=sp;else seat[d.id]=spotIn('church')?Object.assign(spotIn('church'),{fx:ANX.priestSpot.x,fz:ANX.priestSpot.z}):ANX.priestSpot}
-  const hol=!manual&&kind==='1차(필수)'?holidayOf(dogDate(world.t)):null;if(hol)kind=`${hol.n} 대예식`;const dur=hol?300:churchDur();Object.assign(C,{grand:!!hol,holiday:hol,on:true,kind,t:0,dur,parts:parts.map(d=>d.id),priest:pr.id,seat,gain:{},start:world.t,watch:false});C.count++;
+  const hol=!manual&&kind==='1차(필수)'?holidayOf(dogDate(world.t)):null;if(hol)kind=`${hol.n} 대예식`;const dur=hol?300:churchDur();Object.assign(C,{grand:!!hol,holiday:hol,on:true,kind,t:0,dur,parts:parts.map(d=>d.id),priest:pr.id,seat,gain:{},start:world.t,watch:false,offered:{},stepI:-1});C.steps=chBuildSteps(C);C.count++;
   for(const d of parts){boardLeave(d);if(world.tag&&world.tag.on&&world.tag.players.includes(d.id))tagLeave(d,'예식에 가느라');stationRelease(d);d.lift=0;setState(d,'toChurch',99999)}
   if(hol){churchDeco(true);log(`🎉 오늘은 강아지교 기념일 「${hol.n}」! ${hol.w}. 5시간 동안 성대한 대예식을 열어요`,'good');toast(`🎉 ${hol.n} 대예식!`,false,true)}
   log(`🔔 강아지교 ${hol?kind:kind+' 예식'} 시작! 사제 ${pr.name} · ${parts.length}마리 참석 · 약 ${fmtDur(dur)}`,'good');if(soundOn){blip(392,0.5,0.07);setTimeout(()=>blip(392,0.5,0.07),700)}if(ANX.bell)ANX.bell.userData.ring=3;churchUI(true);return true}
@@ -7392,15 +7417,18 @@ function endChurch(why){const C=world.church;if(!C||!C.on)return;C.on=false;cons
   $('#chSub').hidden=true;
   log(`⛪ 강아지교 ${/대예식$/.test(C.kind)?C.kind:C.kind+' 예식'}이 끝났어요${why?` (${why})`:''} · ${ps.length}마리 · 거룩함 평균 +${avg.toFixed(1)} · 건강·체력·행복도 ↑`,'good');$('#chHud').hidden=true;churchUI(true)}
 function churchStep(h){
-  if(!world)return;if(!world.holyInit&&FAITH()){world.holyInit=true;for(const d of dogs)if(holyOk(d)&&d.holy==null)d.holy=Math.round(rand(5,30))}
+  if(!world)return;if(world.holyGoal>0&&!$('#holyGoal').value&&document.activeElement!==$('#holyGoal')){$('#holyGoal').value=world.holyGoal;$('#holyGoalPre').value=world.holyGoal}if(world.holyGoal===undefined){const v=parseInt($('#holyGoal').value,10);world.holyGoal=v>0?v:null}
+  if(!world.holyInit&&FAITH()){world.holyInit=true;for(const d of dogs)if(holyOk(d)&&d.holy==null)d.holy=Math.round(rand(5,30))}
   if(!FAITH()||field||match||world.arena)return;const day=Math.floor(world.t/1440),hr=hour();const C=world.church=world.church||{day:-1,count:0,on:false};
   if(C.day!==day&&!C.on){C.day=day;C.count=0;C.decided=null}
-  if(C.on){C.t+=h;for(const id of C.parts){const d=dogs.find(x=>x.id===id);if(!d||d.dead)continue;if(d.state!=='toChurch'&&d.state!=='atChurch'&&churchEligible(d)&&['idle','wander','sit','sleep','atSt','toSt'].includes(d.state)&&d.pee<80&&d.poo<80&&d.thirst<85){stationRelease(d);setState(d,'toChurch',99999)}}
+  if(C.on){C.t+=h;{const st=chStep(C);if(st.i!==C.stepI){C.stepI=st.i;chStepEnter(C,st)}}for(const id of C.parts){const d=dogs.find(x=>x.id===id);if(!d||d.dead)continue;if(d.state!=='toChurch'&&d.state!=='atChurch'&&churchEligible(d)&&['idle','wander','sit','sleep','atSt','toSt'].includes(d.state)&&d.pee<80&&d.poo<80&&d.thirst<85){stationRelease(d);setState(d,'toChurch',99999)}}
     if(C.t>=C.dur)endChurch();return}
   const t1=+($('#chT1')?$('#chT1').value:10),t2=+($('#chT2')?$('#chT2').value:19);
   if(C.count===0&&hr>=t1&&hr<22)startChurch('1차(필수)');
   else if(C.count===1&&hr>=t2&&hr<23.5&&!C.decided){const m=$('#chSecond')?$('#chSecond').value:'auto';let yes,why;if(m==='on'){yes=true;why='주인이 정했어요'}else if(m==='off'){yes=false;why='주인이 정했어요'}else{[yes,why]=churchBrain();why='🧠 '+why}
     C.decided=yes?'yes':'no';log(`⛪ 오늘 2차 예식: ${yes?'해요':'안 해요'} (${why})`,'',true);if(yes)startChurch('2차')}}
+function chStepEnter(C,st){const n=st.s.n;if(n.startsWith('🔔')&&ANX&&ANX.bell){ANX.bell.userData.ring=3;if(soundOn&&speed<=4){blip(392,0.5,0.07);setTimeout(()=>blip(330,0.5,0.07),600)}}
+  if(st.i>0)log(`⛪ 예식 순서 ${st.i+1}/${st.n} · ${n} — ${st.s.txt}`,'',false);chTalkTurn=0;chTalkT=0.3;churchUI(true)}
 let chUIT=0,organT=0;
 function churchFx(rdt){
   if(!world)return;for(const d of dogs)if(d.eternal&&!d.halo&&!d.dead)haloOn(d);
@@ -7410,15 +7438,16 @@ function churchFx(rdt){
   if(!C||!C.on||$('#sim').hidden){if(!hud.hidden)hud.hidden=true}else{
     organT-=rdt;if(organT<=0&&soundOn&&speed<=4){organT=1.4;const sc=[262,294,330,392,440,523];blip(pick(sc),0.9,0.03)}
     chUIT-=rdt;if(chUIT<=0){chUIT=0.5;const pr=dogs.find(d=>d.id===C.priest),here=C.parts.filter(id=>{const d=dogs.find(x=>x.id===id);return d&&d.state==='atChurch'}).length,left=Math.max(0,C.dur-C.t);
-      hud.hidden=false;hud.textContent=`⛪ 강아지교 ${C.grand?C.kind:C.kind+' 예식'} · 사제 ${pr?pr.name:'-'} · 자리에 앉은 강아지 ${here}/${C.parts.length} · 남은 시간 ${fmtDur(Math.ceil(left))}`;churchUI()}}
+      hud.hidden=false;const st=chStep(C);hud.textContent=`⛪ 강아지교 ${C.grand?C.kind:C.kind+' 예식'} · 순서 ${st.i+1}/${st.n} ${st.s.n} · 사제 ${pr?pr.name:'-'} · 참석 ${here}/${C.parts.length} · 남은 시간 ${fmtDur(Math.ceil(left))}`;churchUI()}}
   if(chUIT<=0){chUIT=1;churchUI()}}
 function jobOpts(sel,cur){if(!sel)return;const L=dogs.filter(d=>holyOk(d)&&!d.dead&&d.age>=1);const html=`<option value="auto">🧠 자동</option><option value="none">없음</option>`+L.map(d=>`<option value="${d.id}">${esc(d.name)} (✨${Math.floor(d.holy||0)})</option>`).join('');if(sel.dataset.h!==html){const v=sel.value||cur||'auto';sel.dataset.h=html;sel.innerHTML=html;sel.value=[...sel.options].some(o=>o.value===v)?v:'auto'}}
 function churchUI(force){if(!world||!$('#chHoly'))return;holidayUI();const C=world.church||{},on=!!C.on;{const hide=!FAITH()&&!ANX;}$('#churchPanel').hidden=!FAITH();
+  {const st=C.on?chStep(C):null,L=C.on?C.steps:chBuildSteps({grand:false}),oh=L.map((x,i)=>`<li class="${st?(i<st.i?'done':i===st.i?'now':''):''}">${esc(x.n)}<span>${esc(x.txt)}${st&&i===st.i?` · ${Math.round(st.f*100)}%`:''}</span></li>`).join('')+(C.on?'':'<li class="muted" style="list-style:none">대예식은 🎉 기념 선포, 간식 대량제조 기념일은 🍪 간식 빚기 순서가 더해져요</li>');const ol=$('#chOrder');if(ol&&ol.dataset.h!==oh){ol.dataset.h=oh;ol.innerHTML=oh}}
   $('#chTag').textContent=!ANX?'성당이 없어요':on?'예식 중':'쉬는 중';$('#chStart').disabled=!ANX||on||(C.count||0)>=2;$('#chWatch').disabled=!ANX;
   const t1=$('#chT1').value,t2=$('#chT2').value;$('#chToday').textContent=!ANX?'방 꾸미기에서 "여러 방"을 켜면 강아지교 성당이 생겨요.':`오늘 예식 ${C.count||0}/2번 · 1차(필수) ${t1}시 ${C.count>=1?'✓':'예정'} · 2차 ${t2}시 ${C.decided==='yes'||C.count>=2?'✓ 함':C.decided==='no'?'안 함':'결정 전'}${C.last?` · 지난 예식 ${C.last.n}마리, 거룩함 평균 +${C.last.avg.toFixed(1)}`:''}`;
   jobOpts($('#jobPriest'));jobOpts($('#jobChef'));jobOpts($('#jobLibrarian'));
   const J=world.jobs||{},jh=['priest','chef','librarian'].map(r=>{const d=dogs.find(x=>x.id===J[r]);return `<span>${JOB_N[r]}</span><b>${d?esc(d.name)+(d.state==='atJob'?' (일하는 중)':''):'-'}</b>`}).join('');if($('#chJobs').dataset.h!==jh){$('#chJobs').dataset.h=jh;$('#chJobs').innerHTML=jh}
-  const L=dogs.filter(d=>holyOk(d)&&!d.dead).sort((a,b)=>(b.holy||0)-(a.holy||0)).slice(0,8),html=L.map((d,i)=>`<li><b>${d.eternal?'✨':i===0?'🏆':'🐾'} ${esc(d.name)}</b><span class="small">거룩함 ${Math.floor(d.holy||0)}${d.eternal?' · 영생':` / 200 (${Math.floor((d.holy||0)/2)}%)`}</span></li>`).join('')||'<li class="muted">강아지가 없어요</li>';
+  const L=dogs.filter(d=>holyOk(d)&&!d.dead).sort((a,b)=>(b.holy||0)-(a.holy||0)).slice(0,8),html=L.map((d,i)=>`<li><b>${d.eternal?'✨':i===0?'🏆':'🐾'} ${esc(d.name)}</b><span class="small">거룩함 ${Math.floor(d.holy||0)}${d.eternal?' · 영생':` / ${HOLY_GOAL()} (${Math.floor((d.holy||0)/HOLY_GOAL()*100)}%)`}</span></li>`).join('')||'<li class="muted">강아지가 없어요</li>';
   const ul=$('#chHoly');if(force||ul.dataset.h!==html){ul.dataset.h=html;ul.innerHTML=html}}
 $('#chStart').onclick=()=>{ac();if(world)startChurch('특별',true)};
 $('#chWatch').onclick=()=>{if(!ANX)return;const al=ANX.items&&ANX.items.find(i=>i.type==='altar'),c0=ANX.map(0,ANX.RD+2);if(player.spect)stopSpectate();setCamMode('free');const tx=al?al.x:c0.x,tz=al?al.z:c0.z;controls.target.set(tx,1,tz);mainCam.position.set(c0.x+(tx-c0.x)*0.05,ANX.cw*0.45+4,c0.z+(tz-c0.z)*0.05);controls.update();if(world.church)world.church.watch=true;$('#chSubOn').checked=true;chSubDraw()};
@@ -7445,20 +7474,31 @@ function churchDeco(on){if(chDeco){scene.remove(chDeco);chDeco=null}if(!on||!ANX
 function holidayUI(){if(!world||!$('#chCal'))return;const dd=dogDate(world.t),h=holidayOf(dd),nx=nextHoliday(dd);const t=`🐾 오늘은 멍력 ${dd.y}년 ${dd.m}월 ${dd.d}일 ${DOG_WD[dd.wd]}요일${h?` · 🎉 ${h.n}! (5시간 대예식)`:''} · 다음 기념일 ${nx.txt}`;if($('#chCal').textContent!==t)$('#chCal').textContent=t;
   const html=DOG_HOLIDAYS.map(x=>`<li><b>${x.m}월 ${x.d}일</b>${esc(x.n)} — ${esc(x.w)}</li>`).join('')+`<li><b>매달 셋째 목요일</b>${esc(SNACK_HOL.n)} — ${esc(SNACK_HOL.w)}</li>`;const ul=$('#chHolList');if(ul.dataset.h!==html){ul.dataset.h=html;ul.innerHTML=html}}
 /* ---------- ceremony dialogue (priest & congregation lines, shown as a subtitle bar) ---------- */
-const CH_PHASES=[[0,'🚪 입장'],[0.1,'🎶 찬양'],[0.3,'📖 말씀'],[0.6,'🙏 기도'],[0.8,'✨ 축복'],[0.95,'🔔 폐식']];
+// order of service: [name, weight, what happens]
+const CH_ORDER=[['🔔 타종·입장',7,'종이 울리고 모두 자리에 앉아요'],['🕯 촛불 점화',5,'사제가 제단의 촛불을 켜요'],['🎶 찬양',16,'다 함께 일어나 노래해요 (행복도 ↑↑)'],['📖 말씀',18,'앉아서 사제의 말씀을 들어요 (거룩함 ↑↑)'],['🙏 기도',12,'엎드려 조용히 기도해요 (건강 ↑↑)'],['🦴 봉헌',12,'한 마리씩 제단 앞으로 나가 뼈다귀를 바쳐요 (거룩함 +)'],['✨ 축복',14,'사제가 한 마리씩 축복해 줘요 (거룩함 +)'],['🤝 평화의 인사',9,'옆 친구와 서로 코를 맞대고 인사해요 (행복도 ↑↑)'],['🔔 폐식·퇴장',7,'종이 울리고 예식을 마쳐요']];
+const CH_EXTRA={grand:['🎉 기념 선포',6,'사제가 오늘 기념일을 선포해요 (대예식만)'],snack:['🍪 간식 빚기',14,'다 함께 간식 반죽을 빚어요 (간식 대량제조 기념일만)']};
+function chBuildSteps(C){const L=CH_ORDER.map(x=>x.slice());if(C.grand)L.splice(2,0,CH_EXTRA.grand.slice());if(C.holiday&&C.holiday.monthly){const k=L.findIndex(x=>x[0]==='✨ 축복');L.splice(k+1,0,CH_EXTRA.snack.slice())}
+  const W=L.reduce((a,x)=>a+x[1],0);let a=0;return L.map(([n,w,txt])=>{const st={n,a:a/W,b:(a+w)/W,txt};a+=w;return st})}
+function chStep(C){if(!C.steps)C.steps=chBuildSteps(C);const f=clamp(C.t/Math.max(1,C.dur),0,0.9999);let i=C.steps.findIndex(s=>f>=s.a&&f<s.b);if(i<0)i=C.steps.length-1;const s=C.steps[i];return {i,s,f:(f-s.a)/Math.max(1e-6,s.b-s.a),n:C.steps.length}}
+const CH_PHASES=CH_ORDER.map(x=>[0,x[0]]);
 const CH_LINES={
-  '🚪 입장':{p:['멍멍, 형제자매 여러분! 오늘도 꼬리를 흔들며 모여 주셔서 고맙습니다.','자리에 앉아 주세요. 발바닥은 가지런히, 꼬리는 살랑살랑.','오늘 이 자리에 {n}마리가 함께했어요. 모두 환영합니다!','늦게 온 친구도 괜찮아요. 강아지교의 문은 언제나 열려 있답니다.'],c:['멍! 안녕하세요, 사제님!','꼬리 흔들며 왔어요~','오늘도 잘 부탁드려요, 멍!','자리 찾았어요! 여기 따뜻하네요.']},
+  '🔔 타종·입장':{p:['멍멍, 형제자매 여러분! 오늘도 꼬리를 흔들며 모여 주셔서 고맙습니다.','자리에 앉아 주세요. 발바닥은 가지런히, 꼬리는 살랑살랑.','오늘 이 자리에 {n}마리가 함께했어요. 모두 환영합니다!','늦게 온 친구도 괜찮아요. 강아지교의 문은 언제나 열려 있답니다.'],c:['멍! 안녕하세요, 사제님!','꼬리 흔들며 왔어요~','오늘도 잘 부탁드려요, 멍!','자리 찾았어요! 여기 따뜻하네요.']},
+  '🕯 촛불 점화':{p:['이제 제단의 촛불을 켜겠습니다. 🕯','이 작은 불빛처럼 우리 마음도 따뜻하기를.','촛불이 켜졌어요. 꼬리는 촛불에서 멀리!'],c:['와, 반짝반짝해요…','(촛불을 가만히 바라본다)','따뜻하다, 멍.']},
+  '🎉 기념 선포':{p:['오늘은 기쁜 기념일입니다! 모두 일어나 꼬리를 흔들어 주세요!','강아지교의 이름으로 오늘을 기념일로 선포합니다! 🎉','오늘만큼은 마음껏 기뻐해도 좋아요!'],c:['🎉 와아아! 멍멍!','기다렸어요, 이날을!','꼬리가 멈추질 않아요~']},
+  '🦴 봉헌':{p:['이제 봉헌 순서예요. 한 마리씩 제단 앞으로 나와 주세요.','바친 뼈다귀는 배고픈 친구들과 나눌 거예요.','{name}, 고마워요. 정성이 느껴져요.','천천히, 차례차례 나와 주세요.'],c:['제 뼈다귀 받아 주세요! 🦴','아끼던 건데… 그래도 드릴게요!','(조심스럽게 뼈다귀를 내려놓는다)','다음은 제 차례예요!']},
+  '🍪 간식 빚기':{p:['자, 이제 간식을 빚어 볼까요? 반죽을 꾹꾹!','오늘 만든 간식은 한 달 동안 우리 모두의 것이에요.','{name}, 모양이 아주 예뻐요!'],c:['꾹꾹, 꾹꾹! 🍪','반죽 냄새 너무 좋아요~','하나만 먹어 보면 안 돼요?','제 건 뼈다귀 모양이에요!']},
+  '🤝 평화의 인사':{p:['옆 친구와 평화의 인사를 나눠요. 코를 맞대고, 킁킁!','싸웠던 친구가 있다면 지금 화해해요.','서로의 냄새를 반갑게 맡아 주세요.'],c:['평화가 함께하길! 킁킁','어제는 미안했어, 멍.','너 오늘 냄새 좋다~','(꼬리를 흔들며 코를 맞댄다) 💕']},
   '🎶 찬양':{p:['다 함께 노래해요. "오늘도 산책 감사해요"!','목소리를 모아 주세요. 하울링도 좋아요!','오르간 소리에 맞춰 꼬리를 흔들어 볼까요?'],c:['🎶 오늘도~ 산책~ 감사해요~ 🎶','🎶 간식은~ 나누면~ 두 배~ 🎶','아우우우~ 🎵','🎶 배변판은~ 우리의~ 친구~ 🎶','🎶 멍멍멍~ 사랑해요~ 🎶']},
   '📖 말씀':{p:['오늘의 말씀입니다. "간식은 나누면 두 배가 되고, 싸움은 나누면 반이 된다."','"배변판을 지키는 강아지에게 거룩함이 함께하리라."','"이웃 강아지의 냄새를 반갑게 맡아 주어라."','"공을 물어 왔으면 다시 놓아 주어라. 그래야 또 던져 준다."','"주인이 바쁠 때는 조용히 기다려라. 산책은 반드시 온다."','"꼬리를 흔드는 자, 마음도 따뜻하리라."','{name}{이} 요즘 배변판을 아주 잘 써요. 모두 본받아요!'],c:['멍멍, 명심할게요!','오늘 말씀 너무 좋아요…','저 어제 싸웠는데… 반성해요 🥺','간식 나눠 먹을게요!','배변판 꼭 쓸게요!','(꼬리를 천천히 흔든다)']},
   '🙏 기도':{p:['발바닥을 모아 기도해요. 아픈 친구가 낫기를.','학교 간 친구들, 회사 간 어르신들이 무사히 돌아오기를.','우리 집에 평화와 간식이 가득하기를.','{name}{이} 건강해지기를 함께 기도해요.'],c:['(조용히 눈을 감는다)','…낑, 모두 건강하게 해 주세요.','오늘 밥 맛있게 먹게 해 주세요.','싸우지 않게 해 주세요.','주인님도 건강하게 해 주세요.']},
   '✨ 축복':{p:['{name}에게 축복을! 거룩함이 함께하길.','오늘 참석한 모든 강아지에게 축복을! 건강과 체력이 가득하길.','{eternal}','거룩함이 높은 {name}, 영생까지 {left} 남았어요. 힘내요!'],c:['고맙습니다, 멍!','몸이 가벼워졌어요!','꼬리에 힘이 생겼어요!','✨ 반짝반짝해요!']},
-  '🔔 폐식':{p:['오늘 예식은 여기까지예요. 서로 사이좋게 지내요!','이제 가서 맛있게 먹고, 즐겁게 놀아요. 멍멍!','다음 예식에서 또 만나요. 꼬리를 흔들며 안녕!'],c:['멍! 다음에 또 올게요!','고맙습니다, 사제님!','오늘 너무 좋았어요~','산책 가고 싶다!']}};
+  '🔔 폐식·퇴장':{p:['오늘 예식은 여기까지예요. 서로 사이좋게 지내요!','이제 가서 맛있게 먹고, 즐겁게 놀아요. 멍멍!','다음 예식에서 또 만나요. 꼬리를 흔들며 안녕!'],c:['멍! 다음에 또 올게요!','고맙습니다, 사제님!','오늘 너무 좋았어요~','산책 가고 싶다!']}};
 let chTalkT=0,chTalkTurn=0;const chLog=[];
-function chPhase(C){const f=C.t/Math.max(1,C.dur);let ph=CH_PHASES[0][1];for(const [a,n] of CH_PHASES)if(f>=a)ph=n;return ph}
+function chPhase(C){return chStep(C).s.n}
 function chFill(t,C,sp){const P=C.parts.map(id=>dogs.find(d=>d.id===id)).filter(Boolean),pick1=P.filter(d=>d.id!==C.priest),nm=(pick1.length?pick(pick1):P[0]||{name:'친구'}).name;
   const top=P.filter(d=>!d.eternal).sort((a,b)=>(b.holy||0)-(a.holy||0))[0],et=P.filter(d=>d.eternal);
-  if(t==='{eternal}')t=et.length?`영생을 얻은 ${et.map(d=>d.name).join(', ')}! 늘 우리와 함께해요.`:'언젠가 거룩함 200에 닿는 친구가 나오길 기도해요.';
-  if(t.includes('{left}')){if(!top)return '모두에게 거룩함이 함께하길.';t=t.replace('{name}',top.name).replace('{left}',`${Math.max(0,Math.ceil(200-(top.holy||0)))}점`)}
+  if(t==='{eternal}')t=et.length?`영생을 얻은 ${et.map(d=>d.name).join(', ')}! 늘 우리와 함께해요.`:`언젠가 거룩함 ${HOLY_GOAL()}에 닿는 친구가 나오길 기도해요.`;
+  if(t.includes('{left}')){if(!top)return '모두에게 거룩함이 함께하길.';t=t.replace('{name}',top.name).replace('{left}',`${Math.max(0,Math.ceil(HOLY_GOAL()-(top.holy||0)))}점`)}
   return t.replace('{n}',P.length).replace('{name}{이}',nm+josa(nm,'이','가')).replace(/\{name\}/g,nm)}
 function chSay(C){const ph=chPhase(C),L0=CH_LINES[ph];if(!L0)return;const L=C.grand&&C.holiday?{p:L0.p.concat([`오늘은 ${C.holiday.n}! ${C.holiday.w}.`,`${C.holiday.n}을(를) 맞아 ${'{n}'}마리가 모두 모였어요. 정말 성대하네요!`,'1년에 한 번뿐인 날이에요. 오늘은 마음껏 축하해요!']),c:L0.c.concat(['🎉 축하해요~ 멍멍!','🎶 꼬리 흔들어~ 축제다~ 🎶','오늘 잔치 음식 기대돼요!','1년 동안 기다렸어요!'])}:L0;const pr=dogs.find(d=>d.id===C.priest);chTalkTurn++;
   let who,txt;const seated=C.parts.map(id=>dogs.find(d=>d.id===id)).filter(d=>d&&d.id!==C.priest&&d.state==='atChurch');

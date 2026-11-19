@@ -345,6 +345,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
 .chsub .ln{background:rgba(20,14,6,.86);color:#fff;border-radius:12px;padding:7px 12px;font-size:14px;line-height:1.4;box-shadow:0 4px 14px rgba(0,0,0,.25);animation:chIn .35s ease}
 .chsub .ln.old{opacity:.55;font-size:12.5px}.chsub .ln b{color:#ffd23f;margin-right:6px}.chsub .ln.pr b{color:#7fe0ff}.chsub .ph{align-self:center;background:rgba(255,210,63,.92);color:#2a1d00;border-radius:999px;padding:2px 12px;font-size:12px;font-weight:700}
 @keyframes chIn{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
+.roompick{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:13px;padding-left:22px}.roompick label{display:flex;gap:4px;align-items:center}.roompick.off{opacity:.45;pointer-events:none}
 .chorder{margin:4px 0 6px;padding-left:22px;display:grid;gap:2px;font-size:12.5px}.chorder li.now{font-weight:700;color:var(--accent)}.chorder li.done{color:var(--muted);text-decoration:line-through}.chorder li span{color:var(--muted);font-weight:400;margin-left:4px}
 .chtalk{list-style:none;margin:0;padding:0;display:grid;gap:3px;max-height:180px;overflow:auto;font-size:12.5px}.chtalk li b{color:var(--accent,#1d8a80);margin-right:4px}
 .taghud{left:50%;top:50px;transform:translateX(-50%);background:rgba(14,18,28,.85);color:#fff;border-radius:999px;padding:5px 14px;font-size:12.5px;z-index:6;white-space:nowrap;max-width:90%;overflow:hidden;text-overflow:ellipsis}.taghud[hidden]{display:none}
@@ -655,15 +656,16 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
       </div>
       <div class="stack">
         <h3>🏛 여러 방</h3>
-        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="roomsOn" checked> 거실 옆에 주방 · 도서관 · 연회장 · 강아지교 성당 붙이기</label>
-        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="faithOn" checked> ⛪ 강아지교 있음 (성당 · 예식 · 거룩함 · 사제)</label>
+        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="roomsOn" checked> 거실 옆에 방 붙이기 (아래에서 넣을 방을 골라요)</label>
+        <div class="roompick" id="roomPick"><label><input type="checkbox" data-room="kitchen" checked> 🍳 주방</label><label><input type="checkbox" data-room="library" checked> 📚 도서관</label><label><input type="checkbox" data-room="bedroom" checked> 🛏 침실</label><label><input type="checkbox" data-room="banquet" checked> 🎉 연회장</label></div>
+        <label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="faithOn" checked> ⛪ 강아지교 성당 넣기 (예식 · 거룩함 · 사제)</label>
         <label class="f">✨ 영생에 필요한 거룩함<input type="number" id="holyGoalPre" data-mirror="holyGoal" min="1" step="1" placeholder="2000"></label>
         <div class="row2"><label class="f">🏢 층 수 (1~무한)<input type="number" id="floorN" min="1" step="1" value="1"></label>
           <label class="f">⛪ 성당 층 수<input type="number" id="floorChurch" min="1" step="1" value="1"></label></div>
         <label class="f">🚶 층 이동 방법<select id="floorMove"><option value="stairs" selected>🪜 계단 (건강 ↑ · 체력 ↓)</option><option value="elev">🛗 엘리베이터 (돈 ↓ · 행복도 ↑)</option><option value="auto">🧠 자동 (지치면 엘리베이터)</option></select></label>
         <p class="small muted" id="floorNote">2층부터는 층마다 가구가 조금씩 달라요(침실·놀이방·온실·휴게실, 카페/주방, 도서관). 연회장은 1층에만 있어요. 층이 많을수록 화면이 무거워져요.</p>
         <label class="f">강아지교 성당 크기<select id="cathSize"><option value="mid">크게 (18×24m)</option><option value="big" selected>아주 크게 (26×34m)</option><option value="huge">엄청 크게 (34×46m)</option></select></label>
-        <p class="small muted">방들은 마당 반대쪽에 붙어요. 방마다 가구가 자동으로 들어가요. 거실에선 자유롭게, 주방에선 먹고, 도서관에선 책 읽고, 연회장에선 파티하고, 성당에선 기도해요.</p>
+        <p class="small muted">방들은 마당 반대쪽에 붙어요. 방마다 가구가 자동으로 들어가요. 거실에선 자유롭게, 주방에선 먹고, 도서관에선 책 읽고, 침실에선 푹 자고(밤엔 침실 강아지 방석을 먼저 찾아요), 연회장에선 파티하고, 성당에선 기도해요.</p>
       </div>
       <div class="stack">
         <h3>📍 집 위치</h3>
@@ -1729,7 +1731,7 @@ const CROPS={
 let uid=1;
 function presetLiving(){
   // a roomier living room (12×9 m) that comes with the care furniture; the yard holds the farm, agility course and fountain
-  return {W:12,D:9,yard:{on:true,depth:14,wide:16,pitch:true,gym:true,gymD:14},rooms:{on:true,cath:'big',faith:true},items:[
+  return {W:12,D:9,yard:{on:true,depth:14,wide:16,pitch:true,gym:true,gymD:14},rooms:{on:true,cath:'big',faith:true,pick:{}},items:[
     {id:uid++,type:'petdoor',wall:'e',t:0.9},
     {id:uid++,type:'rug',x:-1.5,z:0.3,rot:0},
     {id:uid++,type:'sofa',x:-1.5,z:3.9,rot:2},
@@ -1865,11 +1867,12 @@ const toW=(P,a,c)=>P.lx?{x:P.cx+a,z:P.cz+c}:{x:P.cx+c,z:P.cz+a};
 const fromW=(P,x,z)=>P.lx?{a:x-P.cx,c:z-P.cz}:{a:z-P.cz,c:x-P.cx};
 /* ---------- annex rooms: kitchen, library, banquet hall, dog church ---------- */
 const ROOM_SZ={mid:[18,24],big:[26,34],huge:[34,46]};
+const ROOM_DEFS=[['kitchen','🍳 주방',9],['library','📚 도서관',10],['bedroom','🛏 침실',10],['banquet','🎉 연회장',14]];
 function annexPlan(L=layout){
-  const FN=Math.max(1,Math.floor((L&&L.floors&&L.floors.n)||1)),roomsOn=!!(L&&L.rooms&&L.rooms.on);
+  const FN=Math.max(1,Math.floor((L&&L.floors&&L.floors.n)||1)),PK=(L&&L.rooms&&L.rooms.pick)||{bedroom:false},RW0=ROOM_DEFS.filter(r=>PK[r[0]]!==false),faith0=!!(L&&L.rooms&&L.rooms.on&&L.rooms.faith!==false),roomsOn=!!(L&&L.rooms&&L.rooms.on)&&(RW0.length>0||faith0);
   if(!L||L.outdoor||(!roomsOn&&FN<2))return null;
   const yb=yardBase(L),O=yb?({s:'n',n:'s',e:'w',w:'e'})[yb.side]:'n',ns=O==='n'||O==='s';
-  const Lm=ns?L.W:L.D,wp=ns?L.D/2:L.W/2,RD=8,RW=[['kitchen','🍳 주방',9],['library','📚 도서관',10],['banquet','🎉 연회장',14]],tot=RW.reduce((a,r)=>a+r[2],0);
+  const Lm=ns?L.W:L.D,wp=ns?L.D/2:L.W/2,RD=8,RW=RW0.length?RW0:[['hall','🚪 복도',6]],tot=RW.reduce((a,r)=>a+r[2],0);
   const [cw,cd]=ROOM_SZ[(L.rooms&&L.rooms.cath)]||ROOM_SZ.big;
   const map=(u,v)=>O==='n'?{x:u,z:-wp-v}:O==='s'?{x:u,z:wp+v}:O==='e'?{x:wp+v,z:u}:{x:-wp-v,z:u};
   const rect=(u0,u1,v0,v1)=>{const a=map(u0,v0),b=map(u1,v1);return {minx:Math.min(a.x,b.x),maxx:Math.max(a.x,b.x),minz:Math.min(a.z,b.z),maxz:Math.max(a.z,b.z)}};
@@ -1879,9 +1882,9 @@ function annexPlan(L=layout){
   const doors=[];
   const hDoor=(a,b,c,v)=>doors.push({a,b,c,v,h:true,pa:map(c,v-0.9),pb:map(c,v+0.9)}); // on a line v=const
   const vDoor=(a,b,uu,c)=>doors.push({a,b,c,u:uu,h:false,pa:map(uu-0.9,c),pb:map(uu+0.9,c)}); // on a line u=const
-  if(roomsOn){for(let i=1;i<=3;i++){const R=rooms[i],lo=Math.max(R.u0,-Lm/2+0.7),hi=Math.min(R.u1,Lm/2-0.7);if(hi-lo>=1.8)hDoor(0,i,(lo+hi)/2,0)}
-  for(let i=1;i<3;i++)vDoor(i,i+1,rooms[i].u1,RD/2)}
-  if(faith)for(let i=1;i<=3;i++){const R=rooms[i],lo=Math.max(R.u0,-cw/2+0.7),hi=Math.min(R.u1,cw/2-0.7);if(hi-lo>=1.8)hDoor(i,4,(lo+hi)/2,RD)}
+  const m=RW.length;if(roomsOn){for(let i=1;i<=m;i++){const R=rooms[i],lo=Math.max(R.u0,-Lm/2+0.7),hi=Math.min(R.u1,Lm/2-0.7);if(hi-lo>=1.8)hDoor(0,i,(lo+hi)/2,0)}
+  for(let i=1;i<m;i++)vDoor(i,i+1,rooms[i].u1,RD/2)}
+  if(faith)for(let i=1;i<=m;i++){const R=rooms[i],lo=Math.max(R.u0,-cw/2+0.7),hi=Math.min(R.u1,cw/2-0.7);if(hi-lo>=1.8)hDoor(i,m+1,(lo+hi)/2,RD)}
   doors.forEach(d=>{if(d.a===0)d.side=O});
   // stair tower (only with 2+ floors): on a main wall that is neither the yard side nor the rooms side
   let tower=null;const ys=yb?yb.side:null;
@@ -1937,7 +1940,7 @@ function roomRect(key){if(!ANX)return null;const R=ANX.rooms.find(r=>r.key===key
 function spotIn(key,m){const r=roomRect(key);if(!r)return null;m=m||0.7;for(let i=0;i<40;i++){const x=rand(r.minx+m,r.maxx-m),z=rand(r.minz+m,r.maxz-m);if(!solids.some(b=>x>b.minx-0.35&&x<b.maxx+0.35&&z>b.minz-0.35&&z<b.maxz+0.35))return {x,z}}return null}
 function indoorSpot(){
   if(FLN>1&&Math.random()<0.5){const k=1+Math.floor(Math.random()*(FLN-1)),p=floorSpot(k);if(p)return p}
-  if(ANX&&Math.random()<0.38){const k=pick(['kitchen','library','banquet','church','church','kitchen','banquet']);const p=spotIn(k);if(p)return p}
+  if(ANX&&Math.random()<0.38){const k=pick(['kitchen','library','banquet','church','church','kitchen','banquet','bedroom']);const p=spotIn(k);if(p)return p}
   return findFree(rand(-W/2+0.6,W/2-0.6),rand(-D/2+0.6,D/2-0.6))}
 function roomTend(d,key,inP,outP){return roomOf(d)===key?inP:outP}
 function extents(L=layout){const y=yardRect(L);const e={minx:-L.W/2,maxx:L.W/2,minz:-L.D/2,maxz:L.D/2};if(y){e.minx=Math.min(e.minx,y.minx);e.maxx=Math.max(e.maxx,y.maxx);e.minz=Math.min(e.minz,y.minz);e.maxz=Math.max(e.maxz,y.maxz)}const ap=annexPlan(L);if(ap)for(const R of ap.rooms){e.minx=Math.min(e.minx,R.r.minx);e.maxx=Math.max(e.maxx,R.r.maxx);e.minz=Math.min(e.minz,R.r.minz);e.maxz=Math.max(e.maxz,R.r.maxz)}return e}
@@ -2093,18 +2096,20 @@ ed.addEventListener('pointerup',()=>{
   drag=null;
 });
 function setRoom(W,D){layout.W=clamp(W,4,100);layout.D=clamp(D,4,100);$('#roomW').value=layout.W;$('#roomD').value=layout.D;layout.items.forEach(clampItem);
-  if(!layout.yard)layout.yard={on:false,depth:6,wide:0,pitch:false};$('#yardOn').checked=layout.yard.on;$('#yardDepth').value=layout.yard.depth;$('#yardWide').value=layout.yard.wide||0;$('#yardPitch').checked=!!layout.yard.pitch;$('#yardGym').checked=!!layout.yard.gym;$('#gymDepth').value=layout.yard.gymD||14;$('#roomsOn').checked=!!(layout.rooms&&layout.rooms.on);$('#cathSize').value=(layout.rooms&&layout.rooms.cath)||'big';$('#faithOn').checked=!(layout.rooms&&layout.rooms.faith===false);$('#cathSize').disabled=!$('#faithOn').checked;{const F=layout.floors||{n:1,church:1,move:'stairs'};$('#floorN').value=F.n||1;$('#floorChurch').value=F.church||1;$('#floorMove').value=F.move||'stairs'}edResize()}
+  if(!layout.yard)layout.yard={on:false,depth:6,wide:0,pitch:false};$('#yardOn').checked=layout.yard.on;$('#yardDepth').value=layout.yard.depth;$('#yardWide').value=layout.yard.wide||0;$('#yardPitch').checked=!!layout.yard.pitch;$('#yardGym').checked=!!layout.yard.gym;$('#gymDepth').value=layout.yard.gymD||14;$('#roomsOn').checked=!!(layout.rooms&&layout.rooms.on);syncRoomPick();$('#cathSize').value=(layout.rooms&&layout.rooms.cath)||'big';$('#faithOn').checked=!(layout.rooms&&layout.rooms.faith===false);$('#cathSize').disabled=!$('#faithOn').checked;{const F=layout.floors||{n:1,church:1,move:'stairs'};$('#floorN').value=F.n||1;$('#floorChurch').value=F.church||1;$('#floorMove').value=F.move||'stairs'}edResize()}
 $('#yardOn').addEventListener('change',e=>{layout.yard.on=e.target.checked;if(e.target.checked&&layout.yard.gym===undefined){layout.yard.gym=true;layout.yard.gymD=layout.yard.gymD||14;$('#yardGym').checked=true}
   if(layout.yard.on&&!layout.items.some(i=>i.type==='petdoor')){const it={id:uid++,type:'petdoor'};snapWall(it,layout.W/2,0);layout.items.push(it)}edResize()});
-$('#roomsOn').addEventListener('change',e=>{layout.rooms=layout.rooms||{cath:'big'};layout.rooms.on=e.target.checked;edResize()});
+$('#roomsOn').addEventListener('change',e=>{layout.rooms=layout.rooms||{cath:'big',pick:{}};layout.rooms.on=e.target.checked;syncRoomPick();edResize()});
+function syncRoomPick(){const PK=(layout.rooms&&layout.rooms.pick)||{bedroom:false};document.querySelectorAll('#roomPick input').forEach(c=>{c.checked=PK[c.dataset.room]!==false});$('#roomPick').classList.toggle('off',!(layout.rooms&&layout.rooms.on))}
+document.querySelectorAll('#roomPick input').forEach(c=>c.addEventListener('change',()=>{layout.rooms=layout.rooms||{cath:'big',on:true,pick:{}};const PK=layout.rooms.pick=layout.rooms.pick||{bedroom:false};PK[c.dataset.room]=c.checked;edResize()}));
 const floorCfg=()=>{layout.floors=layout.floors||{n:1,church:1,move:'stairs'};return layout.floors};
 $('#floorN').addEventListener('change',e=>{const v=Math.max(1,Math.floor(+e.target.value||1));e.target.value=v;floorCfg().n=v;const c=$('#floorChurch');if(+c.value>v){c.value=v;floorCfg().church=v}$('#floorNote').textContent=v>40?`${v}층! 아주 높은 집이에요. 층이 많을수록 화면이 무거워져요.`:'2층부터는 층마다 가구가 조금씩 달라요(침실·놀이방·온실·휴게실, 카페/주방, 도서관). 연회장은 1층에만 있어요. 층이 많을수록 화면이 무거워져요.';edResize()});
 $('#floorChurch').addEventListener('change',e=>{const n=floorCfg().n||1;const v=clamp(Math.floor(+e.target.value||1),1,Math.max(1,n-1)||1);e.target.value=v;floorCfg().church=v});
 $('#viewFloor').addEventListener('change',e=>{viewFloor=e.target.value;applyFloorView()});
 $('#floorMove2').addEventListener('change',e=>{layout.floors=layout.floors||{n:FLN,church:1};layout.floors.move=e.target.value;$('#floorMove').value=e.target.value});
 $('#floorMove').addEventListener('change',e=>{floorCfg().move=e.target.value;if($('#floorMove2'))$('#floorMove2').value=e.target.value});
-$('#faithOn').addEventListener('change',e=>{layout.rooms=layout.rooms||{on:true,cath:'big'};layout.rooms.faith=e.target.checked;$('#cathSize').disabled=!e.target.checked;edResize()});
-$('#cathSize').addEventListener('change',e=>{layout.rooms=layout.rooms||{on:true};layout.rooms.cath=e.target.value;edResize()});
+$('#faithOn').addEventListener('change',e=>{layout.rooms=layout.rooms||{on:true,cath:'big',pick:{}};layout.rooms.faith=e.target.checked;$('#cathSize').disabled=!e.target.checked;edResize()});
+$('#cathSize').addEventListener('change',e=>{layout.rooms=layout.rooms||{on:true,pick:{}};layout.rooms.cath=e.target.value;edResize()});
 $('#yardGym').addEventListener('change',e=>{layout.yard.gym=e.target.checked;if(!layout.yard.gymD)layout.yard.gymD=14;edResize()});
 $('#gymDepth').addEventListener('change',e=>{layout.yard.gymD=clamp(parseFloat(e.target.value)||14,6,60);e.target.value=layout.yard.gymD;edResize()});
 $('#yardDepth').addEventListener('change',e=>{layout.yard.depth=clamp(parseFloat(e.target.value)||4,2,120);e.target.value=layout.yard.depth;edResize()});
@@ -2303,7 +2308,7 @@ function buildWorld(){
     const bx={minx:it.x-ft2.w/2,maxx:it.x+ft2.w/2,minz:it.z-ft2.d/2,maxz:it.z+ft2.d/2,h:f.h,type:it.type,it};
     if(f.solid)solids.push(bx);
     if(f.device)dev[it.type]=Object.assign(dev[it.type]||{},{it,box:bx,group:g});
-    if(it.type==='dogbed'){(dev.beds=dev.beds||[]).push({x:it.x,z:it.z,used:0})}
+    if(it.type==='dogbed'){(dev.beds=dev.beds||[]).push({x:it.x,z:it.z,used:0,bedroom:!!(ANX&&roomKey(it.x,it.z)==='bedroom')})}
     if(it.type==='kennel'){const r=it.rot||0,[fx,fz]=[[0,1],[-1,0],[0,-1],[1,0]][r];(dev.beds=dev.beds||[]).push({x:it.x-fx*0.08,z:it.z-fz*0.08,used:0,kennel:true});solids.push(...kennelWalls(it))}
     if(f.st)((dev.st=dev.st||{})[it.type]=dev.st[it.type]||[]).push({type:it.type,it,x:it.x,z:it.z,users:0,box:bx,g});
     if(it.type==='aircon'||it.type==='purifier'||f.smart||it.type==='quiz')dev[it.type]={it,box:bx,group:g};
@@ -3034,11 +3039,11 @@ function updateDog(d,dt){
       if(world.food>0){setState(d,'eat',15);d.flags.askedFood=false}
       else if(d.think<=0){d.flags.askedFood=false;setState(d,'idle',5)}break}
     case 'toBed':{
-      if(!d.target||!d.target.bed){const beds=(dev.beds||[]);let best=null,bd=1e9;for(const b of beds){const dd=Math.hypot(b.x-d.pos.x,b.z-d.pos.y)+b.used*1.5;if(dd<bd){bd=dd;best=b}}
+      if(!d.target||!d.target.bed){const beds=(dev.beds||[]);let best=null,bd=1e9;const night=hour()>=21||hour()<7;for(const b of beds){const dd=Math.hypot(b.x-d.pos.x,b.z-d.pos.y)+b.used*1.5-(b.bedroom?(night?14:5):0);if(dd<bd){bd=dd;best=b}}
         if(best){best.used++;d.target={x:best.x+(best.kennel?0:rand(-0.15,0.15)),z:best.z+(best.kennel?0:rand(-0.15,0.15)),bed:best}}else{const p=findFree(rand(-W/2+0.5,W/2-0.5),rand(-D/2+0.5,D/2-0.5));d.target={x:p.x,z:p.z,bed:{used:0}}}}
       const dist=steer(d,d.target.x,d.target.z,walk,dt);moving=true;
       if(dist<0.2||d.think<=0){setState(d,'sleep',3);if(!d.flags.slept){d.flags.slept=true}}break}
-    case 'sleep':lie=true;emo='Zzz';if(d.think<=0)decide(d);break;
+    case 'sleep':lie=true;emo='Zzz';if(ANX&&(d.fl||0)===0&&roomOf(d)==='bedroom'){emo='💤';d.stamina=clamp(d.stamina+dt*0.05);d.health=clamp(d.health+dt*0.01)}if(d.think<=0)decide(d);break;
     case 'chase':{
       const b=d.ball;if(!b||(b.state!=='free'&&b.state!=='fly')||(b.chasedBy!==d.id)){if(b&&b.chasedBy===d.id)b.chasedBy=null;d.ball=null;setState(d,'idle',0.5);break}
       const dist=steer(d,b.pos.x,b.pos.z,run,dt);moving=true;tongue=true;emo='!';
@@ -7173,10 +7178,12 @@ function annexItems(){
       if(R&&(bx.minx<R.r.minx+0.05||bx.maxx>R.r.maxx-0.05||bx.minz<R.r.minz+0.05||bx.maxz>R.r.maxz-0.05))continue;if(!FURN[type].solid&&type==='chandelier'){out.push(it);id++;return it}
       if(zones.some(z=>ov(z,bx))||placed.some(b=>ov(b,bx)))continue;out.push(it);placed.push(bx);id++;return it}return null};
   const RD=A.RD,top=A.top,R=k=>A.rooms.find(r=>r.key===k);
-  if(A.roomsOn){const K=R('kitchen'),u0=K.u0,u1=K.u1,uc=(u0+u1)/2;put('stove',u0+1.0,RD-0.45,'-v',0,'kitchen');put('fridge',u0+2.4,RD-0.5,'-v',0,'kitchen');put('sink',u0+3.9,RD-0.45,'-v',0,'kitchen');put('counter',u0+5.5,RD-0.45,'-v',0,'kitchen');put('counter',u1-1.0,RD-0.45,'-v',0,'kitchen');if(!out.some(i=>i.type==='counter'))for(const [u,v,f] of [[u0+0.45,RD-2.2,'+u'],[u1-0.45,RD-2.2,'-u'],[uc+2.4,3.6,'-v'],[uc-2.4,3.6,'-v'],[u0+0.45,1.6,'+u'],[u1-0.45,1.6,'-u'],[uc,1.2,'-v']])if(put('counter',u,v,f,0,'kitchen'))break;put('diningtable',uc,3.6,'-v',0,'kitchen');put('plant',u1-0.5,0.5,'-v',0,'kitchen')}
-  if(A.roomsOn){const Lb=R('library'),u0=Lb.u0,u1=Lb.u1,uc=(u0+u1)/2;put('bookcase',u0+1.3,RD-0.35,'-v',0,'library');put('bookcase',u0+3.5,RD-0.35,'-v',0,'library');put('bookcase',u1-1.3,RD-0.35,'-v',0,'library');put('bookcase',u1-3.5,RD-0.35,'-v',0,'library');
+  if(R('kitchen')){const K=R('kitchen'),u0=K.u0,u1=K.u1,uc=(u0+u1)/2;put('stove',u0+1.0,RD-0.45,'-v',0,'kitchen');put('fridge',u0+2.4,RD-0.5,'-v',0,'kitchen');put('sink',u0+3.9,RD-0.45,'-v',0,'kitchen');put('counter',u0+5.5,RD-0.45,'-v',0,'kitchen');put('counter',u1-1.0,RD-0.45,'-v',0,'kitchen');if(!out.some(i=>i.type==='counter'))for(const [u,v,f] of [[u0+0.45,RD-2.2,'+u'],[u1-0.45,RD-2.2,'-u'],[uc+2.4,3.6,'-v'],[uc-2.4,3.6,'-v'],[u0+0.45,1.6,'+u'],[u1-0.45,1.6,'-u'],[uc,1.2,'-v']])if(put('counter',u,v,f,0,'kitchen'))break;put('diningtable',uc,3.6,'-v',0,'kitchen');put('plant',u1-0.5,0.5,'-v',0,'kitchen')}
+  if(R('library')){const Lb=R('library'),u0=Lb.u0,u1=Lb.u1,uc=(u0+u1)/2;put('bookcase',u0+1.3,RD-0.35,'-v',0,'library');put('bookcase',u0+3.5,RD-0.35,'-v',0,'library');put('bookcase',u1-1.3,RD-0.35,'-v',0,'library');put('bookcase',u1-3.5,RD-0.35,'-v',0,'library');
     put('readdesk',uc-2.0,3.8,'-v',0,'library');put('readdesk',uc+2.0,3.8,'-v',0,'library');put('armchair',u0+0.8,2.2,'+u',0,'library');put('armchair',u1-0.8,2.2,'-u',0,'library');put('globe',uc,5.8,'-v',0,'library');put('rug',uc,3.4,'-v',0,'library')}
-  if(A.roomsOn){const Bq=R('banquet'),u0=Bq.u0,u1=Bq.u1,uc=(u0+u1)/2;put('longtable',uc,3.9,'-v',0,'banquet');put('chandelier',uc,3.9,'-v',0,'banquet');put('stage',u0+2.0,RD-1.0,'-v',0,'banquet');put('buffet',u1-1.6,RD-0.5,'-v',0,'banquet');put('buffet',u1-0.5,2.4,'-u',0,'banquet');put('plant',u0+0.5,0.5,'-v',0,'banquet')}
+  if(R('bedroom')){const Bd=R('bedroom'),u0=Bd.u0,u1=Bd.u1,uc=(u0+u1)/2;put('bed',uc,RD-1.1,'-v',0,'bedroom');put('dogbed',u0+1.0,RD-0.8,'-v',0,'bedroom');put('dogbed',u1-1.0,RD-0.8,'-v',0,'bedroom');put('dogbed',u0+1.0,RD-2.5,'-v',0,'bedroom');put('dogbed',u1-1.0,RD-2.5,'-v',0,'bedroom');put('dogbed',u0+1.0,4.2,'-v',0,'bedroom');put('dogbed',u1-1.0,4.2,'-v',0,'bedroom');
+    put('rug',uc,4.0,'-v',0,'bedroom');put('petsofa',u0+1.2,1.4,'+u',0,'bedroom');put('shelf',u1-0.4,2.6,'-u',0,'bedroom');put('plant',u1-0.5,0.5,'-v',0,'bedroom')}
+  if(R('banquet')){const Bq=R('banquet'),u0=Bq.u0,u1=Bq.u1,uc=(u0+u1)/2;put('longtable',uc,3.9,'-v',0,'banquet');put('chandelier',uc,3.9,'-v',0,'banquet');put('stage',u0+2.0,RD-1.0,'-v',0,'banquet');put('buffet',u1-1.6,RD-0.5,'-v',0,'banquet');put('buffet',u1-0.5,2.4,'-u',0,'banquet');put('plant',u0+0.5,0.5,'-v',0,'banquet')}
   if(A.faith){const cw=A.cw,cd=A.cd;put('statue',0,top-1.0,'-v',0,'church');put('altar',0,top-3.3,'-v',0,'church');put('candle',-2.1,top-3.3,'-v',0,'church');put('candle',2.1,top-3.3,'-v',0,'church');put('organ',cw/2-1.0,top-4.0,'-u',0,'church');
     put('font',-3.0,RD+1.6,'-v',0,'church');put('font',3.0,RD+1.6,'-v',0,'church');
     const per=Math.max(1,Math.min(2,Math.floor((cw/2-1.6)/3.8)));for(let v=RD+4.2;v<=top-6.6;v+=1.9)for(const sg of[-1,1])for(let j=0;j<per;j++)put('pew',sg*(1.4+1.8+j*3.8),v,'+v',0,'church');
@@ -7199,9 +7206,10 @@ function floorItems(k){
   if(A.roomsOn){const base={n:0,s:2,e:1,w:3}[A.O],rotOf=f=>f==='-v'?base:f==='+v'?(base+2)%4:f==='+u'?{n:3,s:3,e:0,w:0}[A.O]:({n:3,s:3,e:0,w:0}[A.O]+2)%4;
     const put=(type,u,v,f,R,extra)=>{for(const du of[0,0.8,-0.8,1.6,-1.6,2.4,-2.4]){const p=A.map(u+du,v);if(tryPut(Object.assign({id,type,x:p.x,z:p.z,rot:rotOf(f),fl:k},extra||{}),R.r))return true}return false};
     const K=A.rooms.find(r=>r.key==='kitchen'),Lb=A.rooms.find(r=>r.key==='library'),RD=A.RD;
-    if(k%2===1){names.kitchen='☕ 카페';const uc=(K.u0+K.u1)/2;put('counter',K.u0+1.0,RD-0.45,'-v',K);put('counter',K.u0+2.6,RD-0.45,'-v',K);put('fridge',K.u1-1.0,RD-0.5,'-v',K);put('diningtable',uc,2.4,'-v',K);put('diningtable',uc,5.0,'-v',K);put('plant',K.u1-0.5,0.5,'-v',K)}
-    else{names.kitchen='🍳 주방';const uc=(K.u0+K.u1)/2;put('stove',K.u0+1.0,RD-0.45,'-v',K);put('fridge',K.u0+2.4,RD-0.5,'-v',K);put('sink',K.u0+3.9,RD-0.45,'-v',K);put('diningtable',uc,3.6,'-v',K)}
-    names.library='📚 도서관';{const uc=(Lb.u0+Lb.u1)/2;for(const du of[-3.6,-1.3,1.3,3.6])put('bookcase',uc+du,RD-0.35,'-v',Lb);put('readdesk',uc-2,3.8,'-v',Lb);put('readdesk',uc+2,3.8,'-v',Lb);put('armchair',Lb.u0+0.8,2.2,'+u',Lb);put('armchair',Lb.u1-0.8,2.2,'-u',Lb);put('globe',uc,5.8,'-v',Lb)}
+    if(K&&k%2===1){names.kitchen='☕ 카페';const uc=(K.u0+K.u1)/2;put('counter',K.u0+1.0,RD-0.45,'-v',K);put('counter',K.u0+2.6,RD-0.45,'-v',K);put('fridge',K.u1-1.0,RD-0.5,'-v',K);put('diningtable',uc,2.4,'-v',K);put('diningtable',uc,5.0,'-v',K);put('plant',K.u1-0.5,0.5,'-v',K)}
+    else if(K){names.kitchen='🍳 주방';const uc=(K.u0+K.u1)/2;put('stove',K.u0+1.0,RD-0.45,'-v',K);put('fridge',K.u0+2.4,RD-0.5,'-v',K);put('sink',K.u0+3.9,RD-0.45,'-v',K);put('diningtable',uc,3.6,'-v',K)}
+    {const Bd=A.rooms.find(r=>r.key==='bedroom');if(Bd){names.bedroom='🛏 침실';const uc=(Bd.u0+Bd.u1)/2;put('bed',uc,RD-1.1,'-v',Bd);for(const [du,v] of[[-1,RD-0.8],[1,RD-0.8],[-1,RD-2.5],[1,RD-2.5]])put('dogbed',du<0?Bd.u0+1.0:Bd.u1-1.0,v,'-v',Bd);put('rug',uc,4.0,'-v',Bd);put('plant',Bd.u1-0.5,0.5,'-v',Bd)}}
+    if(Lb){names.library='📚 도서관';const uc=(Lb.u0+Lb.u1)/2;for(const du of[-3.6,-1.3,1.3,3.6])put('bookcase',uc+du,RD-0.35,'-v',Lb);put('readdesk',uc-2,3.8,'-v',Lb);put('readdesk',uc+2,3.8,'-v',Lb);put('armchair',Lb.u0+0.8,2.2,'+u',Lb);put('armchair',Lb.u1-0.8,2.2,'-u',Lb);put('globe',uc,5.8,'-v',Lb)}
     const C=A.rooms.find(r=>r.key==='church');if(C&&roomOnFloor(C,k)){names.church='⛪ 성당';const top=A.top,cw=A.cw;put('candle',-2.1,top-1.2,'-v',C);put('candle',2.1,top-1.2,'-v',C);put('statue',0,top-1.0,'-v',C);
       const per=Math.max(1,Math.min(2,Math.floor((cw/2-1.6)/3.8)));for(let v=RD+3;v<=top-4.5;v+=1.9)for(const sg of[-1,1])for(let j=0;j<per;j++)put('pew',sg*(1.4+1.8+j*3.8),v,'+v',C);put('chandelier',0,RD+A.cd*0.5,'-v',C,{hy:2.6})}}
   FLOOR.names[k]=names;return out}
@@ -7284,7 +7292,7 @@ function buildAnnex(){
   {const p=A.map(0,top+2.3);scene.add(box(4,10,4,'#cfc7b6',p.x,5,p.z));const sp=new THREE.Mesh(new THREE.ConeGeometry(2.9,5,4),mat('#5a6b7d'));sp.position.set(p.x,12.5,p.z);sp.rotation.y=Math.PI/4;scene.add(sp);
     const bell=new THREE.Mesh(new THREE.CylinderGeometry(0.35,0.7,0.9,16,1,true),mat('#c9a227',{side:THREE.DoubleSide}));bell.position.set(p.x,8.6,p.z);scene.add(bell);A.bell=bell;const em=textSprite('🐾',{bg:'rgba(0,0,0,0)',size:1.4});em.position.set(p.x,15.6,p.z);scene.add(em)}
   }
-  for(const [k,i,y] of(A.faith?[['church',1.1,5.6],['banquet',0.8,2.4]]:A.roomsOn?[['banquet',0.8,2.4]]:[])){const r=roomRect(k),L=new THREE.PointLight(k==='church'?'#ffe2a8':'#ffd9a0',0,k==='church'?Math.max(A.cw,A.cd)*1.1:12,1.4);L.position.set((r.minx+r.maxx)/2,y,(r.minz+r.maxz)/2);L.userData.i=i;scene.add(L);A.lights.push(L)}
+  for(const [k,i,y] of(A.faith?[['church',1.1,5.6],['banquet',0.8,2.4]]:A.roomsOn?[['banquet',0.8,2.4]]:[])){const r=roomRect(k);if(!r)continue;const L=new THREE.PointLight(k==='church'?'#ffe2a8':'#ffd9a0',0,k==='church'?Math.max(A.cw,A.cd)*1.1:12,1.4);L.position.set((r.minx+r.maxx)/2,y,(r.minz+r.maxz)/2);L.userData.i=i;scene.add(L);A.lights.push(L)}
 }
 /* ---------- dog school (under 2) & senior dogs at work ---------- */
 function schoolOk(d){return d.species!=='cat'&&!d.dead&&!d.stray&&!d.enemy&&!d.lion&&!d.sc&&!d.fight&&!d.away&&d.age>=0.25&&d.age<2&&d.root.visible!==false&&!(world.quiz&&world.quiz.on&&world.quiz.players.includes(d.id))&&!(world.arena)}
